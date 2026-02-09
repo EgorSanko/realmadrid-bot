@@ -1,0 +1,16 @@
+# Real Madrid Bot v4.0 - Настройки
+
+# Telegram Bot
+TELEGRAM_TOKEN=8148384705:AAEH5z2bc1iqRTTDY7mLGyo2RPRhDtBe5jM
+BOT_USERNAME=RealMadridNewBot
+
+# Google Sheets
+SPREADSHEET_ID=1ER1z9pmuyKar-w59-3uPvOuurW4yyeH0Zst9Byob5oo
+GOOGLE_CREDENTIALS_FILE=credentials.json
+
+# Database
+DATABASE_PATH=betting.db
+
+# Admins (через запятую, без пробелов)
+# Узнать свой ID: написать боту @userinfobot
+ADMIN_IDS=YOUR_TELEGRAM_ID_HERE

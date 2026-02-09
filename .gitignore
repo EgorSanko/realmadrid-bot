@@ -1,0 +1,28 @@
+notepad .gitignore
+```
+Вставь:
+```
+# Secrets
+.env
+credentials.json
+
+# Database
+*.db
+betting.db
+
+# Cache
+__pycache__/
+*.py[cod]
+*.session
+*.session-journal
+
+# Backups
+backups/
+
+# Runtime data
+predictions.json
+subscriptions.json
+
+# OS
+.DS_Store
+Thumbs.db

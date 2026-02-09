@@ -1,0 +1,7 @@
+python-telegram-bot==21.0
+gspread==6.1.0
+google-auth==2.27.0
+python-dotenv==1.0.0
+aiohttp==3.9.3
+apscheduler==3.10.4
+requests==2.31.0
