@@ -4372,8 +4372,8 @@ def get_match_statistics(event_id: str) -> dict:
     return stats
 
 
-def settle_bet_by_type(bet_type: str, stats: dict) -> bool:
-    """Проверить выиграла ли ставка по типу и статистике"""
+def settle_bet_by_type(bet_type: str, stats: dict):
+    """Проверить выиграла ли ставка. Returns: True=win, False=lose, 'push'=refund"""
     
     # Основной исход
     if bet_type in ['home', 'draw', 'away']:
@@ -4384,14 +4384,20 @@ def settle_bet_by_type(bet_type: str, stats: dict) -> bool:
         score = bet_type.replace('score_', '')
         return score == f"{stats['home_score']}-{stats['away_score']}"
     
-    # Тотал голов
+    # Тотал голов (целые линии: ровно = возврат)
     if bet_type.startswith('total_over_'):
         line = float(bet_type.replace('total_over_', ''))
-        return stats['total_goals'] > line
+        total = stats['total_goals']
+        if total == line and line == int(line):  # Целая линия, ровно = push
+            return 'push'
+        return total > line
     
     if bet_type.startswith('total_under_'):
         line = float(bet_type.replace('total_under_', ''))
-        return stats['total_goals'] < line
+        total = stats['total_goals']
+        if total == line and line == int(line):  # Целая линия, ровно = push
+            return 'push'
+        return total < line
     
     # Обе забьют
     if bet_type == 'btts_yes':
@@ -4399,14 +4405,88 @@ def settle_bet_by_type(bet_type: str, stats: dict) -> bool:
     if bet_type == 'btts_no':
         return stats['both_scored'] == False
     
-    # Угловые
+    # Двойной шанс
+    if bet_type == 'dc_1x':
+        return stats['outcome'] in ['home', 'draw']
+    if bet_type == 'dc_x2':
+        return stats['outcome'] in ['draw', 'away']
+    if bet_type == 'dc_12':
+        return stats['outcome'] in ['home', 'away']
+    
+    # Ничья — нет ставки (Draw No Bet)
+    if bet_type == 'dnb_home':
+        if stats['outcome'] == 'draw':
+            return 'push'
+        return stats['outcome'] == 'home'
+    if bet_type == 'dnb_away':
+        if stats['outcome'] == 'draw':
+            return 'push'
+        return stats['outcome'] == 'away'
+    
+    # Угловые (целые линии: ровно = возврат)
     if bet_type.startswith('corners_over_'):
         line = float(bet_type.replace('corners_over_', ''))
-        return stats['total_corners'] > line
+        total = stats.get('total_corners', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total > line
     
     if bet_type.startswith('corners_under_'):
         line = float(bet_type.replace('corners_under_', ''))
-        return stats['total_corners'] < line
+        total = stats.get('total_corners', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total < line
+    
+    # Индивидуальный тотал хозяев
+    if bet_type.startswith('home_total_over_'):
+        line = float(bet_type.replace('home_total_over_', ''))
+        total = stats.get('home_score', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total > line
+    if bet_type.startswith('home_total_under_'):
+        line = float(bet_type.replace('home_total_under_', ''))
+        total = stats.get('home_score', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total < line
+    
+    # Индивидуальный тотал гостей
+    if bet_type.startswith('away_total_over_'):
+        line = float(bet_type.replace('away_total_over_', ''))
+        total = stats.get('away_score', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total > line
+    if bet_type.startswith('away_total_under_'):
+        line = float(bet_type.replace('away_total_under_', ''))
+        total = stats.get('away_score', 0)
+        if total == line and line == int(line):
+            return 'push'
+        return total < line
+    
+    # Фора (handicap)
+    if bet_type.startswith('handicap_home_'):
+        line = float(bet_type.replace('handicap_home_', ''))
+        diff = stats['home_score'] - stats['away_score'] + line
+        if diff == 0:
+            return 'push'
+        return diff > 0
+    if bet_type.startswith('handicap_away_'):
+        line = float(bet_type.replace('handicap_away_', ''))
+        diff = stats['away_score'] - stats['home_score'] + line
+        if diff == 0:
+            return 'push'
+        return diff > 0
+    
+    # Первый гол
+    if bet_type == 'first_goal_home':
+        return stats.get('first_goal') == 'home'
+    if bet_type == 'first_goal_away':
+        return stats.get('first_goal') == 'away'
+    if bet_type == 'first_goal_none':
+        return stats['total_goals'] == 0
     
     return False
 
@@ -4415,7 +4495,7 @@ def settle_all_bets_advanced(match_id: str, stats: dict) -> dict:
     """Расчёт всех типов ставок с использованием статистики"""
     from database import _execute
     
-    result = {'bets_settled': 0, 'predictions_settled': 0, 'bets_won': 0, 'bets_lost': 0}
+    result = {'bets_settled': 0, 'predictions_settled': 0, 'bets_won': 0, 'bets_lost': 0, 'bets_pushed': 0}
     
     # Получаем все pending ставки на этот матч
     bets = _execute("""
@@ -4431,9 +4511,14 @@ def settle_all_bets_advanced(match_id: str, stats: dict) -> dict:
         amount = bet['amount']
         odds = bet['odds']
         
-        won = settle_bet_by_type(bet_type, stats)
+        outcome = settle_bet_by_type(bet_type, stats)
         
-        if won:
+        if outcome == 'push':
+            # Возврат — ставка с целой линией, ровно на линии
+            _execute("UPDATE bets SET status = 'returned' WHERE bet_id = ?", (bet_id,))
+            _execute("UPDATE users SET balance = balance + ? WHERE user_id = ?", (amount, user_id))
+            result['bets_pushed'] += 1
+        elif outcome:
             # Выигрыш
             winnings = int(amount * odds)
             _execute("UPDATE bets SET status = 'won' WHERE bet_id = ?", (bet_id,))

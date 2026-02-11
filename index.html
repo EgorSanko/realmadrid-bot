@@ -2701,7 +2701,7 @@
             };
             
             const pendingBets = useMemo(() => bets?.filter(b => b.status === 'pending') || [], [bets]);
-            const settledBets = useMemo(() => bets?.filter(b => ['won', 'lost', 'sold'].includes(b.status)) || [], [bets]);
+            const settledBets = useMemo(() => bets?.filter(b => ['won', 'lost', 'sold', 'returned'].includes(b.status)) || [], [bets]);
             
             // Проверка вилки - ставки И прогнозы на этот матч
             const existingBetTypes = useMemo(() => {
@@ -2801,7 +2801,8 @@
                     pending: { class: 'badge-pending', icon: '⏳', text: 'Ожидание' },
                     won: { class: 'badge-won', icon: '✅', text: 'Выигрыш' },
                     lost: { class: 'badge-lost', icon: '❌', text: 'Проигрыш' },
-                    sold: { class: 'badge-sold', icon: '💸', text: 'Продано' }
+                    sold: { class: 'badge-sold', icon: '💸', text: 'Продано' },
+                    returned: { class: 'badge-pending', icon: '↩️', text: 'Возврат' }
                 };
                 return badges[status] || badges.pending;
             };
@@ -3207,8 +3208,8 @@
                                                     <span className="mx-2 text-gray-600">•</span>
                                                     <span className="text-sm">{bet.amount} × {bet.odds}</span>
                                                 </div>
-                                                <div className={`font-bold text-lg ${bet.status === 'won' ? 'text-green-400' : bet.status === 'sold' ? 'text-orange-400' : 'text-red-400'}`}>
-                                                    {bet.status === 'won' ? `+${bet.potential_win}` : bet.status === 'sold' ? `+${bet.sold_amount || Math.floor(bet.amount/2)}` : `-${bet.amount}`}
+                                                <div className={`font-bold text-lg ${bet.status === 'won' ? 'text-green-400' : bet.status === 'sold' ? 'text-orange-400' : bet.status === 'returned' ? 'text-blue-400' : 'text-red-400'}`}>
+                                                    {bet.status === 'won' ? `+${bet.potential_win}` : bet.status === 'sold' ? `+${bet.sold_amount || Math.floor(bet.amount/2)}` : bet.status === 'returned' ? `↩ ${bet.amount}` : `-${bet.amount}`}
                                                 </div>
                                             </div>
                                         </div>
