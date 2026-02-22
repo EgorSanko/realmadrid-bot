@@ -4631,8 +4631,15 @@
             const [parsedStreams, setParsedStreams] = useState(null);
             const [parseStatus, setParseStatus] = useState('');
             const [showIframeFallback, setShowIframeFallback] = useState(false);
-            const [pseudoFull, setPseudoFull] = useState(false);
+
+            // Custom player state
+            const [isFullscreen, setIsFullscreen] = useState(false);
             const [showControls, setShowControls] = useState(true);
+            const [playing, setPlaying] = useState(false);
+            const [currentTime, setCurrentTime] = useState(0);
+            const [duration, setDuration] = useState(0);
+            const [muted, setMuted] = useState(false);
+            const [isLive, setIsLive] = useState(true);
             const controlsTimerRef = useRef(null);
 
             const streams = parsedStreams || initialStreams;
@@ -4651,6 +4658,10 @@
                 destroyHls();
                 setError(null);
                 setLoading(true);
+                setPlaying(false);
+                setCurrentTime(0);
+                setDuration(0);
+                setIsLive(true);
                 const video = videoRef.current;
                 if (!video) return;
 
@@ -4723,6 +4734,35 @@
                 }
             }, [destroyHls]);
 
+            // Video event listeners for custom controls
+            useEffect(() => {
+                const video = videoRef.current;
+                if (!video) return;
+                const onPlay = () => setPlaying(true);
+                const onPause = () => setPlaying(false);
+                const onTime = () => setCurrentTime(video.currentTime);
+                const onDur = () => {
+                    const d = video.duration;
+                    setDuration(d);
+                    setIsLive(!isFinite(d) || isNaN(d));
+                };
+                const onVol = () => setMuted(video.muted);
+                video.addEventListener('play', onPlay);
+                video.addEventListener('pause', onPause);
+                video.addEventListener('timeupdate', onTime);
+                video.addEventListener('durationchange', onDur);
+                video.addEventListener('loadedmetadata', onDur);
+                video.addEventListener('volumechange', onVol);
+                return () => {
+                    video.removeEventListener('play', onPlay);
+                    video.removeEventListener('pause', onPause);
+                    video.removeEventListener('timeupdate', onTime);
+                    video.removeEventListener('durationchange', onDur);
+                    video.removeEventListener('loadedmetadata', onDur);
+                    video.removeEventListener('volumechange', onVol);
+                };
+            }, []);
+
             // Parse iframe pages for m3u8
             useEffect(() => {
                 if (!isOriginalIframe) {
@@ -4731,54 +4771,45 @@
                     setShowIframeFallback(false);
                     return;
                 }
-
                 const parseUrl = originalCurrent?.parse_url;
                 if (!parseUrl) {
                     setShowIframeFallback(true);
                     setLoading(false);
                     return;
                 }
-
                 let cancelled = false;
                 setLoading(true);
                 setError(null);
                 setParseStatus('search');
                 setParsedStreams(null);
                 setShowIframeFallback(false);
-
                 const t3 = setTimeout(() => { if (!cancelled) setParseStatus('connecting'); }, 3000);
                 const t10 = setTimeout(() => { if (!cancelled) setParseStatus('slow'); }, 10000);
-
                 fetch(parseUrl)
                     .then(r => r.json())
                     .then(data => {
                         clearTimeout(t3); clearTimeout(t10);
                         if (cancelled) return;
                         if (data.success && data.streams && data.streams.length > 0) {
-                            console.log('[Parse] Found streams:', data.streams);
                             const hlsStreams = data.streams.map((s, i) => ({
                                 name: s.name || originalCurrent.name + ' #' + (i + 1),
-                                url: s.url,
-                                type: 'hls'
+                                url: s.url, type: 'hls'
                             }));
                             setParsedStreams(hlsStreams);
                             setParseStatus('found');
                         } else {
-                            console.log('[Parse] No streams found, falling back to iframe');
                             setShowIframeFallback(true);
                             setLoading(false);
                             setParseStatus('');
                         }
                     })
-                    .catch(err => {
+                    .catch(() => {
                         clearTimeout(t3); clearTimeout(t10);
                         if (cancelled) return;
-                        console.error('[Parse] Error:', err);
                         setShowIframeFallback(true);
                         setLoading(false);
                         setParseStatus('');
                     });
-
                 return () => { cancelled = true; clearTimeout(t3); clearTimeout(t10); };
             }, [activeIndex, isOriginalIframe, originalCurrent?.parse_url]);
 
@@ -4795,6 +4826,19 @@
                 return destroyHls;
             }, [activeIndex, playUrl, current?.type, isIframe, isOriginalIframe, parsedStreams, startStream, destroyHls]);
 
+            // Auto-hide controls in fullscreen
+            useEffect(() => {
+                if (isFullscreen) {
+                    setShowControls(true);
+                    controlsTimerRef.current = setTimeout(() => setShowControls(false), 3000);
+                    return () => { if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current); };
+                } else {
+                    setShowControls(true);
+                    if (controlsTimerRef.current) { clearTimeout(controlsTimerRef.current); controlsTimerRef.current = null; }
+                }
+            }, [isFullscreen]);
+
+            // Helpers
             const openInBrowser = () => { window.open(originalCurrent?.url, '_blank'); };
             const copyUrl = () => {
                 navigator.clipboard?.writeText(current?.url || '').then(() => {
@@ -4809,157 +4853,157 @@
                 setError(null);
             };
 
-            // Fullscreen: native API + orientation lock, or CSS rotation fallback
-            const goFullscreen = useCallback(() => {
-                const overlay = document.getElementById('player-overlay');
-                if (!overlay) return;
+            const formatTime = (s) => {
+                if (!isFinite(s) || isNaN(s) || s < 0) return '0:00';
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return m + ':' + (sec < 10 ? '0' : '') + sec;
+            };
 
-                // Exit native fullscreen
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
-                    setPseudoFull(false);
-                    return;
-                }
-                // Exit pseudo-fullscreen
-                if (pseudoFull) {
-                    setPseudoFull(false);
-                    return;
-                }
-
-                const video = videoRef.current;
-                // iOS: native video fullscreen
-                if (video && video.webkitEnterFullscreen) {
-                    try { video.webkitEnterFullscreen(); return; } catch(e) {}
-                }
-
-                // Try native Fullscreen API + orientation lock
-                const requestFs = overlay.requestFullscreen || overlay.webkitRequestFullscreen;
-                if (requestFs) {
-                    const p = requestFs.call(overlay);
-                    if (p && p.then) {
-                        p.then(() => {
-                            try { screen.orientation.lock('landscape').catch(() => {}); } catch(e) {}
-                        }).catch(() => {
-                            setPseudoFull(true);
-                        });
-                    }
-                } else {
-                    // No Fullscreen API (Telegram WebView) — CSS rotation
-                    setPseudoFull(true);
-                }
-            }, [pseudoFull]);
-
-            // Native fullscreen exit listener
-            useEffect(() => {
-                const onFsChange = () => {
-                    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                        try { screen.orientation.unlock(); } catch(e) {}
-                    }
-                };
-                document.addEventListener('fullscreenchange', onFsChange);
-                document.addEventListener('webkitfullscreenchange', onFsChange);
-                return () => {
-                    document.removeEventListener('fullscreenchange', onFsChange);
-                    document.removeEventListener('webkitfullscreenchange', onFsChange);
-                };
+            const togglePlay = () => {
+                const v = videoRef.current;
+                if (!v) return;
+                v.paused ? v.play().catch(() => {}) : v.pause();
+            };
+            const toggleMute = () => {
+                const v = videoRef.current;
+                if (v) v.muted = !v.muted;
+            };
+            const onSeek = (e) => {
+                const v = videoRef.current;
+                if (v) v.currentTime = parseFloat(e.target.value);
+            };
+            const toggleFullscreen = useCallback(() => {
+                setIsFullscreen(prev => !prev);
             }, []);
 
-            // Auto-hide controls in pseudo-fullscreen (3s)
-            useEffect(() => {
-                if (pseudoFull) {
-                    setShowControls(true);
-                    controlsTimerRef.current = setTimeout(() => setShowControls(false), 3000);
-                    return () => { if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current); };
-                } else {
-                    setShowControls(true);
-                    if (controlsTimerRef.current) { clearTimeout(controlsTimerRef.current); controlsTimerRef.current = null; }
-                }
-            }, [pseudoFull]);
-
-            // Tap to toggle controls in fullscreen
-            const onFullscreenTap = useCallback((e) => {
+            const onVideoAreaTap = useCallback((e) => {
                 if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-                if (e.target.tagName === 'VIDEO') return; // let native controls handle
+                if (e.target.tagName === 'INPUT' || e.target.closest('input')) return;
                 if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
                 setShowControls(prev => {
-                    if (!prev) {
+                    const next = !prev;
+                    if (next) {
                         controlsTimerRef.current = setTimeout(() => setShowControls(false), 3000);
                     }
-                    return !prev;
+                    return next;
                 });
             }, []);
 
             const isParseLoading = isOriginalIframe && !parsedStreams && !showIframeFallback && loading;
+            const progressPct = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
-            // Rotated landscape style for pseudo-fullscreen
-            const containerStyle = pseudoFull ? {
-                position: 'fixed',
-                top: '100vh',
-                left: 0,
-                width: '100vh',
-                height: '100vw',
-                transform: 'rotate(90deg)',
-                transformOrigin: 'top left',
-                zIndex: 99999,
-                background: '#000',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden'
-            } : {
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                background: '#000',
-                zIndex: 9999,
-                display: 'flex',
-                flexDirection: 'column'
+            // Controls bar component
+            const ControlsBar = ({ overlay }) => (
+                <div style={{
+                    position: overlay ? 'absolute' : 'relative',
+                    bottom: 0, left: 0, right: 0,
+                    background: overlay ? 'linear-gradient(transparent, rgba(0,0,0,0.85))' : 'rgba(255,255,255,0.05)',
+                    padding: overlay ? '32px 12px 10px' : '6px 12px',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    zIndex: 10,
+                    transition: 'opacity 0.3s',
+                    opacity: (!overlay || showControls) ? 1 : 0,
+                    pointerEvents: (!overlay || showControls) ? 'auto' : 'none'
+                }}>
+                    <button onClick={togglePlay} style={btnStyle}>
+                        {playing ? '\u23F8' : '\u25B6'}
+                    </button>
+
+                    {isLive ? (
+                        <div style={{flex:1,display:'flex',alignItems:'center',gap:6}}>
+                            <span style={{color:'#e74c3c',fontWeight:700,fontSize:12}}>
+                                {'\u25CF'} LIVE
+                            </span>
+                        </div>
+                    ) : (
+                        <>
+                            <input
+                                type="range"
+                                className="player-progress"
+                                min={0}
+                                max={duration || 0}
+                                value={currentTime}
+                                onChange={onSeek}
+                                style={{
+                                    flex: 1, height: 4, outline: 'none', cursor: 'pointer',
+                                    WebkitAppearance: 'none', appearance: 'none',
+                                    background: `linear-gradient(to right, #d4a017 ${progressPct}%, #555 ${progressPct}%)`,
+                                    borderRadius: 2
+                                }}
+                            />
+                            <span style={{color:'#ccc',fontSize:11,whiteSpace:'nowrap',fontVariantNumeric:'tabular-nums'}}>
+                                {formatTime(currentTime)} / {formatTime(duration)}
+                            </span>
+                        </>
+                    )}
+
+                    <button onClick={toggleMute} style={btnStyle}>
+                        {muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
+                    </button>
+                    <button onClick={toggleFullscreen} style={btnStyle}>
+                        {isFullscreen ? '\u2715' : '\u26F6'}
+                    </button>
+                </div>
+            );
+
+            const btnStyle = {
+                background:'none', border:'none', color:'#fff',
+                fontSize:18, padding:'6px', cursor:'pointer', opacity:0.9, lineHeight:1
             };
 
             return (
-                <div id="player-overlay" style={containerStyle}>
+                <div id="player-overlay" style={{
+                    position:'fixed',top:0,left:0,right:0,bottom:0,
+                    background:'#000',zIndex:9999,
+                    display:'flex',flexDirection:'column'
+                }}>
                     <style dangerouslySetInnerHTML={{__html: `
-                        #player-overlay:-webkit-full-screen { padding:0; }
-                        #player-overlay:fullscreen { padding:0; }
-                        #player-overlay:-webkit-full-screen video,
-                        #player-overlay:fullscreen video { width:100%!important; height:100%!important; max-height:100%!important; object-fit:contain; }
-                        #player-overlay:-webkit-full-screen iframe,
-                        #player-overlay:fullscreen iframe { width:100%!important; height:100%!important; }
-                        #player-overlay:-webkit-full-screen .po-header,
-                        #player-overlay:fullscreen .po-header,
-                        #player-overlay:-webkit-full-screen .po-footer,
-                        #player-overlay:fullscreen .po-footer { display:none!important; }
                         @keyframes pulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+                        .player-progress::-webkit-slider-thumb {
+                            -webkit-appearance: none; width: 14px; height: 14px;
+                            background: #d4a017; border-radius: 50%; cursor: pointer;
+                        }
+                        .player-progress::-moz-range-thumb {
+                            width: 14px; height: 14px; background: #d4a017;
+                            border-radius: 50%; cursor: pointer; border: none;
+                        }
                     `}} />
 
-                    {/* Header — hidden in pseudo-fullscreen */}
-                    {!pseudoFull && (
-                        <div className="po-header" style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',flexShrink:0}}>
-                            <div style={{color:'#fff',fontSize:16,fontWeight:600}}>{originalCurrent?.name || 'Stream'}</div>
-                            <div style={{display:'flex',alignItems:'center',gap:4}}>
-                                <button onClick={goFullscreen} style={{
-                                    color:'#fff',fontSize:18,background:'rgba(255,255,255,0.15)',border:'none',
-                                    cursor:'pointer',padding:'6px 10px',borderRadius:8,lineHeight:1
-                                }}>&#x26F6;</button>
-                                <button onClick={onClose} style={{
-                                    color:'#fff',fontSize:28,lineHeight:1,background:'none',border:'none',
-                                    cursor:'pointer',padding:'4px 8px'
-                                }}>&times;</button>
+                    {/* Header — hidden in fullscreen */}
+                    {!isFullscreen && (
+                        <div style={{
+                            display:'flex',justifyContent:'space-between',alignItems:'center',
+                            padding:'12px 16px',flexShrink:0
+                        }}>
+                            <div style={{color:'#fff',fontSize:16,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flex:1,marginRight:8}}>
+                                {originalCurrent?.name || 'Stream'}
                             </div>
+                            <button onClick={onClose} style={{
+                                color:'#fff',fontSize:28,lineHeight:1,background:'none',border:'none',
+                                cursor:'pointer',padding:'4px 8px',flexShrink:0
+                            }}>{'\u00D7'}</button>
                         </div>
                     )}
 
-                    {/* Content area */}
-                    <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',position:'relative',overflow:'hidden'}}
-                         onClick={pseudoFull ? onFullscreenTap : undefined}
-                    >
-                        {/* Fullscreen close button (auto-hiding) */}
-                        {pseudoFull && showControls && (
-                            <button onClick={(e) => { e.stopPropagation(); setPseudoFull(false); }} style={{
-                                position:'absolute',top:12,right:12,zIndex:10001,
-                                color:'#fff',fontSize:20,background:'rgba(0,0,0,0.6)',border:'none',
-                                cursor:'pointer',padding:'8px 14px',borderRadius:8,lineHeight:1
-                            }}>&#x2715;</button>
+                    {/* Video area */}
+                    <div style={{
+                        flex: isFullscreen ? 1 : undefined,
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        position:'relative',overflow:'hidden',
+                        ...(isFullscreen ? {width:'100vw',height:'100vh'} : {})
+                    }} onClick={isFullscreen ? onVideoAreaTap : undefined}>
+
+                        {/* Fullscreen exit button (top-left, auto-hiding) */}
+                        {isFullscreen && showControls && (
+                            <button onClick={() => setIsFullscreen(false)} style={{
+                                position:'absolute',top:12,left:12,zIndex:20,
+                                color:'#fff',fontSize:16,background:'rgba(0,0,0,0.6)',border:'none',
+                                cursor:'pointer',padding:'8px 12px',borderRadius:8,lineHeight:1
+                            }}>{'\u2715'}</button>
                         )}
 
+                        {/* Parse loading */}
                         {isParseLoading ? (
                             <div style={{color:'#fff',textAlign:'center',padding:20}}>
                                 <div style={{fontSize:40,marginBottom:16}}>
@@ -4984,53 +5028,64 @@
                                     }}>Открыть в плеере сайта</button>
                                 )}
                             </div>
+
                         ) : isIframe ? (
-                            <iframe
-                                key={originalCurrent?.url}
-                                src={originalCurrent?.url}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    border:'none',background:'#000'
-                                }}
-                                sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
-                                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                                allowFullScreen
-                            />
+                            /* Iframe player */
+                            <div style={{width:'100%',height: isFullscreen ? '100%' : '56.25vw',maxHeight: isFullscreen ? '100%' : '70vh',position:'relative'}}>
+                                <iframe
+                                    key={originalCurrent?.url}
+                                    src={originalCurrent?.url}
+                                    style={{width:'100%',height:'100%',border:'none',background:'#000'}}
+                                    sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+                                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            </div>
+
                         ) : (
-                            <>
+                            /* HLS / Acestream player */
+                            <div style={{
+                                width:'100%',
+                                height: isFullscreen ? '100%' : undefined,
+                                position:'relative'
+                            }}>
                                 <video
                                     ref={videoRef}
-                                    controls
                                     playsInline
                                     style={{
-                                        width: '100%',
-                                        height: pseudoFull ? '100%' : 'auto',
-                                        maxHeight: '100%',
-                                        aspectRatio: pseudoFull ? undefined : '16/9',
+                                        width:'100%',
+                                        height: isFullscreen ? '100%' : 'auto',
+                                        maxHeight: isFullscreen ? '100vh' : '70vh',
+                                        aspectRatio: isFullscreen ? undefined : '16/9',
                                         background:'#000',
-                                        objectFit: 'contain'
+                                        objectFit:'contain',
+                                        display:'block'
                                     }}
+                                    onClick={isFullscreen ? undefined : togglePlay}
                                 />
+
+                                {/* Loading overlay */}
                                 {loading && !error && (
                                     <div style={{
                                         position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
-                                        color:'#fff',textAlign:'center'
+                                        color:'#fff',textAlign:'center',zIndex:5
                                     }}>
-                                        <div style={{fontSize:32,marginBottom:8}}>&#8987;</div>
+                                        <div style={{fontSize:32,marginBottom:8}}>{'\u23F3'}</div>
                                         <div style={{fontSize:13,color:'#999'}}>
                                             {current?.type === 'acestream'
-                                                ? 'Acestream загружается, подождите...'
+                                                ? 'Acestream загружается...'
                                                 : 'Загрузка трансляции...'}
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Error overlay */}
                                 {error && (
                                     <div style={{
                                         position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
-                                        color:'#fff',textAlign:'center',padding:20
+                                        color:'#fff',textAlign:'center',padding:20,zIndex:5
                                     }}>
-                                        <div style={{fontSize:32,marginBottom:8}}>&#128546;</div>
+                                        <div style={{fontSize:32,marginBottom:8}}>{'\uD83D\uDE22'}</div>
                                         <div style={{fontSize:14,marginBottom:12,color:'#ccc'}}>
                                             {error === 'timeout' ? 'Трансляция недоступна' :
                                              error === 'network' ? 'Ошибка сети' :
@@ -5050,13 +5105,22 @@
                                         </div>
                                     </div>
                                 )}
-                            </>
+
+                                {/* Custom controls */}
+                                {!loading && !error && (
+                                    <ControlsBar overlay={isFullscreen} />
+                                )}
+                            </div>
                         )}
                     </div>
 
-                    {/* Bottom controls — hidden in pseudo-fullscreen */}
-                    {!pseudoFull && (
-                        <div className="po-footer" style={{padding:'12px 16px 20px',flexShrink:0}}>
+                    {/* Normal mode controls bar (for non-iframe, below video) */}
+                    {/* Controls are rendered inside the video container above */}
+
+                    {/* Bottom section — hidden in fullscreen */}
+                    {!isFullscreen && (
+                        <div style={{padding:'8px 16px 20px',flexShrink:0}}>
+                            {/* Channel switcher */}
                             {streams.length > 1 && !isParseLoading && (
                                 <div style={{display:'flex',gap:8,overflowX:'auto',marginBottom:12,
                                     WebkitOverflowScrolling:'touch'}}>
@@ -5068,12 +5132,14 @@
                                                 padding:'8px 16px',borderRadius:20,fontSize:13,fontWeight:500,
                                                 border:'none',cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,
                                                 background: i === activeIndex ? '#e74c3c' : '#333',
-                                                color: '#fff',transition:'all 0.2s'
+                                                color:'#fff',transition:'all 0.2s'
                                             }}
                                         >{s.name}</button>
                                     ))}
                                 </div>
                             )}
+
+                            {/* Footer links */}
                             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                                 <div style={{fontSize:11,color:'#666'}}>
                                     {isIframe ? 'Не загружается?' : isParseLoading ? '' : 'Не воспроизводится?'}
@@ -5083,13 +5149,13 @@
                                         <button onClick={openInBrowser} style={{
                                             fontSize:12,color:'#999',background:'none',border:'1px solid #444',
                                             borderRadius:8,padding:'6px 12px',cursor:'pointer',whiteSpace:'nowrap'
-                                        }}>&#8599; Браузер</button>
+                                        }}>{'\u2197'} Браузер</button>
                                     )}
                                     {!isIframe && !isParseLoading && (
                                         <button onClick={copyUrl} style={{
                                             fontSize:12,color:'#999',background:'none',border:'1px solid #444',
                                             borderRadius:8,padding:'6px 12px',cursor:'pointer',whiteSpace:'nowrap'
-                                        }}>&#128203; Скопировать</button>
+                                        }}>Скопировать</button>
                                     )}
                                     {parsedStreams && isOriginalIframe && !isIframe && (
                                         <button onClick={switchToIframe} style={{
