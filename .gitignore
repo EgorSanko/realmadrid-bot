@@ -1,0 +1,65 @@
+# Environment
+.env
+.env.local
+.env.production
+
+# Secrets - НИКОГДА не коммитить!
+credentials.json
+*.session
+*.session-journal
+
+# Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Temp
+*.tmp
+*.bak
+tmp/
+temp/
+
+# Media cache
+photos/
+videos/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Additional temp/backup exclusions
+*.bak*
+*.html.bak*
+api_new.py
+nohup*

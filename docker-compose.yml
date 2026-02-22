@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rm-bot
+    restart: unless-stopped
+    command: python bot.py
+    volumes:
+      - ./data:/app/data
+      - ./credentials.json:/app/credentials.json:ro
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Moscow
+      - DATABASE_PATH=/app/data/betting.db
+    depends_on:
+      - api
+    networks:
+      - rm-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: rm-api
+    restart: unless-stopped
+    command: uvicorn api:app --host 0.0.0.0 --port 8000 --workers 1
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./credentials.json:/app/credentials.json:ro
+      - ./quiz_questions:/app/quiz_questions:ro
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Moscow
+      - DATABASE_PATH=/app/data/betting.db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - rm-network
+
+  acestream:
+    image: wafy80/acestream:latest
+    container_name: rm-acestream
+    ports:
+      - "6878:6878"
+    restart: unless-stopped
+    networks:
+      - rm-network
+
+networks:
+  rm-network:
+    driver: bridge

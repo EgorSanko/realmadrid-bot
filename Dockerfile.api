@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Системные зависимости
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Зависимости Python
+COPY requirements.txt requirements_api.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements_api.txt
+
+# Копируем код
+COPY *.py ./
+COPY *.json ./
+
+# Создаём директории
+RUN mkdir -p /app/data /app/data/photos /app/data/videos
+
+# Открываем порт
+EXPOSE 8000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8000/api/health || exit 1
+
+# Запуск API
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
