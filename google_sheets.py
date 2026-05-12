@@ -18,6 +18,34 @@ SCOPES = [
 ]
 
 
+
+# ==== TTL cache for Sheets reads (added by patch_sheets_cache) ====
+import time as _time_cache
+import threading as _threading_cache
+_SHEETS_CACHE = {}
+_SHEETS_CACHE_TTL = 45  # seconds
+_SHEETS_CACHE_LOCK = _threading_cache.Lock()
+
+def _sheets_cached(ttl=_SHEETS_CACHE_TTL):
+    def deco(fn):
+        name = fn.__name__
+        def wrapper(self, *args, **kwargs):
+            key = (id(self), name, args, tuple(sorted(kwargs.items())))
+            now = _time_cache.time()
+            with _SHEETS_CACHE_LOCK:
+                ent = _SHEETS_CACHE.get(key)
+                if ent and (now - ent[0]) < ttl:
+                    return ent[1]
+            result = fn(self, *args, **kwargs)
+            with _SHEETS_CACHE_LOCK:
+                _SHEETS_CACHE[key] = (now, result)
+            return result
+        wrapper.__name__ = name
+        wrapper.__wrapped__ = fn
+        return wrapper
+    return deco
+# ==== /TTL cache ====
+
 class GoogleSheetsClient:
     def __init__(self, credentials_file: str = 'credentials.json', spreadsheet_id: str = None):
         self.connected = False
@@ -37,6 +65,7 @@ class GoogleSheetsClient:
         except Exception as e:
             logger.error(f"❌ Ошибка подключения: {e}")
     
+    @_sheets_cached()
     def get_matches(self, limit: int = 5) -> List[Dict]:
         """Получить ближайшие матчи"""
         if not self.connected:
@@ -77,9 +106,11 @@ class GoogleSheetsClient:
             logger.error(f"Ошибка: {e}")
             return self._demo_matches()[:limit]
     
+    @_sheets_cached()
     def get_all_upcoming_matches(self) -> List[Dict]:
         return self.get_matches(limit=20)
     
+    @_sheets_cached()
     def get_results(self, limit: int = 5) -> List[Dict]:
         """Последние результаты из листа Results"""
         if not self.connected:
@@ -136,6 +167,7 @@ class GoogleSheetsClient:
             logger.error(f"Ошибка получения результатов: {e}")
             return self._demo_results()[:limit]
     
+    @_sheets_cached()
     def get_standings(self, limit: int = 20) -> List[Dict]:
         """Таблица La Liga"""
         if not self.connected:
@@ -161,6 +193,7 @@ class GoogleSheetsClient:
             logger.error(f"Ошибка: {e}")
             return self._demo_standings()[:limit]
     
+    @_sheets_cached()
     def get_player_stats(self, limit: int = 10) -> List[Dict]:
         """Статистика игроков - из модуля player_stats"""
         try:
@@ -171,6 +204,7 @@ class GoogleSheetsClient:
             logger.error(f"Ошибка: {e}")
             return self._demo_player_stats()[:limit]
     
+    @_sheets_cached()
     def get_odds(self) -> Optional[Dict]:
         """Коэффициенты"""
         if not self.connected:
@@ -194,6 +228,7 @@ class GoogleSheetsClient:
             pass
         return self._demo_odds()
     
+    @_sheets_cached()
     def get_form(self) -> str:
         """Серия последних 5 матчей"""
         results = self.get_results(limit=5)

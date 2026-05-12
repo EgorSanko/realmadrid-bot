@@ -294,6 +294,40 @@ def get_liveball_url() -> str:
     return 'https://liveball.website/'
 
 
+# ============ LIVETV RESOLVER ============
+
+LIVETV_BASE = 'https://livetv885.me'
+LIVETV_RM_TEAM = LIVETV_BASE + '/enx/team/_700000105_350_real_madrid_rm/'
+LIVETV_RM_BROADCASTS = LIVETV_BASE + '/enx/team/_700000105_350_real_madrid_rm/broadcasts/'
+
+_livetv_cache = {'url': None, 'time': None, 'ttl': 600}
+
+
+def _resolve_livetv_event_url(home: str = '', away: str = '') -> str:
+    """Найти livetv eventinfo URL для текущего/ближайшего RM матча.
+    Возвращает либо конкретный event URL, либо страницу broadcasts команды как fallback."""
+    import re as _re
+    now = datetime.now().timestamp()
+    if _livetv_cache.get('url') and _livetv_cache.get('time') and (now - _livetv_cache['time'] < _livetv_cache['ttl']):
+        return _livetv_cache['url']
+    try:
+        r = requests.get(LIVETV_RM_TEAM, headers={'User-Agent': 'Mozilla/5.0'}, timeout=8)
+        if r.status_code == 200 and r.text:
+            # Ищем eventinfo ссылки, в окружении которых упоминается "real madrid"
+            html = r.text.lower()
+            for m in _re.finditer(r'/enx/eventinfo/(\d+)_?([a-z0-9_]*)/', html):
+                ctx = html[max(0, m.start() - 200):m.end() + 200]
+                if 'real madrid' in ctx or 'real_madrid' in m.group(2):
+                    url = LIVETV_BASE + '/enx/eventinfo/' + m.group(1) + ('_' + m.group(2) if m.group(2) else '') + '/'
+                    _livetv_cache.update({'url': url, 'time': now})
+                    return url
+    except Exception as e:
+        logger.warning(f"livetv resolver err: {e}")
+    # Fallback — страница всех RM трансляций
+    _livetv_cache.update({'url': LIVETV_RM_BROADCASTS, 'time': now})
+    return LIVETV_RM_BROADCASTS
+
+
 # ============ STREAMS ============
 
 STREAMS_FILE = '/app/data/streams.json'
@@ -627,6 +661,51 @@ def settle_all_bets(match_id: str, stats: dict) -> dict:
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
 
+    # Web login by code: /start login_XXXXXX
+    if context.args and len(context.args) > 0 and context.args[0].startswith('login_'):
+        code = context.args[0][6:]
+        payload = {
+            'code': code,
+            'user_id': user.id,
+            'first_name': user.first_name or '',
+            'last_name': user.last_name or '',
+            'username': user.username or '',
+            'photo_url': '',
+        }
+        headers = {'X-Internal-Secret': os.getenv('INTERNAL_API_SECRET', 'change-me-shared-secret')}
+        last_err = None
+        ok = False
+        bad_code = False
+        # Retry up to 4 times with growing timeout — api can be busy with FotMob warmer
+        for attempt, tmo in enumerate((8, 12, 20, 25), start=1):
+            try:
+                r = requests.post(
+                    'http://rm-api:8000/api/auth/code/confirm',
+                    json=payload, headers=headers, timeout=tmo,
+                )
+                if r.status_code == 200:
+                    ok = True; break
+                if r.status_code in (400, 404):
+                    bad_code = True; break
+                last_err = f'HTTP {r.status_code}'
+            except Exception as e:
+                last_err = str(e)
+                print(f'login confirm attempt {attempt} err: {e}', flush=True)
+        if ok:
+            await update.message.reply_text(
+                '✅ Вход подтверждён!\n\nВернись на сайт — он автоматически залогинит тебя в течение пары секунд.'
+            )
+        elif bad_code:
+            await update.message.reply_text(
+                '⚠️ Код устарел или неверный. Открой сайт заново и нажми «Войти».'
+            )
+        else:
+            print(f'login confirm final error: {last_err}', flush=True)
+            await update.message.reply_text(
+                '⚠️ Сервер занят, попробуй ещё раз через пару секунд (нажми /start).'
+            )
+        return
+
     # Проверяем есть ли реферальный код
     ref_code = None
     if context.args and len(context.args) > 0:
@@ -925,12 +1004,12 @@ async def check_notifications(context: ContextTypes.DEFAULT_TYPE):
             icon = E['home'] if is_home else E['away']
             loc = "дома" if is_home else "в гостях"
 
-            # 5 hours (window 270-360 min)
-            if 270 <= diff <= 360 and key not in _notified_5h:
+            # 5 hours (window 295-305 min = 5h +/- 5min)
+            if 295 <= diff <= 305 and key not in _notified_5h:
                 _notified_5h.add(key)
                 _save_notified()
                 logger.info(f"5h notif: {home} vs {away}, diff={diff:.0f}m")
-                text = f"{E['bell']} <b>Матч через 5 часов!</b>\n\n{E['stadium']} <b>{home}</b> vs <b>{away}</b>\n{E['clock']} {m['date']} {m['time']}\n{icon} Real Madrid {loc}\n\n{E['goal']} Сделай ставку!"
+                text = f"{E['bell']} <b>Матч через 5 часов!</b>\n\n{E['goal']} <b>{home}</b> vs <b>{away}</b>\n{E['clock']} {m['date']} {m['time']}\n{E['stadium']} Real Madrid {loc}\n\nЗа 5 минут до матча будет доступна трансляция {E['tv']}\nЗаходи в приложение!"
                 for u in get_all_users(limit=10000):
                     if u.get('notifications_enabled', 1):
                         try:
@@ -938,19 +1017,12 @@ async def check_notifications(context: ContextTypes.DEFAULT_TYPE):
                         except:
                             pass
 
-            # 5 min (window 1-10 min)
-            if 1 <= diff <= 10 and key not in _notified_5m:
+            # 5 min (window 4-6 min = 5min +/- 1min)
+            if 4 <= diff <= 6 and key not in _notified_5m:
                 _notified_5m.add(key)
                 _save_notified()
                 logger.info(f"5m notif: {home} vs {away}, diff={diff:.0f}m")
-                stream_url = get_liveball_url()
-                # Добавляем стримы если есть
-                stream_text = ""
-                active = get_active_streams()
-                if active:
-                    stream_lines = '\n'.join(f"  • {s['name']}" for s in active)
-                    stream_text = f"\n\n📺 Трансляция:\n{stream_lines}"
-                text = f"{E['bell']} <b>Матч через 5 минут!</b>\n\n{E['stadium']} <b>{home}</b> vs <b>{away}</b>\n\n{E['tv']} <a href=\"{stream_url}\">Смотреть</a>{stream_text}\n\n⏰ Последний шанс сделать ставку!"
+                text = f"{E['bell']} <b>Матч через 5 минут!</b>\n\n{E['goal']} <b>{home}</b> vs <b>{away}</b>\n\n{E['tv']} Трансляция доступна в приложении!\n\n⏰ Последний шанс сделать ставку!"
                 for u in get_all_users(limit=10000):
                     if u.get('notifications_enabled', 1):
                         try:
@@ -1117,22 +1189,25 @@ async def setstream_cmd(update, context):
     # Split by newlines first, then by spaces for URLs
     parts = [p.strip() for p in text.replace('\n', '\n').split('\n') if p.strip()]
     if len(parts) == 1:
-        # Single line — split by spaces (all URLs)
-        tokens = parts[0].split()
-        for t in tokens:
-            if '|' in t:
-                name, url = t.rsplit('|', 1)
-                entry = _parse_stream_url(url, name.strip(), len(streams))
-                if entry: streams.append(entry)
-            elif t.startswith('http') or t.startswith('acestream://') or t.startswith('iframe:'):
-                entry = _parse_stream_url(t, None, len(streams))
-                if entry: streams.append(entry)
+        line = parts[0]
+        # Check if line contains "|" — treat as single "Name | URL" entry
+        if '|' in line:
+            name, url = line.rsplit('|', 1)
+            entry = _parse_stream_url(url.strip(), name.strip(), len(streams))
+            if entry: streams.append(entry)
+        else:
+            # No pipe — split by spaces (all URLs without names)
+            tokens = line.split()
+            for t in tokens:
+                if t.startswith('http') or t.startswith('acestream://') or t.startswith('iframe:'):
+                    entry = _parse_stream_url(t, None, len(streams))
+                    if entry: streams.append(entry)
     else:
         # Multiple lines — each can be "Name|URL" or just URL
         for p in parts:
             if '|' in p:
                 name, url = p.rsplit('|', 1)
-                entry = _parse_stream_url(url, name.strip(), len(streams))
+                entry = _parse_stream_url(url.strip(), name.strip(), len(streams))
                 if entry: streams.append(entry)
             elif p.startswith('http') or p.startswith('acestream://') or p.startswith('iframe:'):
                 entry = _parse_stream_url(p, None, len(streams))
@@ -1523,12 +1598,272 @@ async def purchase_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
 
+
+
+# ============ LIVE STREAM ADMIN ============
+
+import asyncio as _aio_live
+
+def _fmt_dt(date_str: str) -> str:
+    try:
+        from datetime import datetime as _dt
+        dt = _dt.strptime(date_str, '%d.%m.%Y %H:%M')
+        wd = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'][dt.weekday()]
+        return f"{dt.strftime('%H:%M')} ({wd} {dt.strftime('%d.%m')})"
+    except Exception:
+        return date_str or ''
+
+
+def _http_get_json(url: str, timeout: int = 8):
+    try:
+        r = requests.get(url, timeout=timeout)
+        return r.json()
+    except Exception as e:
+        logger.warning(f"_http_get_json {url} -> {e}")
+        return None
+
+
+def _build_matches_from_api():
+    """Return list of {id,home,away,league,date,time,score,status,url}.
+    Sources: /api/footybite/schedule (for stream URLs), /api/live (Leon),
+    /api/matches/upcoming (FotMob)."""
+    out = []
+    fb = _http_get_json("http://rm-api:8000/api/footybite/schedule", timeout=8) or {}
+    for m in (fb.get('matches') or []):
+        out.append(m)
+    if not any(o.get('status') == 'live' for o in out):
+        live = _http_get_json("http://rm-api:8000/api/live", timeout=6) or {}
+        if live.get('is_live'):
+            out.insert(0, {
+                'id': str(live.get('leon_id') or 'live'),
+                'home': (live.get('home_team') or '').title() or 'Home',
+                'away': (live.get('away_team') or '').title() or 'Away',
+                'league': live.get('stage') or live.get('competition') or '',
+                'date': '',
+                'time': 'LIVE',
+                'score': live.get('score') or f"{live.get('home_score',0)}:{live.get('away_score',0)}",
+                'status': 'live',
+                'url': '',
+            })
+    if not any(m.get('status') == 'upcoming' for m in out):
+        up = _http_get_json("http://rm-api:8000/api/matches/upcoming", timeout=6) or {}
+        for m in (up.get('matches') or []):
+            out.append({
+                'id': str(m.get('id') or ''),
+                'home': m.get('home_team') or '',
+                'away': m.get('away_team') or '',
+                'league': m.get('competition') or '',
+                'date': (m.get('date') or '').split(' ')[0],
+                'time': _fmt_dt(m.get('date') or ''),
+                'score': '',
+                'status': 'upcoming',
+                'url': '',
+            })
+    return out
+
+
+# === LIVEBALL ADMIN ===
+
+async def live_cmd(update, context):
+    """RM matches as inline buttons for stream setup. Placeholder-then-edit pattern."""
+    logger.info(f"live_cmd from user {update.effective_user.id}")
+    if update.effective_user.id not in Config.ADMIN_IDS:
+        logger.info(f"live_cmd: user {update.effective_user.id} not admin")
+        return
+
+    try:
+        placeholder = await update.message.reply_text("⏳ Загружаю расписание...")
+    except Exception as _ph_err:
+        logger.warning(f"live_cmd placeholder send failed: {_ph_err}")
+        placeholder = None
+
+    try:
+        matches = await _aio_live.to_thread(_build_matches_from_api)
+    except Exception as e:
+        logger.exception("live_cmd build matches err")
+        if placeholder:
+            try: await placeholder.edit_text(f"❌ Ошибка загрузки расписания: {e}")
+            except Exception: pass
+        return
+
+    if not matches:
+        if placeholder:
+            try: await placeholder.edit_text("Нет матчей. Источники не отвечают.")
+            except Exception: pass
+        return
+
+    live_matches = [m for m in matches if m.get('status') == 'live']
+    upcoming = [m for m in matches if m.get('status') == 'upcoming']
+
+    text = "📺 Матчи Real Madrid:\n\n"
+    if live_matches:
+        text += "🔴 LIVE:\n"
+        for m in live_matches[:5]:
+            score = f" {m.get('score','')}" if m.get('score') else ""
+            text += f"⚽ {m.get('home','')} vs {m.get('away','')}{score} ({m.get('league','')})\n"
+    if upcoming:
+        text += "\n⏰ Скоро:\n"
+        for m in upcoming[:8]:
+            text += f"⚽ {m.get('home','')} vs {m.get('away','')} — {m.get('time','')} ({m.get('league','')})\n"
+
+    keyboard = []
+    for m in (live_matches + upcoming)[:8]:
+        icon = "🔴" if m.get('status') == 'live' else "⏰"
+        btn_text = f"{icon} {m.get('home','')} vs {m.get('away','')}"
+        if len(btn_text) > 45:
+            btn_text = btn_text[:42] + "..."
+        keyboard.append([InlineKeyboardButton(btn_text, callback_data=f"startlb_{m.get('id','')}")])
+
+    active = get_active_streams()
+    if active:
+        text += f"\n✅ Сейчас идёт: {active[0].get('name', 'Stream')}"
+        keyboard.append([InlineKeyboardButton("⏹ Остановить трансляцию", callback_data="stoplb")])
+
+    keyboard.append([InlineKeyboardButton("🔄 Обновить список", callback_data="refreshlb")])
+
+    markup = InlineKeyboardMarkup(keyboard)
+    sent = False
+    if placeholder:
+        try:
+            await placeholder.edit_text(text, reply_markup=markup)
+            sent = True
+        except Exception as _e:
+            logger.warning(f"live_cmd edit failed, retry as new: {_e}")
+    if not sent:
+        try:
+            await update.message.reply_text(text, reply_markup=markup)
+        except Exception as _e:
+            logger.exception(f"live_cmd final send failed: {_e}")
+
+
+async def live_callback(update, context):
+    """Handle LiveBall stream callback buttons"""
+    logger.info(f"live_callback: {update.callback_query.data}")
+    query = update.callback_query
+    await query.answer()
+    data = query.data
+
+    if data.startswith("startlb_"):
+        match_id = data.replace("startlb_", "")
+
+        try:
+            matches_all = await _aio_live.to_thread(_build_matches_from_api)
+            match = next((m for m in matches_all if str(m.get('id')) == str(match_id)), None)
+        except Exception as _e:
+            logger.warning(f"startlb fetch err: {_e}")
+            match = None
+
+        if not match:
+            await query.edit_message_text("\u274c Матч не найден. Попробуйте обновить список.")
+            return
+
+        # Резолвим livetv event URL (или fallback на broadcasts-страницу команды)
+        try:
+            player_url = await _aio_live.to_thread(
+                _resolve_livetv_event_url,
+                match.get('home', ''),
+                match.get('away', '')
+            )
+        except Exception as _e:
+            logger.warning(f"livetv resolve failed: {_e}")
+            player_url = LIVETV_RM_BROADCASTS
+
+        stream_data = {
+            "streams": [{
+                "name": f"{match.get('home','')} vs {match.get('away','')}",
+                "url": player_url,
+                "type": "iframe",
+                "active": True
+            }],
+            "updated": datetime.now(MSK).strftime("%d.%m %H:%M"),
+            "updated_by": "admin"
+        }
+
+        if save_streams(stream_data):
+            await query.edit_message_text(
+                f"\u2705 Трансляция запущена!\n\n"
+                f"\u26bd {match.get('home','')} vs {match.get('away','')}\n"
+                f"\U0001f3c6 {match.get('league', '')}\n"
+                f"\U0001f517 {player_url}\n\n"
+                f"Пользователи увидят кнопку в приложении.",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("\u23f9 Остановить", callback_data="stoplb")],
+                    [InlineKeyboardButton("\U0001f4fa Сменить матч", callback_data="refreshlb")]
+                ]),
+                disable_web_page_preview=True
+            )
+        else:
+            await query.edit_message_text("\u274c Ошибка сохранения стрима")
+
+    elif data == "stoplb":
+        save_streams({"streams": [], "updated": datetime.now(MSK).strftime("%d.%m %H:%M"), "updated_by": ""})
+        await query.edit_message_text(
+            "\u23f9 Трансляция остановлена.",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("\U0001f4fa Запустить новую", callback_data="refreshlb")]
+            ])
+        )
+
+    elif data == "refreshlb":
+        try:
+            matches = await _aio_live.to_thread(_build_matches_from_api)
+        except Exception as _e:
+            logger.warning(f"refreshlb fetch err: {_e}")
+            await query.edit_message_text("\u274c Не удалось загрузить расписание матчей Real Madrid")
+            return
+
+        live_matches = [m for m in matches if m.get('status') == 'live']
+        upcoming = [m for m in matches if m.get('status') == 'upcoming']
+
+        text = "\U0001f4fa Матчи Real Madrid:\n\n"
+        if live_matches:
+            text += "\U0001f534 LIVE:\n"
+            for m in live_matches[:10]:
+                score = f" {m.get('score', '')}" if m.get('score') else ""
+                text += f"\u26bd {m['home']} vs {m['away']}{score} ({m.get('league', '')})\n"
+        if upcoming:
+            text += "\n\u23f0 Скоро:\n"
+            for m in upcoming[:10]:
+                t = m.get('time', '')
+                text += f"\u26bd {m['home']} vs {m['away']} \u2014 {t} ({m.get('league', '')})\n"
+
+        keyboard = []
+        for m in (live_matches + upcoming)[:8]:
+            icon = "\U0001f534" if m['status'] == 'live' else "\u23f0"
+            btn_text = f"{icon} {m['home']} vs {m['away']}"
+            if len(btn_text) > 45:
+                btn_text = btn_text[:42] + "..."
+            keyboard.append([InlineKeyboardButton(btn_text, callback_data=f"startlb_{m['id']}")])
+
+        active = get_active_streams()
+        if active:
+            text += f"\n\u2705 Сейчас идёт: {active[0].get('name', 'Stream')}"
+            keyboard.append([InlineKeyboardButton("\u23f9 Остановить трансляцию", callback_data="stoplb")])
+        keyboard.append([InlineKeyboardButton("\U0001f504 Обновить", callback_data="refreshlb")])
+
+        try:
+            await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard))
+        except Exception as e:
+            # Message not modified (same content)
+            pass
+
+
 # ============ MAIN ============
 
 def main():
     init_database()
 
-    app = Application.builder().token(Config.TELEGRAM_TOKEN).build()
+    app = (Application.builder()
+        .token(Config.TELEGRAM_TOKEN)
+        .get_updates_read_timeout(42)
+        .get_updates_write_timeout(5)
+        .get_updates_connect_timeout(5)
+        .get_updates_pool_timeout(5)
+        .read_timeout(30)
+        .write_timeout(30)
+        .connect_timeout(10)
+        .pool_timeout(10)
+        .build())
 
     app.add_handler(CommandHandler("start", start_cmd))
     app.add_handler(CommandHandler("admin", admin_cmd))
@@ -1544,6 +1879,8 @@ def main():
     app.add_handler(CommandHandler("reject", reject_cmd))
     app.add_handler(CommandHandler("purchases", purchases_cmd))
     app.add_handler(CallbackQueryHandler(purchase_callback, pattern="^(approve|reject)_"))
+    app.add_handler(CommandHandler("live", live_cmd))
+    app.add_handler(CallbackQueryHandler(live_callback, pattern="^(startlb_|stoplb|refreshlb)"))
 
     job_queue = app.job_queue
     job_queue.run_repeating(check_notifications, interval=60, first=10)
@@ -1552,7 +1889,15 @@ def main():
     logger.info("🚀 Bot v5.5 запущен — стримы!")
     logger.info("   - Авторасчёт из Google Sheets")
     logger.info("   - Уведомления за 5ч и 5мин")
-    app.run_polling()
+    
+    
+    async def error_handler(update, context):
+        if "Conflict" in str(context.error):
+            return  # Ignore conflict errors silently
+        logger.warning(f"Update {update} caused error: {context.error}")
+    app.add_error_handler(error_handler)
+    
+    app.run_polling(drop_pending_updates=True, allowed_updates=["message", "callback_query"])
 
 
 if __name__ == '__main__':

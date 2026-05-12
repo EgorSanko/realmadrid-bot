@@ -63,3 +63,15 @@ build/
 *.html.bak*
 api_new.py
 nohup*
+
+# Backup files from refactoring
+*.bak
+*.bak_*
+*.bak.*
+
+# Frontend build/deps (each frontend/ subdir has its own .gitignore too)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Static deploy artifacts (built by frontend/)

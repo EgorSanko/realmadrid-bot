@@ -344,41 +344,52 @@ def get_or_create_user(user_id: int, username: str = None, first_name: str = Non
     return user
 
 
-def update_user_balance(user_id: int, amount: int, transaction_type: str, 
+def update_user_balance(user_id: int, amount: int, transaction_type: str,
                        description: str = None, reference_id: str = None,
                        admin_id: int = None, affect_wager: bool = False) -> bool:
     """
-    Обновить баланс пользователя с записью транзакции
-    
-    affect_wager: если True и amount > 0, добавляет к wager_remaining (для депозитов)
+    Обновить баланс пользователя с записью транзакции.
+
+    affect_wager: если True и amount > 0, добавляет к wager_remaining (для депозитов).
+
+    SECURITY: для отрицательных amount (списания: призы, штрафы) используется
+    атомарный UPDATE с WHERE balance >= -amount, чтобы исключить гонку и уход в минус.
     """
     with get_connection() as conn:
         cursor = conn.cursor()
-        
-        # Получаем текущие данные
-        cursor.execute('SELECT balance, wager_remaining FROM users WHERE user_id = ?', (user_id,))
-        row = cursor.fetchone()
-        if not row:
-            return False
-        
-        balance_before = row['balance']
-        wager_before = row['wager_remaining']
-        balance_after = balance_before + amount
-        wager_after = wager_before
-        
-        # Проверяем, что баланс не станет отрицательным
-        if balance_after < 0:
-            return False
-        
-        # Если это депозит, добавляем к вейджеру
-        if affect_wager and amount > 0:
-            wager_after = wager_before + amount
-        
-        # Обновляем баланс
-        cursor.execute('''
-            UPDATE users SET balance = ?, wager_remaining = ?, last_active = CURRENT_TIMESTAMP
-            WHERE user_id = ?
-        ''', (balance_after, wager_after, user_id))
+
+        # Списание (negative amount) — атомарно
+        if amount < 0:
+            need = -amount
+            cursor.execute('SELECT balance, wager_remaining FROM users WHERE user_id = ?', (user_id,))
+            row = cursor.fetchone()
+            if not row:
+                return False
+            balance_before = row['balance']
+            wager_before = row['wager_remaining']
+
+            cursor.execute('''
+                UPDATE users SET balance = balance - ?, last_active = CURRENT_TIMESTAMP
+                 WHERE user_id = ? AND balance >= ?
+            ''', (need, user_id, need))
+            if cursor.rowcount == 0:
+                return False
+            balance_after = balance_before - need
+            wager_after = wager_before
+        else:
+            # Зачисление — read-then-write безопасно (только увеличение)
+            cursor.execute('SELECT balance, wager_remaining FROM users WHERE user_id = ?', (user_id,))
+            row = cursor.fetchone()
+            if not row:
+                return False
+            balance_before = row['balance']
+            wager_before = row['wager_remaining']
+            balance_after = balance_before + amount
+            wager_after = wager_before + amount if (affect_wager and amount > 0) else wager_before
+            cursor.execute('''
+                UPDATE users SET balance = ?, wager_remaining = ?, last_active = CURRENT_TIMESTAMP
+                 WHERE user_id = ?
+            ''', (balance_after, wager_after, user_id))
         
         # Записываем транзакцию
         cursor.execute('''
@@ -487,32 +498,48 @@ def purchase_prize(user_id: int, prize_id: int, prize_name: str, prize_cost: int
 def place_bet(user_id: int, match_id: str, bet_type: str, amount: int, odds: float,
               home_team: str = None, away_team: str = None, match_date: str = None) -> Optional[int]:
     """
-    Разместить ставку на матч
-    Возвращает bet_id или None при ошибке
+    Разместить ставку на матч.
+    Возвращает bet_id или None при ошибке.
+
+    SECURITY: списание баланса выполняется атомарным UPDATE с условием
+    WHERE balance >= amount, чтобы исключить race-condition при двойном клике
+    или одновременных запросах. Раньше шёл паттерн read-then-write, через который
+    можно было обойти проверку и уйти в минус.
     """
-    user = get_user(user_id)
-    if not user or user['balance'] < amount:
+    if amount is None or amount <= 0:
         return None
-    
+
     potential_win = int(amount * odds)
-    
+
     with get_connection() as conn:
         cursor = conn.cursor()
-        
-        # Списываем с баланса
-        balance_before = user['balance']
-        balance_after = balance_before - amount
-        wager_before = user['wager_remaining']
-        
-        # Уменьшаем вейджер
-        wager_after = max(0, wager_before - amount)
-        
+
+        # Сначала читаем wager до операции (для записи в transactions)
+        cursor.execute('SELECT balance, wager_remaining FROM users WHERE user_id = ?', (user_id,))
+        _row = cursor.fetchone()
+        if not _row:
+            return None
+        balance_before = _row['balance']
+        wager_before = _row['wager_remaining']
+
+        # Атомарно списываем сумму ТОЛЬКО если баланса хватает.
+        # При параллельных запросах второй получит rowcount=0 и ставка не создастся.
         cursor.execute('''
-            UPDATE users SET balance = ?, wager_remaining = ?,
-                           bets_total = bets_total + 1, last_active = CURRENT_TIMESTAMP
-            WHERE user_id = ?
-        ''', (balance_after, wager_after, user_id))
-        
+            UPDATE users
+               SET balance = balance - ?,
+                   wager_remaining = MAX(0, wager_remaining - ?),
+                   bets_total = bets_total + 1,
+                   last_active = CURRENT_TIMESTAMP
+             WHERE user_id = ? AND balance >= ?
+        ''', (amount, amount, user_id, amount))
+
+        if cursor.rowcount == 0:
+            # Недостаточно средств или гонка отсечена
+            return None
+
+        balance_after = balance_before - amount
+        wager_after = max(0, wager_before - amount)
+
         # Создаём ставку
         cursor.execute('''
             INSERT INTO bets (user_id, match_id, bet_type, amount, odds, potential_win,
@@ -520,9 +547,9 @@ def place_bet(user_id: int, match_id: str, bet_type: str, amount: int, odds: flo
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
         ''', (user_id, match_id, bet_type, amount, odds, potential_win,
               home_team, away_team, match_date))
-        
+
         bet_id = cursor.lastrowid
-        
+
         # Записываем транзакцию
         cursor.execute('''
             INSERT INTO transactions (user_id, type, amount, balance_before, balance_after,
@@ -530,7 +557,7 @@ def place_bet(user_id: int, match_id: str, bet_type: str, amount: int, odds: flo
             VALUES (?, 'bet', ?, ?, ?, ?, ?, ?, ?)
         ''', (user_id, -amount, balance_before, balance_after, wager_before, wager_after,
               f'Ставка на {home_team} vs {away_team}: {bet_type}', str(bet_id)))
-        
+
         return bet_id
 
 

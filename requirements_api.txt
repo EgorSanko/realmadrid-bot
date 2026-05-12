@@ -1,1 +1,4 @@
 # API уже в requirements.txt
+
+beautifulsoup4
+lxml
