@@ -1,6 +1,6 @@
 """
 Real Madrid Bot v5.3
-- Авторасчёт из Google Sheets (MatchStats)
+- Авторасчёт из FotMob через rm-api
 - Закрытие ставок за 1 минуту до матча
 - Уведомления за 5ч и 5мин
 """
@@ -10,11 +10,9 @@ import re
 import os
 import json
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-import gspread
 import requests
-from google.oauth2.service_account import Credentials
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
@@ -40,107 +38,24 @@ E = {'bell': '🔔', 'stadium': '🏟️', 'clock': '🕐', 'tv': '📺', 'goal'
 
 REAL_MADRID_TEAM_ID = 2829
 
-# ============ GOOGLE SHEETS ============
+# ============ ДАННЫЕ О МАТЧАХ ============
+# Google Sheets как источник данных удалён 2026-05-15. Все данные о матчах
+# (расписание + результаты) тянутся из FotMob через rm-api. Helpers ниже —
+# просто заглушки для обратной совместимости со старыми call-sites.
+# Реальный источник: _fetch_upcoming_from_api() и
+# _fetch_finished_matches_for_pending_bets() (см. ниже в файле).
 
-_sheets_client = None
-_matches_cache = {'data': [], 'time': None}
-_results_cache = {'data': [], 'time': None}
 CACHE_TTL = timedelta(minutes=5)
 
 
-def get_sheets_client():
-    global _sheets_client
-    if _sheets_client is None:
-        try:
-            creds = Credentials.from_service_account_file(
-                Config.CREDENTIALS_FILE,
-                scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
-            )
-            _sheets_client = gspread.authorize(creds)
-            logger.info("✅ Google Sheets подключен")
-        except Exception as e:
-            logger.error(f"❌ Sheets auth error: {e}")
-    return _sheets_client
-
-
-def get_upcoming_matches(force_refresh=False) -> List[Dict]:
-    """Получить предстоящие матчи из Google Sheets"""
-    global _matches_cache
-
-    if not force_refresh and _matches_cache['time']:
-        if datetime.now() - _matches_cache['time'] < CACHE_TTL:
-            return _matches_cache['data']
-
-    try:
-        client = get_sheets_client()
-        if not client:
-            return _matches_cache['data'] or []
-
-        sheet = client.open_by_key(Config.SPREADSHEET_ID).worksheet('Matches')
-        data = sheet.get_all_records()
-
-        matches = [{
-            'id': str(row.get('matchId', '')),
-            'date': row.get('date', ''),
-            'time': row.get('time', ''),
-            'home_team': row.get('homeTeam', ''),
-            'away_team': row.get('awayTeam', ''),
-            'tournament': row.get('tournament', '')
-        } for row in data if row.get('matchId')]
-
-        _matches_cache = {'data': matches, 'time': datetime.now()}
-        logger.info(f"📅 Загружено {len(matches)} матчей")
-        return matches
-    except Exception as e:
-        logger.error(f"Sheets error: {e}")
-        return _matches_cache['data'] or []
+def get_upcoming_matches(force_refresh: bool = False) -> List[Dict]:
+    """Stub. Реальные данные через _fetch_upcoming_from_api() в check_notifications."""
+    return []
 
 
 def get_finished_matches_from_sheets() -> List[Dict]:
-    """Получить завершённые матчи со статистикой из Google Sheets (MatchStats)"""
-    global _results_cache
-
-    if _results_cache['time']:
-        if datetime.now() - _results_cache['time'] < CACHE_TTL:
-            return _results_cache['data']
-
-    try:
-        client = get_sheets_client()
-        if not client:
-            return _results_cache['data'] or []
-
-        sheet = client.open_by_key(Config.SPREADSHEET_ID).worksheet('MatchStats')
-        data = sheet.get_all_records()
-
-        matches = []
-        for row in data:
-            if row.get('status') == 'FINISHED' and row.get('matchId'):
-                matches.append({
-                    'matchId': str(row.get('matchId', '')),
-                    'homeTeam': row.get('homeTeam', ''),
-                    'awayTeam': row.get('awayTeam', ''),
-                    'home_score': int(row.get('homeScore', 0) or 0),
-                    'away_score': int(row.get('awayScore', 0) or 0),
-                    'total_goals': int(row.get('totalGoals', 0) or 0),
-                    'home_corners': int(row.get('homeCorners', 0) or 0),
-                    'away_corners': int(row.get('awayCorners', 0) or 0),
-                    'total_corners': int(row.get('homeCorners', 0) or 0) + int(row.get('awayCorners', 0) or 0),
-                    'home_yellow': int(row.get('homeYellowCards', 0) or 0),
-                    'away_yellow': int(row.get('awayYellowCards', 0) or 0),
-                    'total_yellow': int(row.get('homeYellowCards', 0) or 0) + int(row.get('awayYellowCards', 0) or 0),
-                    'total_red': int(row.get('totalRedCards', 0) or 0),
-                    'both_scored': row.get('bothScored', 'no') == 'yes',
-                    'outcome': row.get('outcome', 'draw'),
-                    'has_penalty': row.get('hasPenalty', 'no') == 'yes',
-                    'date': row.get('date', ''),
-                })
-
-        _results_cache = {'data': matches, 'time': datetime.now()}
-        logger.info(f"📊 Загружено {len(matches)} завершённых матчей из MatchStats")
-        return matches
-    except Exception as e:
-        logger.error(f"MatchStats error: {e}")
-        return _results_cache['data'] or []
+    """Stub. Реальные данные через _fetch_finished_matches_for_pending_bets() в auto_settle."""
+    return []
 
 
 def _match_data_complete(match: dict) -> bool:
@@ -796,17 +711,12 @@ async def admin_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def settle_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Ручной расчёт ставок"""
-    global _results_cache
-
     if update.effective_user.id not in Config.ADMIN_IDS:
         return
 
-    await update.message.reply_text("⏳ Расчёт из Google Sheets...")
+    await update.message.reply_text("⏳ Расчёт из FotMob...")
 
-    # Сбрасываем кэш чтобы получить свежие данные
-    _results_cache = {'data': [], 'time': None}
-
-    matches = get_finished_matches_from_sheets()
+    matches = _fetch_finished_matches_for_pending_bets()
     settled_any = False
 
     for match in matches:
@@ -985,7 +895,8 @@ async def check_notifications(context: ContextTypes.DEFAULT_TYPE):
     global _notified_5h, _notified_5m
 
     try:
-        matches = get_upcoming_matches()
+        # FotMob API первый, Sheets — fallback (Sheets обычно пустые).
+        matches = _fetch_upcoming_from_api() or get_upcoming_matches()
         now = datetime.now(MSK)
 
         for m in matches:
@@ -1039,12 +950,15 @@ _settled = set()
 
 
 async def auto_settle(context: ContextTypes.DEFAULT_TYPE):
-    """Автоматический расчёт из Google Sheets"""
+    """Автоматический расчёт: FotMob через rm-api (первичный), Sheets — fallback."""
     global _settled
 
     try:
-        matches = get_finished_matches_from_sheets()
-        logger.info(f"🔍 Авторасчёт: {len(matches)} завершённых матчей в MatchStats")
+        matches = _fetch_finished_matches_for_pending_bets()
+        if not matches:
+            # На случай если rm-api прилёг или нет pending — fallback на Sheets (обычно пусто).
+            matches = get_finished_matches_from_sheets()
+        logger.info(f"🔍 Авторасчёт: {len(matches)} завершённых матчей (FotMob/Sheets)")
 
         for match in matches:
             mid = match['matchId']
@@ -1662,6 +1576,98 @@ def _build_matches_from_api():
     return out
 
 
+# === FotMob-based notification / settlement (no Sheets dependency) ===
+
+def _fetch_upcoming_from_api() -> List[Dict]:
+    """Расписание RM из rm-api (FotMob). Возвращает формат совместимый с check_notifications."""
+    data = _http_get_json("http://rm-api:8000/api/matches/upcoming", timeout=10) or {}
+    out = []
+    for m in (data.get('matches') or []):
+        date_full = (m.get('date') or '').strip()
+        if ' ' in date_full:
+            dt, tm = date_full.split(' ', 1)
+        else:
+            dt, tm = date_full, '00:00'
+        if not m.get('id'):
+            continue
+        out.append({
+            'id': str(m.get('id')),
+            'date': dt,
+            'time': tm,
+            'home_team': m.get('home_team', ''),
+            'away_team': m.get('away_team', ''),
+            'tournament': m.get('competition', ''),
+        })
+    return out
+
+
+def _fetch_finished_match_from_api(match_id: str) -> Optional[Dict]:
+    """Получить завершённый матч из rm-api в формате совместимом с auto_settle (как Sheets MatchStats row)."""
+    data = _http_get_json(f"http://rm-api:8000/api/match/details/{match_id}", timeout=12)
+    if not data or not data.get('finished'):
+        return None
+
+    stats_list = data.get('stats') or []
+    def _stat_val(title: str):
+        for s in stats_list:
+            if (s.get('title') or '').lower() == title.lower():
+                return int(s.get('home_num') or 0), int(s.get('away_num') or 0)
+        return 0, 0
+
+    home_y, away_y = _stat_val('Yellow cards')
+    home_r, away_r = _stat_val('Red cards')
+    home_c, away_c = _stat_val('Corners')
+
+    hs = int(data.get('home_score') or 0)
+    as_ = int(data.get('away_score') or 0)
+
+    events = data.get('events') or []
+    has_penalty = any(e.get('penalty') for e in events if e.get('type') == 'goal')
+
+    return {
+        'matchId': str(match_id),
+        'homeTeam': data.get('home_team', ''),
+        'awayTeam': data.get('away_team', ''),
+        'home_score': hs,
+        'away_score': as_,
+        'total_goals': hs + as_,
+        'home_corners': home_c,
+        'away_corners': away_c,
+        'total_corners': home_c + away_c,
+        'home_yellow': home_y,
+        'away_yellow': away_y,
+        'total_yellow': home_y + away_y,
+        'total_red': home_r + away_r,
+        'both_scored': hs > 0 and as_ > 0,
+        'outcome': 'home' if hs > as_ else 'away' if as_ > hs else 'draw',
+        'has_penalty': has_penalty,
+        'date': '',
+    }
+
+
+def _fetch_finished_matches_for_pending_bets() -> List[Dict]:
+    """Найти pending ставки в БД → для каждого уникального match_id подтянуть матч-детали."""
+    try:
+        rows = _execute(
+            "SELECT DISTINCT match_id FROM bets WHERE status='pending' AND match_id NOT LIKE 'live:%' AND match_id NOT LIKE '%-%'"
+        ) or []
+    except Exception as e:
+        logger.warning(f"pending bets query err: {e}")
+        return []
+    out = []
+    for r in rows:
+        mid = r.get('match_id')
+        if not mid or not str(mid).isdigit():
+            continue
+        try:
+            data = _fetch_finished_match_from_api(str(mid))
+            if data:
+                out.append(data)
+        except Exception as e:
+            logger.warning(f"Fetch finished {mid} err: {e}")
+    return out
+
+
 # === LIVEBALL ADMIN ===
 
 async def live_cmd(update, context):
@@ -1887,7 +1893,7 @@ def main():
     job_queue.run_repeating(auto_settle, interval=300, first=60)
 
     logger.info("🚀 Bot v5.5 запущен — стримы!")
-    logger.info("   - Авторасчёт из Google Sheets")
+    logger.info("   - Авторасчёт из FotMob")
     logger.info("   - Уведомления за 5ч и 5мин")
     
     

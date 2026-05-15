@@ -10,7 +10,6 @@ services:
     command: python bot.py
     volumes:
       - ./data:/app/data
-      - ./credentials.json:/app/credentials.json:ro
     env_file:
       - .env
     environment:
@@ -43,7 +42,6 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-      - ./credentials.json:/app/credentials.json:ro
       - ./quiz_questions:/app/quiz_questions:ro
     env_file:
       - .env

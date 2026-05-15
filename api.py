@@ -58,7 +58,7 @@ except ImportError:
             return True
         return False
 
-from google_sheets import GoogleSheetsClient
+from src.shared.sheets_stub import SheetsStub as GoogleSheetsClient
 
 
 import asyncio

@@ -75,3 +75,6 @@ frontend/dist/
 frontend/.vite/
 
 # Static deploy artifacts (built by frontend/)
+
+# Retired / archived (Sheets removal 2026-05-15)
+_retired_sheets/

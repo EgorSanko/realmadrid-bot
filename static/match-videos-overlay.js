@@ -1,4 +1,4 @@
-/* match-videos-overlay.js — overlay-плеер для RM проекта (v26).
+/* match-videos-overlay.js — overlay-плеер для RM проекта (v30).
  *
  * Что делает:
  * - Подгружает /api/matches/results, строит map по дате → videos[]
@@ -111,27 +111,56 @@
     document.body.appendChild(wrap);
   }
 
+  function isMobile() {
+    return /Mobi|Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent || '');
+  }
+
+  // Какой URL открывать в новой вкладке для конкретного провайдера/типа.
+  // На мобиле — заходим напрямую (для RuTube iOS может предложить RuTube app).
+  function externalUrlFor(v) {
+    if (!v || !v.url) return v && v.url;
+    var rt = v.url.match(/rutube\.ru\/(?:video|play\/embed)\/([a-f0-9]+)/);
+    if (rt) return 'https://rutube.ru/video/' + rt[1] + '/';
+    return unwrapVideoUrl(v.url);
+  }
+
   function makeBar(videos, title, includeHighlights) {
     var bar = document.createElement('div');
     bar.className = 'rm-videos-bar';
     bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;justify-content:center';
 
+    var mobile = isMobile();
     var seen = {};
     for (var i = 0; i < videos.length; i++) {
       var v = videos[i];
       if (!includeHighlights && v.type === 'highlights') continue;
+      // На мобиле 1Т/2Т скрываем — пользователю сложно их смотреть, плеер часто не грузит.
+      // Оставляем «Обзор» и «Полный матч», которые открываются нативно/в новой вкладке.
+      if (mobile && (v.type === 'half1' || v.type === 'half2')) continue;
       if (seen[v.type]) continue;
       seen[v.type] = true;
-      var btn = document.createElement('button');
+
+      // Используем <a> вместо <button> — для мобильных браузеров это надёжнее
+      // (нет popup-blocker, нативный target=_blank, iOS может открыть RuTube app).
+      var btn = document.createElement('a');
+      btn.href = externalUrlFor(v);
+      btn.target = '_blank';
+      btn.rel = 'noopener';
       btn.className = 'chip gold-chip';
       btn.style.cursor = 'pointer';
       btn.style.padding = '6px 12px';
+      btn.style.textDecoration = 'none';
       btn.textContent = labelFor(v.type);
+
       (function (url, label, provider) {
         btn.addEventListener('click', function (ev) {
           ev.stopPropagation();
-          ev.preventDefault();
-          openModal(url, title + ' — ' + label.replace(/^▶ /, ''), provider);
+          // Desktop: открываем встроенный модал-плеер (приятнее)
+          // Mobile: даём браузеру открыть ссылку нативно (RuTube app, новая вкладка)
+          if (!mobile) {
+            ev.preventDefault();
+            openModal(url, title + ' — ' + label.replace(/^▶ /, ''), provider);
+          }
         });
       })(v.url, labelFor(v.type), v.provider);
       bar.appendChild(btn);
@@ -139,12 +168,27 @@
     return bar;
   }
 
-  // SITE: список «Результаты»
+  // SITE: список «Результаты». Бар-чипов вставляется КАК СОСЕД (sibling-after) к
+  // строке матча, не как ребёнок — иначе на мобиле он ломает flex-layout строки
+  // (логотипы / счёт начинают перекрываться чипами).
   function tryBindSiteCards() {
+    // Чистим осиротевшие бары (если React пере-смонтировал строку без data-videosBound)
+    document.querySelectorAll('.rm-videos-bar-after').forEach(function (bar) {
+      var prev = bar.previousElementSibling;
+      if (!prev || prev.dataset.videosBound !== '1') bar.remove();
+    });
+
+    // На мобилах ни обзоров, ни повторов — RuTube embed-блок + плохой UX на телефонах.
+    if (isMobile()) return;
+
     var rows = document.querySelectorAll('div.flex.items-center.gap-3.p-3.rounded-xl');
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
-      if (row.dataset.videosBound === '1') continue;
+      if (row.dataset.videosBound === '1') {
+        var sib = row.nextElementSibling;
+        if (sib && sib.classList.contains('rm-videos-bar-after')) continue;
+        row.dataset.videosBound = ''; // потеряли sibling — пере-привязать
+      }
       var imgs = row.querySelectorAll('img[alt]');
       if (imgs.length !== 2) continue;
       var home = imgs[0].alt, away = imgs[1].alt;
@@ -152,10 +196,13 @@
       if (!dateEl) continue;
       var v = videosByDate[normDate(dateEl.textContent.trim())];
       if (!v) continue;
-      row.dataset.videosBound = '1';
       var bar = makeBar(v, home + ' — ' + away, true);
-      bar.style.padding = '6px 12px 10px';
-      row.appendChild(bar);
+      bar.classList.add('rm-videos-bar-after');
+      bar.style.cssText += ';display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 10px;justify-content:center';
+      if (row.parentElement) {
+        row.parentElement.insertBefore(bar, row.nextSibling);
+      }
+      row.dataset.videosBound = '1';
     }
   }
 
@@ -277,11 +324,12 @@
       else window.open(trigger.href || '#', '_blank', 'noopener');
     }, true);
 
-    // Кнопки 1Т / 2Т / Полный матч — ТОЛЬКО на site. В WebApp пользователь
-    // их явно не хочет на детальной странице.
+    // Кнопки 1Т / 2Т / Полный матч — ТОЛЬКО на site, ТОЛЬКО на компе.
+    // В WebApp пользователь их явно не хочет на детальной странице.
+    // На мобиле — тоже не показываем (плохой UX, плеер часто не грузит).
     var isWebApp = !!document.querySelector('div.glass.rounded-2xl') ||
                    !!document.querySelector('a[href*="/api/embed/rutube/"]');
-    if (isWebApp) return;
+    if (isWebApp || isMobile()) return;
 
     var nonHL = matchedVideos.filter(function (v) { return v.type !== 'highlights'; });
     if (nonHL.length === 0) return;
