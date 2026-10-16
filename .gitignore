@@ -8,3 +8,4 @@ __pycache__/
 .env
 design/node_modules/
 design/shots/
+.claude/
