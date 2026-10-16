@@ -211,3 +211,94 @@ button {
   stroke: currentColor;
   stroke-width: 1.8;
 }
+
+/* ---------- эфир (этап 3) ---------- */
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--live);
+}
+
+.badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: rgba(255, 90, 78, 0.14);
+  color: #ff8a80;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: normal;
+}
+
+.brandbar {
+  justify-content: space-between;
+}
+
+/* блок трансляции на главной: плеер во всю ширину, как в a-live.html */
+.stream {
+  margin-top: 6px;
+}
+
+.stream__title {
+  margin: 10px 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* пока эфира нет — как секция «Трансляция» в a-home.html */
+.stream-empty {
+  margin: 14px 16px 0;
+  height: 201px;
+  border-radius: 20px;
+  background: #060912;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.stream-empty__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--ring);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dim);
+}
+
+.stream-empty__icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.stream-empty__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.stream-empty__text {
+  margin: 0;
+  max-width: 240px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stream + .empty,
+.stream-empty + .empty {
+  margin-top: 14px;
+}

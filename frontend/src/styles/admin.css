@@ -1,0 +1,179 @@
+/* Админка эфира (/admin). Те же токены, что и в приложении. */
+
+.admin-pad {
+  padding: 0 16px;
+}
+
+.admin-card {
+  margin: 6px 16px 14px;
+  padding: 18px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-label {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.admin-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--ring);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.admin-input--url {
+  resize: vertical;
+  font-size: 13px;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.admin-input[aria-invalid='true'] {
+  border-color: var(--live);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.admin-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.admin-btn {
+  height: 50px;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.admin-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.admin-btn--gold {
+  background: var(--gold);
+  color: var(--gold-ink);
+}
+
+.admin-btn--danger {
+  background: rgba(255, 90, 78, 0.16);
+  color: #ff8a80;
+}
+
+.admin-btn--ghost {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.admin-link {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.admin-msg {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-msg--err {
+  background: rgba(255, 90, 78, 0.12);
+  color: #ff8a80;
+}
+
+.admin-msg--warn {
+  background: rgba(214, 178, 94, 0.14);
+  color: var(--gold-hover);
+}
+
+.admin-msg--ok {
+  background: rgba(120, 200, 140, 0.12);
+  color: #9fdcae;
+}
+
+.admin-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.admin-exp {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.admin-exp--soon {
+  color: var(--gold-hover);
+  font-weight: 600;
+}
+
+.admin-exp--expired {
+  color: #ff8a80;
+  font-weight: 600;
+}
+
+.admin-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.admin-status__line {
+  margin: 0;
+  font-size: 14px;
+}
+
+.admin-status__url {
+  margin: 0;
+  max-width: 100%;
+  font-size: 12px;
+  color: var(--dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-off {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.admin-preview {
+  margin-bottom: 14px;
+}
+
+.admin-preview .admin-label {
+  margin-bottom: 8px;
+}
