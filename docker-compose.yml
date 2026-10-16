@@ -1,5 +1,13 @@
 name: rm-v2
 
+# Один образ, два контейнера. Общий том ./data (= /opt/rm-v2/data) с SQLite-снимками:
+# collector пишет, api только читает.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   api:
     build:
@@ -12,14 +20,40 @@ services:
     mem_limit: 256m
     environment:
       - TZ=UTC
+      - DATA_DIR=/data
+    volumes:
+      - ./data:/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3).status == 200 else 1)"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
+
+  collector:
+    image: rm-v2-api:latest
+    container_name: rm-v2-collector
+    depends_on:
+      - api
+    restart: unless-stopped
+    command: ["python", "-m", "app.collector"]
+    # SOCKS-туннель к SofaScore слушает 127.0.0.1:1080 хоста — из bridge-сети его не видно,
+    # поэтому сборщик живёт в сети хоста (портов не открывает). API остаётся в bridge.
+    network_mode: host
+    mem_limit: 256m
+    environment:
+      - TZ=UTC
+      - DATA_DIR=/data
+      - SOFA_PROXY=socks5h://127.0.0.1:1080
+      - DISABLED_SOURCES=${DISABLED_SOURCES:-}
+      - DEBUG_LIVE_MATCH=${DEBUG_LIVE_MATCH:-}
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import time,sys; sys.exit(0 if time.time() - float(open('/data/collector.heartbeat').read()) < 120 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging: *logging

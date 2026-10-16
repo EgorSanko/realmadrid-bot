@@ -1,0 +1,611 @@
+"""Сборщик: отдельный процесс (контейнер rm-v2-collector, network_mode: host).
+
+Опрашивает источники по расписанию, нормализует и пишет снимки в SQLite.
+API во внешние источники не ходит никогда — только читает эти снимки.
+
+  python -m app.collector                       # демон
+  python -m app.collector once team|mapping     # один цикл команды / сопоставления id
+  python -m app.collector once match <id>       # один цикл матча (цепочка источников)
+  python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
+  python -m app.collector find-live             # идущие сейчас матчи по FotMob
+
+Цепочка для каждого типа данных: FotMob → SofaScore → ESPN → LiveScore
+(LiveScore — только для матча). Первый удачный источник пишет снимок;
+если упали все — снимок не трогаем, API отдаёт последний удачный с возрастом.
+"""
+import argparse
+import asyncio
+import json
+import logging
+import os
+import signal
+import sys
+import time
+from datetime import datetime, timedelta, timezone
+
+from . import config, store
+from .model import name_key, same_team, ts
+from .sources import espn, fotmob, livescore, sofascore
+from .sources.base import NotFound, SourceError
+
+log = logging.getLogger("collector")
+
+
+def _ymd(iso: str, sep: str = "") -> str:
+    return iso[:10].replace("-", sep)
+
+
+class Collector:
+    def __init__(self, conn):
+        self.conn = conn
+        self.fm = fotmob.FotMob()
+        self.ss = sofascore.SofaScore()
+        self.es = espn.ESPN()
+        self.ls = livescore.LiveScore()
+        self.sources = {"fotmob": self.fm, "sofascore": self.ss, "espn": self.es, "livescore": self.ls}
+        self.match_due: dict[str, float] = {}     # id → когда обновлять
+        self.match_cycle: dict[str, int] = {}     # счётчик циклов (для «лёгких» запросов SofaScore/LiveScore)
+        self.parts: dict[tuple, dict] = {}        # кэш частей матча у многоэндпоинтных источников
+        self.sofa_events: list = []               # последние события Реала в SofaScore
+        self.sofa_by_date: dict[str, list] = {}   # scheduled-events по дате (для чужих матчей)
+        self.ls_by_date: dict[str, dict] = {}
+        self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0}
+        self.last_team = 0.0
+        self.last_mapping = 0.0
+
+    async def close(self):
+        for s in self.sources.values():
+            await s.close()
+
+    # ================= команда / календарь / таблицы =================
+
+    async def refresh_team(self) -> dict:
+        """Один запрос FotMob даёт календарь, таблицы и состав. Не вышло — резервы по каждому типу."""
+        self.cycles["team"] += 1
+        self.last_team = time.time()
+        done = {}
+        raw = None
+        try:
+            raw = await self.fm.team()
+        except SourceError as e:
+            log.warning("team: fotmob: %s", e)
+        if raw:
+            fixtures = fotmob.normalize_fixtures(raw)
+            self._attach_ids(fixtures)
+            with self.conn:
+                store.put(self.conn, "fixtures", "fotmob", fixtures)
+                store.put(self.conn, "tables", "fotmob", fotmob.normalize_tables(raw))
+                team = fotmob.normalize_team(raw)
+                store.put(self.conn, "team", "fotmob", team)
+                store.put(self.conn, "ctx:team", "fotmob", _ctx_from_team(team))
+            return {"fixtures": "fotmob", "tables": "fotmob", "team": "fotmob"}
+
+        for kind, fn in (("fixtures", self._fixtures_fallback), ("tables", self._tables_fallback),
+                         ("team", self._team_fallback)):
+            got = None
+            for name, src in (("sofascore", self.ss), ("espn", self.es)):
+                if not src.available():
+                    continue
+                try:
+                    data = await fn(name)
+                except SourceError as e:
+                    log.warning("%s: %s: %s", kind, name, e)
+                    continue
+                if data:
+                    store.put(self.conn, kind, name, data)
+                    got = name
+                    break
+            done[kind] = got or "stale"
+        return done
+
+    def _ctx(self, source: str, match_id=None) -> dict:
+        ctx = {"teams": store.map_all(self.conn, "team", source),
+               "matches": store.map_all(self.conn, "match", source),
+               "numbers": {}, "names": {}, "last": {}}
+        t = store.get(self.conn, "ctx:team")
+        if t:
+            ctx["names"].update(t["data"]["names"])
+            ctx["last"].update(t["data"]["last"])
+        if match_id is not None:
+            ctx["match_id"] = int(match_id) if str(match_id).isdigit() else None
+            c = store.get(self.conn, f"ctx:match:{match_id}")
+            if c:
+                ctx["numbers"] = c["data"]["numbers"]
+                ctx["names"].update(c["data"]["names"])
+                ctx["last"].update(c["data"]["last"])
+        return ctx
+
+    async def _sofa_team_events(self) -> list:
+        last = await self.ss.team_events("last")
+        nxt = await self.ss.team_events("next")
+        self.sofa_events = (last.get("events") or []) + (nxt.get("events") or [])
+        return self.sofa_events
+
+    async def _espn_schedules(self, leagues=None) -> dict:
+        out = {}
+        for lid in leagues or config.LEAGUES:
+            slug = config.LEAGUES[lid]["espn"]
+            out[slug] = []
+            for upcoming in (False, True):
+                try:
+                    out[slug].append(await self.es.schedule(slug, upcoming))
+                except NotFound:
+                    pass
+        return out
+
+    async def _fixtures_fallback(self, name):
+        if name == "sofascore":
+            evs = await self._sofa_team_events()
+            return sofascore.normalize_fixtures(evs, self._ctx("sofascore"))
+        return espn.normalize_fixtures(await self._espn_schedules(), self._ctx("espn"))
+
+    async def _tables_fallback(self, name):
+        out = []
+        if name == "sofascore":
+            evs = self.sofa_events or await self._sofa_team_events()
+            seasons = {}
+            for e in evs:
+                ut = ((e.get("tournament") or {}).get("uniqueTournament") or {}).get("id")
+                if ut in (8, 7):
+                    seasons[ut] = max(seasons.get(ut, 0), (e.get("season") or {}).get("id") or 0)
+            for lid in config.TABLE_LEAGUES:
+                ut = config.LEAGUES[lid]["sofa"]
+                if seasons.get(ut):
+                    t = sofascore.normalize_table(await self.ss.standings(ut, seasons[ut]), lid, self._ctx("sofascore"))
+                    if t:
+                        out.append(t)
+        else:
+            for lid in config.TABLE_LEAGUES:
+                t = espn.normalize_table(await self.es.standings(config.LEAGUES[lid]["espn"]), lid, self._ctx("espn"))
+                if t:
+                    out.append(t)
+        return out
+
+    async def _team_fallback(self, name):
+        if name == "sofascore":
+            return sofascore.normalize_team(await self.ss.players(), self._ctx("sofascore"))
+        return espn.normalize_team(await self.es.roster(), self._ctx("espn"))
+
+    def _attach_ids(self, fixtures: list):
+        for f in fixtures:
+            fid = f["ids"].get("fotmob")
+            if fid:
+                for src in ("sofascore", "espn", "livescore"):
+                    f["ids"][src] = f["ids"].get(src) or store.from_fotmob(self.conn, "match", src, fid)
+
+    # ================= сопоставление id =================
+
+    async def refresh_mapping(self) -> dict:
+        """FotMob-календарь ↔ SofaScore/ESPN по дате и соперникам (+ id команд). Раз в 6 ч."""
+        self.cycles["mapping"] += 1
+        self.last_mapping = time.time()
+        snap = store.get(self.conn, "fixtures")
+        fixtures = [f for f in (snap["data"] if snap else []) if isinstance(f.get("id"), int)]
+        res = {"fixtures": len(fixtures), "sofascore": 0, "espn": 0}
+        if not fixtures:
+            return res
+        if self.ss.available():
+            try:
+                evs = await self._sofa_team_events()
+                res["sofascore"] = self._map_list(fixtures, "sofascore", [
+                    (str(e.get("id")), e.get("startTimestamp"), (e.get("homeTeam") or {}).get("name"),
+                     (e.get("awayTeam") or {}).get("name"), (e.get("homeTeam") or {}).get("id"),
+                     (e.get("awayTeam") or {}).get("id"), None) for e in evs])
+            except SourceError as e:
+                log.warning("mapping: sofascore: %s", e)
+        if self.es.available():
+            try:
+                leagues = sorted({f["tournament"]["id"] for f in fixtures} | {87, 42})
+                sched = await self._espn_schedules(leagues)
+                items = []
+                for f in espn.normalize_fixtures(sched):
+                    items.append((str(f["ids"]["espn"]), ts(f["kickoff"]), f["home"]["name"], f["away"]["name"],
+                                  f["_espn_team_ids"][0], f["_espn_team_ids"][1], f["ids"]["espn_league"]))
+                res["espn"] = self._map_list(fixtures, "espn", items)
+            except SourceError as e:
+                log.warning("mapping: espn: %s", e)
+        self._attach_ids(snap["data"])  # те же объекты, что и fixtures
+        store.put(self.conn, "fixtures", snap["source"], snap["data"], fetched_at=snap["fetched_at"])
+        return res
+
+    def _map_list(self, fixtures, source, items) -> int:
+        n = 0
+        with self.conn:
+            for sid, start, hname, aname, hid, aid, note in items:
+                if not start:
+                    continue
+                for f in fixtures:
+                    ko = ts(f["kickoff"])
+                    if ko is None or abs(ko - float(start)) > 3 * 3600:
+                        continue
+                    if same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname):
+                        store.map_set(self.conn, "match", source, sid, f["id"], note)
+                        store.map_set(self.conn, "team", source, hid, f["home"]["id"])
+                        store.map_set(self.conn, "team", source, aid, f["away"]["id"])
+                        n += 1
+                        break
+        return n
+
+    async def _match_info(self, fid) -> dict | None:
+        """Дата и соперники матча — для поиска id в резервных источниках."""
+        for key in (f"match:{fid}", "fixtures"):
+            s = store.get(self.conn, key)
+            if not s:
+                continue
+            items = [s["data"]] if key.startswith("match:") else s["data"]
+            for f in items:
+                if str(f.get("id")) == str(fid) or str((f.get("ids") or {}).get("fotmob")) == str(fid):
+                    return {"kickoff": f.get("kickoff"), "home": f["home"]["name"], "away": f["away"]["name"],
+                            "home_id": f["home"].get("id"), "away_id": f["away"].get("id"),
+                            "league": (f.get("tournament") or {}).get("id")}
+        return None
+
+    async def _sofa_id(self, fid) -> str | None:
+        sid = store.from_fotmob(self.conn, "match", "sofascore", fid)
+        if sid:
+            return sid
+        info = await self._match_info(fid)
+        if not info or not info["kickoff"]:
+            return None
+        day = _ymd(info["kickoff"], "-")
+        if day not in self.sofa_by_date:
+            # сначала события Реала (дёшево), потом общий список дня
+            cand = self.sofa_events or (await self._sofa_team_events())
+            if not any(_sofa_match(e, info) for e in cand):
+                cand = (await self.ss.scheduled(day)).get("events") or []
+            self.sofa_by_date[day] = cand
+        for e in self.sofa_by_date[day]:
+            if _sofa_match(e, info):
+                with self.conn:
+                    store.map_set(self.conn, "match", "sofascore", e["id"], fid, "auto")
+                    store.map_set(self.conn, "team", "sofascore", (e.get("homeTeam") or {}).get("id"), info["home_id"])
+                    store.map_set(self.conn, "team", "sofascore", (e.get("awayTeam") or {}).get("id"), info["away_id"])
+                return str(e["id"])
+        return None
+
+    async def _ls_id(self, fid) -> str | None:
+        eid = store.from_fotmob(self.conn, "match", "livescore", fid)
+        if eid:
+            return eid
+        info = await self._match_info(fid)
+        if not info or not info["kickoff"]:
+            return None
+        day = _ymd(info["kickoff"])
+        if day not in self.ls_by_date:
+            self.ls_by_date[day] = await self.ls.by_date(day)
+        eid = livescore.find_event(self.ls_by_date[day], info["home"], info["away"], info["kickoff"])
+        if not eid:
+            return None
+        sb = await self.ls.part("scoreboard", eid)
+        ids = livescore.fotmob_ids(sb)
+        if ids["match"] and str(ids["match"]) != str(fid):
+            log.warning("livescore: Eid %s указывает на FotMob %s, а не %s — не сопоставляю", eid, ids["match"], fid)
+            return None
+        with self.conn:
+            store.map_set(self.conn, "match", "livescore", eid, fid, "pids" if ids["match"] else "date+teams")
+            for side in ("home", "away"):
+                if ids[side] and ids[f"sofa_{side}"]:
+                    store.map_set(self.conn, "team", "sofascore", ids[f"sofa_{side}"], ids[side], "livescore-pids")
+        self.parts[("livescore", fid, "scoreboard")] = sb
+        return str(eid)
+
+    # ================= матч =================
+
+    async def refresh_match(self, fid, live: bool = False) -> dict | None:
+        """Цепочка источников для одного матча. Возвращает снимок или None (все упали)."""
+        fid = str(fid)
+        self.cycles["match"] += 1
+        n = self.match_cycle[fid] = self.match_cycle.get(fid, 0) + 1
+        full = (not live) or n % 3 == 1   # в лайве тяжёлые части у резервов — раз в 3 цикла
+        prev = store.get(self.conn, f"match:{fid}")
+        errors = {}
+        for name in config.SOURCE_ORDER:
+            src = self.sources[name]
+            if not src.available():
+                errors[name] = "disabled" if src.disabled() else "breaker open"
+                continue
+            try:
+                m = await getattr(self, f"_match_{name}")(fid, full)
+            except SourceError as e:
+                errors[name] = str(e)[:200]
+                continue
+            except Exception as e:  # ошибка нормализатора не должна ронять цикл
+                log.exception("match %s: %s: нормализатор упал", fid, name)
+                errors[name] = f"normalize: {type(e).__name__}: {e}"[:200]
+                continue
+            if not m:
+                errors[name] = "no id mapping"
+                continue
+            m["fetched_from"] = name
+            m["fallback_errors"] = errors or None
+            # момент, когда впервые увидели «завершён» — для окна +30 мин
+            seen = (prev or {}).get("data", {}).get("finished_seen_at") if prev else None
+            m["finished_seen_at"] = seen or (time.time() if m["status"]["finished"] else None)
+            if not m["status"]["finished"]:
+                m["finished_seen_at"] = None
+            store.put(self.conn, f"match:{fid}", name, m)
+            return m
+        self.cycles["match_failed"] += 1
+        log.warning("match %s: все источники недоступны: %s", fid, errors)
+        return None
+
+    async def _match_fotmob(self, fid, full):
+        raw = await self.fm.match(fid)
+        m = fotmob.normalize_match(raw)
+        if m.get("lineups"):
+            store.put(self.conn, f"ctx:match:{fid}", "fotmob", _ctx_from_match(m))
+        return m
+
+    async def _match_sofascore(self, fid, full):
+        sid = await self._sofa_id(fid)
+        if not sid:
+            return None
+        key = ("sofascore", fid)
+        b = self.parts.setdefault(key, {})
+        b["event"] = await self.ss.event(sid)
+        st = ((b["event"].get("event") or {}).get("status") or {}).get("type")
+        if st != "notstarted" or full:
+            b["incidents"] = await self.ss.part(sid, "incidents")
+        if full or "lineups" not in b:
+            for part in ("lineups", "statistics", "shotmap", "graph"):
+                if st == "notstarted" and part != "lineups":
+                    continue
+                b[part] = await self.ss.part(sid, part)
+        if st == "finished" and (full or "best" not in b):
+            b["best"] = await self.ss.part(sid, "best-players/summary")
+        return sofascore.normalize_match(b, self._ctx("sofascore", fid))
+
+    async def _match_espn(self, fid, full):
+        eid = store.from_fotmob(self.conn, "match", "espn", fid)
+        if not eid:
+            return None
+        row = self.conn.execute("SELECT note FROM idmap WHERE kind='match' AND source='espn' AND source_id=?",
+                                (eid,)).fetchone()
+        slug = row[0] if row and row[0] else None
+        if not slug:
+            info = await self._match_info(fid)
+            slug = config.LEAGUES.get((info or {}).get("league"), {}).get("espn")
+        if not slug:
+            return None
+        return espn.normalize_match(await self.es.summary(slug, eid), self._ctx("espn", fid))
+
+    async def _match_livescore(self, fid, full):
+        eid = await self._ls_id(fid)
+        if not eid:
+            return None
+        b = {}
+        for part in ("scoreboard", "incidents", "lineups", "statistics"):
+            k = ("livescore", fid, part)
+            if part in ("scoreboard", "incidents") or full or k not in self.parts:
+                try:
+                    self.parts[k] = await self.ls.part(part, eid)
+                except NotFound:
+                    self.parts[k] = {}
+            b[part] = self.parts[k]
+        return livescore.normalize_match(b, self._ctx("livescore", fid))
+
+    # ================= расписание =================
+
+    def _fixtures(self) -> list:
+        s = store.get(self.conn, "fixtures")
+        return s["data"] if s else []
+
+    def window(self, now: float) -> list[str]:
+        """Матчи в «окне»: от −75 мин до +2,5 ч от начала, после «завершён» — ещё 30 мин."""
+        out = []
+        cands = [(str(f["id"]), ts(f["kickoff"]), f["status"]) for f in self._fixtures()
+                 if isinstance(f.get("id"), int) and f.get("kickoff")]
+        cands += [(str(d), None, None) for d in config.DEBUG_LIVE_MATCHES]
+        for fid, ko, fst in cands:
+            snap = store.get(self.conn, f"match:{fid}")
+            st = (snap["data"]["status"] if snap else fst) or {}
+            fin_seen = snap["data"].get("finished_seen_at") if snap else None
+            if ko is None and snap and snap["data"].get("kickoff"):
+                ko = ts(snap["data"]["kickoff"])
+            if st.get("state") in ("postponed", "cancelled", "abandoned"):
+                continue
+            if ko is None:  # отладочный матч без данных — пока не узнаем время, держим в окне
+                if not st.get("finished") or not fin_seen or now - fin_seen <= config.WINDOW_AFTER_FINISH:
+                    out.append(fid)
+                continue
+            if not (ko - config.WINDOW_BEFORE <= now <= ko + config.WINDOW_HARD_CAP):
+                if fid not in [str(d) for d in config.DEBUG_LIVE_MATCHES]:
+                    continue
+            if st.get("finished"):
+                if fin_seen and now - fin_seen <= config.WINDOW_AFTER_FINISH:
+                    out.append(fid)
+            elif st.get("live") or now <= ko + config.WINDOW_AFTER_START:
+                out.append(fid)
+        return list(dict.fromkeys(out))
+
+    def last_next(self, now: float) -> list[str]:
+        fx = [f for f in self._fixtures() if isinstance(f.get("id"), int) and f.get("kickoff")]
+        done = [f for f in fx if f["status"]["finished"]]
+        upcoming = [f for f in fx if not f["status"]["finished"]
+                    and f["status"]["state"] not in ("cancelled", "postponed") and ts(f["kickoff"]) > now - 4 * 3600]
+        out = []
+        if done:
+            out.append(str(done[-1]["id"]))
+        if upcoming:
+            out.append(str(upcoming[0]["id"]))
+        return out
+
+    def write_state(self):
+        with self.conn:
+            for name, s in self.sources.items():
+                store.put_source_state(self.conn, name, s.snapshot())
+            store.put_source_state(self.conn, "_collector", {
+                "pid": os.getpid(), "cycles": self.cycles, "last_team": self.last_team,
+                "last_mapping": self.last_mapping, "in_window": self.window(time.time()),
+                "disabled": sorted(config.disabled_sources()),
+            })
+
+    async def run(self, stop: asyncio.Event):
+        log.info("collector: старт; DB=%s; debug live=%s", config.DB_PATH, config.DEBUG_LIVE_MATCHES)
+        next_state = 0.0
+        while not stop.is_set():
+            now = time.time()
+            try:
+                if now - self.last_team >= config.TEAM_INTERVAL:
+                    log.info("team: %s", await self.refresh_team())
+                if now - self.last_mapping >= config.MAPPING_INTERVAL:
+                    log.info("mapping: %s", await self.refresh_mapping())
+                win = self.window(now)
+                for fid in win:
+                    if now >= self.match_due.get(fid, 0):
+                        self.match_due[fid] = now + config.LIVE_INTERVAL
+                        m = await self.refresh_match(fid, live=True)
+                        if m:
+                            log.info("live %s [%s] %s %s:%s %s %s'", fid, m["source"], m["home"]["name"],
+                                     m["home"]["score"], m["away"]["score"], m["away"]["name"],
+                                     m["status"]["minute"] or m["status"]["state"])
+                for fid in self.last_next(now):
+                    if fid not in win and now >= self.match_due.get(fid, 0):
+                        self.match_due[fid] = now + config.IDLE_MATCH_INTERVAL
+                        m = await self.refresh_match(fid)
+                        log.info("idle %s → %s", fid, m and m["source"])
+                for fid in store.take_demand(self.conn, 1):
+                    if not store.get(self.conn, f"match:{fid}"):
+                        m = await self.refresh_match(fid)
+                        log.info("demand %s → %s", fid, m and m["source"])
+                if now >= next_state:
+                    self.write_state()
+                    next_state = now + 5
+                    with open(config.HEARTBEAT_FILE, "w") as f:
+                        f.write(str(now))
+            except Exception:
+                log.exception("collector: ошибка такта (продолжаю)")
+            try:
+                await asyncio.wait_for(stop.wait(), timeout=1.0)
+            except asyncio.TimeoutError:
+                pass
+        self.write_state()
+
+
+def _sofa_match(e: dict, info: dict) -> bool:
+    if abs((e.get("startTimestamp") or 0) - (ts(info["kickoff"]) or 0)) > 3 * 3600:
+        return False
+    return same_team((e.get("homeTeam") or {}).get("name"), info["home"]) and \
+        same_team((e.get("awayTeam") or {}).get("name"), info["away"])
+
+
+def _ctx_from_team(team: dict) -> dict:
+    names, last, dup = {}, {}, set()
+    for line in (team.get("squad") or {}).values():
+        for p in line:
+            if not p.get("id"):
+                continue
+            names[name_key(p["name"])] = p["id"]
+            ln = name_key(p["name"].split()[-1])
+            if ln in last:
+                dup.add(ln)
+            last[ln] = p["id"]
+    for d in dup:
+        last.pop(d, None)
+    return {"names": names, "last": last}
+
+
+def _ctx_from_match(m: dict) -> dict:
+    numbers, names, last, dup = {"home": {}, "away": {}}, {}, {}, set()
+    for side in ("home", "away"):
+        lu = (m.get("lineups") or {}).get(side) or {}
+        for p in (lu.get("starters") or []) + (lu.get("subs") or []):
+            if not p.get("id"):
+                continue
+            if p.get("number") is not None:
+                numbers[side][str(p["number"])] = p["id"]
+            names[name_key(p["name"])] = p["id"]
+            ln = name_key((p["name"] or "").split()[-1])
+            if ln in last:
+                dup.add(ln)
+            last[ln] = p["id"]
+    for d in dup:
+        last.pop(d, None)
+    return {"numbers": numbers, "names": names, "last": last}
+
+
+# ================= CLI =================
+
+def _summary(m: dict | None) -> str:
+    if not m:
+        return "нет данных (все источники недоступны или нет сопоставления)"
+    ev = m["events"]
+    return (f"[{m['source']}] {m['home']['name']} {m['home']['score']}:{m['away']['score']} {m['away']['name']} | "
+            f"state={m['status']['state']} min={m['status']['minute']}{'+' + str(m['status']['added']) if m['status']['added'] else ''} | "
+            f"events={len(ev)} goals={sum(1 for e in ev if e['type'] == 'goal')} shots={len(m['shots'])} "
+            f"momentum={len(m['momentum'])} | available={','.join(m['available'])}")
+
+
+async def _cli(args) -> int:
+    conn = store.connect()
+    c = Collector(conn)
+    try:
+        if args.cmd == "once":
+            if args.what == "team":
+                print(json.dumps(await c.refresh_team(), ensure_ascii=False))
+            elif args.what == "mapping":
+                print(json.dumps(await c.refresh_mapping(), ensure_ascii=False))
+            elif args.what == "match":
+                print(_summary(await c.refresh_match(args.id)))
+        elif args.cmd == "live":
+            for i in range(args.cycles):
+                t0 = time.time()
+                m = await c.refresh_match(args.id, live=True)
+                req = {n: s.requests for n, s in c.sources.items() if s.requests}
+                print(f"{datetime.now(timezone.utc):%H:%M:%S} cycle {i + 1}: {_summary(m)} | requests={req} "
+                      f"| {time.time() - t0:.1f}s", flush=True)
+                if i + 1 < args.cycles:
+                    await asyncio.sleep(max(0, args.interval - (time.time() - t0)))
+            c.write_state()
+        elif args.cmd == "find-live":
+            day = datetime.now(timezone.utc).strftime("%Y%m%d")
+            data = await c.fm.matches_on(day)
+            for lg in data.get("leagues") or []:
+                for mt in lg.get("matches") or []:
+                    st = mt.get("status") or {}
+                    if st.get("started") and not st.get("finished"):
+                        print(mt.get("id"), lg.get("name"), "|", (mt.get("home") or {}).get("name"), st.get("scoreStr"),
+                              (mt.get("away") or {}).get("name"), "|", (st.get("liveTime") or {}).get("short"))
+    finally:
+        await c.close()
+    return 0
+
+
+def main():
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+                        stream=sys.stdout)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    ap = argparse.ArgumentParser(prog="python -m app.collector")
+    sub = ap.add_subparsers(dest="cmd")
+    o = sub.add_parser("once")
+    o.add_argument("what", choices=["team", "mapping", "match"])
+    o.add_argument("id", nargs="?")
+    lv = sub.add_parser("live")
+    lv.add_argument("id")
+    lv.add_argument("--cycles", type=int, default=6)
+    lv.add_argument("--interval", type=float, default=config.LIVE_INTERVAL)
+    sub.add_parser("find-live")
+    args = ap.parse_args()
+    if args.cmd:
+        sys.exit(asyncio.run(_cli(args)))
+
+    async def daemon():
+        stop = asyncio.Event()
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            try:
+                loop.add_signal_handler(sig, stop.set)
+            except NotImplementedError:
+                pass
+        conn = store.connect()
+        c = Collector(conn)
+        try:
+            await c.run(stop)
+        finally:
+            await c.close()
+
+    asyncio.run(daemon())
+
+
+if __name__ == "__main__":
+    main()

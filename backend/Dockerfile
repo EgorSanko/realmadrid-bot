@@ -3,7 +3,8 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DATA_DIR=/data
 
 WORKDIR /srv
 COPY requirements.txt .
@@ -11,7 +12,8 @@ RUN pip install -r requirements.txt
 
 COPY app ./app
 
-RUN useradd --system --uid 10001 app
+# один образ на два контейнера: api (uvicorn) и collector (python -m app.collector)
+RUN useradd --system --uid 10001 app && mkdir -p /data && chown app /data
 USER app
 
 EXPOSE 8000
