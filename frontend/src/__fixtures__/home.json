@@ -1,0 +1,189 @@
+{
+ "source": "fotmob",
+ "updated_at": "2026-10-16T22:46:03Z",
+ "age_s": 420.9,
+ "stale": false,
+ "sources": {
+  "fixtures": {
+   "source": "fotmob",
+   "updated_at": "2026-10-16T22:46:03Z",
+   "age_s": 420.9,
+   "stale": false
+  },
+  "next_match": {
+   "source": "fotmob",
+   "updated_at": "2026-10-16T22:34:07Z"
+  },
+  "last_match": {
+   "source": "fotmob",
+   "updated_at": "2026-10-16T22:34:07Z"
+  },
+  "tables": {
+   "source": "fotmob",
+   "updated_at": "2026-10-16T22:46:03Z",
+   "age_s": 420.9,
+   "stale": false
+  }
+ },
+ "available": [
+  "next",
+  "last",
+  "form",
+  "laliga",
+  "venue"
+ ],
+ "next": {
+  "id": 5868098,
+  "kickoff": "2026-10-18T19:00:00Z",
+  "tournament": {
+   "id": 87,
+   "name": "LaLiga",
+   "round": null,
+   "logo": "/img/league/87.png"
+  },
+  "home": {
+   "id": 8633,
+   "name": "Real Madrid",
+   "score": null,
+   "logo": "/img/team/8633.png"
+  },
+  "away": {
+   "id": 8302,
+   "name": "Sevilla",
+   "score": null,
+   "logo": "/img/team/8302.png"
+  },
+  "status": {
+   "state": "scheduled",
+   "live": false,
+   "finished": false,
+   "minute": null,
+   "added": null,
+   "label": null
+  },
+  "is_home": true,
+  "result": null,
+  "venue": {
+   "name": "Estadio Bernabéu",
+   "city": "Madrid"
+  }
+ },
+ "last": {
+  "id": 6106274,
+  "kickoff": "2026-10-14T19:00:00Z",
+  "tournament": {
+   "id": 42,
+   "name": "Champions League",
+   "round": null,
+   "logo": "/img/league/42.png"
+  },
+  "home": {
+   "id": 8686,
+   "name": "Roma",
+   "score": 3,
+   "logo": "/img/team/8686.png"
+  },
+  "away": {
+   "id": 8633,
+   "name": "Real Madrid",
+   "score": 4,
+   "logo": "/img/team/8633.png"
+  },
+  "status": {
+   "state": "finished",
+   "live": false,
+   "finished": true,
+   "minute": null,
+   "added": null,
+   "label": "FT"
+  },
+  "is_home": false,
+  "result": "W",
+  "venue": {
+   "name": "Stadio Olimpico",
+   "city": "Roma"
+  }
+ },
+ "form": [
+  {
+   "id": 6106274,
+   "result": "W",
+   "kickoff": "2026-10-14T19:00:00Z",
+   "opponent": {
+    "id": 8686,
+    "name": "Roma",
+    "score": 3,
+    "logo": "/img/team/8686.png"
+   },
+   "score": "3-4",
+   "tournament": "Champions League"
+  },
+  {
+   "id": 5868089,
+   "result": "W",
+   "kickoff": "2026-10-10T19:00:00Z",
+   "opponent": {
+    "id": 10205,
+    "name": "Villarreal",
+    "score": 0,
+    "logo": "/img/team/10205.png"
+   },
+   "score": "1-0",
+   "tournament": "LaLiga"
+  },
+  {
+   "id": 5868072,
+   "result": "L",
+   "kickoff": "2026-09-20T14:15:00Z",
+   "opponent": {
+    "id": 9906,
+    "name": "Atlético Madrid",
+    "score": 2,
+    "logo": "/img/team/9906.png"
+   },
+   "score": "2-1",
+   "tournament": "LaLiga"
+  },
+  {
+   "id": 5868065,
+   "result": "W",
+   "kickoff": "2026-09-15T19:30:00Z",
+   "opponent": {
+    "id": 10268,
+    "name": "Elche",
+    "score": 2,
+    "logo": "/img/team/10268.png"
+   },
+   "score": "2-3",
+   "tournament": "LaLiga"
+  },
+  {
+   "id": 5868057,
+   "result": "W",
+   "kickoff": "2026-09-12T19:00:00Z",
+   "opponent": {
+    "id": 8370,
+    "name": "Rayo Vallecano",
+    "score": 1,
+    "logo": "/img/team/8370.png"
+   },
+   "score": "4-1",
+   "tournament": "LaLiga"
+  }
+ ],
+ "laliga": {
+  "league": {
+   "id": 87,
+   "name": "LaLiga",
+   "logo": "/img/league/87.png"
+  },
+  "pos": 4,
+  "pts": 18,
+  "played": 8,
+  "w": 6,
+  "d": 0,
+  "l": 2,
+  "gd": 11,
+  "leader_pts": 24
+ }
+}

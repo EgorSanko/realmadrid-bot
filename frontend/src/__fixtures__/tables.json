@@ -1,0 +1,1189 @@
+{
+ "source": "fotmob",
+ "updated_at": "2026-10-16T22:46:03Z",
+ "age_s": 424.2,
+ "stale": false,
+ "tables": [
+  {
+   "league": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "rows": [
+    {
+     "pos": 1,
+     "team": {
+      "id": 8634,
+      "name": "Barcelona",
+      "short": "Barcelona",
+      "logo": "/img/team/8634.png"
+     },
+     "played": 8,
+     "w": 8,
+     "d": 0,
+     "l": 0,
+     "gf": 34,
+     "ga": 7,
+     "gd": 27,
+     "pts": 24,
+     "zone": {
+      "label": "Champions League",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 2,
+     "team": {
+      "id": 9906,
+      "name": "Atlético Madrid",
+      "short": "Atlético Madrid",
+      "logo": "/img/team/9906.png"
+     },
+     "played": 8,
+     "w": 6,
+     "d": 1,
+     "l": 1,
+     "gf": 18,
+     "ga": 8,
+     "gd": 10,
+     "pts": 19,
+     "zone": {
+      "label": "Champions League",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 3,
+     "team": {
+      "id": 8603,
+      "name": "Real Betis",
+      "short": "Real Betis",
+      "logo": "/img/team/8603.png"
+     },
+     "played": 8,
+     "w": 6,
+     "d": 1,
+     "l": 1,
+     "gf": 14,
+     "ga": 9,
+     "gd": 5,
+     "pts": 19,
+     "zone": {
+      "label": "Champions League",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 4,
+     "team": {
+      "id": 8633,
+      "name": "Real Madrid",
+      "short": "Real Madrid",
+      "logo": "/img/team/8633.png"
+     },
+     "played": 8,
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "gf": 19,
+     "ga": 8,
+     "gd": 11,
+     "pts": 18,
+     "zone": {
+      "label": "Champions League",
+      "color": "#2AD572"
+     },
+     "is_us": true
+    },
+    {
+     "pos": 5,
+     "team": {
+      "id": 8302,
+      "name": "Sevilla",
+      "short": "Sevilla",
+      "logo": "/img/team/8302.png"
+     },
+     "played": 8,
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "gf": 13,
+     "ga": 12,
+     "gd": 1,
+     "pts": 14,
+     "zone": {
+      "label": "Europa League",
+      "color": "#0046A7"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 6,
+     "team": {
+      "id": 8560,
+      "name": "Real Sociedad",
+      "short": "Real Sociedad",
+      "logo": "/img/team/8560.png"
+     },
+     "played": 8,
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "gf": 12,
+     "ga": 15,
+     "gd": -3,
+     "pts": 13,
+     "zone": {
+      "label": "Conference League qualification",
+      "color": "#02CCF0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 7,
+     "team": {
+      "id": 9866,
+      "name": "Deportivo Alavés",
+      "short": "Deportivo Alavés",
+      "logo": "/img/team/9866.png"
+     },
+     "played": 8,
+     "w": 3,
+     "d": 2,
+     "l": 3,
+     "gf": 12,
+     "ga": 8,
+     "gd": 4,
+     "pts": 11,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 8,
+     "team": {
+      "id": 9783,
+      "name": "Deportivo A Coruña",
+      "short": "Deportivo A Coruña",
+      "logo": "/img/team/9783.png"
+     },
+     "played": 9,
+     "w": 2,
+     "d": 5,
+     "l": 2,
+     "gf": 13,
+     "ga": 12,
+     "gd": 1,
+     "pts": 11,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 9,
+     "team": {
+      "id": 9910,
+      "name": "Celta Vigo",
+      "short": "Celta Vigo",
+      "logo": "/img/team/9910.png"
+     },
+     "played": 8,
+     "w": 1,
+     "d": 5,
+     "l": 2,
+     "gf": 8,
+     "ga": 6,
+     "gd": 2,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 10,
+     "team": {
+      "id": 8315,
+      "name": "Athletic Club",
+      "short": "Athletic Club",
+      "logo": "/img/team/8315.png"
+     },
+     "played": 6,
+     "w": 2,
+     "d": 2,
+     "l": 2,
+     "gf": 7,
+     "ga": 6,
+     "gd": 1,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 11,
+     "team": {
+      "id": 10205,
+      "name": "Villarreal",
+      "short": "Villarreal",
+      "logo": "/img/team/10205.png"
+     },
+     "played": 8,
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "gf": 13,
+     "ga": 13,
+     "gd": 0,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 12,
+     "team": {
+      "id": 8558,
+      "name": "Espanyol",
+      "short": "Espanyol",
+      "logo": "/img/team/8558.png"
+     },
+     "played": 8,
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "gf": 11,
+     "ga": 11,
+     "gd": 0,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 13,
+     "team": {
+      "id": 8370,
+      "name": "Rayo Vallecano",
+      "short": "Rayo Vallecano",
+      "logo": "/img/team/8370.png"
+     },
+     "played": 7,
+     "w": 2,
+     "d": 2,
+     "l": 3,
+     "gf": 11,
+     "ga": 16,
+     "gd": -5,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 14,
+     "team": {
+      "id": 8305,
+      "name": "Getafe",
+      "short": "Getafe",
+      "logo": "/img/team/8305.png"
+     },
+     "played": 8,
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "gf": 4,
+     "ga": 10,
+     "gd": -6,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 15,
+     "team": {
+      "id": 8696,
+      "name": "Racing Santander",
+      "short": "Racing Santander",
+      "logo": "/img/team/8696.png"
+     },
+     "played": 8,
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "gf": 13,
+     "ga": 23,
+     "gd": -10,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 16,
+     "team": {
+      "id": 8371,
+      "name": "Osasuna",
+      "short": "Osasuna",
+      "logo": "/img/team/8371.png"
+     },
+     "played": 8,
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "gf": 8,
+     "ga": 18,
+     "gd": -10,
+     "pts": 8,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 17,
+     "team": {
+      "id": 8581,
+      "name": "Levante",
+      "short": "Levante",
+      "logo": "/img/team/8581.png"
+     },
+     "played": 8,
+     "w": 1,
+     "d": 4,
+     "l": 3,
+     "gf": 12,
+     "ga": 16,
+     "gd": -4,
+     "pts": 7,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 18,
+     "team": {
+      "id": 10268,
+      "name": "Elche",
+      "short": "Elche",
+      "logo": "/img/team/10268.png"
+     },
+     "played": 8,
+     "w": 1,
+     "d": 3,
+     "l": 4,
+     "gf": 11,
+     "ga": 17,
+     "gd": -6,
+     "pts": 6,
+     "zone": {
+      "label": "Relegation",
+      "color": "#FF4646"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 19,
+     "team": {
+      "id": 10267,
+      "name": "Valencia",
+      "short": "Valencia",
+      "logo": "/img/team/10267.png"
+     },
+     "played": 8,
+     "w": 1,
+     "d": 2,
+     "l": 5,
+     "gf": 6,
+     "ga": 15,
+     "gd": -9,
+     "pts": 5,
+     "zone": {
+      "label": "Relegation",
+      "color": "#FF4646"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 20,
+     "team": {
+      "id": 9864,
+      "name": "Málaga",
+      "short": "Málaga",
+      "logo": "/img/team/9864.png"
+     },
+     "played": 8,
+     "w": 0,
+     "d": 4,
+     "l": 4,
+     "gf": 4,
+     "ga": 13,
+     "gd": -9,
+     "pts": 4,
+     "zone": {
+      "label": "Relegation",
+      "color": "#FF4646"
+     },
+     "is_us": false
+    }
+   ]
+  },
+  {
+   "league": {
+    "id": 42,
+    "name": "Champions League",
+    "logo": "/img/league/42.png"
+   },
+   "rows": [
+    {
+     "pos": 1,
+     "team": {
+      "id": 9847,
+      "name": "Paris Saint-Germain",
+      "short": "PSG",
+      "logo": "/img/team/9847.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 10,
+     "ga": 3,
+     "gd": 7,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 2,
+     "team": {
+      "id": 8634,
+      "name": "Barcelona",
+      "short": "Barcelona",
+      "logo": "/img/team/8634.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 9,
+     "ga": 2,
+     "gd": 7,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 3,
+     "team": {
+      "id": 10252,
+      "name": "Aston Villa",
+      "short": "Aston Villa",
+      "logo": "/img/team/10252.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 9,
+     "ga": 2,
+     "gd": 7,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 4,
+     "team": {
+      "id": 10269,
+      "name": "VfB Stuttgart",
+      "short": "VfB Stuttgart",
+      "logo": "/img/team/10269.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 6,
+     "ga": 1,
+     "gd": 5,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 5,
+     "team": {
+      "id": 8650,
+      "name": "Liverpool",
+      "short": "Liverpool",
+      "logo": "/img/team/8650.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 8,
+     "ga": 4,
+     "gd": 4,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 6,
+     "team": {
+      "id": 9768,
+      "name": "Sporting CP",
+      "short": "Sporting CP",
+      "logo": "/img/team/9768.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 5,
+     "ga": 1,
+     "gd": 4,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 7,
+     "team": {
+      "id": 9825,
+      "name": "Arsenal",
+      "short": "Arsenal",
+      "logo": "/img/team/9825.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 4,
+     "ga": 0,
+     "gd": 4,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 8,
+     "team": {
+      "id": 8633,
+      "name": "Real Madrid",
+      "short": "Real Madrid",
+      "logo": "/img/team/8633.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 6,
+     "ga": 4,
+     "gd": 2,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/8 finals",
+      "color": "#2AD572"
+     },
+     "is_us": true
+    },
+    {
+     "pos": 9,
+     "team": {
+      "id": 8603,
+      "name": "Real Betis",
+      "short": "Real Betis",
+      "logo": "/img/team/8603.png"
+     },
+     "played": 2,
+     "w": 2,
+     "d": 0,
+     "l": 0,
+     "gf": 6,
+     "ga": 4,
+     "gd": 2,
+     "pts": 6,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 10,
+     "team": {
+      "id": 9823,
+      "name": "Bayern München",
+      "short": "Bayern München",
+      "logo": "/img/team/9823.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 1,
+     "l": 0,
+     "gf": 8,
+     "ga": 3,
+     "gd": 5,
+     "pts": 4,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 11,
+     "team": {
+      "id": 9728,
+      "name": "Shakhtar Donetsk",
+      "short": "Shakhtar Donetsk",
+      "logo": "/img/team/9728.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 1,
+     "l": 0,
+     "gf": 4,
+     "ga": 2,
+     "gd": 2,
+     "pts": 4,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 12,
+     "team": {
+      "id": 10171,
+      "name": "Como",
+      "short": "Como",
+      "logo": "/img/team/10171.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 6,
+     "ga": 4,
+     "gd": 2,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 13,
+     "team": {
+      "id": 10260,
+      "name": "Manchester United",
+      "short": "Man United",
+      "logo": "/img/team/10260.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 4,
+     "ga": 2,
+     "gd": 2,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 14,
+     "team": {
+      "id": 10205,
+      "name": "Villarreal",
+      "short": "Villarreal",
+      "logo": "/img/team/10205.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 5,
+     "ga": 4,
+     "gd": 1,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 15,
+     "team": {
+      "id": 9906,
+      "name": "Atlético Madrid",
+      "short": "Atlético Madrid",
+      "logo": "/img/team/9906.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 3,
+     "ga": 2,
+     "gd": 1,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 16,
+     "team": {
+      "id": 8342,
+      "name": "Club Brugge",
+      "short": "Club Brugge",
+      "logo": "/img/team/8342.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 6,
+     "ga": 6,
+     "gd": 0,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 17,
+     "team": {
+      "id": 8456,
+      "name": "Manchester City",
+      "short": "Man City",
+      "logo": "/img/team/8456.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 4,
+     "ga": 4,
+     "gd": 0,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 18,
+     "team": {
+      "id": 9789,
+      "name": "Borussia Dortmund",
+      "short": "Dortmund",
+      "logo": "/img/team/9789.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 3,
+     "ga": 3,
+     "gd": 0,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 19,
+     "team": {
+      "id": 8588,
+      "name": "Lens",
+      "short": "Lens",
+      "logo": "/img/team/8588.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 3,
+     "ga": 4,
+     "gd": -1,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 20,
+     "team": {
+      "id": 8563,
+      "name": "AEK Athens",
+      "short": "AEK Athens",
+      "logo": "/img/team/8563.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 2,
+     "ga": 3,
+     "gd": -1,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 21,
+     "team": {
+      "id": 178475,
+      "name": "RB Leipzig",
+      "short": "RB Leipzig",
+      "logo": "/img/team/178475.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 2,
+     "ga": 4,
+     "gd": -2,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 22,
+     "team": {
+      "id": 951893,
+      "name": "Sabah FK",
+      "short": "Sabah FK",
+      "logo": "/img/team/951893.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 2,
+     "ga": 4,
+     "gd": -2,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 23,
+     "team": {
+      "id": 10235,
+      "name": "Feyenoord",
+      "short": "Feyenoord",
+      "logo": "/img/team/10235.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 4,
+     "ga": 7,
+     "gd": -3,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 24,
+     "team": {
+      "id": 8402,
+      "name": "Bodø/Glimt",
+      "short": "Bodø/Glimt",
+      "logo": "/img/team/8402.png"
+     },
+     "played": 2,
+     "w": 1,
+     "d": 0,
+     "l": 1,
+     "gf": 1,
+     "ga": 5,
+     "gd": -4,
+     "pts": 3,
+     "zone": {
+      "label": "Qualification to 1/16 finals",
+      "color": "#0294F0"
+     },
+     "is_us": false
+    },
+    {
+     "pos": 25,
+     "team": {
+      "id": 8686,
+      "name": "Roma",
+      "short": "Roma",
+      "logo": "/img/team/8686.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 1,
+     "l": 1,
+     "gf": 4,
+     "ga": 5,
+     "gd": -1,
+     "pts": 1,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 26,
+     "team": {
+      "id": 8640,
+      "name": "PSV Eindhoven",
+      "short": "PSV Eindhoven",
+      "logo": "/img/team/8640.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 1,
+     "l": 1,
+     "gf": 1,
+     "ga": 2,
+     "gd": -1,
+     "pts": 1,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 27,
+     "team": {
+      "id": 8478,
+      "name": "Viking",
+      "short": "Viking",
+      "logo": "/img/team/8478.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 1,
+     "l": 1,
+     "gf": 4,
+     "ga": 6,
+     "gd": -2,
+     "pts": 1,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 28,
+     "team": {
+      "id": 8695,
+      "name": "Fenerbahçe",
+      "short": "Fenerbahçe",
+      "logo": "/img/team/8695.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 1,
+     "l": 1,
+     "gf": 1,
+     "ga": 7,
+     "gd": -6,
+     "pts": 1,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 29,
+     "team": {
+      "id": 8636,
+      "name": "Inter",
+      "short": "Inter",
+      "logo": "/img/team/8636.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 4,
+     "ga": 6,
+     "gd": -2,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 30,
+     "team": {
+      "id": 9773,
+      "name": "FC Porto",
+      "short": "FC Porto",
+      "logo": "/img/team/9773.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 2,
+     "ga": 5,
+     "gd": -3,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 31,
+     "team": {
+      "id": 7787,
+      "name": "Slavia Prague",
+      "short": "Slavia Prague",
+      "logo": "/img/team/7787.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 2,
+     "ga": 5,
+     "gd": -3,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 32,
+     "team": {
+      "id": 9875,
+      "name": "Napoli",
+      "short": "Napoli",
+      "logo": "/img/team/9875.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 1,
+     "ga": 4,
+     "gd": -3,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 33,
+     "team": {
+      "id": 9977,
+      "name": "LASK",
+      "short": "LASK",
+      "logo": "/img/team/9977.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 3,
+     "ga": 7,
+     "gd": -4,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 34,
+     "team": {
+      "id": 8639,
+      "name": "Lille",
+      "short": "Lille",
+      "logo": "/img/team/8639.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 2,
+     "ga": 6,
+     "gd": -4,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 35,
+     "team": {
+      "id": 8637,
+      "name": "Galatasaray",
+      "short": "Galatasaray",
+      "logo": "/img/team/8637.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 2,
+     "ga": 7,
+     "gd": -5,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    },
+    {
+     "pos": 36,
+     "team": {
+      "id": 6019,
+      "name": "Slovan Bratislava",
+      "short": "Slovan Bratislava",
+      "logo": "/img/team/6019.png"
+     },
+     "played": 2,
+     "w": 0,
+     "d": 0,
+     "l": 2,
+     "gf": 1,
+     "ga": 9,
+     "gd": -8,
+     "pts": 0,
+     "zone": null,
+     "is_us": false
+    }
+   ]
+  }
+ ]
+}
