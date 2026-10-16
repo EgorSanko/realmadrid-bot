@@ -4,6 +4,7 @@
 Если все источники упали, сборщик снимок не трогает — здесь отдаётся последний удачный
 с его возрастом и кодом 200.
 """
+import re
 import time
 from datetime import datetime, timezone
 
@@ -202,6 +203,51 @@ def team() -> JSONResponse:
         conn.close()
 
 
+# ---------- карточка игрока ----------
+
+_PLAYER_ID = re.compile(r"[1-9]\d{0,9}")
+
+
+def _squad_ids(conn) -> set[str]:
+    t = store.get(conn, "team")
+    return {str(p["id"]) for line in ((t or {}).get("data", {}).get("squad") or {}).values()
+            for p in line if p.get("id")}
+
+
+@app.get("/api/player/{player_id}")
+def player(player_id: str) -> JSONResponse:
+    """Снимок карточки игрока. Нет снимка — `pending: true` и заявка сборщику (клиент повторяет запрос);
+    снимок старше срока (свои — 6 ч, чужие — 24 ч) — отдаём его и тоже просим обновить."""
+    if not _PLAYER_ID.fullmatch(player_id):
+        return _resp({"error": "not_found", "detail": "неверный id игрока", "available": []}, 60, 404)
+    conn = _db()
+    try:
+        now = time.time()
+        snap = store.get(conn, f"player:{player_id}")
+        if snap:
+            d = snap["data"]
+            own = player_id in _squad_ids(conn) or (d.get("team") or {}).get("id") == config.TEAM_ID
+            ttl = config.PLAYER_INTERVAL if own else config.PLAYER_FOREIGN_TTL
+            if now - snap["fetched_at"] >= ttl:
+                store.ask_player(conn, player_id)
+            d.pop("fallback_errors", None)
+            stale_after = 3 * config.PLAYER_INTERVAL if own else config.PLAYER_FOREIGN_TTL + 3600
+            return _resp({**d, **_meta(snap, stale_after), "pending": False}, 300)
+        fail = store.get(conn, f"player_fail:{player_id}")
+        if fail and now - fail["fetched_at"] < config.PLAYER_FAIL_RETRY:
+            if fail["data"].get("not_found"):
+                return _resp({"error": "not_found", "detail": "такого игрока нет у источника", "available": []},
+                             60, 404)
+            return _resp({"error": "unavailable", "detail": "источники не ответили, попробуем позже",
+                          "available": []}, 0, 503)
+        if not store.ask_player(conn, player_id):
+            return _resp({"error": "busy", "detail": "очередь сборщика переполнена", "available": []}, 0, 503)
+        return _resp({"id": int(player_id), "pending": True, "available": [], "source": None,
+                      "updated_at": None, "age_s": None, "stale": False}, 0)
+    finally:
+        conn.close()
+
+
 # ---------- медиа: новости и видео ----------
 
 def _limit(v: int | None, default: int, top: int) -> int:
@@ -284,12 +330,17 @@ def health_sources() -> JSONResponse:
                 hb = round(time.time() - float(f.read().strip()), 1)
         except (OSError, ValueError):
             pass
-        snaps = {k: v for k, v in store.ages(conn).items() if not k.startswith("ctx:")}
+        ages = store.ages(conn)
+        # карточки игроков — только счётчики, иначе список разрастается с каждым чужим игроком
+        snaps = {k: v for k, v in ages.items() if not k.startswith(("ctx:", "player:", "player_fail:"))}
+        players = {"cards": sum(k.startswith("player:") for k in ages),
+                   "failed": sum(k.startswith("player_fail:") for k in ages),
+                   "queued": conn.execute("SELECT COUNT(*) FROM player_demand").fetchone()[0]}
         return _resp({"collector": {**(collector or {}), "heartbeat_age_s": hb},
                       "sources": [states[n] for n in config.SOURCE_ORDER if n in states],
                       # медиа — отдельный список: в цепочку данных матча они не входят
                       "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
-                      "snapshots": snaps, "idmap": store.map_count(conn)}, 0)
+                      "snapshots": snaps, "players": players, "idmap": store.map_count(conn)}, 0)
     finally:
         conn.close()
 

@@ -386,3 +386,73 @@ def finish_match(m: dict, source: str) -> dict:
     m["source"] = source
     m["available"] = compute_available(m)
     return m
+
+
+# ---------- игрок ----------
+# Карточка игрока: одна форма для FotMob и SofaScore. Имена — латиницей, как у источника.
+
+def empty_player(fid=None) -> dict:
+    return {
+        "id": _pos_int(fid), "ids": {"fotmob": _pos_int(fid), "sofascore": None},
+        "name": None, "short_name": None, "photo": img_player(fid),
+        "number": None,
+        "position": None,        # основная позиция, код FotMob: GK CB RB LB DM CM AM LM RM LW RW ST
+        "positions": [],         # все позиции, основная — первой
+        "role": None,            # GK | DF | MF | FW
+        "team": None,            # {id, name, logo, on_loan}
+        "country": None,         # {code (alpha-3), name, flag, team_id}
+        "birth": None, "age": None, "height": None, "foot": None,  # foot: right | left | both
+        "value_eur": None, "contract_until": None,
+        "status": None,          # {type: injury|suspension, name, expected_return, updated}
+        "season": None,          # {name, team, totals: {...}, tournaments: [{league, ...}]}
+        "recent": [],            # последние сыгранные матчи, новые первыми
+        "career": [],            # клубы: {team, start, end, active, loan, apps, goals, assists}
+        "national": [],          # сборные — так же
+    }
+
+
+def _pos_int(v):
+    try:
+        n = int(v)
+    except (TypeError, ValueError):
+        return None
+    return n if n > 0 else None
+
+
+ROLE_BY_POS = {"GK": "GK", "CB": "DF", "RB": "DF", "LB": "DF", "RWB": "DF", "LWB": "DF",
+               "DM": "MF", "CM": "MF", "AM": "MF", "LM": "MF", "RM": "MF",
+               "LW": "FW", "RW": "FW", "ST": "FW", "CF": "FW"}
+
+
+def age_on(birth: str | None, now: datetime | None = None) -> int | None:
+    """'1998-12-20' → полных лет на сегодня (UTC)."""
+    if not birth:
+        return None
+    try:
+        b = datetime.strptime(birth[:10], "%Y-%m-%d")
+    except ValueError:
+        return None
+    n = now or datetime.now(timezone.utc)
+    return n.year - b.year - ((n.month, n.day) < (b.month, b.day))
+
+
+def compute_player_available(p: dict) -> list[str]:
+    a = []
+    if p.get("name"):
+        a.append("bio")
+    if p.get("photo"):
+        a.append("photo")
+    for k in ("team", "country", "status", "season", "recent", "career", "national"):
+        if p.get(k):
+            a.append(k)
+    if p.get("value_eur"):
+        a.append("value")
+    if p.get("contract_until"):
+        a.append("contract")
+    return a
+
+
+def finish_player(p: dict, source: str) -> dict:
+    p["source"] = source
+    p["available"] = compute_player_available(p)
+    return p

@@ -38,7 +38,13 @@ CREATE TABLE IF NOT EXISTS demand (       -- API просит сборщика �
     match_id   TEXT PRIMARY KEY,
     asked_at   REAL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS player_demand (  -- то же для карточки игрока (чужие игроки, устаревший кэш)
+    player_id  TEXT PRIMARY KEY,
+    asked_at   REAL NOT NULL
+);
 """
+
+PLAYER_DEMAND_CAP = 200  # больше заявок в очереди не копим — защита от перебора id
 
 
 def connect(path: str | None = None) -> sqlite3.Connection:
@@ -132,3 +138,21 @@ def take_demand(conn, limit: int = 1) -> list[str]:
     for r in rows:
         conn.execute("DELETE FROM demand WHERE match_id=?", (r,))
     return rows
+
+
+def ask_player(conn, player_id) -> bool:
+    """Заявка на игрока. False — очередь переполнена (заявку не приняли)."""
+    n = conn.execute("SELECT COUNT(*) FROM player_demand").fetchone()[0]
+    if n >= PLAYER_DEMAND_CAP:
+        return bool(conn.execute("SELECT 1 FROM player_demand WHERE player_id=?", (str(player_id),)).fetchone())
+    conn.execute("INSERT OR IGNORE INTO player_demand(player_id, asked_at) VALUES (?,?)",
+                 (str(player_id), time.time()))
+    return True
+
+
+def peek_player_demand(conn, limit: int = 1) -> list[str]:
+    return [r[0] for r in conn.execute("SELECT player_id FROM player_demand ORDER BY asked_at LIMIT ?", (limit,))]
+
+
+def drop_player_demand(conn, player_id) -> None:
+    conn.execute("DELETE FROM player_demand WHERE player_id=?", (str(player_id),))

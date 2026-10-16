@@ -6,13 +6,14 @@
 давление) — раз в несколько циклов, best-players — после финала.
 """
 import time
+from datetime import datetime
 
 from curl_cffi.requests import AsyncSession
 
 from .. import config
-from ..model import (ctx_team, empty_match, event, finish_match, formation_layout, img_flag, img_league,
-                     img_player, img_team, iso_utc, lineup_player, person, resolve_player, result_for,
-                     stat_list, status)
+from ..model import (ROLE_BY_POS, age_on, ctx_team, empty_match, empty_player, event, finish_match,
+                     finish_player, formation_layout, img_flag, img_league, img_player, img_team, iso_utc,
+                     lineup_player, person, resolve_player, result_for, stat_list, status)
 from .base import NotFound, Source
 
 BASE = "https://www.sofascore.com/api/v1"
@@ -72,6 +73,13 @@ class SofaScore(Source):
     async def live_events(self) -> dict:
         """Все идущие матчи (~0,5 МБ) — только для поиска id чужого матча, результат кэшируется."""
         return await self.get(f"{BASE}/sport/football/events/live", kind="live_events")
+
+    async def player(self, sid) -> dict:
+        return await self.get(f"{BASE}/player/{sid}", kind="player")
+
+    async def player_events(self, sid) -> dict:
+        """Последние ~30 матчей игрока: оценка и минуты (statisticsMap), голы/передачи/карточки (incidentsMap)."""
+        return await self.get(f"{BASE}/player/{sid}/events/last/0", kind="player_events")
 
 
 # ---------- статус ----------
@@ -369,3 +377,129 @@ def normalize_team(raw: dict, ctx: dict | None = None) -> dict:
     return {"team": {"id": config.TEAM_ID, "name": "Real Madrid", "logo": img_team(config.TEAM_ID)},
             "venue": None, "coach": None, "squad": squad, "injuries": [], "leaders": None, "transfers": None,
             "source": "sofascore", "available": avail}
+
+
+# ---------- игрок (резерв карточки) ----------
+
+# подробные позиции SofaScore → коды FotMob
+_POS_DETAILED = {"GK": "GK", "DC": "CB", "DL": "LB", "DR": "RB", "DM": "DM", "MC": "CM", "ML": "LM", "MR": "RM",
+                 "AM": "AM", "LW": "LW", "RW": "RW", "ST": "ST", "CF": "ST"}
+_FOOT = {"right": "right", "left": "left", "both": "both"}
+
+
+def _team_fm(ctx, t: dict | None) -> dict | None:
+    """Команда SofaScore → наша ссылка: id FotMob из сопоставления (нет — без эмблемы)."""
+    if not t:
+        return None
+    sid = t.get("id")
+    fm = config.TEAM_ID if sid == config.SOFA_TEAM_ID else ctx_team(ctx, sid)
+    fm = int(fm) if fm not in (None, "") and str(fm).isdigit() else None
+    return {"id": fm, "name": t.get("name"), "logo": img_team(fm)}
+
+
+def normalize_player(raw: dict, last: dict | None, ctx: dict | None = None, now: datetime | None = None) -> dict:
+    """raw — /player/{id}, last — /player/{id}/events/last/0. Сезон — сумма по этим матчам (≈30 последних),
+    поэтому помечен partial: у SofaScore полная статистика лежит в отдельном запросе на каждый турнир."""
+    ctx = ctx or {}
+    pl = raw.get("player") or {}
+    p = empty_player(ctx.get("fotmob_id"))
+    p["ids"]["sofascore"] = pl.get("id")
+    p["name"] = pl.get("name")
+    p["short_name"] = pl.get("shortName")
+    n = pl.get("shirtNumber") or pl.get("jerseyNumber")
+    p["number"] = int(n) if str(n or "").isdigit() else None
+    codes = [_POS_DETAILED.get(c) for c in pl.get("positionsDetailed") or []]
+    p["positions"] = [c for c in dict.fromkeys(codes) if c]
+    p["position"] = p["positions"][0] if p["positions"] else None
+    p["role"] = ROLE_BY_POS.get(p["position"] or "") or _POS.get(pl.get("position"))
+    p["height"] = pl.get("height")
+    p["foot"] = _FOOT.get((pl.get("preferredFoot") or "").lower())
+    ts_birth = pl.get("dateOfBirthTimestamp")
+    p["birth"] = iso_utc(ts_birth)[:10] if ts_birth is not None else None
+    p["age"] = age_on(p["birth"], now)
+    p["value_eur"] = (pl.get("proposedMarketValueRaw") or {}).get("value") or pl.get("proposedMarketValue")
+    cu = pl.get("contractUntilTimestamp")
+    p["contract_until"] = iso_utc(cu)[:10] if cu else None
+    c = pl.get("country") or {}
+    if c.get("name"):
+        p["country"] = {"code": c.get("alpha3"), "name": c.get("name"), "flag": img_flag(c.get("alpha2")),
+                        "team_id": None}
+    team = _team_fm(ctx, pl.get("team"))
+    if team:
+        p["team"] = {**team, "on_loan": False}
+    club_sid = (pl.get("team") or {}).get("id")
+
+    last = last or {}
+    stats, inc = last.get("statisticsMap") or {}, last.get("incidentsMap") or {}
+    played_for = last.get("playedForTeamMap") or {}
+    matches = ctx.get("matches") or {}
+    rows = []
+    for e in last.get("events") or []:
+        if ((e.get("status") or {}).get("type")) != "finished":
+            continue
+        k = str(e.get("id"))
+        st = stats.get(k) or {}
+        if not st.get("minutesPlayed"):
+            continue  # на поле не выходил
+        tid = played_for.get(k)
+        home = (e.get("homeTeam") or {}).get("id") == tid
+        hs, as_ = (e.get("homeScore") or {}).get("current"), (e.get("awayScore") or {}).get("current")
+        ours, theirs = (hs, as_) if home else (as_, hs)
+        res = None if ours is None or theirs is None else "W" if ours > theirs else "L" if ours < theirs else "D"
+        ut = ((e.get("tournament") or {}).get("uniqueTournament") or {})
+        lid = config.SOFA_TO_FM_LEAGUE.get(ut.get("id"))
+        im = inc.get(k) or {}
+        fm_match = matches.get(k)
+        rows.append({
+            "match_id": int(fm_match) if str(fm_match or "").isdigit() else None,
+            "kickoff": iso_utc(e.get("startTimestamp")),
+            "tournament": {"id": lid, "name": ut.get("name") or (e.get("tournament") or {}).get("name"),
+                           "logo": img_league(lid)},
+            "team": _team_fm(ctx, e.get("homeTeam") if home else e.get("awayTeam")),
+            "opponent": _team_fm(ctx, e.get("awayTeam") if home else e.get("homeTeam")),
+            "home": home, "score": [hs, as_], "result": res, "conceded": theirs,
+            "played": True, "bench": False, "minutes": st.get("minutesPlayed"),
+            "goals": im.get("goals") or 0, "assists": im.get("assists") or 0,
+            "yellow": im.get("yellowCards") or 0, "red": (im.get("redCards") or 0) + (im.get("yellowRedCards") or 0),
+            "rating": round(float(st["rating"]), 2) if st.get("rating") else None,
+            "potm": False,
+            "_season": (e.get("season") or {}).get("year"), "_club": tid == club_sid, "_ut": ut.get("id"),
+        })
+    rows.sort(key=lambda r: r["kickoff"] or "", reverse=True)
+
+    club = [r for r in rows if r["_club"]]
+    if club:
+        year = club[0]["_season"]
+        groups: dict = {}
+        for r in club:
+            if r["_season"] == year:
+                groups.setdefault(r["_ut"], []).append(r)
+        keeper = p["role"] == "GK"
+        tours = []
+        for g in groups.values():
+            rated = [r["rating"] for r in g if r["rating"]]
+            row = {"league": g[0]["tournament"], "matches": len(g), "started": None,
+                   "minutes": sum(r["minutes"] or 0 for r in g),
+                   "goals": sum(r["goals"] for r in g), "assists": sum(r["assists"] for r in g),
+                   "rating": round(sum(rated) / len(rated), 2) if rated else None,
+                   "yellow": sum(r["yellow"] for r in g), "red": sum(r["red"] for r in g),
+                   "clean_sheets": sum(1 for r in g if r["conceded"] == 0) if keeper else None,
+                   "conceded": sum(r["conceded"] or 0 for r in g) if keeper else None, "saves": None}
+            tours.append(row)
+        tours.sort(key=lambda t: -t["matches"])
+        allr = [r["rating"] for g in groups.values() for r in g if r["rating"]]
+        totals = {k: sum(t[k] for t in tours) for k in ("matches", "minutes", "goals", "assists", "yellow", "red")}
+        totals["rating"] = round(sum(allr) / len(allr), 2) if allr else None
+        if keeper:
+            totals["clean_sheets"] = sum(t["clean_sheets"] for t in tours)
+            totals["conceded"] = sum(t["conceded"] for t in tours)
+            totals["saves"] = None
+        y = str(year or "")
+        name = f"20{y[:2]}/20{y[3:]}" if len(y) == 5 and y[2] == "/" else y or None
+        p["season"] = {"name": name, "team": p["team"] and {k: p["team"][k] for k in ("id", "name", "logo")},
+                       "totals": totals, "tournaments": tours, "partial": True}
+    for r in rows:
+        for k in ("_season", "_club", "_ut"):
+            r.pop(k, None)
+    p["recent"] = rows[:10]
+    return finish_player(p, "sofascore")

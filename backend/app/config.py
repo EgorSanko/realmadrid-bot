@@ -49,6 +49,11 @@ MAPPING_INTERVAL = _int("MAPPING_INTERVAL", 6 * 3600)    # сопоставле�
 NEWS_INTERVAL = _int("NEWS_INTERVAL", 600)          # новости (RSS): 10 мин
 VIDEO_INTERVAL = _int("VIDEO_INTERVAL", 900)        # видео YouTube (RSS канала): 15 мин
 NEWS_OG_PER_CYCLE = _int("NEWS_OG_PER_CYCLE", 6)    # сколько страниц Sports.ru открыть за цикл ради картинки
+# карточки игроков: свои — заранее раз в 6 ч, чужие — по заявке API, кэш 24 ч
+PLAYER_INTERVAL = _int("PLAYER_INTERVAL", 6 * 3600)
+PLAYER_FOREIGN_TTL = _int("PLAYER_FOREIGN_TTL", 24 * 3600)
+PLAYER_RATE_PER_MIN = _int("PLAYER_RATE_PER_MIN", 10)   # не больше N игроков в минуту (все источники вместе)
+PLAYER_FAIL_RETRY = _int("PLAYER_FAIL_RETRY", 600)      # не нашли / все упали — повтор не раньше чем через 10 мин
 WINDOW_BEFORE = 75 * 60        # окно матча открывается за 75 мин до начала
 WINDOW_AFTER_START = 150 * 60  # ~2,5 ч после старта, если «завершён» ещё не видели
 WINDOW_AFTER_FINISH = 30 * 60  # после «завершён» — ещё 30 мин на добор оценок и статистики
