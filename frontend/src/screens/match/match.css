@@ -1,0 +1,89 @@
+/* Экран матча (a-match-events / a-match-lineup / a-match-stats). Компоненты — из ui/, здесь только раскладка. */
+
+.mt { min-width: 0; }
+
+/* шапка: «назад» · заголовок · LIVE */
+.mt-top { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 60px; padding: 16px 16px 6px; }
+.mt-top__back { width: 44px; height: 44px; padding: 0; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mt-top__gap { display: block; width: 44px; height: 1px; }
+.mt-top__title { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; font-family: var(--body); font-weight: 700; font-size: 17px; line-height: 1.3; }
+.mt-top__live { justify-self: end; }
+
+.mt-cd { margin: 18px 16px 0; }
+.mt-state { margin: 14px 16px 0; }
+.mt-loading__list { margin: 14px 16px 0; }
+.mt-loading .ui-skeleton:first-child { margin: 10px 16px 0; }
+
+.mt-h2 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.25; }
+.mt-h2--tl { margin-bottom: 6px; }
+.mt-muted { color: var(--muted); }
+.mt-small { font-size: 12px; }
+.mt-gap { margin: 10px 0 0; font-size: 13px; }
+.mt-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mt-team { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-team--r { text-align: right; }
+
+/* данные подгружаются / ожидаемый состав */
+.mt-pending__title, .mt-note__title { margin: 0; font-weight: 600; font-size: 15px; }
+.mt-pending__text, .mt-note__text { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.mt-pending .ui-skeleton { margin-top: 12px; }
+
+/* видео: карточка-ссылка */
+.mt-video > .ui-card { margin: 14px 16px 0; }
+
+/* лучшие игроки */
+.mt-stars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 16px 0; }
+.mt-stars--one { grid-template-columns: minmax(0, 1fr); }
+.mt-star { padding: 14px; }
+.mt-star__cap { font-size: 12px; color: var(--muted); }
+.mt-star__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+.mt-star__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; }
+
+/* новый гол в лайве — короткая подсветка строки */
+.mt-tl .ui-tl__row { border-radius: 12px; }
+.mt-tl .ui-tl__row.mt-new { animation: mt-flash 2.4s ease-out; }
+@keyframes mt-flash {
+  0%, 30% { background: rgba(214, 178, 94, .22); }
+  100% { background: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mt-tl .ui-tl__row.mt-new { animation: none; background: rgba(214, 178, 94, .16); }
+}
+
+/* о матче */
+.mt-about { font-size: 13px; }
+.mt-about__row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.mt-about__row:first-child { padding-top: 0; }
+.mt-about__row:last-child { padding-bottom: 0; border-bottom: none; }
+.mt-about__k { width: 96px; flex: none; color: var(--muted); }
+
+/* личные встречи и форма */
+.mt-h2h { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; text-align: center; }
+.mt-h2h__col b { display: block; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; }
+.mt-h2h__col span { display: block; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted); }
+.mt-h2h__list { margin-top: 8px; }
+.mt-form { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.mt-form__team { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; }
+
+/* составы */
+.mt-lu-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 16px 16px 0; }
+.mt-lu-head > .ui-tabs { min-width: 0; }
+.mt-lu-head__team { font-weight: 600; font-size: 14px; }
+.mt-lu-head__meta { flex: none; text-align: right; }
+.mt-lu-head__formation { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+.mt-list { margin: 6px 0 0; padding: 0; list-style: none; }
+.mt-li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.mt-li:last-child { border-bottom: none; padding-bottom: 0; }
+.mt-li__body { flex: 1; min-width: 0; }
+.mt-li__name { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-li__num { display: inline-block; min-width: 22px; margin-right: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mt-li__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
+.mt-bench { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.mt-out { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.7; }
+.mt-coach { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.mt-coach--solo { margin: 0; }
+
+/* статистика */
+.mt-periods { margin-top: 14px; }
+.mt-stats { margin-top: 8px; }

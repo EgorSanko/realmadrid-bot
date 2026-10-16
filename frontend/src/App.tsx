@@ -7,6 +7,8 @@ import { SECTIONS } from './sections';
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage = lazy(() => import('./dev/UiKitPage'));
+// экран матча — отдельный ленивый чанк
+const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -30,6 +32,14 @@ export function App() {
             element={
               <Suspense fallback={null}>
                 <AdminScreen />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/match/:id/*"
+            element={
+              <Suspense fallback={null}>
+                <MatchScreen />
               </Suspense>
             }
           />
