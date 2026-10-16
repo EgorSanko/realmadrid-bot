@@ -3,6 +3,8 @@ from datetime import datetime, timezone
 
 from fastapi import FastAPI
 
+from app.stream import router as stream_router
+
 VERSION = "0.1.0"
 
 app = FastAPI(
@@ -12,6 +14,7 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None,
 )
+app.include_router(stream_router)
 
 
 @app.api_route("/api/health", methods=["GET", "HEAD"])
