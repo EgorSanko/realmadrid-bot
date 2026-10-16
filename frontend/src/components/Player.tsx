@@ -15,6 +15,24 @@ type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 type WebkitEl = HTMLElement & { webkitRequestFullscreen?: () => void };
 type WebkitDoc = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => void };
 
+/**
+ * Нативный HLS — на Apple WebKit (iPhone/iPad, Safari, WKWebView Telegram), где
+ * canPlayType('application/vnd.apple.mpegurl') отвечает «maybe».
+ * Chrome 14x+ на Windows/Android тоже стал отвечать «maybe», но там берём hls.js:
+ * у него наше восстановление после ошибок и предсказуемое поведение в WebView.
+ * Если MSE нет вовсе, а нативный HLS заявлен — используем нативный.
+ */
+function prefersNativeHls(video: HTMLVideoElement): boolean {
+  if (!video.canPlayType('application/vnd.apple.mpegurl')) return false;
+  const hasMse = 'MediaSource' in window || 'ManagedMediaSource' in window;
+  const ua = navigator.userAgent;
+  const appleWebKit =
+    /iP(hone|ad|od)/.test(ua) ||
+    (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
+    (/AppleWebKit\//.test(ua) && !/(Chrome|Chromium|Android|Edg|OPR|SamsungBrowser)\//.test(ua));
+  return appleWebKit || !hasMse;
+}
+
 const fullscreenElement = () =>
   document.fullscreenElement ?? (document as WebkitDoc).webkitFullscreenElement ?? null;
 
@@ -133,7 +151,7 @@ export function Player({ src, title }: Props) {
     video.muted = true;
     setMuted(true);
 
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    if (prefersNativeHls(video)) {
       video.addEventListener('error', onNativeError);
       video.src = src;
       tryPlay();
