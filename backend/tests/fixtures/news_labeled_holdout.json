@@ -1,0 +1,1940 @@
+{
+ "labeled_at": "2026-10-17",
+ "rule": "Отложенная выборка: ленты тегов Sports.ru «Реал Сосьедад», «Бетис», «Атлетико», «Барселона» (без пересечений с основной выборкой). При проверке фильтра считаются НЕтематическими (tagged=False). Правило разметки — как в news_labeled.json.",
+ "items": [
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/predictions/3563613-la-liga-malaga-real-sosedad-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Малага – Реал Сосьедад, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3563348.html",
+   "title": "Рекордный хет-трик юниора «Милана», ошибка российского вратаря, Дуран забил паненкой. Главное в ЛЕ и ЛК",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117401739-liga-evropy-zalczburg-primet-milan-real-sosedad-v-gostyax-u-yuniona.html",
+   "title": "Лига Европы. «Милан» забил 4 гола «Зальцбургу», «Реал Сосьедад» Захаряна сыграл вничью с «Юнионом», «Ювентус» одолел «Сельту», «Борнмут» разгромил «Штурм» Худякова",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3562953.html",
+   "title": "Шикарные дни россиян в Европе: голы, сухари и победы. Пост радости",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/betting/1117402289-4-60-zaxaryan-zabet-vo-vtorom-matche-podryad-za-sosedad.html",
+   "title": "4.60 – Захарян забьет во втором матче подряд за «Сосьедад»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3562876.html",
+   "title": "Юнион – Реал Сосьедад: бельгийцы не проигрывают восемь матчей, Захарян возвращается в форму перед важным выездом",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/predictions/3561308-liga-evropy-yunion-real-sosedad-prognoz-na-match-i-shansy-komand-na-po.html",
+   "title": "Лига Европы: Юнион – Реал Сосьедад, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3560964.html",
+   "title": "Все голы россиян «Барселоне»: Батраков в ряду с Кержаковым, Аршавиным, Смоловым и Мостовым",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3559994.html",
+   "title": "Как Захарян заменил чемпиона мира, а Кайседо починил «Челси»? Кто посмел обойти «Баварию»? Тактика топ-лиг",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3559985.html",
+   "title": "Захарян забил в Ла Лиге! Впервые за полтора года",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117397265-posle-odnoj-dvux-butylok-piva-podbirat-slova-na-ispanskom-gorazdo-pros.html",
+   "title": "«После одной-двух бутылок пива подбирать слова на испанском гораздо проще, но я не могу пить перед пресс-конференцией». Тренер «Сосьедада» Матараццо об изучении языка",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/mediafootball/1117397209-grishin-o-zaxaryane-dozhili-do-togo-chto-raduemsya-kogda-futbolist-zab.html",
+   "title": "Гришин о Захаряне: «Дожили до того, что радуемся, когда футболист забивает первый гол за год»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117396738-sosedad-o-gole-zaxaryana-my-vsegda-verili-chto-arsen-stanet-odnim-iz-k.html",
+   "title": "«Сосьедад» о голе Захаряна: «Мы всегда верили, что Арсен станет одним из ключевых игроков команды»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117396469-zaxaryan-zabil-vpervye-za-348-dnej-xavbek-sosedada-otlichilsya-vpervye.html",
+   "title": "Захарян забил впервые за 348 дней. Хавбек «Сосьедада» отличился, впервые в сезоне выйдя в старте",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117396297-u-zaxaryana-odin-udar-i-gol-odna-obvodka-76-tochnyx-peredach-i-9-poter.html",
+   "title": "У Захаряна один удар и гол, одна успешная обводка, 76% точных передач и 9 потерь за 56 минут в матче с «Депортиво»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117393997-chempionat-ispanii-malaga-sygraet-s-espanolom-barsa-real-i-atletiko-pr.html",
+   "title": "Чемпионат Испании. «Реал» победил «Вильярреал», «Барселона» разгромила «Хетафе», «Атлетико» победил «Алавес»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117395018-mostovoj-nazval-top-5-rossijskix-futbolistov-igravshix-v-evrope.html",
+   "title": "Мостовой поставил себя на 1-место среди лучших российских футболистов своего поколения, игравших в Европе: «Мостовой, Канчельскис, Аленичев, Карпин, Шалимов и Колыванов»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3553949.html",
+   "title": "Реал Сосьедад – Депортиво: прогноз на матч 11 октября 2026 года, ставки и коэффициенты на Ла Лигу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117392747-40-letnij-silva-vozobnovil-kareru-eks-xavbek-siti-i-sbornoj-ispanii-po.html",
+   "title": "40-летний Сильва возобновил карьеру. Экс-хавбек «Сити» и сборной Испании подписал контракт с «Шатином» из чемпионата Гонконга",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3549238.html",
+   "title": "Давид Сильва вернулся в 40 лет! Была такая ломка по футболу, что поехал в Гонконг",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3546666.html",
+   "title": "С днем рождения, Тео: великий талант, короткий пик и странный финал",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3544306.html",
+   "title": "Йон Мартин — снова среди лучших молодых игроков Европы: защитник «Реал Сосьедад» претендует на Golden Boy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117390767-kubarsi-diomande-buaddi-endrik-estevao-bernal-mastantuono-lyuis-skelli.html",
+   "title": "Кубарси, Диоманде, Буадди, Эндрик, Эстевао, Берналь, Мастантуоно, Льюис-Скелли, Престианни – в числе номинантов на приз Golden Boy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3543092.html",
+   "title": "Арсен Захарян получил шанс в дерби: вспышки мастерства, но пока без стабильности",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3542945.html",
+   "title": "Ла Лига: превью сезона 2026/2027, часть 2. От Осасуны до Эспаньола",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3540794.html",
+   "title": "О пристрастии испанских футболистов к шахматам",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117388860-ballesta-ob-ojyarsabale-xotel-by-videt-ego-v-reale-on-vsegda-zabivaet-.html",
+   "title": "Сальва Бальеста: «Хотел бы видеть Ойарсабаля в «Мадриде». Он всегда забивает за сборную»",
+   "rm": 1,
+   "note": "Бальеста хотел бы видеть Ойарсабаля в «Мадриде» — трансферное мнение"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3535134.html",
+   "title": "Пеллегрино Матараццо определяется с составом",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3534042.html",
+   "title": "Защитник Лукен Бейтии стал важным игроком «Реал Сосьедад»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117386273-karpin-sprosil-kak-dela-turok-batrakov-o-vstreche-s-trenerom-v-sbornoj.html",
+   "title": "Карпин спросил: «Как дела, турок?» Батраков о встрече с тренером в сборной России после перехода в «Галатасарай»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117383955-ojarsabal-realizuet-momenty-luchshe-mbappe-no-dazhe-ne-pretenduet-na-z.html",
+   "title": "«Ойарсабаль реализует моменты лучше Мбаппе, но даже не претендует на «Золотой мяч». У Испании есть недооцененные игроки». Экс-вратарь клубов Ла Лиги Суарес о форвардах",
+   "rm": 0,
+   "note": "Ойарсабаль лучше Мбаппе — сюжет про Ойарсабаля"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3517435.html",
+   "title": "«Реал Сосьедад» выходит на американский рынок: клуб подписал соглашение с академией в Техасе",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3517462.html",
+   "title": "Микель Оярсабаль не забивает уже в восьми матчах",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3510013.html",
+   "title": "Капитаны команд Ла Лиги сезона 2012/13. Сможете всех назвать?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117379107-agent-zaxaryana-o-nevyzove-v-sbornuyu-rossii-esli-karpin-tak-reshil-zn.html",
+   "title": "Агент Захаряна о невызове в сборную России: «Если Карпин так решил, значит, посчитал, что Арсен не заслужил. Считает, что другие достойны больше»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3511406.html",
+   "title": "«Реал Сосьедад» — одна из самых мало бегающих команд Ла Лиги",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3508863.html",
+   "title": "Матарраццо о Захаряне: «Это лишь вопрос времени, когда он выйдет в основном составе",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117377093-zaxaryan-vyshel-na-zamenu-v-3-j-raz-podryad-na-87-j-minute-igry-s-vale.html",
+   "title": "Захарян вышел на замену в 3-й раз подряд – на 87-й минуте игры с «Валенсией». У россиянина 33%-я точность пасов и 3 потери при 6 касаниях",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117374346-chempionat-ispanii-espanol-sygraet-s-elche-sevilya-primet-barselonu.html",
+   "title": "Чемпионат Испании. «Сосьедад» Захаряна одолел «Валенсию», «Реал» проиграл «Атлетико», «Бетис» поделил очки с «Депортиво»",
+   "rm": 0,
+   "note": "обзор тура, «Реал» не первый в перечислении"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3505293.html",
+   "title": "Микель Оярсабаль продолжает подниматься в истории «Реал Сосьедада»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3502563.html",
+   "title": "Идеальный дебют ЦСКА на «Де Кейпе», проблемы «Рубина» в Зальцбурге: хроника 1-го тура Europa Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3504750.html",
+   "title": "«Валенсия» – «Реал Сосьедад»: первая победа после смены тренера, сумеют ли хозяева воспользоваться проблемами басков?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117374378-yamal-rodri-pedri-uilyams-ferran-kukurelya-xejsen-v-sostave-ispanii-na.html",
+   "title": "Ямаль, Родри, Педри, Уильямс, Ферран, Кукурелья, Хейсен, Руис – в составе Испании на матчи с Англией, Хорватией и Чехией",
+   "rm": 0,
+   "note": "состав сборной Испании с Кукурельей и Хейсеном в перечислении"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/betting/1117374274-barselona-stala-podavlyayushhim-favoritom-la-ligi-u-bukmekerov-real-2-.html",
+   "title": "«Барселона» стала подавляющим фаворитом Ла Лиги у букмекеров. «Реал» – 2-й, «Атлетико» – 3-й, «Бетис» – 4-й",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3499654.html",
+   "title": "5:0 «Ювентуса», почти ассист Захаряна, победа из 2-го дивизиона. Главное в ЛЕ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117371192-chempionat-ispanii-real-v-gostyax-u-elche-v-sredu-atletiko-sygraet-s-o.html",
+   "title": "Чемпионат Испании. «Бетис» обыграл «Хетафе», «Малага» уступила «Вильярреалу»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117374056-zaxaryan-za-11-minut-protiv-bornmuta-15-kasanij-10-tochnyx-peredach-4-.html",
+   "title": "Захарян за 11 минут против «Борнмута»: 15 касаний, 10 точных передач, 4 потери. Россиянин вышел на замену во второй игре «Сосьедада» подряд",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117373219-liga-evropy-yuventus-primet-nek-real-sosedad-protiv-bornmuta-marsel-v-.html",
+   "title": "Лига Европы. «Ювентус» забил 5 голов НЕК, «Реал Сосьедад» Захаряна уступил «Борнмуту», «Бешикташ» разгромил «Марсель»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "video.sports.ru/video/CsHrXK8Z1si1IPGWnQwl7p-JSFH2j5wq6MYwu1ZBWVs",
+   "title": "Скандал в Манчестере, Сафонов – стена, Мбаппе возьмет ЗМ?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3448673.html",
+   "title": "Вся Европа — от Никосии до Полярного круга: превью 1-го тура Europa Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3487439.html",
+   "title": "Разгром в Барселоне, удушение на «Сан-Сиро», Клопп против Магата: хроника 2-го дня Champions Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3497112.html",
+   "title": "«Реал Сосьедад» – «Борнмут»: европейский дебют англичан и проверка обороны хозяев",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117372782-prizovoj-fond-superkubka-ispanii-v-2027-m-sostavit-45-mln-evro-trofej-.html",
+   "title": "Призовой фонд Суперкубка Испании в 2027-м составит 45 млн евро. Трофей разыграют «Реал», «Барса», «Сосьедад» и «Атлетико»",
+   "rm": 0,
+   "note": "Суперкубок: четыре клуба в перечислении"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/betting/blogs/3453143.html",
+   "title": "Лига Европы – самый непредсказуемый турнир сезона",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117372427-patrik-shik-samyj-populyarnyj-kapitan-pered-1-m-turom-fentezi-le-v-top.html",
+   "title": "Шик – самый популярный капитан перед 1-м туром Фэнтези ЛЕ. В топ-3 еще Павлидис и Пулишич",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3495929.html",
+   "title": "Самый слабый состав Лиги Европы. И самый интересный",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/betting/blogs/3493282.html",
+   "title": "Аморим против клуба детства, дебют Армении и шанс Захаряна. Интриги 1-го тура ЛЕ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117372286-patrik-shik-samyj-populyarnyj-v-fentezi-le-pered-1-m-turom.html",
+   "title": "Патрик Шик – самый популярный в Фэнтези ЛЕ перед 1-м туром",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3455839.html",
+   "title": "«Зенит» сыграет на «Камп Ноу», ПСЖ — на «Донбасс Арене»: превью 2-го дня Champions Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3495385.html",
+   "title": "«Реал Сосьедад» возвращается в Европу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3484377.html",
+   "title": "Драма в Манчестере, бойня на «Кальдероне», тактическая дуэль «Милана» и «Реала»: хроника 1-го дня Champions Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3493259.html",
+   "title": "Вальверде отказал Браулио. Теперь “Валенсия” считает деньги на нового тренера",
+   "rm": 0,
+   "note": "Эрнесто Вальверде (тренер), не Федерико"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117371632-karpin-o-sostave-sbornoj-mironov-i-anton-miranchuk-byli-by-v-spiske-es.html",
+   "title": "Карпин о составе сборной: «Следим за Захаряном, со счетов его никто не списывает. Миронов и Антон Миранчук были бы в списке, если бы не проблемы со здоровьем»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3492821.html",
+   "title": "Таке Кубо: Наша цель — попытаться выиграть Лигу Европы»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3492490.html",
+   "title": "Клуб, который разгромил «Манчестер Юнайтед» и вдохновил «Реал». О «Коринтиан-Кэжуалз»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3439794.html",
+   "title": "Анчелотти против Зидана, Дрогба возвращается в Мюнхен, Тен Хаг — на «Олд Траффорд»: превью 1-го дня Champions Legacy",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3488787.html",
+   "title": "«Барса» в плюсе даже с такими тратами – без рычагов, «Реал» доминирует с рекордом. Разбор новых лимитов на траты в Ла Лиге",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117367157-chempionat-ispanii-sevilya-protiv-valensii-real-sygraet-v-subbotu-matc.html",
+   "title": "Чемпионат Испании. «Бетис» одолел «Вильярреал»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117371070-valerij-gazzaev-zaxaryan-napominaet-zidana-takaya-zhe-skorost-texnika-.html",
+   "title": "Валерий Газзаев: «Захарян напоминает Зидана, такая же скорость, техника, рост. Хочется, чтобы Арсен провел качественную карьеру в Европе, у него есть пример Мхитаряна»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117370207-simeone-o-30-s-sosedadom-vsegda-est-chto-uluchshat-atletiko-sejchas-na.html",
+   "title": "Симеоне о 3:0 с «Сосьедадом»: «Всегда есть что улучшать. «Атлетико» сейчас находится в процессе построения команды»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117370194-remiro-pro-03-ot-atletiko-schet-ne-otrazhaet-togo-chto-proisxodilo-na-.html",
+   "title": "Ремиро про 0:3 от «Атлетико»: «Счет не отражает игры, до пенальти «Сосьедад» доминировал. Судья говорил, что был рикошет, для меня это не пенальти»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117370181-zaxaryan-za-11-minut-protiv-atletiko-13-kasanij-10-tochnyx-peredach-3-.html",
+   "title": "Захарян за 11 минут против «Атлетико»: 13 касаний, 10 точных передач, 3 потери",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117369223-sosedad-zaxaryana-primet-atletiko-v-5-m-ture-la-ligi-nachalo-matcha-v-.html",
+   "title": "«Атлетико» победил «Сосьедад» Захаряна в гостях в 5-м туре Ла Лиги – 3:0. Гримальдо реализовал пенальти на 84-й и ассистировал Дэвиду на 90-й, Симеоне забил на 95-й",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117370175-zaxaryan-vyshel-na-zamenu-na-85-j-minute-matcha-s-atletiko-arsen-prove.html",
+   "title": "Захарян вышел на замену на 85-й минуте матча с «Атлетико». Арсен провел на скамейке предыдущие 4 игры «Сосьедада»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3489382.html",
+   "title": "Симеоне сожалеет об отсутствии «очень важного» Барриоса в матче с «Реал Сосьедадом»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/fantasy/football/europa-league",
+   "title": "Зовем вас в Фэнтези Лиги Европы! Самое время вдумчиво собрать составы",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117369357-alvares-ne-sygraet-s-sosedadom-zaxaryana-iz-za-travmy-forvard-atletiko.html",
+   "title": "Альварес не сыграет с «Сосьедадом» Захаряна из-за травмы. Форвард «Атлетико» досрочно завершил предматчевую тренировку",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117369261-fomin-o-zaxaryane-eto-superfutbolist-u-nego-budet-shans-igrat-v-dinamo.html",
+   "title": "Фомин о Захаряне: «Это суперфутболист, у него будет шанс играть. В «Динамо» поддерживают с ним связь»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3487711.html",
+   "title": "«Реал Сосьедад» – «Атлетико»: баски набрали ход, мадридцы пытаются остановить серию поражений",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117368939-alvares-travmirovalsya-na-trenirovke-atletiko-uchastie-forvarda-v-matc.html",
+   "title": "Альварес травмировался на тренировке «Атлетико». Участие форварда в матче с «Сосьедадом» маловероятно",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3484482.html",
+   "title": "«Реал Сосьедад» увеличил потолок зарплат до 137 миллионов, но выпал из топ-5 Ла Лиги",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3483682.html",
+   "title": "«Реал Сосьедад» ищет идеальную пару в центре поля",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3483322.html",
+   "title": "«Обжорство матчами»: зачем в Ла Лиге будут играть 10 дней подряд?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117366788-eks-trener-sosedada-alguasil-smenil-mendilibara-v-olimpiakose-klub-ne-.html",
+   "title": "Экс-тренер «Сосьедада» Альгуасиль сменил Мендилибара в «Олимпиакосе». Клуб уступил в отборе ЛЧ и сыграет в ЛЕ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117366361-u-reala-samyj-vysokij-limit-rasxodov-na-sostav-v-la-lige-rekordnye-832.html",
+   "title": "У «Реала» самый высокий лимит расходов на состав в Ла Лиге – рекордные 832,8 млн евро. Показатель «Барсы» увеличился до 582 млн, потолок «Севильи» – 20,1 млн",
+   "rm": 1
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117366257-luis-de-la-fuente-zolotoj-myach-dolzhen-poluchit-ispanecz-dumayu-yamal.html",
+   "title": "Луис Де ла Фуэнте: «Золотой мяч» должен получить испанец. Думаю, Ямаль может выиграть если не в этом году, то в следующем – вряд ли ему нужно много времени»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117364419-radimov-o-zaxaryane-v-sostave-sbornoj-klassnaya-istoriya-emu-nuzhno-po.html",
+   "title": "Радимов о вызове Захаряна в сборную: «Классная история, ему нужно помочь. Арсен не мог разучиться играть»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3477303.html",
+   "title": "«Золотой мяч» забыл об историческом годе Оярсабаля — капитана «Реал Сосьедад» не включили в топ-30",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3475429.html",
+   "title": "Пеллегрино Матараццо: «Очиенг не только быстрый — он понимает свои сильные стороны и знает, что нам нужно»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3475080.html",
+   "title": "Джоб Очиенг: «Я еще не чувствую себя игроком Примеры»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3474499.html",
+   "title": "За кем следить в этом еврокубковом сезоне?!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3473298.html",
+   "title": "Миранчук против Месси, Батраков в основе, Головин обыграл «ПСЖ». Главное о наших легионерах",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/blogs/3474341.html",
+   "title": "Еще недавно за его переезд в Испанию собирали деньги всей деревней. Теперь Джоб Очиенг забивает в Ла Лиге",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117357799-chempionat-ispanii-real-v-gostyax-u-betisa-atletiko-sygraet-s-atletiko.html",
+   "title": "Чемпионат Испании. «Сосьедад» Захаряна победил «Эльче», «Сельта» сыграла вничью с «Хетафе»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117362619-zaxaryan-provel-v-zapase-4-iz-5-matchej-sosedada-v-etom-sezone.html",
+   "title": "Захарян провел в запасе 4 из 5 матчей «Сосьедада» в этом сезоне",
+   "rm": 0
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "sports.ru/football/1117362302-press-attashe-sosedada-o-zaxaryane-arsen-xorosho-rabotaet-i-schastliv-.html",
+   "title": "Пресс-атташе «Сосьедада» о Захаряне: «Арсен хорошо работает и счастлив в клубе. У него нет намерения покидать «Реал» на данный момент»",
+   "rm": 0,
+   "note": "«покидать «Реал»» — здесь это «Реал Сосьедад»"
+  },
+  {
+   "feed": "hold_real-sociedad",
+   "id": "video.sports.ru/video/CSFAVppKB4cxBj1iUXOGqi-k4Fv1faEGHM0gDmCvoMI",
+   "title": "Как аренда спасала карьеры и возвращала игроков на топ-уровень",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/predictions/3563607-la-liga-betis-barselona-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Бетис – Барселона, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117402161-dom-antoni-ograbili-vo-vremya-matcha-betisa-s-portu-v-lch-bolshe-vsego.html",
+   "title": "Дом Антони ограбили во время матча «Бетиса» с «Порту» в ЛЧ: «Больше всего ранит и злит чувство незащищенности. Мне стало еще яснее одно: нет ничего ценнее, чем жизнь и благополучие моей семьи»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117398577-real-nedovolen-chto-igru-s-valensiej-v-12-m-ture-la-ligi-naznachili-na.html",
+   "title": "«Реал» недоволен, что игру с «Валенсией» в 12-м туре Ла Лиги назначили на субботу после матча в среду с АЕК. Другие клубы Примеры, участвующие в ЛЧ, сыграют в воскресенье",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/predictions/3560678-liga-chempionov-betis-portu-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Лига чемпионов: Бетис – Порту, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117395947-barsa-soxranila-liderstvo-v-la-lige-vyigrav-vse-8-matchej.html",
+   "title": "«Барса» продолжает лидировать в Ла Лиге, выиграв все 8 матчей",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3553950.html",
+   "title": "Бетис – Осасуна: прогноз на матч 11 октября 2026 года, ставки и коэффициенты на Ла Лигу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3545371.html",
+   "title": "Лучший в Испании после Рафиньи – кипер «Бетиса». Уже остановил Мбаппе и готов к «Барсе»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/betting/blogs/3532422.html",
+   "title": "Рекордная «Барселона», «Тоттенхэм» без голов и «Монако» без поражений. Главные серии топ-5",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/betting/blogs/3538011.html",
+   "title": "Сенсации последних 15 лет – титулы «Лестера», «Атлетико», «Туна» и других. Кто присоединится в этом сезоне?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117387694-fanaty-irlandii-brosali-myachi-s-flagami-palestiny-vo-vremya-matcha-s-.html",
+   "title": "Фанаты Ирландии бросали мячи с флагами Палестины во время матча с Австрией, мужчина выбежал на поле с флагом. Игру Лиги наций дважды останавливали",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3530485.html",
+   "title": "Ла Лига: превью сезона 2026/2027, часть 1. От Алавеса до Малаги",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117386031-belerin-pro-otkaz-snyatsya-v-chernom-share-mne-pokazalos-eto-vtorzheni.html",
+   "title": "Бельерин про отказ сняться в «Черном шаре»: «Мне это показалось вторжением в чужую сферу. Такая работа требует уважения, не считал себя подходящим человеком для роли»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117384798-flik-luchshij-trener-sentyabrya-v-la-lige-barselona-vyigrala-vse-4-mat.html",
+   "title": "Флик – лучший тренер сентября в Ла Лиге. «Барселона» выиграла все 4 матча с общим счетом 19:5",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3526822.html",
+   "title": "Между прессингом и подстраховкой: кто чаще всех перехватывает в центре. Ла Лига.",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117384104-mbappe-diskvalificzirovan-na-3-matcha-lch-xavbek-lillya-ne-sygraet-s-a.html",
+   "title": "Этан Мбаппе дисквалифицирован на 3 матча ЛЧ за отмашку рукой в лицо Натану. Хавбек «Лилля» не сыграет с «Арсеналом», «Галатасараем» и «Буде-Глимт»",
+   "rm": 0,
+   "note": "Этан Мбаппе, брат Килиана"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117382513-belerina-rassmatrivali-na-rol-v-ispanskom-filme-chernyj-shar-kartina-b.html",
+   "title": "Бельерина рассматривали на роль в фильме «Черный шар», который выдвинут на «Оскар» от Испании. Он мог сыграть футболиста, актера и соратника Лорки",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3453534.html",
+   "title": "Большое – нет, просто огромное – исследование новичков топ-лиг. За 30 лет!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117380481-ruis-o-mame-igraya-v-betise-ezdil-s-nej-rano-utrom-i-spal-v-mashine-pe.html",
+   "title": "Руис о маме: «Играя в «Бетисе», ездил с ней рано утром и спал в машине перед тренировками. Было тяжелое финансовое положение. Уже в «Наполи» сказал ей уволиться – один из лучших моментов в моей жизни»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117379727-kukurelya-o-tom-chto-real-begaet-menshe-vsex-v-la-lige-ob-etom-zagovor.html",
+   "title": "Кукурелья о том, что «Реал» бегает меньше всех в Ла Лиге: «Об этом заговорили после поражений в дерби и от «Бетиса». Необходимо выигрывать матчи, тогда никто не будет это обсуждать»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117379361-flik-simeone-i-pellegrini-nominirovany-na-priz-luchshemu-treneru-mesya.html",
+   "title": "Флик, Симеоне и Пеллегрини номинированы на приз лучшему тренеру месяца в Ла Лиге",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117379226-transfer-mory-iz-portu-v-romu-priznan-the-guardian-luchshim-po-sootnos.html",
+   "title": "Трансфер Моры из «Порту» в «Рому» признан The Guardian лучшим по соотношению цена – качество в летнее окно. Переход Обамеянга в «Депортиво» – на 3-м месте, Франа в «Бетис» – на 9-м",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117376992-betis-dognal-atletiko-v-tablicze-la-ligi-posle-nichej-s-deportivo-real.html",
+   "title": "«Бетис» догнал «Атлетико» и опередил «Реал» в таблице Ла Лиги после ничьей с «Депортиво». Команда Моуринью опустилась на 4-е место",
+   "rm": 1,
+   "note": "«Бетис» обогнал «Реал», «команда Моуринью опустилась» — сюжет и про Реал"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117376838-real-opustilsya-na-3-e-mesto-propustiv-vpered-atletiko-posle-porazheni.html",
+   "title": "«Реал» опустился на 3-е место, пропустив вперед «Атлетико» после поражения в дерби. Команда Моуринью на 6 очков отстает от «Барселоны» после 7 туров Ла Лиги",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117376051-barsa-soxranila-liderstvo-v-la-lige-vyigrav-vse-7-matchej.html",
+   "title": "«Барса» сохранила лидерство в Ла Лиге, выиграв все 7 матчей",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3504392.html",
+   "title": "«Депортиво» – «Бетис»: возвращение в Примеру против чемпионских амбиций, кто выиграет борьбу за центр поля?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/betting/1117374255-barsa-vyigraet-la-ligu-s-veroyatnostyu-v-67-na-titul-reala-dayut-26-7-.html",
+   "title": "«Барса» выиграет Ла Лигу с вероятностью в 67%. На титул «Реала» дают 26,7%, на золото «Атлетико» – 3,1% (Opta)",
+   "rm": 0,
+   "note": "вероятности чемпионства: Барса, Реал, Атлетико"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117373936-betis-nabral-15-iz-18-ochkov-v-la-lige-i-sravnyalsya-s-realom-bolshe-t.html",
+   "title": "«Бетис» набрал 15 из 18 очков в Ла Лиге и сравнялся с «Реалом». Больше только у «Барсы»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117373082-barselona-lidiruet-v-la-lige-s-18-ochkami-posle-6-turov-real-otstaet-n.html",
+   "title": "«Барселона» лидирует в Ла Лиге с 18 очками после 6 туров, «Реал» отстает на 3 балла, «Атлетико» – на 5. «Вильярреал» идет в зоне вылета",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117372009-messi-provedet-proshhalnyj-match-za-sbornuyu-argentiny-6-oktyabrya.html",
+   "title": "Месси сыграет прощальный матч за сборную Аргентины 6 октября",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117371084-betis-nabral-12-iz-15-ochkov-v-la-lige-kak-i-real-u-kotorogo-sevilczy-.html",
+   "title": "«Бетис» набрал 12 из 15 очков в Ла Лиге – как и «Реал», у которого севильцы выиграли. Только у «Барсы» больше",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3491334.html",
+   "title": "«Бетис» – «Хетафе»: хозяева набрали ход, гости снова делают ставку на закрытый футбол",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/betting/blogs/3489929.html",
+   "title": "Вильярреал — Бетис: прогноз и разбор матча 14 сентября 2026",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117370177-barselona-lidiruet-v-la-lige-s-15-ochkami-posle-5-turov-real-otstaet-n.html",
+   "title": "«Барселона» лидирует в Ла Лиге с 15 очками после 5 туров, «Реал» отстает на 3 балла, «Атлетико» – на 5. «Вильярреал» и «Валенсия» сейчас в зоне вылета",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3489584.html",
+   "title": "«Вильярреал» – «Бетис»: хозяева ищут первую победу, севильцы приехали после яркого старта",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117367545-rafinya-olise-ferran-edegor-kurtua-v-komande-nedeli-lch.html",
+   "title": "Рафинья, Олисе, Ферран, Эдегор, Куртуа, Батурина, Дест – в команде недели ЛЧ",
+   "rm": 0,
+   "note": "команда недели ЛЧ с Куртуа в перечислении"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117367296-mourinyu-o-tom-chto-komitet-sudej-poderzhal-reshenie-ne-perebivat-pena.html",
+   "title": "Моуринью о том, что комитет судей поддержал решение не перебивать пенальти «Реала» в матче с «Бетисом»: «В них силен дух солидарности, они крайне редко критикуют решения коллег»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117367294-torres-igrokom-nedeli-v-lige-chempionov.html",
+   "title": "Ферран – игрок недели в ЛЧ. У него хет-трик против «Слована»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "video.sports.ru/video/fJKeuq0X5s8wJ57jlEV4Zr55DEhagODw7C7bpRYDukE",
+   "title": "Моуринью вернулся, Эдегор – герой «Арсенала», дебют Батракова: большой обзор 1-го тура ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3477642.html",
+   "title": "С возвращением, Лига Чемпионов! Мадридский триллер, новые рекорды и автоголы. Итоги первого дня ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3475720.html",
+   "title": "Дикие ошибки «Интера», Мбаппе догнал Рауля, Мбаппе удалился, Энцо впервые отдал на Холанда. Главное в ЛЧ",
+   "rm": 0,
+   "note": "дайджест тура ЛЧ: «Мбаппе догнал Рауля, Мбаппе удалился»"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "video.sports.ru/video/F1HOdnzF46yWQfE99QqhIczv1uVcCeCwpNSsJpHjEZc",
+   "title": "Провал «Реала», праймовый «Арсенал», огненный футбол в Италии",
+   "rm": 1,
+   "note": "дайджест, «Провал «Реала»» первым пунктом"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3476082.html",
+   "title": "Музыка стадионов. Какие песни мы услышим при просмотре Лиги чемпионов?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117362728-liga-chempionov-startuet-real-protiv-intera-man-siti-v-gostyax-u-portu.html",
+   "title": "Лига чемпионов стартовала! «Реал» победил «Интер», «Ман Сити» был сильнее «Порту», «Боруссия» сыграла 3:2 с «Вильярреалом»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117364092-brat-mbappe-poluchil-krasnuyu-v-matche-s-betisom-za-otmashku-rukoj-v-l.html",
+   "title": "Брат Мбаппе получил красную в матче с «Бетисом» за отмашку рукой в лицо Натану. Арбитр удалил Этана, посмотрев повтор",
+   "rm": 0,
+   "note": "Этан Мбаппе, брат Килиана"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117363880-brat-mbappe-otdal-assist-na-uedu-v-matche-s-betisom-u-etana-pervoe-rez.html",
+   "title": "Брат Мбаппе отдал ассист на Уэду в матче с «Бетисом». У Этана первое результативное действие за «Лилль» в 2026-м",
+   "rm": 0,
+   "note": "Этан Мбаппе, брат Килиана"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3473978.html",
+   "title": "«Реал» с Жозе, «МЮ» вернулся, «Сабах» и «Викинг» – все 36 клубов ЛЧ в большом превью",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "video.sports.ru/video/up9XLSKq2LyOyRhokRoTxQowRY5Qzwm52ADndB41Tsw",
+   "title": "«Реал» – «Интер», «Боруссия» – «Вильярреал», «Порту» – «Ман Сити». Разбираем игровой день ЛЧ",
+   "rm": 1,
+   "note": "разбор игрового дня ЛЧ, «Реал – Интер» первым"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117363288-morata-o-slovax-mourinyu-pro-sudejstvo-s-betisom-ya-zhdal-kogda-on-ska.html",
+   "title": "Мората о словах Моуринью про судейство с «Бетисом»: «Я ждал, когда он скажет что-то подобное – меня это веселит. Жозе добавляет зрелища, буду смотреть класико ради него»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117363198-alvaro-morata-var-vse-uslozhnyaet-mne-bolshe-nravilsya-futbol-do-nego-.html",
+   "title": "Альваро Мората: «ВАР все усложняет, мне больше нравился футбол до него. Иногда ты сам не знаешь, назначат ли за фол на тебе пенальти. Судьи могут ошибаться, мы с этим смирились»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3474072.html",
+   "title": "Ориентировочные составы команд ЛЧ сезона-26/27",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3473853.html",
+   "title": "#x26amp;gt;«Лилль» – «Бетис»: прогноз на матч 1-го тура Лиги чемпионов 8 сентября 2026 года",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3473625.html",
+   "title": "Реал впервые споткнулся, Обамеянг в одиночку вынес Вильярреал, а ПСЖ снова буксует",
+   "rm": 1,
+   "note": "обзор тура, «Реал впервые споткнулся» первым"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117362059-mourinyu-o-matche-s-interom-ya-xochu-pobedit-a-ne-vystupit-tak-zhe-xor.html",
+   "title": "Моуринью о матче с «Интером»: «Я хочу победить, а не выступить так же хорошо, как против «Бетиса», и проиграть. «Реал» играл как команда, но произошла аномалия»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117361986-mourinyu-o-sudejstve-s-betisom-pochemu-ne-perebili-penalti-mozhet-poto.html",
+   "title": "Моуринью о судействе с «Бетисом»: «Почему не перебили пенальти? Может, потому что ВАР не знает правил, а может, не хотели этого делать. Почему судью не позвали к монитору? Странно»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117361927-valdano-pro-01-reala-s-betisom-tyazhelyj-udar-kazalos-chto-komanda-sta.html",
+   "title": "Вальдано про 0:1 «Реала» с «Бетисом»: «Тяжелый удар. Казалось, что команда становится все сильнее, но им не хватило голов. Этот матч вышел за рамки нормы»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3472743.html",
+   "title": "От Джека Грилиша до Яна Диоманде: 15 наших любимых трансферов летнего трансферного окна",
+   "rm": 0,
+   "note": "любимые трансферы окна, среди них Ян Диоманде"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117361615-alaves-oboshel-real-i-idet-2-m-v-la-lige-posle-4-turov-barsa-lidiruet-.html",
+   "title": "«Алавес» опередил «Реал» и идет 2-м в Ла Лиге после 4 туров. «Барса» лидирует, «Атлетико» – 6-й",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3471625.html",
+   "title": "Мощное разоблачение «Реал Мадрид ТВ». Нашли архивное интервью арбитра игры с «Бетисом»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3471014.html",
+   "title": "Вечер, когда всё против «Мадрида» было.",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3470067.html",
+   "title": "😣 «Бетис» продал талантливого воспитанника в последние часы ТО, чтобы не нарушить FFP Ла Лиги. Игрок и его мать в слезах уехали с клубной базы",
+   "rm": 0
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117360237-eks-direktor-barsy-frejsha-o-reale-im-proshhayut-udalenie-gyulera-i-da.html",
+   "title": "Экс-директор «Барсы» Фрейша о «Реале»: «Им прощают удаление Гюлера и дарят нелепый пенальти. И даже так они умудряются проиграть. Будем слушать их нытье всю неделю»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117359435-komitet-sudej-ispanii-poderzhal-reshenie-ne-perebivat-penalti-reala-v-.html",
+   "title": "Комитет судей Испании подержал решение не перебивать пенальти «Реала» в матче с «Бетисом». Одна нога Бартры осталась на земле, вторая была в воздухе",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117359251-betis-potrollil-real-i-ekspertov-el-chiringuito-posle-pobedy-providczy.html",
+   "title": "«Бетис» потроллил «Реал» и экспертов El Chiringuito, ждавших победу «Мадрида». Севильцы нанесли первое поражение в сезоне команде Моуринью",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117359174-vinisius-proignoriroval-mourinyu-i-proshel-mimo-posle-porazheniya-ot-b.html",
+   "title": "Винисиус проигнорировал Моуринью и прошел мимо тренера после поражения от «Бетиса»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3466555.html",
+   "title": "«Реал» проиграл! Вини махнул по пустым, Мбаппе смазал пенальти на 90+4, гол Эспи отменили – что это было?",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358972-zhoze-mourinyu-betis-pytaetsya-povliyat-na-sudyu-a-futbolisty-reala-os.html",
+   "title": "Жозе Моуринью: «Бетис» пытается влиять на судью, а футболисты «Реала» остаются на ногах. Передо мной игрок выглядел как мертвый – уже думал, что едет скорая, но нет. Вот о чем речь»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358940-pellegrini-o-zhalobax-mourinyu-betis-pobedil-real-ne-iz-za-sudi-bylo-l.html",
+   "title": "Пеллегрини о жалобах Моуринью: «Бетис» победил «Реал» не из-за судьи. Было ли бы на одну желтую больше или меньше – не думаю, что это стало бы решающим фактором»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358897-bartra-pro-penalti-v-matche-s-realom-znakomyj-arbitr-obyasnil-mne-esli.html",
+   "title": "Бартра про пенальти в матче с «Реалом»: «Знакомый арбитр объяснил мне: если нога в воздухе, пенальти не перебивается. Все получилось»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358885-mourinyu-pro-01-s-betisom-im-povezlo-oni-igrali-na-nichyu-ne-ponimayu-.html",
+   "title": "Моуринью про 0:1 с «Бетисом»: «Им повезло, они играли на ничью. Не понимаю, почему «Мадрид» проиграл – мы доминировали, создавали моменты, провели отличный матч»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358884-sluchis-eto-s-barsoj-penalti-perebili-by-zabej-espi-za-barselonu-gol-b.html",
+   "title": "«Случись это с «Барсой», пенальти перебили бы. Забей Эспи за «Барселону», гол бы не отменили». ТВ «Реала» после 0:1 с «Бетисом»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358879-vinisius-poluchil-zheltuyu-za-spory-s-arbitrom-posle-matcha-s-betisom-.html",
+   "title": "Винисиус получил желтую за споры с арбитром после матча с «Бетисом». Вингер «Реала» высказывал что-то на поле после свистка",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358865-mbappe-ne-zabil-penalti-betisu-vales-otrazil-udar-var-proveryal-epizod.html",
+   "title": "Мбаппе не забил пенальти «Бетису» – Вальес отразил удар. ВАР проверял эпизод на предмет забегания игроков в штрафную, но не дал перебить 11-метровый",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358864-gol-espi-betisu-otmenili-na-87-j-pri-schete-01-forvard-reala-byl-v-ofs.html",
+   "title": "Гол Эспи «Бетису» отменили при счете 0:1 на 89-й минуте. Форвард «Реала» был в офсайде в начале атаки",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358851-u-reala-pervoe-porazhenie-posle-vozvrashheniya-mourinyu-01-s-betisom-d.html",
+   "title": "У «Реала» первое поражение после возвращения Моуринью – 0:1 с «Бетисом». До этого было 3 победы, дальше – «Интер» в ЛЧ",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117357891-betis-sygraet-s-realom-v-4-m-ture-la-ligi.html",
+   "title": "«Реал» проиграл «Бетису» на выезде – 0:1! Пэрротт забил на 81-й, гол Эспи отменили, Мбаппе не реализовал пенальти на 94-й",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358833-mourinyu-poluchil-zheltuyu-za-spory-s-sudej-v-matche-s-betisom.html",
+   "title": "Моуринью получил желтую за споры с судьей в матче с «Бетисом»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358826-igroki-betisa-trebovali-pokazat-gyuleru-2-yu-zheltuyu-za-fol-na-roke-n.html",
+   "title": "Игроки «Бетиса» требовали показать Гюлеру 2-ю желтую за фол на Роке на 53-й минуте. Судья не стал удалять хавбека «Реала»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/1117358766-igroki-reala-zhalovalas-na-sdutyj-myach-trizhdy-za-tajm-matcha-s-betis.html",
+   "title": "Игроки «Реала» жаловалась на сдутый мяч трижды за тайм матча с «Бетисом» – его каждый раз меняли",
+   "rm": 1
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3465041.html",
+   "title": "Мы не пересекались?.. 04/09/2026. Бетис - Реал. И даже Престон и Сан-Паулу",
+   "rm": 0,
+   "note": "блог «Бетис – Реал» про комментаторов"
+  },
+  {
+   "feed": "hold_betis",
+   "id": "sports.ru/football/blogs/3464889.html",
+   "title": "Джессика Гойкоэчеа",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3563971.html",
+   "title": "Эспаньол – Атлетико: мадридцы выиграли пять матчей подряд, но в Барселоне их ждет неудобный соперник",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117403454-novym-agentom-alvaresa-veroyatno-stanet-barkero-sposobstvovavshij-pere.html",
+   "title": "Новым агентом Альвареса, вероятно, станет Баркеро, способствовавший переходу Родри в «Барселону». «Арсенал» беспокоится, что его шансы подписать Хулиана снизятся (Diario Sport)",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117403440-kerrik-pro-02-ot-atletiko-myu-spravilsya-s-ispytaniem-dostojno-eto-ukr.html",
+   "title": "Кэррик про 0:2 от «Атлетико»: «МЮ» справился с испытанием достойно – это укрепило нашу веру в себя и сделало сильнее»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117403191-korneev-o-batrakove-ya-predlagal-ego-barselone-i-atletiko-deku-ego-zna.html",
+   "title": "Корнеев о Батракове: «Я предлагал его «Барселоне» и «Атлетико». Деку его знает, наверняка и Флик тоже»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3553064.html",
+   "title": "Новый совладелец «Атлетико» – суперзвезда НБА! У модника Шэя контракт на $285 млн и уже пачка бизнес-проектов",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/predictions/3563602-la-liga-espanol-atletiko-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Эспаньол – Атлетико, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117400931-myu-oshtrafuet-lisandro-za-kritiku-v-adres-kluba-posle-porazheniya-ot-.html",
+   "title": "«МЮ» оштрафует Лисандро за критику в адрес клуба после поражения от «Атлетико» (The Athletic)",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399821-odin-iz-igrokov-myu-povzdoril-s-lisandro-iz-za-slov-posle-02-s-atletik.html",
+   "title": "Один из игроков «МЮ» повздорил с Лисандро из-за слов о составе после 0:2 с «Атлетико». С защитником могут не продлить контракт (Sky Sports)",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399702-lidery-manchester-yunajted-razdelyayut-slova-lisandro-zashhitnik-raskr.html",
+   "title": "Лидеры «Манчестер Юнайтед» разделяют позицию Лисандро. Защитник раскритиковал клуб после 0:2 от «Атлетико»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3561038.html",
+   "title": "От таких экспериментов Кэррика «МЮ» только хуже",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399673-amad-posle-matcha-s-atletiko-grebanyj-pozor-u-menya-net-slov.html",
+   "title": "Амад после матча с «Атлетико»: «Гребаный позор. У меня нет слов»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3560560.html",
+   "title": "«Бавария» и «Интер» отхватили в триллерах, нога Акинфеева, Моуриньо забил победный. Главное в ЛЧ, кроме гола Батракова",
+   "rm": 0,
+   "note": "«Моуриньо забил победный» — другой человек"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/betting/blogs/3561039.html",
+   "title": "Увольнение Кэррика из «МЮ» прямо сейчас – какова вероятность?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3561042.html",
+   "title": "«МЮ» получил и от «Атлетико»: с пропущенным на 53-й секунде. Что пробовал изменить Кэррик?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399405-tilemans-pro-02-s-atletiko-nepriyatno-propuskat-uzhe-na-pervoj-minute-.html",
+   "title": "Тилеманс про 0:2 с «Атлетико»: «Неприятно пропускать уже на первой минуте. «МЮ» создавал моменты, но этого было недостаточно»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399322-yang-o-slovax-lisandro-chego-on-xochet-polnostyu-novyj-sostav-etogo-ne.html",
+   "title": "Янг о словах Лисандро про «МЮ»: «Чего он хочет – полностью новый состав? Этого не будет. Работа на трансфером рынке должна быть эффективнее, но на это нужно время»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399308-simeone-o-20-s-myu-posle-smerti-materi-koke-bolno-perezhivat-poteryu-c.html",
+   "title": "Симеоне о 2:0 с «МЮ» после смерти матери Коке: «Больно переживать потерю члена семьи такого важного для «Атлетико» игрока, но ребята провели отличный матч»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399294-kerrik-o-02-s-atletiko-myu-okazalsya-v-neprostom-polozhenii-v-samom-na.html",
+   "title": "Кэррик о 0:2 с «Атлетико»: «МЮ» оказался в непростом положении в самом начале, но потом втянулся в игру. Разочарован, что мы не извлекли большего из моментов, которые у нас были»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399291-lisandro-martines-myu-nelzya-postoyanno-menyat-trenerov-kerrik-delaet-.html",
+   "title": "Лисандро Мартинес: «МЮ» нельзя постоянно менять тренеров – Кэррик делает все, что в его силах. Что насчет других областей? Я жду больших вложений, жду большего от технического директора»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399279-atletiko-vyigral-5-matchej-podryad-s-obshhim-schetom-132.html",
+   "title": "«Атлетико» выиграл 5 матчей подряд с общим счетом 13:2",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399272-myu-ne-vyigryvaet-5-matchej-podryad-3-porazheniya-2-nichix.html",
+   "title": "«МЮ» не выигрывает 5 матчей подряд – 3 поражения, 2 ничьих",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117399254-nyuberg-posle-var-udalil-joro-v-matche-s-atletiko-zashhitnik-myu-xvata.html",
+   "title": "Судья Нюберг после ВАР удалил Йоро в матче с «Атлетико». Защитник «МЮ» хватал Дэвида, который мог выйти один на один",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117398110-atletiko-primet-manchester-yunajted-vo-2-m-ture-ligi-chempionov-nachal.html",
+   "title": "«Атлетико» принимает «Манчестер Юнайтед» в 2-м туре Лиги чемпионов. 1:0 – Барриос забил на 1-й минуте",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117398704-u-koke-umerla-mama-pered-matchem-atltetiko-s-myu-projdet-minuta-molcha.html",
+   "title": "У Коке умерла мама. Перед матчем «Атлетико» с «МЮ» пройдет минута молчания",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117398044-liga-chempionov-arsenal-primet-lill-barselona-v-gostyax-u-galatasaraya.html",
+   "title": "Лига чемпионов. «Барселона» в гостях у «Галатасарая» Батракова, «МЮ» против «Атлетико», «Арсенал» примет «Лилль», «Бавария» сыграет с «Викингом», «Интер» – с «Брюгге»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/predictions/3560622-liga-chempionov-atletiko-manchester-yunajted-prognoz-na-match-i-shansy.html",
+   "title": "Лига чемпионов: Атлетико – Манчестер Юнайтед, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/betting/blogs/3559949.html",
+   "title": "Батраков против «Барсы», Сафонов пропустит от «Сити», Моуринью едет в Рим. Интриги 2-го тура ЛЧ",
+   "rm": 0,
+   "note": "интриги тура ЛЧ, «Моуринью едет в Рим» в перечислении"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/betting/1117398306-myu-ne-pobezhdaet-4-matcha-podryad-i-kotiruetsya-anderdogom-protiv-atl.html",
+   "title": "«МЮ» не побеждает 4 матча подряд и котируется андердогом против «Атлетико» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117398118-simeone-o-finale-lch-na-metropolitano-pered-matchem-s-myu-ne-budem-str.html",
+   "title": "Симеоне о финале ЛЧ на «Метрополитано» перед матчем с «МЮ»: «Не будем строить догадки в духе «а что, если «Атлетико» выйдет в финал...» Сосредоточимся на текущей работе – в этом наша сила»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3550449.html",
+   "title": "Триумф Деку: как собрать лучшую версию «Барсы» и не уйти в минус по деньгам",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3550191.html",
+   "title": "Рауль. Будущее. Часть 1",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117397898-kerrik-o-simeone-uvazhayu-ego-kak-trenera-atletiko-ne-ustupaet-ni-odno.html",
+   "title": "Кэррик о Симеоне: «Атлетико» не уступает ни одной команде Европы, они действительно опасны. Уважаю Диего как тренера»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117397763-kerrik-o-rezultatax-myu-ne-schitaem-chto-eto-katastrofa-ne-chuvstvuyu-.html",
+   "title": "Кэррик о результатах «МЮ»: «Это не катастрофа. Не чувствую давления и негатива – с трудностями нужно уметь справляться»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117396109-barselona-lidiruet-v-la-lige-s-24-ochkami-posle-8-turov-atletiko-otsta.html",
+   "title": "«Барселона» лидирует в Ла Лиге с 24 очками после 8 туров. «Атлетико» отстает на 5 баллов, «Реал» – на 6",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "video.sports.ru/video/RIXc3-6Yy1MejrxfIXB-OMr68YIZQcPhtkHmoasM8ho",
+   "title": "Альварес, Кейн, Осимхен – кто еще был в заложниках у своих клубов? Главные примеры",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117395945-myu-prodlil-seriyu-bez-pobed-do-4-matchej.html",
+   "title": "«МЮ» продлил серию без побед до 4 матчей. У команды Кэррика 2 поражения и 2 ничьих, дальше – игра с «Атлетико»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117395701-atletiko-vyigral-4-matcha-podryad-dalshe-igra-s-myu-v-lch.html",
+   "title": "«Атлетико» выиграл 4 матча подряд. Дальше – игра с «МЮ» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117394960-atletiko-sygraet-s-alavesom-v-gostyax-v-8-m-ture-la-ligi-match-nachnet.html",
+   "title": "«Атлетико» дожал «Алавес» в гостях в 8-м туре Ла Лиги – 2:1! Ромеро забил победный гол на 87-й, Идальго удалили на 61-й",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117395602-u-devida-5-32-ochkov-v-4-matchax-la-ligi-forvard-atletiko-assistiroval.html",
+   "title": "У Дэвида 5 (3+2) очков в 4 матчах Ла Лиги. Форвард «Атлетико» ассистировал Гримальдо в игре с «Алавесом»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3554665.html",
+   "title": "Начал с “Ноттингем Форест”. Простая история коллекционирования для души.",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117394713-real-snova-tvorit-istoriyu-dokazav-chto-100-mediczinskogo-soobshhestva.html",
+   "title": "«Реал» снова творит историю, доказав, что 100% медицинского сообщества ошибалось». «Атлетико» о том, что Вальверде восстановился раньше срока после травмы в дерби",
+   "rm": 1
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117394552-simeone-o-messi-blagodaren-emu-za-vse-chto-on-nam-dal-za-to-chto-on-po.html",
+   "title": "Симеоне о Месси: «Благодарен за все, что он нам дал, но прежде всего – за то, что научил нас не сдаваться, когда дела идут плохо. Его статистику не превзойти, и он всегда вел себя хорошо»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117394434-simeone-ne-stal-sravnivat-messi-i-maradonu-my-argentinczy-blagodarny-s.html",
+   "title": "Симеоне не стал сравнивать Месси и Марадону: «Мы, аргентинцы, благодарны судьбе за то, что у нас были два выдающихся футболиста, лучших в истории»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3550000.html",
+   "title": "Игроки «Реала» и «Барсы» подорожали больше всех, немецкие таланты – подешевели. Главные колебания сезона",
+   "rm": 1,
+   "note": "трансфермаркт: игроки Реала и Барсы подорожали"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3553940.html",
+   "title": "Алавес – Атлетико: прогноз на матч 10 октября 2026 года, ставки и коэффициенты на Ла Лигу",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117393525-dvukratnyj-mvp-nba-gildzhes-aleksander-stal-akczionerom-atletiko.html",
+   "title": "Двукратный MVP НБА Гилджес-Александер стал акционером «Атлетико»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3551121.html",
+   "title": "Атлетико в гостях у Алавеса не побеждает годами: фаворит, которого здесь ловят на дистанции",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3550189.html",
+   "title": "Джон Маккензи. «Призрак Пепа» Часть 1: Прошлое; Глава 2: Относительная игра",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3510965.html",
+   "title": "Какие клубы чаще страдают от международных пауз, а какие выигрывают?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3550004.html",
+   "title": "Топ 10 самых дорогих игроков Ла Лиги",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3545741.html",
+   "title": "Урок на миллион: как бутсы Диего Форлана стоили ему карьеры в «Манчестер Юнайтед»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3544296.html",
+   "title": "Под 50 травм за паузу в топ-лигах и РПЛ. Все пострадавшие",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117392483-salsedo-o-perexode-v-rubin-klub-s-bolshoj-istoriej-izvestnyj-brend-vse.html",
+   "title": "Сальседо о переходе в «Рубин»: «Клуб с большой историей, известный бренд – все помнят победы над «Барсой», «Атлетико», «Челси». Хороший шаг для моей карьеры»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3548495.html",
+   "title": "Джеррард — чемпион Англии, у России бронза на домашнем ЧМ, «Атлетико» взял ЛЧ. Каким бы был мир без богатого «Ман Сити»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3548500.html",
+   "title": "Александр Гацкан — от кишинёвского двора до капитанской повязки «Ростова» и тренерского штаба",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3545243.html",
+   "title": "Магия зеленого газона: Самые странные ритуалы и суеверия известных футболистов",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "video.sports.ru/video/dKVVSyRL9OEeutM3SXCIlKK7WgX3j_RQNhFzJQvWdt0",
+   "title": "Беллингем хуже Винисиуса, «Челси» ждет 12-е место, Рафинья бросит забивать",
+   "rm": 0,
+   "note": "дайджест прогнозов: «Беллингем хуже Винисиуса»"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117389590-skaloni-ob-alvarese-zabivshem-vpervye-s-iyunya-takie-igroki-mogut-pere.html",
+   "title": "Скалони об Альваресе, забившем впервые с июня: «Такие игроки могут переживать не лучшее время, а затем возвращаться на свой уровень. Он не подведет «Атлетико»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117389247-donnarumma-luchshij-vratar-mira-po-versii-la-gazzetta-dello-sport-kurt.html",
+   "title": "Доннарумма – лучший вратарь мира по версии La Gazzetta dello Sport. Куртуа – 2-й, Симон – 3-й, Райя – 4-й, Жоан Гарсия – 7-й, Нойер – 10-й",
+   "rm": 0,
+   "note": "лучшие вратари: Куртуа 2-й в перечислении"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3538329.html",
+   "title": "Семь семёрок: лучшие номера 7 XXI века",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3538091.html",
+   "title": "«Барселона» и «Атлетико»: внезапное примирение имени Лапорты",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3535638.html",
+   "title": "5 странных футбольных прозвищ: знаете, откуда они взялись? 🐢🐯✈️",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117388693-romero-o-messi-ego-uzhe-ne-xvataet-komande-on-byl-nastoyashhim-liderom.html",
+   "title": "Ромеро о Месси: «Величайший футболист, невероятный человек. Настоящий лидер, никогда не ставивший себя выше остальных. Жалею, что не показал ему свою любовь в полной мере»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117388228-emeri-o-la-lige-real-i-barsa-mogut-zarabatyvat-milliardy-atletiko-500-.html",
+   "title": "Эмери о Ла Лиге: «Реал» и «Барса» могут зарабатывать миллиарды, «Атлетико» – 500-600 млн, остальные – 100-150. Сам фэйр-плей допускает эту огромную разницу»",
+   "rm": 0,
+   "note": "Эмери о доходах Реала, Барсы и Атлетико"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3535238.html",
+   "title": "«Владимир Югович: наследие личного триумфа»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117386987-niko-uilyams-iz-za-travmy-pokinul-sbornuyu-ispanii-ranee-uexali-erik-g.html",
+   "title": "Нико Уильямс из-за травмы покинул сборную Испании. Ранее уехали Эрик Гарсия и Гримальдо",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "video.sports.ru/video/PhT-ppP4VawBt213Q0y15CY72piSdsvaE1ADZHdcCc8",
+   "title": "Мы посетили лучшую и худшую лигу в мире: дерби Мадрида vs Реутов",
+   "rm": 0,
+   "note": "«дерби Мадрида vs Реутов» — любительский футбол"
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3529591.html",
+   "title": "Легендарные тренеры без триумфа в Лиге чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3529605.html",
+   "title": "Трансферы воспитанников: Топ 5 громких сделок века",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3526908.html",
+   "title": "Мяч на ноге: лидеры по успешным обводкам среди игроков Ла Лиге после 7 туров.",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3526891.html",
+   "title": "Цифры, которые держат оборону: отборы хавбеков после 7 туров. Ла Лига.",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3526677.html",
+   "title": "«Барса» бежит к чемпионству, а «Реал» — главные лентяи Ла Лиги",
+   "rm": 1
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3524405.html",
+   "title": "Топ-7 видео недели: облегающий catsuit чемпионки Олимпиады, Соболев пнул и разозлил Головина, робот вырубил блогера",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117383466-futbolistka-atletiko-lola-galyardo-zavela-straniczu-na-onlyfans-tam-on.html",
+   "title": "Футболистка «Атлетико» Лола Гальярдо завела страницу на OnlyFans. Голкипер будет публиковать контент о жизни профессиональной спортсменки: «Женский футбол стремительно набирает популярность»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117383294-le-norman-vyzvan-v-sbornuyu-ispanii-vmesto-travmirovannogo-erika-garsi.html",
+   "title": "Ле Норман вызван в сборную Испании вместо травмированного Эрика Гарсии. Защитник «Барсы» пропустил матч с Англией из-за проблем с коленом",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117382460-chempion-mira-1978-la-volpe-o-simeone-esli-igraet-ego-komanda-ya-perek.html",
+   "title": "«Если играет команда Симеоне, я переключаю канал. Мне не нравятся тренеры, которые делают ставку на контратаки». Чемпион мира-1978 Ла Вольпе об «Атлетико»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117382335-erik-garsiya-iz-za-problem-s-kolenom-isklyuchen-iz-startovogo-sostava-.html",
+   "title": "Эрик Гарсия из-за проблем с коленом исключен из стартового состава Испании на матч с Англией. Его заменил Пубиль",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/1117382264-baena-o-zhalobax-mourinyu-na-sudej-etot-spektakl-s-bumazhkami-kazhetsy.html",
+   "title": "Баэна о жалобах Моуринью на судейство в дерби: «Этот спектакль с бумажками – истерика и неумение проигрывать. Когда «Реал» уступает «Атлетико», они всегда ищут какие-то причины»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3520216.html",
+   "title": "Топ‑5 самых лучших вратарей XXI века",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3517194.html",
+   "title": "История «Лас-Пальмаса». От объединения пяти клубов до разгрома «Реала» и «Барселоны»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_atletico",
+   "id": "sports.ru/football/blogs/3455821.html",
+   "title": "Антонелла – жена Тьяго Альмады. Сыграли свадьбу менее чем через год после начала отношений!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403556-agent-uilyamsa-o-problemax-barsy-s-registracziej-v-2024-m-niko-ne-mog-.html",
+   "title": "Агент Уильямса о сложностях «Барсы» с регистрацией в 2024-м: «Нико не мог остаться без игрового времени. Он болид «Формулы-1». Сказал клубу, что не хочу брать на себя его проблемы»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403533-posol-rf-v-turczii-posetil-galatasaraj-i-vstretilsya-s-batrakovym-pust.html",
+   "title": "Посол РФ в Турции посетил «Галатасарай» и встретился с Батраковым: «Пусть каждый удар будет таким же, как тот незабываемый гол, которым он поразил ворота «Барселоны»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403530-roman-sharonov-batrakov-ne-poteryalsya-by-v-barse-esli-by-igral-s-gala.html",
+   "title": "Роман Шаронов: «Батраков не потерялся бы в «Барсе», если бы играл с «Галатасараем» в таком же матче. Он доказал, что умеет использовать пространство, а оборона – не самое сильное его качество»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403307-19-letnij-yamal-i-35-letnij-gross-lidiruyut-v-top-ligax-po-sozdannym-m.html",
+   "title": "19-летний Ямаль и 35-летний Гросс лидируют в топ-лигах по созданным моментам – по 40",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403154-semak-o-matchax-s-krasnodarom-i-axmatom-dazhe-u-barsy-i-bavarii-net-re.html",
+   "title": "Семак о «Зените»: «Даже у «Барсы» и «Баварии» нет рецепта на каждую игру, как и музыкант и актер не показывает тот же уровень каждый раз. Поддерживать настрой целый год невозможно»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117403138-fifa-oshtrafovala-ispaniyu-za-krichalki-fanatov-pro-musulman-v-martovs.html",
+   "title": "ФИФА за антимусульманские кричалки фанатов оштрафовала Испанию на 20 000 долларов и наказала закрытием 15% стадиона на следующем матче",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402968-gaspar-o-slovax-pro-messi-ya-peregnul-palku-no-govoril-ot-chistogo-ser.html",
+   "title": "Гаспар о словах про Месси: «Я перегнул палку, но говорил от чистого сердца. Очевидно, что «Барселона» важнее всех, не только Месси, но это не попытка поддержать президента»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402619-u-brajtona-29-golov-v-10-matchax-sezona-sredi-klubov-top-5-lig-bolshe-.html",
+   "title": "У «Брайтона» 29 голов в 10 матчах сезона. Среди клубов топ-5 лиг больше забили лишь «Барса» и «Бавария»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402359-odin-iz-skautov-barselony-ne-sovetoval-podpisyvat-messi-iz-za-fiziches.html",
+   "title": "Один из скаутов «Барсы» не советовал подписывать Месси в 2000-м из-за «физических ограничений», другой – назвал юным Марадоной и отметил «огромный потенциал для роста»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402211-barkolya-yamal-kejn-trezoldi-i-pokatilov-v-sbornoj-2-go-tura-lch.html",
+   "title": "Барколя, Ямаль, Кейн, Трезольди и Покатилов – в сборной 2-го тура ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402152-rafinya-i-de-jong-vernulis-v-obshhuyu-gruppu-barsy-pered-matchem-s-bet.html",
+   "title": "Рафинья и де Йонг вернулись в общую группу «Барсы» перед матчем с «Бетисом»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402140-verim-chto-batrakov-sam-okazhetsya-v-barselone-o-kotoroj-mechtal-rady-.html",
+   "title": "«Верим, что Батраков сам окажется в «Барселоне», о которой мечтал. Рады за него всей командой». Форвард «Ростова» Сулейманов о голе хавбека в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402102-barkolya-priznan-luchshim-igrokom-nedeli-v-lch-vinger-liverpulya-ooshe.html",
+   "title": "Барколя признан лучшим игроком недели в ЛЧ. Вингер «Ливерпуля» обошел Ямаля, Кейна и Трезольди",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117402035-xoland-zabil-60-golov-v-lch-za-60-matchej-bystree-vsex-v-turnire-forva.html",
+   "title": "Холанд забил 60 голов в ЛЧ за 60 матчей – быстрее всех в турнире. Форвард «Ман Сити» обошел Месси",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117401754-antonio-kassano-sovremennyj-futbol-nravitsya-menshe-togo-v-kotoryj-igr.html",
+   "title": "Антонио Кассано: «Современный футбол нравится меньше того, в который играл я: не хватает личностей и талантов. Нравятся «Барса», «ПСЖ», «Сити», остальные бегают туда-сюда»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117401631-mostovoj-o-gole-batrakova-barse-xochetsya-posmotret-v-liczo-tem-kto-kr.html",
+   "title": "Мостовой о голе Батракова «Барсе»: «Хочется посмотреть в лицо тем, кто кричал: «Куда он едет и зачем?» Таких у нас было много»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117401611-yamal-barkolya-trezoldi-i-kejn-pretenduyut-na-priz-luchshemu-igroku-tu.html",
+   "title": "Ямаль, Барколя, Трезольди и Кейн претендуют на приз лучшему игроку тура в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117401429-batrakov-posle-matcha-s-barselonoj-v-lch-my-tolko-nachinaem.html",
+   "title": "Батраков после матча с «Барселоной» в ЛЧ: «Мы только начинаем 💪!»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117400968-pogrebnyak-na-vopros-pro-gol-batrakova-barse-vam-ne-nadoelo-uzhe-ostav.html",
+   "title": "Погребняк на вопрос про гол Батракова «Барсе»: «Вам не надоело уже? Оставьте парня в покое. Что вы все: «Батраков да Батраков». Стыдно должно быть, дайте развиваться футболисту»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117400937-agent-batrakova-gol-barselone-emoczionalno-silnoe-sobytie-eto-silnejsh.html",
+   "title": "Агент Батракова: «Гол «Барсе» – эмоциональное событие, это сильнейший клуб мира. Леше не понадобится много времени, чтобы начать показывать игру, которая позволит стать ему одним из лидеров «Галатасарая»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/mediafootball/1117399826-grishin-o-gole-batrakova-barse-ya-zabival-v-92m-a-on-sejchas-takie-mom.html",
+   "title": "Гришин о голе Батракова «Барсе»: «Я забивал в 92‑м, а он – сейчас. Такие моменты остаются на всю жизнь»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399788-gordimsya-progressom-i-predannostyu-batrakova-u-alekseya-est-potenczia.html",
+   "title": "«Гордимся прогрессом и преданностью Батракова. У Алексея есть потенциал стать одним из лучших плеймейкеров европейского футбола». Член трансферного комитета «Галатасарая» о хавбеке",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399779-lamina-pered-matchem-s-barsoj-zayavil-chto-ne-znaet-yamalya-posle-igry.html",
+   "title": "Лемина перед матчем с «Барсой» заявил, что не знает Ямаля. После игры Ламин ответил: «Теперь он знает, кто я?»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399765-kanchelskis-o-gole-batrakova-barse-lyuboe-xoroshee-dejstvie.html",
+   "title": "Канчельскис о голе Батракова «Барсе»: «Любое хорошее действие россиянина за рубежом радует всех болельщиков. Это плюс для России, хорошо рекламирует наш футбол»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399735-gavrilov-o-batrakove-zabil-barselone-i-zabil-tam-takie-zhe-lyudi-kotor.html",
+   "title": "Гаврилов о Батракове: «Забил «Барселоне» и забил – там такие же люди, которые ошибаются. Может, в следующий раз через год забьет. Никакая это не сенсация»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/blogs/3560922.html",
+   "title": "Батраков плакал из-за «Барсы»: запорол пенальти в детском финале-2019. Теперь забил команде мечты!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399701-gazzaev-o-batrakove-protiv-barsy-lesha-zabil-odnoj-iz-luchshix-komand-.html",
+   "title": "Газзаев о Батракове против «Барсы»: «Леша забил одной из лучших команд мира, это придаст ему уверенности. Вчерашний матч – начало большой европейской карьеры»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399669-gol-barselone-dolzhen-raskrepostit-batrakova-no-pole-byli-dve-komandy-.html",
+   "title": "«Гол «Барселоне» должен раскрепостить Батракова. Но поле были команды разного уровня. Мяч все время был у игроков каталонцев». Семин о матче ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399664-glushakov-o-gole-batrakova-barse-aleksej-osushhestvil-mechtu-i-pokazal.html",
+   "title": "Глушаков о голе Батракова «Барсе»: «Алексей осуществил мечту и показал, что надо верить в себя. Решение перейти в «Галатасарай» было правильным»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399624-rafael-leau-yamal-vyigraet-zolotoj-myach-nadeyus-on-vxodit-v-chislo-lu.html",
+   "title": "Рафаэл Леау: «Ямаль выиграет «Золотой мяч», надеюсь. Он входит в число лучших игроков мира. Ценю Ламина как футболиста и как человека»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399616-aleksej-batrakov-match-s-barsoj-odin-iz-samyx-slozhnyx-v-karere-uchity.html",
+   "title": "Алексей Батраков: «Матч с «Барсой» – один из самых сложных в карьере, учитывая, что сыграл только 60 минут. Очень много времени пришлось провести в отборе»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/blogs/3560959.html",
+   "title": "Как Батраков забил «Барселоне»: сам начал атаку и ускользнул от Родри",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/blogs/3560940.html",
+   "title": "1770 дней – с прошлого гола россиянина в Лиге чемпионов. Как долго мы ждали, Леша!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399462-batrakov-o-tom-chto-flik-sledil-za-nim-navernoe-posmotrel-odnu-igru-na.html",
+   "title": "Батраков о том, что Флик следил за ним: «Наверное, посмотрел одну игру. Надеюсь, это только начало»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399451-bulykin-o-gole-batrakova-v-lch-eto-fantasticheskoe-chuvstvo-zabit-bars.html",
+   "title": "Булыкин о голе Батракова в ЛЧ: «Это фантастическое чувство — забить «Барселоне». Это придаст уверенности и мотивации на всю жизнь»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399409-trener-galatasaraya-ob-14-s-barsoj-v-1-m-tajme-my-igrali-ochen-xorosho.html",
+   "title": "Тренер «Галатасарая» об 1:4 с «Барсой»: «В 1-м тайме мы играли очень хорошо, но после перерыва они были эффективны в атаке. Будем прибавлять»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399372-kaxigao-o-gole-batrakova-barse-vazhno-chto-ne-tolko-zabil-no-i-nachal-.html",
+   "title": "Кахигао о голе Батракова «Барсе»: «Важно, что не только забил, но и начал атаку, которая привела к этому. Очень важный мяч для Алексея»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399327-buruk-posle-14-s-barselonoj-batrakov-v-pereryve-skazal-chto-nachinaet-.html",
+   "title": "Бурук после 1:4 с «Барселоной»: «Батраков в перерыве сказал, что начинает уставать»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/blogs/3560895.html",
+   "title": "Батраков забил «Барселоне» в ЛЧ! Да-а-а-а!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399304-aleksej-batrakov-barselona-samaya-silnaya-komanda-no-ya-maksimalist-i-.html",
+   "title": "Алексей Батраков: «Барселона» – самая сильная команда, но я максималист и расстроен, что проиграли. Есть куда расти. Педри и Родри – умнейшие футболисты, великолепно владеют мячом»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399305-flik-o-41-s-galatasaraem-match-ne-byl-legkim-sopernik-sozdal-odin-mome.html",
+   "title": "Флик о 4:1 с «Галатасараем»: «Матч не был легким, соперник создал один момент и повел, а «Барса» принимала не лучшие решения в атаке. Ламин не забил, но был невероятен»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399296-barselona-vpervye-v-istorii-vyigrala-10-pervyx-matchej-sezona.html",
+   "title": "«Барселона» впервые с 1923-го выиграла 10 матчей на старте сезона",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399286-u-barselony-44-razgromnye-pobedy-v-127-matchax-pri-flike.html",
+   "title": "У «Барселоны» 44 разгромные победы в 127 матчах при Флике",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399277-u-batrakova-odin-udar-i-gol-odin-klyuchevoj-pas-85-tochnyx-peredach-ni.html",
+   "title": "У Батракова один удар и гол, один ключевой пас, 85% точных передач, ни одной обводки и 5 потерь за 58 минут в матче с «Барсой»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399245-barselona-vyigrala-vse-10-matchej-sezona-s-obshhim-schetom-439-segodny.html",
+   "title": "«Барселона» выиграла все 10 матчей сезона с общим счетом 43:9. Сегодня – 4:1 с «Галатасараем»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/betting/blogs/3560933.html",
+   "title": "Гол Батракова «Барсе» – насколько это было невероятно?",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399225-mourinyu-o-dele-negrejry-esli-nichego-ne-proizojdet-eto-stanet-krupnej.html",
+   "title": "Моуринью о деле Негрейры: «Если ничего не произойдет, это станет крупнейшим коррупционным скандалом в судействе. Поздравляю Италию, у них «Кальчополи» действительно стало «Кальчополи»",
+   "rm": 1
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399211-u-yamalya-22-1210-ochka-v-14-matchax-sezona-za-barsu-i-sbornuyu-vinger.html",
+   "title": "У Ямаля 22 (12+10) очка в 14 матчах сезона за «Барсу» и сборную. Вингер сделал 2 ассиста в игре с «Галатасараем» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399135-batrakov-pervyj-rossiyanin-s-2011-goda-zabivshij-barselone-v-evrokubka.html",
+   "title": "Батраков – первый россиянин с 2011 года, забивший «Барселоне» в еврокубках. Последним до него был Аршавин",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399141-barselona-propustila-v-17-poslednix-matchax-lch-xudshaya-seriya-kluba.html",
+   "title": "«Барселона» пропустила в 17 последних матчах ЛЧ – худшая серия клуба",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399071-u-batrakova-3-12-ochka-v-7-matchax-za-galatasaraj-xavbek-zabil-barse-v.html",
+   "title": "У Батракова 3 (1+2) очка в 7 матчах за «Галатасарай». Хавбек забил «Барсе» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399109-batrakov-pervyj-rossiyanin-zabivshij-v-lch-s-2021-go.html",
+   "title": "Батраков – первый россиянин с 2021-го, забивший в ЛЧ. Тогда Оздоев отличился в матче с «Челси»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117399047-batrakov-zabil-barselone-v-lch-eto-pervyj-gol-xavbeka-za-galatasaraj.html",
+   "title": "Батраков забил «Барселоне» в ЛЧ. Это первый гол хавбека за «Галатасарай»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/betting/1117399077-batrakov-zabil-debyutnyj-myach-za-galatasaraj-bukmekery-ne-verili-chto.html",
+   "title": "Батраков забил дебютный мяч за «Галатасарай». Букмекеры не верили, что он забьет «Барселоне»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117398088-barselona-sygraet-s-galatasaraem-v-gostyax-vo-2-m-ture-ligi-chempionov.html",
+   "title": "«Барселона» играет с «Галатасараем» в гостях в 2-м туре Лиги чемпионов. 0:1 – Батраков открыл счет!",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/betting/1117398891-barselona-zabila-3-gola-v-7-matchax-podryad-1-66-prodlenie-trenda-s-ga.html",
+   "title": "«Барселона» забила 3+ гола в 7 матчах подряд. 1.66 – продление тренда с «Галатасараем»",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117398828-lamin-ty-xochesh-igrat-za-marokko-lamin-ty-zhe-xochesh-zashhitnik-xeta.html",
+   "title": "«Ламин, ты хочешь играть за Марокко. Ламин, ты же хочешь». Защитник «Хетафе» Абкар – Ямалю, когда тот спорил с арбитром",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117398797-batrakov-v-starte-galatasaraya-na-igru-s-barsoj-v-lch.html",
+   "title": "Батраков – в старте «Галатасарая» на игру с «Барсой» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/football/1117398597-dzhej-dzhej-gabriel-xochet-perejti-barselonu-real-takzhe-pretenduet-na.html",
+   "title": "Джей-Джей Габриэл хочет перейти в «Барселону». «Реал» также претендует на 16-летнего игрока, близкого к уходу из «МЮ» (El Chiringuito)",
+   "rm": 1
+  },
+  {
+   "feed": "hold_barcelona",
+   "id": "sports.ru/special/3x3",
+   "title": "Полузащитник Швейцарии, игравший в Англии, но не Джака. Вспомнили игрока?",
+   "rm": 0
+  }
+ ]
+}

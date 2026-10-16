@@ -1,0 +1,301 @@
+{
+ "scenarios": {
+  "team": {
+   "overflowX": false,
+   "height": 3184,
+   "extLinks": 0,
+   "extLinksBlank": true,
+   "players": 26,
+   "injuryBadges": 4,
+   "flags": 26,
+   "photosFailed": 0,
+   "leaders": [
+    "Голы 7 Kylian Mbappé",
+    "Передачи 3 Vinícius Júnior",
+    "Оценка 8.1 Kylian Mbappé"
+   ],
+   "lazaret": [
+    "Dean Huijsen дисквалификация ожидался: начало октября",
+    "Éder Militao травма конец октября",
+    "Rodrygo травма конец декабря",
+    "Raúl Asencio травма начало января",
+    "Ferland Mendy"
+   ],
+   "subs": [
+    "ВРТ · 34 года",
+    "ВРТ · 27 лет",
+    "ЦЗ · 23 года",
+    "ЦЗ · 28 лет",
+    "ЦЗ · 21 год",
+    "ПЗ · 28 лет"
+   ],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [],
+   "skeletons": 0,
+   "title": "Команда — Мадридиста",
+   "requests": 72,
+   "hosts": {
+    "realmadridfan.ru": 72
+   },
+   "api": {
+    "/api/team": 200
+   },
+   "img": {
+    "ok": 54,
+    "fail": 0
+   }
+  },
+  "media-all": {
+   "overflowX": false,
+   "height": 1710,
+   "extLinks": 16,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 5,
+   "newsImgs": 5,
+   "tiles": 10,
+   "shorts": 8,
+   "heroVideo": "Roma 3:4 Real Madrid",
+   "heroSub": "Лига чемпионов · 14 октября",
+   "states": [],
+   "skeletons": 0,
+   "title": "Медиа — Мадридиста",
+   "requests": 34,
+   "hosts": {
+    "realmadridfan.ru": 34
+   },
+   "api": {
+    "/api/news?limit=50": 200,
+    "/api/videos?limit=30": 200
+   },
+   "img": {
+    "ok": 15,
+    "fail": 0
+   }
+  },
+  "media-news": {
+   "overflowX": false,
+   "height": 2970,
+   "extLinks": 20,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 20,
+   "newsImgs": 16,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [],
+   "skeletons": 0,
+   "title": "Медиа — Мадридиста",
+   "requests": 34,
+   "hosts": {
+    "realmadridfan.ru": 34
+   },
+   "api": {
+    "/api/news?limit=50": 200,
+    "/api/videos?limit=30": 200
+   },
+   "img": {
+    "ok": 16,
+    "fail": 0
+   }
+  },
+  "media-video": {
+   "overflowX": false,
+   "height": 1902,
+   "extLinks": 16,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 15,
+   "shorts": 11,
+   "heroVideo": "Roma 3:4 Real Madrid",
+   "heroSub": "Лига чемпионов · 14 октября",
+   "states": [],
+   "skeletons": 0,
+   "title": "Медиа — Мадридиста",
+   "requests": 33,
+   "hosts": {
+    "realmadridfan.ru": 33
+   },
+   "api": {
+    "/api/news?limit=50": 200,
+    "/api/videos?limit=30": 200
+   },
+   "img": {
+    "ok": 15,
+    "fail": 0
+   }
+  },
+  "team-loading": {
+   "overflowX": false,
+   "height": 969,
+   "extLinks": 0,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [
+    "",
+    "",
+    ""
+   ],
+   "lazaret": [],
+   "subs": [],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [],
+   "skeletons": 38,
+   "title": "Команда — Мадридиста",
+   "requests": 13,
+   "hosts": {
+    "realmadridfan.ru": 13
+   },
+   "api": {},
+   "img": {
+    "ok": 0,
+    "fail": 0
+   }
+  },
+  "media-loading": {
+   "overflowX": false,
+   "height": 1325,
+   "extLinks": 0,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [],
+   "skeletons": 28,
+   "title": "Медиа — Мадридиста",
+   "requests": 15,
+   "hosts": {
+    "realmadridfan.ru": 15
+   },
+   "api": {},
+   "img": {
+    "ok": 0,
+    "fail": 0
+   }
+  },
+  "team-error": {
+   "overflowX": false,
+   "height": 844,
+   "extLinks": 0,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [
+    "Не удалось загрузить"
+   ],
+   "skeletons": 0,
+   "title": "Команда — Мадридиста",
+   "requests": 14,
+   "hosts": {
+    "realmadridfan.ru": 14
+   },
+   "api": {
+    "/api/team": 503
+   },
+   "img": {
+    "ok": 0,
+    "fail": 0
+   }
+  },
+  "media-error": {
+   "overflowX": false,
+   "height": 844,
+   "extLinks": 0,
+   "extLinksBlank": true,
+   "players": 0,
+   "injuryBadges": 0,
+   "flags": 0,
+   "photosFailed": 0,
+   "leaders": [],
+   "lazaret": [],
+   "subs": [],
+   "news": 0,
+   "newsImgs": 0,
+   "tiles": 0,
+   "shorts": 0,
+   "heroVideo": null,
+   "heroSub": null,
+   "states": [
+    "Не удалось загрузить",
+    "Не удалось загрузить"
+   ],
+   "skeletons": 0,
+   "title": "Медиа — Мадридиста",
+   "requests": 17,
+   "hosts": {
+    "realmadridfan.ru": 17
+   },
+   "api": {
+    "/api/news?limit=50": 503,
+    "/api/videos?limit=30": 503
+   },
+   "img": {
+    "ok": 0,
+    "fail": 0
+   }
+  }
+ },
+ "externalHosts": {},
+ "consoleErrors": [
+  "team-error: Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+  "media-error: Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+  "media-error: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+ ],
+ "pageErrors": []
+}

@@ -1,0 +1,361 @@
+{
+ "labeled_at": "2026-10-17",
+ "rule": "Контрольная выборка, размечена ДО прогона фильтра и после его последней настройки: ленты тегов Sports.ru «Ла Лига» и «Лига чемпионов» без пересечений с прежними. Все 59 — не про Реал. tagged=False.",
+ "items": [
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/blogs/3563960.html",
+   "title": "Вильярреал – Эльче: хозяева обыграли Наполи, но в Ла Лиге идут лишь 11-ми – поможет ли победа в Европе?",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/blogs/3563638.html",
+   "title": "Фэнтези на Спортсе’’ полностью восстановлен. Вот все самое важное про дополнительные трансферы и подсчет очков",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ruhttps://sprts.cc/AjpfI",
+   "title": "Пятничные матчи Ла Лиги, Бундеслиги и Серии А интереснее с фрибетами от букмекеров",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/1117403108-za-glushenkovym-sledyat-kluby-ispanii-regulyarno-igrayushhie-v-evrokub.html",
+   "title": "«За Глушенковым следят клубы Испании, регулярно играющие в еврокубках: от Лиги Европы до Лиги чемпионов». Агент Барбоза о хавбеке «Зенита»",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/blogs/3563631.html",
+   "title": "Депортиво – Леванте: хозяева четыре тура без побед, гости не выигрывают на выезде и много пропускают",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/predictions/3563615-la-liga-xetafe-rajo-valekano-prognoz-na-match-i-shansy-komand-na-pobed.html",
+   "title": "Ла Лига: Хетафе – Райо Вальекано, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/predictions/3563610-la-liga-osasuna-rasing-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Осасуна – Расинг, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/predictions/3563609-la-liga-valensiya-atletik-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Валенсия – Атлетик, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/predictions/3563605-la-liga-vilyarreal-elche-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Вильярреал – Эльче, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/1117402831-rivaldo-safonov-glavnyj-favorit-na-zvanie-luchshego-vratarya-mira-pobe.html",
+   "title": "Ривалдо: «Сафонов – фаворит на звание лучшего вратаря мира, победа в ЛЧ и сейвы в ключевых матчах – это железный аргумент. Наверное, Симон – единственный конкурент»",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/1117402569-konsejsau-nachal-bit-kulakom-po-skamejke-zapasnyx-i-sporit-s-chlenom-t.html",
+   "title": "Консейсау бил кулаком по скамейке и спорил с членом тренерского штаба после замены в игре «Ювентуса» с «Сельтой»",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/predictions/3563380-la-liga-deportivo-levante-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Депортиво – Леванте, прогноз на матч и шансы команд на победу",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/1117402393-prezident-xetafe-my-vedem-peregovory-s-sancho-parexo-tozhe-mozhet-stat.html",
+   "title": "Президент «Хетафе» подтвердил переговоры с Санчо: «На следующей неделе станет понятно, как они завершатся»",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/1117401930-xetafe-predlozhil-kontrakt-sancho-eks-vinger-myu-svobodnyj-agent.html",
+   "title": "«Хетафе» предложил контракт Санчо. Экс-вингер «МЮ» – свободный агент",
+   "rm": 0
+  },
+  {
+   "feed": "final_laliga",
+   "id": "sports.ru/football/blogs/3498220.html",
+   "title": "«Сельта»: клуб, который стал легендой без трофеев",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3535523.html",
+   "title": "А можно ли вообще стать топ-клубом, играя по правилам?",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3542953.html",
+   "title": "Виртц – в чем его проблема? Или это все ваши ожидания?",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "video.sports.ru/video/aWkaJ6_DR2dgO4aUjpWcB0sw4lV4YsxfvyW4wW_IzFQ",
+   "title": "Кейн выиграет «Золотой мяч». Казнь Роналду. Россия выйдет на Евро-2028. Новый выпуск «Кто здесь Царь?» с Васантом Баланом",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117403287-ozil-s-pomoshhyu-ii-obnovil-svoj-gol-shedevr-za-arsenal-v-soczsetyax-p.html",
+   "title": "Озил с помощью ИИ обновил свой гол-шедевр за «Арсенал». В соцсетях пересоздают его с героями «Шрека» и «Губки Боба»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117403163-mareska-o-gvardiole-na-matche-s-pszh-my-govorili-ob-igre-on-byl-ochen-.html",
+   "title": "Мареска о Гвардиоле на матче с «ПСЖ»: «Мы говорили об игре, он был очень рад оказаться на стадионе. Это место всегда будет его домом»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/betting/1117402015-30-veroyatnost-nevyxoda-intera-v-plej-off-lch-milanczy-proigrali-oba-m.html",
+   "title": "30% – вероятность невыхода «Интера» в плей-офф ЛЧ. Миланцы проиграли оба матча на старте турнира",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117403095-kerrik-o-slovax-lisandro-on-osoznal-chto-sovershil-oshibku-inogda-emoc.html",
+   "title": "Кэррик о словах Лисандро: «Он осознал, что совершил ошибку, иногда эмоции берут верх. Мы требуем от игроков огня и самоотдачи, но выражать их нужно определенным образом»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402925-enrike-o-tom-chto-nizkij-uroven-ligi-1-daet-pszh-preimushhestvo-v-evro.html",
+   "title": "Энрике о том, что низкий уровень Лиги 1 дает «ПСЖ» преимущество в еврокубках: «Всегда найдутся те, кто будет жаловаться. Раньше говорили, что клуб не выиграет ЛЧ из-за уровня чемпионата»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3563181.html",
+   "title": "Плюсы и минусы Батракова в «Галатасарае». Разбор Игнашевича",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402423-dinamo-budet-pretendovat-na-pobedu-v-rpl-v-lch-komanda-borolas-by-za-v.html",
+   "title": "«Динамо» будет претендовать на победу в РПЛ. В ЛЧ команда боролась бы за плей-офф. Российские клубы должны как можно скорее вернуться в еврокубки». Батак о форме москвичей",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402326-van-gal-o-dele-siti-nepopadanie-v-lch-privelo-k-moemu-uvolneniyu-iz-my.html",
+   "title": "Ван Гал о деле «Сити»: «Непопадание в ЛЧ в 2016-м привело к моему увольнению из «МЮ» и последующим страданиям. Но историю не изменить – и даже FA это не по силам»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402295-yurij-semin-safonov-v-luchshej-komande-mira-i-v-dueli-s-donnarummoj-sy.html",
+   "title": "Юрий Семин: «Сафонов в лучшей команде мира и в дуэли с Доннаруммой сыграл блестяще. Энрике верил в Матвея, и он это доверие полностью оправдал»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402173-dyugarri-o-man-siti-ix-tituly-nichego-ne-stoyat-oni-byli-vyigrany-s-po.html",
+   "title": "Дюгарри о «Ман Сити»: «Их титулы ничего не стоят – они были выиграны с помощью игроков, купленных нечестным путем. Клуб должен понести суровое наказание»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3562828.html",
+   "title": "0:3 не убили «Сити». Разбор красочного топ-матча с «ПСЖ»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117402013-xajkin-o-povedenii-igrokov-vikinga-v-matche-s-bavariej-dlya-menya-eto-.html",
+   "title": "Хайкин о поведении игроков «Викинга» в матче с «Баварией»: «Для меня это неприемлемо. На нас смотрит много молодых людей, мы должны уважать друг друга»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401991-lautaro-poluchil-travmu-zadnej-poverxnosti-bedra-forvard-intera-propus.html",
+   "title": "Лаутаро получил травму задней поверхности бедра. Форвард «Интера» пропустит более месяца и не сыграет в дерби с «Миланом»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3557201.html",
+   "title": "10 вингеров, которые начали сезон лучше двойника Винисиуса",
+   "rm": 0,
+   "note": "шутка про «двойника Винисиуса», сюжет о других вингерах"
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401973-xoland-s-dublem-luchshij-igrok-matcha-man-siti-s-pszh-s-9-1-po-indeksu.html",
+   "title": "Холанд с дублем – лучший игрок матча «Ман Сити» с «ПСЖ» с 9.1 по Индексу ГОЛа. У Сафонова 7.3, худший – Доннарумма с 5.2",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401919-snejder-o-zolotom-myache-2010-chto-by-ni-govorili-o-tom-chto-messi-obo.html",
+   "title": "Снейдер о «Золотом мяче»-2010: «Что бы ни говорили о том, что Месси «обокрал» меня, мне все равно, нет ни капли обиды. В те годы награду давали Лионелю практически по умолчанию»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401894-pszh-vyigral-3-iz-4-poslednix-matchej-protiv-man-siti-komanda-ne-proig.html",
+   "title": "«ПСЖ» выиграл 3 из 4 последних матчей против «Ман Сити». Команда не проигрывает в ЛЧ с января",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401826-zhena-safonova-my-burno-radovalis-golu-pszh-anglijskij-styuard-poprosi.html",
+   "title": "Жена Сафонова: «Мы бурно радовались голу «ПСЖ», английский стюард попросил так не делать – неприлично по отношению к болельщикам «Ман Сити». Такое отношение кажется снобством»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ruhttps://sprts.cc/Test_BK",
+   "title": "«ПСЖ» ярко разделался с «Ман Сити» в ЛЧ. Выбирайте надежного букмекера и следите за другими топ-матчами",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3562622.html",
+   "title": "У Барколя хет-трик – разогнал безумные 6:3 «Ливерпуля» в ЛЧ!",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3562774.html",
+   "title": "Холанд дважды пробил Сафонова, но «ПСЖ» победил. На глазах у Пепа 👀",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401672-dyugarri-o-pszh-dazhe-esli-komanda-igraet-posredstvenno-stoit-nazhat-n.html",
+   "title": "Дюгарри о «ПСЖ»: «Даже если команда играет посредственно, стоит нажать на кнопку – и она способна обыграть кого угодно. Парижане на голову сильнее всех»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401664-emeri-pro-60-s-fenerbaxche-aston-villa-xochet-byt-protagonistom-v-lch-.html",
+   "title": "Эмери про 6:0 с «Фенербахче»: «Астон Вилла» хочет быть протагонистом в ЛЧ. Не совсем доволен 1-м таймом, хотели лучше контролировать ход матча»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401661-safonov-poluchil-7-za-match-protiv-man-siti-ot-l-quipe-luchshaya-oczen.html",
+   "title": "Сафонов получил 7 за матч против «Ман Сити» от L’Équipe – лучшая оценка в «ПСЖ» наряду с Дуэ и Руисом. Доннарумма заработал 2 – худший показатель",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401642-vitinya-o-42-s-man-siti-zasluzhennaya-pobeda-pszh-mogli-zabit-bolshe-v.html",
+   "title": "Витинья о 4:2 с «Ман Сити»: «Заслуженная победа «ПСЖ». Могли забить больше в 1-м тайме, сыграли блестяще. Продолжаем доказывать, что являемся очень хорошей командой»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401634-kovach-pro-01-ot-bude-glimt-borussiya-zasluzhenno-proigrala-nas-ne-byl.html",
+   "title": "Ковач про 0:1 от «Буде-Глимт»: «Боруссия» заслуженно проиграла – нас не было на поле до первого гола. Беру ответственность на себя – нам не хватало страсти»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401608-enrike-o-42-s-man-siti-mne-ne-nravitsya-kogda-my-vedem-30-k-pereryvu-t.html",
+   "title": "Энрике о 4:2 с «Ман Сити»: «Мне не нравится, когда мы ведем 3:0 к перерыву: ты думаешь, что уже победил, а соперник начинает рисковать. Сегодня любой результат был бы несправедливым»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3562799.html",
+   "title": "Фото дня: Пеп впервые приехал на «Сити» уже не как тренер",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401598-enczo-tolknul-rukami-v-spinu-sudyu-matcha-s-pszh-yablonski-upal-na-gaz.html",
+   "title": "Энцо толкнул руками в спину судью матча с «ПСЖ» – Яблонски упал на газон. Экс-арбитр Фернандес заявил, что игрока «Сити» следовало удалить",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401597-lisandro-o-kritike-myu-moi-slova-otrazhayut-to-kak-silno-ya-xochu-chto.html",
+   "title": "Лисандро о критике «МЮ»: «Мои слова отражают то, как сильно я хочу, чтобы этот клуб боролся за самые престижные награды. В первую очередь мы, игроки, должны выкладываться по полной»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401594-mareska-pro-24-s-pszh-siti-zasluzhival-bolshego-enrike-chestno-skazal-.html",
+   "title": "Мареска про 2:4 с «ПСЖ»: «Сити» заслуживал большего. Энрике честно сказал после игры: «Нам повезло»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401587-safonov-otbil-udar-xolanda-iz-vratarskoj-i-sovershil-6-sejvov-v-igre-s.html",
+   "title": "Сафонов отбил удар Холанда из вратарской и совершил 6 сэйвов в игре с «Сити» при 48% точных передач. Матвей пропустил 13 голов в 10 матчах сезона",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401583-u-klubov-serii-a-odna-pobeda-na-chetveryx-posle-dvux-turov-lch-vyigral.html",
+   "title": "У клубов Серии А 1 победа в 8 матчах после двух туров ЛЧ. Выиграл только «Комо» Фабрегаса – новичок турнира",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401579-siti-proigral-vpervye-za-9-matchej-posle-serii-iz-8-pobed.html",
+   "title": "«Сити» проиграл впервые за 9 матчей – после серии из 8 побед",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401565-ferran-ne-zabil-penalti-v-igre-s-siti-donnarumma-pojmal-myach-posle-ud.html",
+   "title": "Ферран не забил пенальти в игре с «Сити». Доннарумма поймал мяч после удара форварда «ПСЖ»",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401542-pszh-vyigral-5-matchej-podryad-segodnya-u-man-siti-v-lch.html",
+   "title": "«ПСЖ» выиграл 5 матчей подряд. Сегодня – у «Ман Сити» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401553-borussiya-proigrala-vpervye-s-avgusta-bude-glimt-v-lch-posle-porazheni.html",
+   "title": "«Боруссия» проиграла впервые с августа – «Буде-Глимт» в ЛЧ. После поражения от «Баварии» у дортмундцев было 6 побед и 1 ничья",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117399610-man-siti-primet-pszh-vo-2-m-ture-ligi-chempionov-nachalo-matcha-v-2200.html",
+   "title": "«Ман Сити» влетел «ПСЖ» дома в 2-м туре Лиги чемпионов – 2:4! Холанд сделал дубль, у Дуэ и Дембеле по 1+1, Витинья и Аклиуш тоже забили",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401468-u-xolanda-12-golov-v-13-matchax-sezona-forvard-man-siti-zabil-pszh.html",
+   "title": "У Холанда 13 голов в 13 матчах сезона. Форвард «Ман Сити» дважды забил «ПСЖ» в ЛЧ",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/blogs/3560827.html",
+   "title": "Чьи шейхи богаче: «Сити» или «ПСЖ»?",
+   "rm": 0
+  },
+  {
+   "feed": "final_ucl",
+   "id": "sports.ru/football/1117401490-xoland-stal-luchshim-bombardirom-man-siti-v-lch-zabiv-37-j-gol-za-klub.html",
+   "title": "Холанд стал лучшим бомбардиром «Ман Сити» в ЛЧ, забив 37-й и 38-й голы за клуб. Норвежец опередил Агуэро",
+   "rm": 0
+  }
+ ]
+}

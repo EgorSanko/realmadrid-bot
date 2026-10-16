@@ -9,8 +9,10 @@ import MatchesScreen from './screens/MatchesScreen';
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage = lazy(() => import('./dev/UiKitPage'));
-// экран матча — отдельный ленивый чанк
+// экран матча, «Команда» и «Медиа» — свои ленивые чанки
 const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
+const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
+const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -28,7 +30,24 @@ export function App() {
         <Routes>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/matches" element={<MatchesScreen />} />
-          {SECTIONS.filter((s) => s.path !== '/' && s.path !== '/matches').map((s) => (
+          <Route
+            path="/team"
+            element={
+              <Suspense fallback={null}>
+                <TeamScreen />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/media"
+            element={
+              <Suspense fallback={null}>
+                <MediaScreen />
+              </Suspense>
+            }
+          />
+          {/* оставшиеся разделы-заглушки (сейчас — «Прогнозы») */}
+          {SECTIONS.filter((s) => !['/', '/matches', '/team', '/media'].includes(s.path)).map((s) => (
             <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
           ))}
           <Route

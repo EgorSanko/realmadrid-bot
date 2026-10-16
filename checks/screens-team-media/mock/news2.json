@@ -1,0 +1,47 @@
+{
+ "source": "championat+sportexpress+sportsru",
+ "updated_at": "2026-10-16T23:28:33Z",
+ "age_s": 0.9,
+ "stale": false,
+ "available": [
+  "news",
+  "images"
+ ],
+ "feeds": {
+  "championat": {
+   "ok": true
+  },
+  "sportexpress": {
+   "ok": true
+  },
+  "sportsru_top": {
+   "ok": true
+  },
+  "sportsru_real": {
+   "ok": true
+  }
+ },
+ "count": 2,
+ "items": [
+  {
+   "id": "championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html",
+   "title": "«Не хочу загадывать, что будет дальше». Карвахаль — о возможном участии в матче с «Реалом»",
+   "summary": "Бывший защитник мадридского «Реала» Даниэль Карвахаль, который ранее присоединился к «Хетафе», ответил, что думает о возможном участии в матче с «лос бланкос».",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html",
+   "published": "2026-10-16T22:05:28Z",
+   "image": "/img/news/championat/news/big/d/y/ne-hochu-zagadyvat-chto-bude.jpg",
+   "also": []
+  },
+  {
+   "id": "championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html",
+   "title": "Два защитника, которых «Реал» рассматривал до Конате, остаются в списке целей — Sport.es",
+   "summary": "Центральные защитники Рубен Диаш из «Манчестер Сити» и Алессандро Бастони из «Интера», которыми мадридский «Реал» интересовался до подписания игрока обороны «Ливерпуля» Ибраима Конате в статусе свободного агента, всё ещё интересны клубу.",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html",
+   "published": "2026-10-16T21:59:23Z",
+   "image": "/img/news/championat/news/big/n/v/dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es_17921879631009791292.jpg",
+   "also": []
+  }
+ ]
+}
