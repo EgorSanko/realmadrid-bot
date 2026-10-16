@@ -1,0 +1,1799 @@
+{
+ "source": "fotmob",
+ "updated_at": "2026-10-16T22:46:03Z",
+ "age_s": 422.5,
+ "stale": false,
+ "tournaments": {
+  "LaLiga": 38,
+  "Champions League": 8,
+  "Super Cup": 1
+ },
+ "matches": [
+  {
+   "id": 5868025,
+   "ids": {
+    "fotmob": 5868025,
+    "sofascore": "16416306",
+    "espn": "401882912",
+    "livescore": null
+   },
+   "kickoff": "2026-08-22T19:30:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8558,
+    "name": "Espanyol",
+    "score": 1,
+    "logo": "/img/team/8558.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 2,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": false,
+   "result": "W"
+  },
+  {
+   "id": 5868018,
+   "ids": {
+    "fotmob": 5868018,
+    "sofascore": "16421051",
+    "espn": "401882919",
+    "livescore": null
+   },
+   "kickoff": "2026-08-26T19:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 4,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8560,
+    "name": "Real Sociedad",
+    "score": 1,
+    "logo": "/img/team/8560.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": true,
+   "result": "W"
+  },
+  {
+   "id": 5868038,
+   "ids": {
+    "fotmob": 5868038,
+    "sofascore": "16416312",
+    "espn": "401882899",
+    "livescore": null
+   },
+   "kickoff": "2026-08-30T15:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 4,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9864,
+    "name": "Málaga",
+    "score": 0,
+    "logo": "/img/team/9864.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": true,
+   "result": "W"
+  },
+  {
+   "id": 5868043,
+   "ids": {
+    "fotmob": 5868043,
+    "sofascore": "16416315",
+    "espn": "401882894",
+    "livescore": null
+   },
+   "kickoff": "2026-09-04T19:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8603,
+    "name": "Real Betis",
+    "score": 1,
+    "logo": "/img/team/8603.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 0,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": false,
+   "result": "L"
+  },
+  {
+   "id": 6106242,
+   "ids": {
+    "fotmob": 6106242,
+    "sofascore": "16938768",
+    "espn": "401915451",
+    "livescore": null
+   },
+   "kickoff": "2026-09-08T19:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 2,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8636,
+    "name": "Inter",
+    "score": 1,
+    "logo": "/img/team/8636.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": true,
+   "result": "W"
+  },
+  {
+   "id": 5868057,
+   "ids": {
+    "fotmob": 5868057,
+    "sofascore": "16416331",
+    "espn": "401882880",
+    "livescore": null
+   },
+   "kickoff": "2026-09-12T19:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 4,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8370,
+    "name": "Rayo Vallecano",
+    "score": 1,
+    "logo": "/img/team/8370.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": true,
+   "result": "W"
+  },
+  {
+   "id": 5868065,
+   "ids": {
+    "fotmob": 5868065,
+    "sofascore": "16416342",
+    "espn": "401882872",
+    "livescore": null
+   },
+   "kickoff": "2026-09-15T19:30:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 10268,
+    "name": "Elche",
+    "score": 2,
+    "logo": "/img/team/10268.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 3,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": false,
+   "result": "W"
+  },
+  {
+   "id": 5868072,
+   "ids": {
+    "fotmob": 5868072,
+    "sofascore": "16416339",
+    "espn": "401882865",
+    "livescore": null
+   },
+   "kickoff": "2026-09-20T14:15:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 9906,
+    "name": "Atlético Madrid",
+    "score": 2,
+    "logo": "/img/team/9906.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 1,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": false,
+   "result": "L"
+  },
+  {
+   "id": 5868089,
+   "ids": {
+    "fotmob": 5868089,
+    "sofascore": "16421066",
+    "espn": "401882848",
+    "livescore": null
+   },
+   "kickoff": "2026-10-10T19:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 1,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 10205,
+    "name": "Villarreal",
+    "score": 0,
+    "logo": "/img/team/10205.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": true,
+   "result": "W"
+  },
+  {
+   "id": 6106274,
+   "ids": {
+    "fotmob": 6106274,
+    "sofascore": "16938872",
+    "espn": "401915414",
+    "livescore": "1882774"
+   },
+   "kickoff": "2026-10-14T19:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8686,
+    "name": "Roma",
+    "score": 3,
+    "logo": "/img/team/8686.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 4,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "finished",
+    "live": false,
+    "finished": true,
+    "minute": null,
+    "added": null,
+    "label": "FT"
+   },
+   "is_home": false,
+   "result": "W"
+  },
+  {
+   "id": 5868098,
+   "ids": {
+    "fotmob": 5868098,
+    "sofascore": "16421075",
+    "espn": "401882839",
+    "livescore": null
+   },
+   "kickoff": "2026-10-18T19:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8302,
+    "name": "Sevilla",
+    "score": null,
+    "logo": "/img/team/8302.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 6106244,
+   "ids": {
+    "fotmob": 6106244,
+    "sofascore": "16938770",
+    "espn": "401915313",
+    "livescore": null
+   },
+   "kickoff": "2026-10-21T19:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 178475,
+    "name": "RB Leipzig",
+    "score": null,
+    "logo": "/img/team/178475.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868105,
+   "ids": {
+    "fotmob": 5868105,
+    "sofascore": "16421080",
+    "espn": "401882832",
+    "livescore": null
+   },
+   "kickoff": "2026-10-25T20:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8634,
+    "name": "Barcelona",
+    "score": null,
+    "logo": "/img/team/8634.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868118,
+   "ids": {
+    "fotmob": 5868118,
+    "sofascore": "16421098",
+    "espn": "401882819",
+    "livescore": null
+   },
+   "kickoff": "2026-11-01T15:15:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8696,
+    "name": "Racing Santander",
+    "score": null,
+    "logo": "/img/team/8696.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 6106401,
+   "ids": {
+    "fotmob": 6106401,
+    "sofascore": "16939047",
+    "espn": "401915383",
+    "livescore": null
+   },
+   "kickoff": "2026-11-04T17:45:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8563,
+    "name": "AEK Athens",
+    "score": null,
+    "logo": "/img/team/8563.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868129,
+   "ids": {
+    "fotmob": 5868129,
+    "sofascore": "16421105",
+    "espn": "401882808",
+    "livescore": null
+   },
+   "kickoff": "2026-11-07T20:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 10267,
+    "name": "Valencia",
+    "score": null,
+    "logo": "/img/team/10267.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868139,
+   "ids": {
+    "fotmob": 5868139,
+    "sofascore": "16421116",
+    "espn": "401882798",
+    "livescore": null
+   },
+   "kickoff": "2026-11-22T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9910,
+    "name": "Celta Vigo",
+    "score": null,
+    "logo": "/img/team/9910.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 6106243,
+   "ids": {
+    "fotmob": 6106243,
+    "sofascore": "16938769",
+    "espn": "401915298",
+    "livescore": null
+   },
+   "kickoff": "2026-11-24T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8640,
+    "name": "PSV Eindhoven",
+    "score": null,
+    "logo": "/img/team/8640.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868148,
+   "ids": {
+    "fotmob": 5868148,
+    "sofascore": "16421129",
+    "espn": "401882789",
+    "livescore": null
+   },
+   "kickoff": "2026-11-29T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9866,
+    "name": "Deportivo Alavés",
+    "score": null,
+    "logo": "/img/team/9866.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868152,
+   "ids": {
+    "fotmob": 5868152,
+    "sofascore": "16462488",
+    "espn": "401882785",
+    "livescore": null
+   },
+   "kickoff": "2026-12-06T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8315,
+    "name": "Athletic Club",
+    "score": null,
+    "logo": "/img/team/8315.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 6106258,
+   "ids": {
+    "fotmob": 6106258,
+    "sofascore": "16938805",
+    "espn": "401915367",
+    "livescore": null
+   },
+   "kickoff": "2026-12-09T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 9825,
+    "name": "Arsenal",
+    "score": null,
+    "logo": "/img/team/9825.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868168,
+   "ids": {
+    "fotmob": 5868168,
+    "sofascore": "16462538",
+    "espn": "401882769",
+    "livescore": null
+   },
+   "kickoff": "2026-12-13T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8371,
+    "name": "Osasuna",
+    "score": null,
+    "logo": "/img/team/8371.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868174,
+   "ids": {
+    "fotmob": 5868174,
+    "sofascore": "16462556",
+    "espn": "401882763",
+    "livescore": null
+   },
+   "kickoff": "2026-12-20T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 9783,
+    "name": "Deportivo A Coruña",
+    "score": null,
+    "logo": "/img/team/9783.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868188,
+   "ids": {
+    "fotmob": 5868188,
+    "sofascore": "16462597",
+    "espn": "401882749",
+    "livescore": null
+   },
+   "kickoff": "2027-01-03T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8305,
+    "name": "Getafe",
+    "score": null,
+    "logo": "/img/team/8305.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868198,
+   "ids": {
+    "fotmob": 5868198,
+    "sofascore": "16462627",
+    "espn": "401882739",
+    "livescore": null
+   },
+   "kickoff": "2027-01-10T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8581,
+    "name": "Levante",
+    "score": null,
+    "logo": "/img/team/8581.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868207,
+   "ids": {
+    "fotmob": 5868207,
+    "sofascore": "16462655",
+    "espn": "401882730",
+    "livescore": null
+   },
+   "kickoff": "2027-01-17T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 9864,
+    "name": "Málaga",
+    "score": null,
+    "logo": "/img/team/9864.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 6106245,
+   "ids": {
+    "fotmob": 6106245,
+    "sofascore": "16938771",
+    "espn": "401915280",
+    "livescore": null
+   },
+   "kickoff": "2027-01-19T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9977,
+    "name": "LASK",
+    "score": null,
+    "logo": "/img/team/9977.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868218,
+   "ids": {
+    "fotmob": 5868218,
+    "sofascore": "16462499",
+    "espn": "401882719",
+    "livescore": null
+   },
+   "kickoff": "2027-01-24T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8603,
+    "name": "Real Betis",
+    "score": null,
+    "logo": "/img/team/8603.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 6106334,
+   "ids": {
+    "fotmob": 6106334,
+    "sofascore": "16938915",
+    "espn": "401915270",
+    "livescore": null
+   },
+   "kickoff": "2027-01-27T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "round": null,
+    "logo": "/img/league/42.png"
+   },
+   "home": {
+    "id": 9728,
+    "name": "Shakhtar Donetsk",
+    "score": null,
+    "logo": "/img/team/9728.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868228,
+   "ids": {
+    "fotmob": 5868228,
+    "sofascore": "16462531",
+    "espn": "401882709",
+    "livescore": null
+   },
+   "kickoff": "2027-01-31T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8370,
+    "name": "Rayo Vallecano",
+    "score": null,
+    "logo": "/img/team/8370.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 6019526,
+   "ids": {
+    "fotmob": 6019526,
+    "sofascore": "16462564",
+    "espn": "401892164",
+    "livescore": null
+   },
+   "kickoff": "2027-02-03T19:00:00Z",
+   "tournament": {
+    "id": 139,
+    "name": "Super Cup",
+    "round": null,
+    "logo": "/img/league/139.png"
+   },
+   "home": {
+    "id": 8560,
+    "name": "Real Sociedad",
+    "score": null,
+    "logo": "/img/team/8560.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868239,
+   "ids": {
+    "fotmob": 5868239,
+    "sofascore": null,
+    "espn": "401882698",
+    "livescore": null
+   },
+   "kickoff": "2027-02-07T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8560,
+    "name": "Real Sociedad",
+    "score": null,
+    "logo": "/img/team/8560.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868246,
+   "ids": {
+    "fotmob": 5868246,
+    "sofascore": "16462584",
+    "espn": "401882691",
+    "livescore": null
+   },
+   "kickoff": "2027-02-14T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8315,
+    "name": "Athletic Club",
+    "score": null,
+    "logo": "/img/team/8315.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868259,
+   "ids": {
+    "fotmob": 5868259,
+    "sofascore": "16462623",
+    "espn": "401882678",
+    "livescore": null
+   },
+   "kickoff": "2027-02-21T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8302,
+    "name": "Sevilla",
+    "score": null,
+    "logo": "/img/team/8302.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868269,
+   "ids": {
+    "fotmob": 5868269,
+    "sofascore": "16462654",
+    "espn": "401882668",
+    "livescore": null
+   },
+   "kickoff": "2027-02-28T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 10267,
+    "name": "Valencia",
+    "score": null,
+    "logo": "/img/team/10267.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868280,
+   "ids": {
+    "fotmob": 5868280,
+    "sofascore": "16462678",
+    "espn": "401882657",
+    "livescore": null
+   },
+   "kickoff": "2027-03-07T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 10205,
+    "name": "Villarreal",
+    "score": null,
+    "logo": "/img/team/10205.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868290,
+   "ids": {
+    "fotmob": 5868290,
+    "sofascore": "16462688",
+    "espn": "401882647",
+    "livescore": null
+   },
+   "kickoff": "2027-03-14T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8558,
+    "name": "Espanyol",
+    "score": null,
+    "logo": "/img/team/8558.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868292,
+   "ids": {
+    "fotmob": 5868292,
+    "sofascore": "16462690",
+    "espn": "401882645",
+    "livescore": null
+   },
+   "kickoff": "2027-03-21T14:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 9910,
+    "name": "Celta Vigo",
+    "score": null,
+    "logo": "/img/team/9910.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868309,
+   "ids": {
+    "fotmob": 5868309,
+    "sofascore": "16462707",
+    "espn": "401882628",
+    "livescore": null
+   },
+   "kickoff": "2027-04-04T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9906,
+    "name": "Atlético Madrid",
+    "score": null,
+    "logo": "/img/team/9906.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868315,
+   "ids": {
+    "fotmob": 5868315,
+    "sofascore": "16462476",
+    "espn": "401882622",
+    "livescore": null
+   },
+   "kickoff": "2027-04-11T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8371,
+    "name": "Osasuna",
+    "score": null,
+    "logo": "/img/team/8371.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868327,
+   "ids": {
+    "fotmob": 5868327,
+    "sofascore": null,
+    "espn": "401882610",
+    "livescore": null
+   },
+   "kickoff": "2027-04-18T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8305,
+    "name": "Getafe",
+    "score": null,
+    "logo": "/img/team/8305.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868337,
+   "ids": {
+    "fotmob": 5868337,
+    "sofascore": null,
+    "espn": "401882600",
+    "livescore": null
+   },
+   "kickoff": "2027-04-21T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 10268,
+    "name": "Elche",
+    "score": null,
+    "logo": "/img/team/10268.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868347,
+   "ids": {
+    "fotmob": 5868347,
+    "sofascore": null,
+    "espn": "401882590",
+    "livescore": null
+   },
+   "kickoff": "2027-05-02T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8581,
+    "name": "Levante",
+    "score": null,
+    "logo": "/img/team/8581.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868358,
+   "ids": {
+    "fotmob": 5868358,
+    "sofascore": null,
+    "espn": "401882579",
+    "livescore": null
+   },
+   "kickoff": "2027-05-09T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8634,
+    "name": "Barcelona",
+    "score": null,
+    "logo": "/img/team/8634.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868368,
+   "ids": {
+    "fotmob": 5868368,
+    "sofascore": null,
+    "espn": "401882569",
+    "livescore": null
+   },
+   "kickoff": "2027-05-16T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 8696,
+    "name": "Racing Santander",
+    "score": null,
+    "logo": "/img/team/8696.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  },
+  {
+   "id": 5868371,
+   "ids": {
+    "fotmob": 5868371,
+    "sofascore": null,
+    "espn": "401882566",
+    "livescore": null
+   },
+   "kickoff": "2027-05-23T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 9866,
+    "name": "Deportivo Alavés",
+    "score": null,
+    "logo": "/img/team/9866.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": false,
+   "result": null
+  },
+  {
+   "id": 5868389,
+   "ids": {
+    "fotmob": 5868389,
+    "sofascore": null,
+    "espn": "401882548",
+    "livescore": null
+   },
+   "kickoff": "2027-05-30T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "round": null,
+    "logo": "/img/league/87.png"
+   },
+   "home": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": null,
+    "logo": "/img/team/8633.png"
+   },
+   "away": {
+    "id": 9783,
+    "name": "Deportivo A Coruña",
+    "score": null,
+    "logo": "/img/team/9783.png"
+   },
+   "status": {
+    "state": "scheduled",
+    "live": false,
+    "finished": false,
+    "minute": null,
+    "added": null,
+    "label": null
+   },
+   "is_home": true,
+   "result": null
+  }
+ ]
+}

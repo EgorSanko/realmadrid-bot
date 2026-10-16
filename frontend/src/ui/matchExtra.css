@@ -1,0 +1,19 @@
+/* HeroMatchCard и CalendarRow — дополняют ui.css, значения из a-home / a-live / a-fixtures. */
+
+.hero-wrap { margin: 6px 16px 0; }
+.hero-mc { margin: 0; }
+a.hero-mc { color: var(--text); -webkit-tap-highlight-color: transparent; transition: border-color .15s ease; }
+a.hero-mc:active { border-color: var(--ring); }
+.hero-mc__when { text-align: right; }
+.hero-mc__tags { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.hero-mc__final { margin-top: 6px; font-size: 12px; color: var(--muted); }
+.hero-mc__more {
+  display: flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 16px; padding: 0 12px;
+  border-radius: 14px; background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 14px; text-align: center;
+}
+.hero-mc--finished .ui-mc__score { font-size: 36px; }
+
+.cal-row { color: var(--text); }
+.cal-row__chip { flex: none; }
+.cal-row .ui-fx__date .ui-badge--live { padding: 3px 7px; font-size: 11px; }
+.cal-row__minute { margin-top: 4px; color: var(--gold); font-weight: 700; }

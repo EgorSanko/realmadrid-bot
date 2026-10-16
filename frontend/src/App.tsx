@@ -3,6 +3,8 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { BottomNav } from './components/BottomNav';
 import { SectionScreen } from './screens/SectionScreen';
 import { SECTIONS } from './sections';
+import HomeScreen from './screens/HomeScreen';
+import MatchesScreen from './screens/MatchesScreen';
 
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
@@ -22,7 +24,9 @@ export function App() {
       <ScrollToTop />
       <div className="app">
         <Routes>
-          {SECTIONS.map((s) => (
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/matches" element={<MatchesScreen />} />
+          {SECTIONS.filter((s) => s.path !== '/' && s.path !== '/matches').map((s) => (
             <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
           ))}
           <Route
