@@ -18,6 +18,11 @@ services:
     ports:
       - "127.0.0.1:8010:8000"
     mem_limit: 256m
+    # секреты админки и бота (ADMIN_TOKEN, BOT_TOKEN, ADMIN_IDS, BOT_USERNAME) — только на сервере
+    # в /opt/rm-v2/.env, в git их нет; без файла админка просто закрыта
+    env_file:
+      - path: .env
+        required: false
     environment:
       - TZ=UTC
       - DATA_DIR=/data
