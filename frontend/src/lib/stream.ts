@@ -1,0 +1,127 @@
+import { useEffect, useRef, useState } from 'react';
+
+export interface StreamState {
+  live: boolean;
+  url: string | null;
+  title: string | null;
+  started_at: string | null;
+}
+
+export interface AdminStreamState extends StreamState {
+  stopped_at: string | null;
+  expires_at: string | null;
+}
+
+export const POLL_MS = 20_000;
+
+export async function fetchStream(signal?: AbortSignal): Promise<StreamState> {
+  const r = await fetch('/api/stream', { cache: 'no-store', signal });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return (await r.json()) as StreamState;
+}
+
+/**
+ * Состояние эфира для главной: опрос раз в 20 с и сразу при возврате на вкладку.
+ * Пока вкладка скрыта — не опрашиваем. Ошибка сети не сбрасывает последнее известное состояние.
+ */
+export function useStream(): StreamState | null {
+  const [state, setState] = useState<StreamState | null>(null);
+  const last = useRef('');
+
+  useEffect(() => {
+    let ctrl: AbortController | null = null;
+    let timer = 0;
+
+    const load = async () => {
+      ctrl?.abort();
+      ctrl = new AbortController();
+      try {
+        const s = await fetchStream(ctrl.signal);
+        const key = `${s.live}|${s.url}|${s.title}`;
+        if (key !== last.current) {
+          last.current = key;
+          setState(s);
+        }
+      } catch (e) {
+        if ((e as Error).name === 'AbortError') return;
+        // нет сети / сервер недоступен: оставляем, что было (а при первом запуске — «нет эфира»)
+        if (!last.current) {
+          last.current = 'offline';
+          setState({ live: false, url: null, title: null, started_at: null });
+        }
+      }
+    };
+
+    const schedule = () => {
+      window.clearInterval(timer);
+      timer = window.setInterval(() => {
+        if (document.visibilityState === 'visible') void load();
+      }, POLL_MS);
+    };
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        void load();
+        schedule();
+      }
+    };
+
+    void load();
+    schedule();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearInterval(timer);
+      ctrl?.abort();
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, []);
+
+  return state;
+}
+
+// ---------- админка ----------
+
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export async function adminRequest<T>(
+  method: 'GET' | 'POST',
+  path: string,
+  auth: Record<string, string>,
+  body?: unknown,
+): Promise<T> {
+  let r: Response;
+  try {
+    r = await fetch(path, {
+      method,
+      cache: 'no-store',
+      headers: {
+        ...auth,
+        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new ApiError(0, 'Сервер недоступен. Проверьте интернет и попробуйте ещё раз');
+  }
+  if (r.ok) return (await r.json()) as T;
+  let detail = '';
+  try {
+    const j = (await r.json()) as { detail?: unknown };
+    if (typeof j.detail === 'string') detail = j.detail;
+  } catch {
+    /* не JSON */
+  }
+  if (r.status === 401 || r.status === 403) {
+    if (detail === 'Админка отключена') throw new ApiError(r.status, 'Админка отключена на сервере');
+    const why = detail && detail !== 'Нет доступа' ? `: ${detail[0].toLowerCase()}${detail.slice(1)}` : '';
+    throw new ApiError(r.status, `Нет доступа${why}`);
+  }
+  if (r.status === 422) throw new ApiError(422, detail || 'Проверьте ссылку');
+  throw new ApiError(r.status, `Ошибка сервера (${r.status})`);
+}

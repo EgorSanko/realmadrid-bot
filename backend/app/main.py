@@ -12,10 +12,12 @@ from fastapi.responses import JSONResponse
 
 from . import config, store
 from .model import ts
+from .stream import router as stream_router
 
 VERSION = "0.2.0"
 
 app = FastAPI(title="Мадридиста API", version=VERSION, docs_url=None, redoc_url=None, openapi_url=None)
+app.include_router(stream_router)
 
 # через сколько секунд снимок считается устаревшим (≈ 3 пропущенных цикла сборщика)
 STALE_AFTER = {"fixtures": 3 * config.TEAM_INTERVAL, "tables": 3 * config.TEAM_INTERVAL,

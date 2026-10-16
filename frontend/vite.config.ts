@@ -7,6 +7,8 @@ export default defineConfig({
   build: {
     target: 'es2020',
     assetsInlineLimit: 0, // шрифты — отдельными файлами в /assets, не base64
+    // hls.js (~575 kB, ~180 kB gzip) — отдельный ленивый чанк, грузится только при включённом эфире
+    chunkSizeWarningLimit: 600,
   },
   server: {
     proxy: {
