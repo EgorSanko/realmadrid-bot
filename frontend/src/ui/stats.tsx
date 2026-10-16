@@ -236,16 +236,16 @@ export function ShotMap({ shots, ariaLabel = 'Карта ударов', legend =
           <rect x="66.5" y="1" width="193" height="79" />
           <rect x="119" y="1" width="88" height="26" />
           <path d="M127.5 80 A44 44 0 0 0 198.5 80" />
-          <line x1="145" y1="1" x2="181" y2="1" stroke="#9AA4BC" strokeWidth="3" />
+          <line x1="145" y1="1" x2="181" y2="1" stroke="#8A90A1" strokeWidth="3" />
         </g>
         {order.map((s, i) => {
           const cx0 = Math.min(SM_W - 1, Math.max(1, smX(s.y)));
           const cy0 = Math.min(SM_H - 1, Math.max(1, smY(s.x)));
           const r = shotR(s.xg);
           return s.outcome === 'goal' ? (
-            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="#D6B25E" stroke="#0A0F1E" strokeWidth="1" />
+            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="#D4AF37" stroke="#06070B" strokeWidth="1" />
           ) : (
-            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="none" stroke="#9AA4BC" strokeWidth="1.5" />
+            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="none" stroke="#8A90A1" strokeWidth="1.5" />
           );
         })}
       </svg>

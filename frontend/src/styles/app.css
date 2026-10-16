@@ -108,7 +108,7 @@ button {
   height: 34px;
   flex: none;
   object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(214, 178, 94, 0.25));
+  filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.25));
 }
 
 .brand__word {

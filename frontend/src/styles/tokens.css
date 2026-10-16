@@ -1,24 +1,34 @@
-/* Дизайн-токены стиля A «Ночной Бернабеу» (из design/screens/a.css) */
+/* Дизайн-токены. Раскладка — стиль A; палитра — как у старого сайта Реала
+   (почти чёрный фон с лёгкой синевой, насыщенное металлическое золото) — выбор владельца 17.10.2026 */
 :root {
-  --bg: #0A0F1E;
-  --surface: #121A2E;
-  --surface-2: #1A2440;
-  --line: #1E2942;
-  --text: #EEF1F7;
-  --muted: #9AA4BC;
-  --dim: #5E6A86;
-  --gold: #D6B25E;
-  --gold-hover: #E8C878;
-  --gold-ink: #0A0F1E;
+  --bg: #06070B;
+  --bg-2: #0B0D14;
+  --surface: #0F1218;
+  --surface-2: #141826;
+  --line: #1F2330;
+  --text: #EEF0F5;
+  --muted: #8A90A1;
+  --dim: #5A6072;
+  --gold: #D4AF37;
+  --gold-light: #F4D57A;
+  --gold-hover: #F4D57A;
+  --gold-ink: #1A1408;
   --live: #FF5A4E;
 
+  /* фирменные заливки */
+  --gold-grad: linear-gradient(135deg, #F4D57A, #D4AF37);
+  --gold-tint: rgba(212, 175, 55, 0.10);
+  --gold-edge: rgba(212, 175, 55, 0.30);
+  --card-grad: linear-gradient(180deg, #11141C, #0C0E15);
+  --hero-glow: radial-gradient(130% 90% at 0% 0%, rgba(212, 175, 55, 0.11), transparent 55%);
+
   /* нижнее меню */
-  --nav-bg: #0D1324;
-  --nav-ink: #8590AA;
+  --nav-bg: #0B0D14;
+  --nav-ink: #8A90A1;
   --nav-h: 76px;
 
   /* пустые плашки / рамки иконок */
-  --ring: #2A3654;
+  --ring: #262B3A;
 
   --display: 'Unbounded', sans-serif;
   --body: 'Onest', sans-serif;

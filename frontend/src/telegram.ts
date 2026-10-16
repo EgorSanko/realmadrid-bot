@@ -7,8 +7,8 @@ import {
   viewport,
 } from '@tma.js/sdk-react';
 
-const BG = '#0A0F1E';
-const NAV_BG = '#0D1324';
+const BG = '#06070B';
+const NAV_BG = '#0B0D14';
 
 /**
  * Инициализация Telegram Mini App.

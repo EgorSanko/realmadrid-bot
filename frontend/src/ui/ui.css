@@ -2,10 +2,10 @@
 :root {
   --ui-opp: #6B3A44;        /* соперник на графиках */
   --ui-sep: #3A4664;        /* двоеточия, полоса соперника */
-  --ui-loss-bg: #2A3654;
+  --ui-loss-bg: #262B3A;
   --ui-loss-ink: #C9D0E0;
   --ui-ucl-ink: #B9C6FF;
-  --ui-ucl-bg: #1C2650;
+  --ui-ucl-bg: rgba(91, 139, 255, 0.14);
   --ui-live-ink: #FF8A80;
   --ui-live-bg: rgba(255, 90, 78, .14);
   --ui-screen: #060912;     /* «экран» видео */
@@ -19,7 +19,7 @@
 .ui-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ---------- Card ---------- */
-.ui-card { display: block; margin: 14px 16px 0; padding: 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); color: var(--text); font-size: 16px; }
+.ui-card { display: block; margin: 14px 16px 0; padding: 18px; border-radius: 22px; background: var(--card-grad); border: 1px solid var(--line); color: var(--text); font-size: 16px; }
 .ui-card--flush { margin: 0; }
 .ui-card--bleed { padding: 0; overflow: hidden; }
 
@@ -46,10 +46,10 @@
 .ui-tabs--pill .ui-tabs__tab.is-on { border-color: var(--gold); background: var(--surface-2); color: var(--text); }
 
 /* ---------- Chip / Badge ---------- */
-.ui-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: var(--surface-2); color: var(--gold); font-weight: 600; font-size: 12px; white-space: nowrap; }
+.ui-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 8px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--gold-light); font-weight: 600; font-size: 12px; white-space: nowrap; }
 .ui-chip--sm { font-size: 11px; }
 .ui-chip--lg { font-size: 13px; }
-.ui-chip--ucl { color: var(--ui-ucl-ink); background: var(--ui-ucl-bg); }
+.ui-chip--ucl { color: var(--ui-ucl-ink); background: var(--ui-ucl-bg); border-color: rgba(91, 139, 255, 0.35); }
 .ui-chip .ui-img { margin: -2px 0; }
 
 .ui-badge { display: inline-flex; align-items: center; white-space: nowrap; }
@@ -62,8 +62,8 @@
 .ui-btn:active:not(:disabled) { transform: scale(.98); }
 .ui-btn:disabled { opacity: .45; cursor: default; }
 .ui-btn--block { display: flex; width: 100%; }
-.ui-btn--primary { height: 50px; background: var(--gold); color: var(--gold-ink); font-weight: 700; font-size: 15px; }
-@media (hover: hover) { .ui-btn--primary:hover:not(:disabled) { background: var(--gold-hover); } }
+.ui-btn--primary { height: 50px; background: var(--gold-grad); color: var(--gold-ink); font-weight: 700; font-size: 15px; box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22); }
+@media (hover: hover) { .ui-btn--primary:hover:not(:disabled) { background: var(--gold-light); } }
 .ui-btn--secondary { height: 48px; background: var(--surface-2); color: var(--text); font-weight: 600; font-size: 14px; }
 .ui-btn--outline { height: 48px; background: transparent; border: 1px solid var(--line); color: var(--text); font-weight: 600; font-size: 14px; }
 
@@ -85,7 +85,7 @@
 /* ---------- Empty / Error ---------- */
 .ui-state { margin: 14px 16px 0; padding: 32px 24px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; color: var(--text); }
 .ui-state--plain { margin: 0; padding: 20px 8px; background: none; border: 0; }
-.ui-state__icon { width: 52px; height: 52px; border-radius: 50%; border: 1px solid #2A3654; display: flex; align-items: center; justify-content: center; color: var(--dim); }
+.ui-state__icon { width: 52px; height: 52px; border-radius: 50%; border: 1px solid #262B3A; display: flex; align-items: center; justify-content: center; color: var(--dim); }
 .ui-state__icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 .ui-state__title { margin: 0; font-weight: 600; font-size: 15px; }
 .ui-state__text { margin: 0; max-width: 260px; font-size: 13px; color: var(--muted); }
@@ -101,7 +101,7 @@
 .ui-photo__sil { position: absolute; inset: 0; width: 100%; height: 100%; fill: #3A4664; }
 
 /* ---------- MatchCard ---------- */
-.ui-mc { display: block; margin: 14px 16px 0; padding: 20px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); color: var(--text); font-size: 16px; }
+.ui-mc { display: block; margin: 14px 16px 0; padding: 20px; border-radius: 24px; background: var(--hero-glow), linear-gradient(180deg, #12151E, #0C0E15); border: 1px solid rgba(212, 175, 55, 0.2); color: var(--text); font-size: 16px; }
 .ui-mc--live { padding: 18px; border-radius: 22px; }
 .ui-mc__top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .ui-mc__top--sm { font-size: 12px; }
@@ -180,7 +180,7 @@
 
 /* ---------- EventIcon ---------- */
 .ui-ev { display: inline-block; flex: none; vertical-align: middle; }
-.ui-ev--goal { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px rgba(214, 178, 94, .18); }
+.ui-ev--goal { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, .18); }
 .ui-ev--own-goal { width: 12px; height: 12px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(255, 90, 78, .18); }
 .ui-ev--yellow { width: 10px; height: 14px; border-radius: 2px; background: #E9C640; }
 .ui-ev--red { width: 10px; height: 14px; border-radius: 2px; background: #E5484D; }
@@ -283,7 +283,7 @@
 .ui-video__sub { margin-top: 4px; font-size: 12px; color: var(--muted); }
 .ui-vtile { display: block; flex: none; width: 200px; color: var(--text); }
 .ui-vtile__screen { position: relative; display: flex; align-items: center; justify-content: center; height: 112px; border-radius: 14px; background: var(--ui-screen); border: 1px solid var(--line); overflow: hidden; }
-.ui-vtile__play { position: relative; width: 38px; height: 38px; border-radius: 50%; background: rgba(214, 178, 94, .16); color: var(--gold); display: flex; align-items: center; justify-content: center; }
+.ui-vtile__play { position: relative; width: 38px; height: 38px; border-radius: 50%; background: rgba(212, 175, 55, .16); color: var(--gold); display: flex; align-items: center; justify-content: center; }
 .ui-vtile__title { margin-top: 8px; font-size: 13px; font-weight: 500; line-height: 1.3; }
 .ui-vtile__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
 
