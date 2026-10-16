@@ -47,7 +47,7 @@ class Collector:
         self.match_cycle: dict[str, int] = {}     # счётчик циклов (для «лёгких» запросов SofaScore/LiveScore)
         self.parts: dict[tuple, dict] = {}        # кэш частей матча у многоэндпоинтных источников
         self.sofa_events: list = []               # последние события Реала в SofaScore
-        self.sofa_by_date: dict[str, list] = {}   # scheduled-events по дате (для чужих матчей)
+        self.miss: dict[tuple, float] = {}        # (источник, id) → когда не нашли сопоставление
         self.ls_by_date: dict[str, dict] = {}
         self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0}
         self.last_team = 0.0
@@ -254,53 +254,68 @@ class Collector:
                             "league": (f.get("tournament") or {}).get("id")}
         return None
 
+    def _missed(self, source: str, fid) -> bool:
+        """Недавно не нашли id — не тратим запросы на повторный поиск 10 минут."""
+        return time.time() - self.miss.get((source, str(fid)), 0) < 600
+
     async def _sofa_id(self, fid) -> str | None:
         sid = store.from_fotmob(self.conn, "match", "sofascore", fid)
-        if sid:
+        if sid or self._missed("sofascore", fid):
             return sid
         info = await self._match_info(fid)
         if not info or not info["kickoff"]:
             return None
-        day = _ymd(info["kickoff"], "-")
-        if day not in self.sofa_by_date:
-            # сначала события Реала (дёшево), потом общий список дня
-            cand = self.sofa_events or (await self._sofa_team_events())
-            if not any(_sofa_match(e, info) for e in cand):
-                cand = (await self.ss.scheduled(day)).get("events") or []
-            self.sofa_by_date[day] = cand
-        for e in self.sofa_by_date[day]:
+        self.miss[("sofascore", str(fid))] = time.time()
+        # сначала события Реала (дёшево); для чужого идущего матча — общий список лайва
+        # (scheduled-events/{дата} у SofaScore больше нет: 404)
+        cand = self.sofa_events or (await self._sofa_team_events())
+        if not any(_sofa_match(e, info) for e in cand) and abs(time.time() - (ts(info["kickoff"]) or 0)) < 4 * 3600:
+            cand = (await self.ss.live_events()).get("events") or []
+        for e in cand:
             if _sofa_match(e, info):
                 with self.conn:
                     store.map_set(self.conn, "match", "sofascore", e["id"], fid, "auto")
                     store.map_set(self.conn, "team", "sofascore", (e.get("homeTeam") or {}).get("id"), info["home_id"])
                     store.map_set(self.conn, "team", "sofascore", (e.get("awayTeam") or {}).get("id"), info["away_id"])
+                self.miss.pop(("sofascore", str(fid)), None)
                 return str(e["id"])
         return None
 
     async def _ls_id(self, fid) -> str | None:
         eid = store.from_fotmob(self.conn, "match", "livescore", fid)
-        if eid:
+        if eid or self._missed("livescore", fid):
             return eid
         info = await self._match_info(fid)
         if not info or not info["kickoff"]:
             return None
+        self.miss[("livescore", str(fid))] = time.time()
         day = _ymd(info["kickoff"])
         if day not in self.ls_by_date:
             self.ls_by_date[day] = await self.ls.by_date(day)
-        eid = livescore.find_event(self.ls_by_date[day], info["home"], info["away"], info["kickoff"])
+        eid, exact = livescore.find_event(self.ls_by_date[day], info["home"], info["away"], info["kickoff"])
         if not eid:
             return None
         sb = await self.ls.part("scoreboard", eid)
         ids = livescore.fotmob_ids(sb)
         if ids["match"] and str(ids["match"]) != str(fid):
-            log.warning("livescore: Eid %s указывает на FotMob %s, а не %s — не сопоставляю", eid, ids["match"], fid)
-            return None
+            # у части лиг FotMob сменил id (1000xxxxxx), а LiveScore помнит старый —
+            # тогда верим точному совпадению обеих команд и времени начала
+            if not exact:
+                log.warning("livescore: Eid %s указывает на FotMob %s, а не %s — не сопоставляю",
+                            eid, ids["match"], fid)
+                return None
+            log.info("livescore: Eid %s: в Pids FotMob %s (≠ %s), но команды и время совпали", eid, ids["match"], fid)
+            note = "date+teams (pids differ)"
+        else:
+            note = "pids" if ids["match"] else "date+teams"
         with self.conn:
-            store.map_set(self.conn, "match", "livescore", eid, fid, "pids" if ids["match"] else "date+teams")
-            for side in ("home", "away"):
-                if ids[side] and ids[f"sofa_{side}"]:
-                    store.map_set(self.conn, "team", "sofascore", ids[f"sofa_{side}"], ids[side], "livescore-pids")
+            store.map_set(self.conn, "match", "livescore", eid, fid, note)
+            if note == "pids":
+                for side in ("home", "away"):
+                    if ids[side] and ids[f"sofa_{side}"]:
+                        store.map_set(self.conn, "team", "sofascore", ids[f"sofa_{side}"], ids[side], "livescore-pids")
         self.parts[("livescore", fid, "scoreboard")] = sb
+        self.miss.pop(("livescore", str(fid)), None)
         return str(eid)
 
     # ================= матч =================

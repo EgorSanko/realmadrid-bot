@@ -69,8 +69,9 @@ class SofaScore(Source):
     async def players(self) -> dict:
         return await self.get(f"{BASE}/team/{config.SOFA_TEAM_ID}/players", kind="players")
 
-    async def scheduled(self, yyyy_mm_dd: str) -> dict:
-        return await self.get(f"{BASE}/sport/football/scheduled-events/{yyyy_mm_dd}", kind="scheduled")
+    async def live_events(self) -> dict:
+        """Все идущие матчи (~0,5 МБ) — только для поиска id чужого матча, результат кэшируется."""
+        return await self.get(f"{BASE}/sport/football/events/live", kind="live_events")
 
 
 # ---------- статус ----------

@@ -236,17 +236,16 @@ def normalize_match(b: dict, ctx: dict | None = None) -> dict:
 
 
 def find_event(date_payload: dict, home: str | None, away: str | None, kickoff_iso: str | None):
-    """Eid матча в выдаче по дате: по соперникам (и времени начала, если есть)."""
+    """(Eid, точно) матча в выдаче по дате. Точно = обе команды и час начала совпали."""
     from ..model import same_team
-    best = None
+    loose = None
     for stg in date_payload.get("Stages") or []:
         for e in stg.get("Events") or []:
             t1 = ((e.get("T1") or [{}])[0]).get("Nm")
             t2 = ((e.get("T2") or [{}])[0]).get("Nm")
             if same_team(t1, home) and same_team(t2, away):
-                if kickoff_iso and e.get("Esd"):
-                    if iso_utc(str(e["Esd"]))[:13] != kickoff_iso[:13]:
-                        best = best or e.get("Eid")
-                        continue
-                return e.get("Eid")
-    return best
+                if kickoff_iso and e.get("Esd") and iso_utc(str(e["Esd"]))[:13] != kickoff_iso[:13]:
+                    loose = loose or e.get("Eid")
+                    continue
+                return e.get("Eid"), True
+    return loose, False
