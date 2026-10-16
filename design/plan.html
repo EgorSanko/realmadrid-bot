@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мадридиста — исследование и план</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+@page{size:A4;margin:16mm 14mm}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Onest',sans-serif;color:#0A1A44;font-size:10.5pt;line-height:1.45}
+h1{font-family:'Unbounded',sans-serif;font-size:21pt;margin:0 0 4px}
+h2{font-family:'Unbounded',sans-serif;font-size:13pt;margin:22px 0 8px;break-after:avoid}
+h3{font-size:11pt;margin:14px 0 6px;break-after:avoid}
+.sub{color:#5A6684;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:9.5pt;break-inside:auto}
+th{text-align:left;background:#0A0F1E;color:#EEF1F7;font-weight:600;padding:6px 8px}
+td{padding:6px 8px;border-bottom:1px solid #D9DDE6;vertical-align:top}
+tr{break-inside:avoid}
+.ok{color:#1E7A46;font-weight:700}.no{color:#B3202A;font-weight:700}.warn{color:#9A6B00;font-weight:700}
+.box{border:1px solid #D9DDE6;border-left:4px solid #D6B25E;padding:10px 14px;margin:10px 0;border-radius:6px;background:#FAFAF7;break-inside:avoid}
+.box.red{border-left-color:#B3202A}
+ol,ul{margin:6px 0;padding-left:20px} li{margin:3px 0}
+.stage{display:grid;grid-template-columns:28px 1fr;gap:4px 10px;padding:8px 0;border-bottom:1px solid #E6E9F0;break-inside:avoid}
+.n{font-family:'Unbounded',sans-serif;font-weight:700;color:#D6B25E;font-size:13pt}
+.muted{color:#5A6684}
+code{font-size:9pt;background:#EEF1F8;padding:1px 4px;border-radius:3px}
+</style>
+</head>
+<body>
+<h1>Мадридиста</h1>
+<p class="sub">Исследование источников и план сборки · 17 октября 2026 · стиль A утверждён</p>
+
+<div class="box">
+<b>Коротко.</b> Всё, что есть на утверждённых экранах (оценки игроков, xG, карта ударов, график давления, настоящие эмблемы и фото), бесплатно отдают два источника: <b>FotMob</b> напрямую и <b>SofaScore</b> через наш туннель в Нидерланды. Значит, полноценный резерв есть: если один закроется, второй отдаст то же самое. Оба формально запрещают автоматический сбор данных, поэтому делаем мало запросов и держим копию у себя. Одно решение за тобой — в конце документа.
+</div>
+
+<h2>1. Откуда берём данные</h2>
+<p class="muted">«Проверено» — запрос сделан руками с нашего сервера 81.17.154.4 16–17 октября.</p>
+<table>
+<tr><th style="width:24%">Что</th><th style="width:30%">Основной источник</th><th>Резерв</th></tr>
+<tr><td>Календарь, результаты: Ла Лига, ЛЧ, Кубок, Суперкубок</td><td>FotMob <span class="ok">проверено</span></td><td>ESPN <span class="ok">проверено</span> — все 4 турнира</td></tr>
+<tr><td>Лайв: счёт, минута, голы с ассистами, карточки, замены</td><td>FotMob, опрос раз в 10–15 с <span class="ok">проверено на живом матче</span></td><td>SofaScore через NL <span class="ok">проверено</span>; ESPN, LiveScore <span class="ok">проверено</span></td></tr>
+<tr><td>Составы с расстановкой</td><td>FotMob (схема, позиции, оценки) <span class="ok">проверено</span></td><td>SofaScore через NL — <span class="ok">с оценками, проверено</span>; дальше LiveScore, ESPN (без оценок)</td></tr>
+<tr><td>Статистика, xG, карта ударов, давление</td><td>FotMob <span class="ok">проверено</span></td><td>SofaScore через NL — <span class="ok">статистика, 30 ударов, 92 точки давления, проверено</span>; дальше LiveScore, ESPN</td></tr>
+<tr><td>Таблицы Ла Лиги и ЛЧ</td><td>FotMob <span class="ok">проверено</span></td><td>ESPN <span class="ok">проверено</span></td></tr>
+<tr><td>Состав, травмы, лидеры</td><td>FotMob <span class="ok">проверено</span></td><td>ESPN (состав), Transfermarkt (травмы)</td></tr>
+<tr><td>Трансферы</td><td>FotMob <span class="ok">проверено</span></td><td>Transfermarkt</td></tr>
+<tr><td>Видео: обзоры и ролики клуба</td><td>YouTube RSS канала Real Madrid <span class="ok">проверено</span>; ссылка на обзор матча — из FotMob</td><td>—</td></tr>
+<tr><td>Новости на русском</td><td>RSS: Спорт-Экспресс, Чемпионат, Sports.ru <span class="ok">проверено</span></td><td>—</td></tr>
+</table>
+<p><b>Через наш туннель в Нидерланды</b> (служба <code>f1hub-socks</code>, выход 212.192.9.128) открылись SofaScore — нужен ещё браузерный отпечаток Safari или Firefox, 8 из 8 запросов успешны — и TheSportsDB. Не годится Flashscore: <span class="no">закрытый API</span>. Минус туннеля: если упадёт сервер в Нидерландах, SofaScore отвалится, но основной FotMob идёт напрямую и от этого не зависит. <b>Платные</b> на случай, если бесплатного не хватит: Sportmonks (от €29/мес, есть оценки и xG), API-Football (бесплатно 100 запросов в день — на лайв мало). Оплата из РФ под вопросом.</p>
+<p><b>Имена</b> игроков, команд и турниров — как отдаёт FotMob, латиницей. По-русски только интерфейс.</p>
+
+<h2>2. Настоящие картинки — без самоделок</h2>
+<table>
+<tr><th style="width:24%">Что</th><th style="width:40%">Источник</th><th>Проверено</th></tr>
+<tr><td>Эмблемы клубов</td><td>FotMob <code>teamlogo/{id}.png</code>, прозрачный фон</td><td><span class="ok">все 32 соперника Реала</span>, 192–256 px</td></tr>
+<tr><td>Фото игроков</td><td>FotMob <code>playerimages/{id}.png</code>, без фона</td><td><span class="ok">все 27 человек состава</span>, 192 px</td></tr>
+<tr><td>Логотипы турниров</td><td>FotMob <code>leaguelogo/dark/{id}.png</code> — версия для тёмного фона</td><td><span class="ok">Ла Лига 87, ЛЧ 42, Кубок 138, Суперкубок 139</span></td></tr>
+<tr><td>Флаги стран</td><td>flagcdn, SVG</td><td><span class="ok">проверено</span></td></tr>
+<tr><td>Резерв эмблем</td><td>ESPN 500 px, football-data.org SVG</td><td><span class="ok">проверено</span></td></tr>
+</table>
+<ul>
+<li>Все картинки идут <b>через наш nginx-кэш</b>, как в F1 Hub. Телефон пользователя не ходит на зарубежные серверы, всё грузится быстро, и картинки остаются у нас, даже если источник закроется.</li>
+<li>Если у игрока нет фото, FotMob отвечает 403 — тогда показываем нейтральный силуэт. Монограммы-заглушки из макетов в проект не попадут.</li>
+</ul>
+
+<h2>3. На чём строим</h2>
+<table>
+<tr><th style="width:24%">Часть</th><th style="width:38%">Выбор</th><th>Почему</th></tr>
+<tr><td>Мини-приложение</td><td>React + Vite, официальный SDK <code>@tma.js/sdk-react</code></td><td>Свежий, MIT. Работает и в Telegram, и в обычном браузере</td></tr>
+<tr><td>Вход</td><td>Проверка initData Telegram на сервере (<code>telegram-webapp-auth</code>)</td><td>Живая библиотека, проверяет срок и подпись</td></tr>
+<tr><td>Сервер</td><td>Python FastAPI + SQLite</td><td>Как в F1 Hub, ты это уже поддерживаешь</td></tr>
+<tr><td>Сбор данных</td><td>Отдельный фоновый сборщик → база/кэш → API</td><td>Пользователи никогда не ждут FotMob. Если источник упал, отдаём последнее рабочее</td></tr>
+<tr><td>Лайв-счёт</td><td>SSE (встроено в FastAPI) + запасной опрос раз в 15 с</td><td>Счёт обновляется сам, без перезагрузки; работает через nginx</td></tr>
+<tr><td>Плеер m3u8</td><td>Встроенный HLS на iPhone, <code>hls.js</code> на Android (грузится только при открытии эфира), свои кнопки</td><td>Plyr и Vidstack объявлены устаревшими. Так плеер лёгкий и точно в нашем дизайне</td></tr>
+<tr><td>Поле, удары, давление</td><td>Свой SVG (схема уже нарисована в макетах); <code>campos</code> как образец</td><td>Без тяжёлых библиотек</td></tr>
+<tr><td>Шрифты и скрипты</td><td>Только локально</td><td>Никаких внешних блокирующих загрузок (урок старых проектов)</td></tr>
+</table>
+
+<h2>4. Порядок сборки</h2>
+<p class="muted">Каждый этап делает отдельный агент. Этап считается готовым, когда: код проверен на настоящих данных FotMob; Playwright сверил экран с утверждённым макетом на ширине телефона 390 px; у клиента ноль внешних запросов; ты посмотрел скриншоты. Только после этого — следующий этап.</p>
+<div class="stage"><span class="n">0</span><div><b>Каркас.</b> Репозиторий, FastAPI, React + Vite, цвета и шрифты стиля A, нижнее меню. Тестовый поддомен и деплой.</div></div>
+<div class="stage"><span class="n">1</span><div><b>Слой данных.</b> Сборщик с источниками FotMob → SofaScore (через NL) → ESPN → LiveScore, переключение при отказе, кэш с последним рабочим снимком, nginx-кэш картинок, страница здоровья источников.</div></div>
+<div class="stage"><span class="n">2</span><div><b>Главная.</b> Ближайший матч с настоящими эмблемами, обратный отсчёт, форма, место в таблице, прошлый матч.</div></div>
+<div class="stage"><span class="n">3</span><div><b>Трансляция.</b> Плеер на главной + админка: вставил m3u → «Старт», «Стоп». Проверка на iPhone и Android в Telegram.</div></div>
+<div class="stage"><span class="n">4</span><div><b>Матч: обзор и лайв.</b> Счёт, минута, хронология, игрок матча, видеообзор. Лайв через SSE.</div></div>
+<div class="stage"><span class="n">5</span><div><b>Матч: составы.</b> Расстановка на поле с фото и оценками, замены, кто не играет.</div></div>
+<div class="stage"><span class="n">6</span><div><b>Матч: статистика.</b> Цифры по таймам, график давления, карта ударов.</div></div>
+<div class="stage"><span class="n">7</span><div><b>Матчи.</b> Календарь всех турниров, результаты, таблицы Ла Лиги и ЛЧ.</div></div>
+<div class="stage"><span class="n">8</span><div><b>Команда.</b> Состав по линиям с фото, лазарет, лидеры сезона.</div></div>
+<div class="stage"><span class="n">9</span><div><b>Медиа.</b> Новости RSS (фильтр «Реала» доработать — сейчас ловит лишнее), видео клуба, обзоры матчей.</div></div>
+<div class="stage"><span class="n">10</span><div><b>Прогнозы.</b> Вход через Telegram, прогноз счёта и автора первого гола, начисление очков после матча, рейтинг, лига с друзьями по ссылке. Бот никому сам не пишет.</div></div>
+<div class="stage"><span class="n">11</span><div><b>Запуск.</b> Перенос на боевой домен, мини-приложение в боте, выключение старого Реала.</div></div>
+
+<h2>5. Решение за тобой</h2>
+<div class="box red">
+<b>FotMob как основной источник.</b> Его правила (как и у SofaScore) запрещают автоматический сбор данных. В январе 2026 FotMob добился удаления своего парсера из крупной открытой библиотеки (soccerdata, issue #918) и сейчас требует снести ещё один репозиторий. Наше приложение код не публикует и делает мало запросов (одна команда, опрос только во время матча), но риск блокировки или требования остаётся.
+<ol>
+<li><b>FotMob основной, SofaScore через Нидерланды — полный резерв, ESPN и LiveScore — последний рубеж</b> — <i>рекомендую</i>. Все экраны работают полностью. Если FotMob закроется, приложение само перейдёт на SofaScore без потерь. Если закроются оба, останутся календарь, лайв, события, составы и таблицы, а оценки, xG и давление спрячутся, а не сломаются.</li>
+<li><b>Без FotMob, только ESPN + LiveScore.</b> Риска нет, но из макетов уходят оценки игроков, xG, график давления. Фото игроков на ESPN почти нет, их придётся искать отдельно.</li>
+<li><b>Платный Sportmonks</b> (от €29/мес) вместо FotMob. Легально и стабильно, но оплата из РФ под вопросом.</li>
+</ol>
+</div>
+</body>
+</html>

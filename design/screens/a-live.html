@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Главная — идёт эфир</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="a.css">
+</head>
+<body>
+<main class="phone">
+  <header class="topbar">
+    <div class="row gap8"><span style="width:8px;height:8px;border-radius:2px;background:var(--gold)"></span><span class="disp" style="font-size:14px;letter-spacing:.08em">МАДРИДИСТА</span></div>
+    <span class="badge-live"><span class="live-dot"></span>В ЭФИРЕ</span>
+  </header>
+
+  <section aria-label="Плеер" style="position:relative;height:219px;margin-top:6px;background:#04070F;overflow:hidden">
+    <svg viewBox="0 0 390 219" width="390" height="219" aria-hidden="true" style="position:absolute;inset:0;opacity:.18">
+      <rect x="20" y="16" width="350" height="187" fill="none" stroke="#9FC5A0" stroke-width="1.5"></rect>
+      <line x1="195" y1="16" x2="195" y2="203" stroke="#9FC5A0" stroke-width="1.5"></line>
+      <circle cx="195" cy="110" r="30" fill="none" stroke="#9FC5A0" stroke-width="1.5"></circle>
+      <rect x="20" y="66" width="44" height="88" fill="none" stroke="#9FC5A0" stroke-width="1.5"></rect>
+      <rect x="326" y="66" width="44" height="88" fill="none" stroke="#9FC5A0" stroke-width="1.5"></rect>
+    </svg>
+    <div style="position:absolute;left:12px;top:12px" class="badge-live"><span class="live-dot"></span>LIVE</div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:52px;display:flex;align-items:center;gap:6px;padding:0 6px;background:linear-gradient(transparent,rgba(0,0,0,.7))">
+      <button aria-label="Пауза" style="width:44px;height:44px;border:none;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></button>
+      <button aria-label="Звук" style="width:44px;height:44px;border:none;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"></path></svg></button>
+      <span style="flex:1"></span>
+      <span class="small" style="color:#C9D0E0">HD</span>
+      <button aria-label="На весь экран" style="width:44px;height:44px;border:none;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+    </div>
+  </section>
+
+  <section aria-label="Счёт" class="card" style="margin-top:14px">
+    <div class="row between small muted"><span class="chip">Ла Лига</span><span>2-й тайм</span></div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:16px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div class="crest rm" style="width:52px;height:52px;font-size:15px">RM</div><span style="font-weight:600;font-size:14px">Реал Мадрид</span></div>
+      <div style="text-align:center">
+        <div class="disp" style="font-size:40px;line-height:1">2 : 1</div>
+        <div class="gold" style="font-weight:700;font-size:14px;margin-top:6px">67′</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div class="crest op" style="width:52px;height:52px;font-size:13px">SEV</div><span style="font-weight:600;font-size:14px">Севилья</span></div>
+    </div>
+    <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px;display:grid;gap:8px;font-size:13px">
+      <div class="row gap8"><span class="dim" style="width:30px">12′</span><span class="ev goal" role="img" aria-label="Гол"></span><span>Мбаппе</span><span class="muted">пас Беллингем</span></div>
+      <div class="row gap8" style="justify-content:flex-end"><span class="muted">гол Севильи</span><span class="dim" style="width:30px;text-align:right">38′</span></div>
+      <div class="row gap8"><span class="dim" style="width:30px">55′</span><span class="ev goal" role="img" aria-label="Гол"></span><span>Беллингем</span><span class="muted">пас Гюлер</span></div>
+    </div>
+  </section>
+
+  <section aria-label="Коротко о матче" class="card">
+    <div class="row between small muted"><span>Реал</span><span>Статистика</span><span>Севилья</span></div>
+    <div style="display:grid;gap:12px;margin-top:12px;font-size:13px">
+      <div>
+        <div class="row between"><b>61%</b><span class="muted">Владение</span><b>39%</b></div>
+        <div style="display:flex;gap:4px;margin-top:6px"><span style="height:6px;border-radius:3px;background:var(--gold);flex:61"></span><span style="height:6px;border-radius:3px;background:#3A4664;flex:39"></span></div>
+      </div>
+      <div class="row between"><b>12</b><span class="muted">Удары</span><b>5</b></div>
+      <div class="row between"><b>1.92</b><span class="muted">xG</span><b>0.64</b></div>
+    </div>
+    <a href="a-match-events.html" style="display:flex;align-items:center;justify-content:center;height:48px;margin-top:16px;border-radius:14px;background:var(--surface-2);color:var(--text);font-weight:600;font-size:14px">Весь матч: события, составы, статистика</a>
+  </section>
+
+  <section aria-label="Мой прогноз" class="card row between">
+    <div><div class="small muted">Твой прогноз</div><div class="disp" style="font-size:22px;margin-top:4px">2 : 1</div></div>
+    <span class="chip" style="font-size:13px">Пока совпадает · +5</span>
+  </section>
+
+  <nav class="bottom" aria-label="Разделы">
+    <a href="a-home.html" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Главная</a>
+    <a href="a-fixtures.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Матчи</a>
+    <a href="a-team.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2z"></path></svg>Команда</a>
+    <a href="a-media.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M10 10v5l4-2.5z"></path></svg>Медиа</a>
+    <a href="a-predict.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8"></path></svg>Прогнозы</a>
+  </nav>
+</main>
+</body>
+</html>

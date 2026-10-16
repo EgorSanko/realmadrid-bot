@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Матч — обзор и хронология</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="a.css">
+<style>
+.tl{position:relative;margin-top:6px}
+.tl::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.tl-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;min-height:52px}
+.tl-min{justify-self:center;z-index:1;min-width:38px;padding:4px 0;border-radius:8px;background:var(--surface);border:1px solid var(--line);text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.tl-l{text-align:right;padding-right:12px} .tl-r{padding-left:12px}
+.tl-name{font-size:14px;font-weight:600} .tl-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.tl-score{font-family:var(--display);font-weight:700;font-size:12px;color:var(--gold);margin-left:6px}
+.tl-half{display:flex;justify-content:center;margin:6px 0}
+.tl-half span{z-index:1;padding:5px 12px;border-radius:9px;background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="phone">
+  <header class="topbar">
+    <a href="a-fixtures.html" class="back" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="title">Лига чемпионов · 2-й тур</span>
+    <span style="width:44px"></span>
+  </header>
+
+  <section aria-label="Счёт" style="padding:10px 16px 0">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div class="crest op" style="width:56px;height:56px;font-size:14px;background:#7A1E2C">ROM</div><span style="font-weight:600;font-size:14px">Рома</span></div>
+      <div style="text-align:center">
+        <div class="disp" style="font-size:42px;line-height:1">3 : 4</div>
+        <div class="small muted" style="margin-top:6px">Матч завершён · 14 окт</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div class="crest rm" style="width:56px;height:56px;font-size:15px">RM</div><span style="font-weight:600;font-size:14px">Реал Мадрид</span></div>
+    </div>
+    <div class="small muted" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;margin-top:14px;text-align:center">
+      <span>Мален 51′ 57′, де Рон 20′</span><span>Мбаппе 25′, Эспи 82′, Эндрик 85′, Рюдигер 90′</span>
+    </div>
+  </section>
+
+  <nav class="tabs" aria-label="Разделы матча">
+    <a href="a-match-events.html" class="on" aria-current="page">Обзор</a>
+    <a href="a-match-lineup.html">Составы</a>
+    <a href="a-match-stats.html">Статистика</a>
+  </nav>
+
+  <a href="a-media.html" class="card" style="display:block;padding:0;overflow:hidden;color:var(--text)">
+    <div style="height:180px;background:#060912;position:relative;display:flex;align-items:center;justify-content:center">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--gold-ink);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></div>
+      <span class="small" style="position:absolute;right:10px;bottom:10px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.6)">YouTube</span>
+    </div>
+    <div style="padding:14px 18px"><div style="font-weight:600;font-size:15px">Видеообзор: Рома 3:4 Реал Мадрид</div><div class="small muted" style="margin-top:4px">Камбэк за семь минут — три гола с 82-й</div></div>
+  </a>
+
+  <section aria-label="Лучшие игроки" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 16px 0">
+    <div class="card" style="margin:0;padding:14px">
+      <div class="small muted">Лучший у Реала</div>
+      <div class="row between" style="margin-top:8px"><span style="font-weight:600;font-size:14px">Диоманде</span><span class="rating r-top">8.5</span></div>
+    </div>
+    <div class="card" style="margin:0;padding:14px">
+      <div class="small muted">Игрок матча</div>
+      <div class="row between" style="margin-top:8px"><span style="font-weight:600;font-size:14px">Мален</span><span class="rating r-top">8.7</span></div>
+    </div>
+  </section>
+
+  <section aria-label="Хронология" class="card">
+    <h2 class="h2" style="margin-bottom:6px">Хронология</h2>
+    <div class="tl">
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev goal"></span> де Рон <span class="tl-score">1:0</span></div><div class="tl-sub">пас Суле</div></div><span class="tl-min">20′</span><div></div></div>
+      <div class="tl-row"><div></div><span class="tl-min">25′</span><div class="tl-r"><div class="tl-name"><span class="tl-score" style="margin:0 6px 0 0">1:1</span>Мбаппе <span class="ev goal"></span></div><div class="tl-sub">пас Диоманде</div></div></div>
+      <div class="tl-half"><span>Перерыв · 1:1</span></div>
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev goal"></span> Мален <span class="tl-score">2:1</span></div><div class="tl-sub">пас Мора</div></div><span class="tl-min">51′</span><div></div></div>
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev goal"></span> Мален <span class="tl-score">3:1</span></div><div class="tl-sub">пас Суле</div></div><span class="tl-min">57′</span><div></div></div>
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev yc"></span> Манчини</div></div><span class="tl-min">60′</span><div></div></div>
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev yc"></span> Уэсли</div></div><span class="tl-min">69′</span><div></div></div>
+      <div class="tl-row"><div></div><span class="tl-min">82′</span><div class="tl-r"><div class="tl-name"><span class="tl-score" style="margin:0 6px 0 0">3:2</span>Эспи <span class="ev goal"></span></div><div class="tl-sub">пас Эндрик</div></div></div>
+      <div class="tl-row"><div></div><span class="tl-min">85′</span><div class="tl-r"><div class="tl-name"><span class="tl-score" style="margin:0 6px 0 0">3:3</span>Эндрик <span class="ev goal"></span></div><div class="tl-sub">пас Гюлер</div></div></div>
+      <div class="tl-row"><div class="tl-l"><div class="tl-name"><span class="ev yc"></span> Пеллегрини</div></div><span class="tl-min">89′</span><div></div></div>
+      <div class="tl-row"><div></div><span class="tl-min">90′</span><div class="tl-r"><div class="tl-name"><span class="tl-score" style="margin:0 6px 0 0">3:4</span>Рюдигер <span class="ev goal"></span></div><div class="tl-sub">пас Гюлер</div></div></div>
+      <div class="tl-row"><div></div><span class="tl-min">90′</span><div class="tl-r"><div class="tl-name">Каррерас <span class="ev yc"></span></div></div></div>
+    </div>
+  </section>
+
+  <section aria-label="О матче" class="card s13">
+    <div class="list-item"><span class="muted" style="width:96px">Стадион</span><span>Стадио Олимпико, Рим</span></div>
+    <div class="list-item"><span class="muted" style="width:96px">Зрители</span><span>64 256</span></div>
+    <div class="list-item"><span class="muted" style="width:96px">Судья</span><span>Франсуа Летексье</span></div>
+  </section>
+
+  <nav class="bottom" aria-label="Разделы">
+    <a href="a-home.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Главная</a>
+    <a href="a-fixtures.html" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Матчи</a>
+    <a href="a-team.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2z"></path></svg>Команда</a>
+    <a href="a-media.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M10 10v5l4-2.5z"></path></svg>Медиа</a>
+    <a href="a-predict.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8"></path></svg>Прогнозы</a>
+  </nav>
+</main>
+</body>
+</html>

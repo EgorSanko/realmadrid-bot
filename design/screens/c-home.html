@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Главная — стиль C</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0B2A86}
+button{font-family:inherit}
+a{color:#FFD34D;text-decoration:none}
+.phone{width:390px;min-height:844px;padding-bottom:96px;background:#0B2A86;color:#FFFFFF;font-family:'Golos Text',sans-serif;position:relative;overflow:hidden}
+.cond{font-family:'Oswald',sans-serif;text-transform:uppercase}
+.w-card{margin:14px 16px 0;padding:18px;border-radius:18px;background:#FFFFFF;color:#0A1A44}
+.mut{color:#5A6684}
+nav.bottom{position:absolute;left:0;right:0;bottom:0;height:76px;background:#FFFFFF;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-bottom:8px}
+nav.bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#5A6684;font-size:11px;font-weight:500}
+nav.bottom a.on{color:#0B2A86;font-weight:700}
+nav.bottom svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+</style>
+</head>
+<body>
+<main class="phone">
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 4px">
+    <span class="cond" style="font-weight:700;font-size:22px;letter-spacing:.04em">Мадридиста</span>
+    <button aria-label="Профиль" style="width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></button>
+  </header>
+
+  <section aria-label="Ближайший матч" style="padding:14px 16px 0">
+    <div style="display:inline-block;padding:5px 10px;border-radius:6px;background:#FFD34D;color:#0A1A44;font-weight:700;font-size:12px" class="cond">Матч-день · Ла Лига</div>
+    <h1 class="cond" style="margin:14px 0 0;font-weight:700;font-size:60px;line-height:.95;letter-spacing:-.005em">Реал<br>Мадрид<br><span style="color:#FFD34D">— Севилья</span></h1>
+    <div style="margin-top:12px;font-size:15px;color:#C8D3F5">Воскресенье, 18 октября · 22:00 МСК · Бернабеу</div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px">
+      <div style="padding:12px 0;border-radius:14px;background:rgba(255,255,255,.1);text-align:center"><div class="cond" style="font-weight:700;font-size:44px;line-height:1">01</div><div style="font-size:12px;color:#C8D3F5;margin-top:4px">дней</div></div>
+      <div style="padding:12px 0;border-radius:14px;background:rgba(255,255,255,.1);text-align:center"><div class="cond" style="font-weight:700;font-size:44px;line-height:1">22</div><div style="font-size:12px;color:#C8D3F5;margin-top:4px">часа</div></div>
+      <div style="padding:12px 0;border-radius:14px;background:#FFD34D;color:#0A1A44;text-align:center"><div class="cond" style="font-weight:700;font-size:44px;line-height:1">15</div><div style="font-size:12px;margin-top:4px">минут</div></div>
+    </div>
+  </section>
+
+  <section aria-label="Трансляция" style="margin:18px 16px 0;height:196px;border-radius:18px;background:#061A57;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:#FFD34D;color:#0A1A44;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></div>
+    <div class="cond" style="font-weight:600;font-size:18px;letter-spacing:.02em">Трансляция появится здесь</div>
+    <div style="font-size:13px;color:#C8D3F5">Эфир включится перед стартовым свистком</div>
+  </section>
+
+  <section aria-label="Прогноз" class="w-card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="cond" style="font-weight:700;font-size:20px">Твой прогноз</span><span class="mut" style="font-size:12px">до начала матча</span></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px">
+      <button aria-label="Меньше голов Реала" style="width:44px;height:44px;border-radius:12px;border:none;background:#EEF1F8;color:#0A1A44;font-size:22px">−</button>
+      <span class="cond" style="font-weight:700;font-size:48px;line-height:1">2</span>
+      <button aria-label="Больше голов Реала" style="width:44px;height:44px;border-radius:12px;border:none;background:#EEF1F8;color:#0A1A44;font-size:22px">+</button>
+      <span class="cond" style="font-size:36px;color:#A3ABBE">:</span>
+      <button aria-label="Меньше голов Севильи" style="width:44px;height:44px;border-radius:12px;border:none;background:#EEF1F8;color:#0A1A44;font-size:22px">−</button>
+      <span class="cond" style="font-weight:700;font-size:48px;line-height:1">1</span>
+      <button aria-label="Больше голов Севильи" style="width:44px;height:44px;border-radius:12px;border:none;background:#EEF1F8;color:#0A1A44;font-size:22px">+</button>
+    </div>
+    <button class="cond" style="width:100%;height:52px;margin-top:16px;border:none;border-radius:12px;background:#0B2A86;color:#fff;font-weight:600;font-size:17px;letter-spacing:.04em">Сохранить прогноз</button>
+  </section>
+
+  <section aria-label="Форма и таблица" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 16px 0">
+    <div style="padding:16px;border-radius:18px;background:rgba(255,255,255,.1)">
+      <div style="font-size:12px;color:#C8D3F5">Форма</div>
+      <div class="cond" style="display:flex;gap:6px;margin-top:8px;font-weight:700;font-size:22px"><span>В</span><span>В</span><span style="color:#7F92CF">П</span><span>В</span><span>В</span></div>
+    </div>
+    <div style="padding:16px;border-radius:18px;background:rgba(255,255,255,.1)">
+      <div style="font-size:12px;color:#C8D3F5">Ла Лига</div>
+      <div style="margin-top:6px"><span class="cond" style="font-weight:700;font-size:30px">4</span> <span style="font-size:13px;color:#C8D3F5">место · 18 очк.</span></div>
+    </div>
+  </section>
+
+  <a href="a-match-events.html" class="w-card" style="display:flex;align-items:center;justify-content:space-between">
+    <div><div class="mut" style="font-size:12px">Прошлый матч · Лига чемпионов</div><div style="margin-top:6px;font-weight:600;font-size:15px">Рома <span class="cond" style="font-weight:700;font-size:22px;margin:0 6px">3:4</span> Реал Мадрид</div></div>
+    <span class="cond" style="font-weight:600;color:#0B2A86;font-size:15px">Обзор</span>
+  </a>
+
+  <section aria-label="Новости" style="margin:20px 16px 0">
+    <h2 class="cond" style="margin:0;font-weight:700;font-size:24px">Новости</h2>
+    <article style="margin-top:12px;padding:14px;border-radius:16px;background:rgba(255,255,255,.1)"><div style="font-size:15px;font-weight:600;line-height:1.35">«Реал» близок к продлению контракта с Беллингемом до 2031 года</div><div style="font-size:12px;color:#C8D3F5;margin-top:6px">Спорт-Экспресс</div></article>
+    <article style="margin-top:10px;padding:14px;border-radius:16px;background:rgba(255,255,255,.1)"><div style="font-size:15px;font-weight:600;line-height:1.35">Апелляция на дисквалификацию Винисиуса отклонена — он пропустит класико</div><div style="font-size:12px;color:#C8D3F5;margin-top:6px">Спорт-Экспресс</div></article>
+  </section>
+
+  <nav class="bottom" aria-label="Разделы">
+    <a href="c-home.html" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Главная</a>
+    <a href="a-fixtures.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Матчи</a>
+    <a href="a-team.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2z"></path></svg>Команда</a>
+    <a href="a-media.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M10 10v5l4-2.5z"></path></svg>Медиа</a>
+    <a href="a-predict.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8"></path></svg>Прогнозы</a>
+  </nav>
+</main>
+</body>
+</html>

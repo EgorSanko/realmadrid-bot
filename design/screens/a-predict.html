@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Прогнозы и рейтинг</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="a.css">
+</head>
+<body>
+<main class="phone">
+  <header class="topbar"><span class="disp" style="font-size:20px">Прогнозы</span><span class="small muted">сезон 2026/27</span></header>
+
+  <section aria-label="Мои итоги" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 16px 0">
+    <div class="card" style="margin:0;padding:14px"><div class="small muted">Очки</div><div class="disp gold" style="font-size:26px;margin-top:6px">21</div></div>
+    <div class="card" style="margin:0;padding:14px"><div class="small muted">Место</div><div class="disp" style="font-size:26px;margin-top:6px">12</div></div>
+    <div class="card" style="margin:0;padding:14px"><div class="small muted">Точных</div><div class="disp" style="font-size:26px;margin-top:6px">2</div></div>
+  </section>
+
+  <section aria-label="Прогноз на матч" class="card">
+    <div class="row between small muted"><span class="chip">Ла Лига</span><span>Вс, 18 окт · 22:00</span></div>
+    <div class="row between" style="margin-top:14px;font-weight:600;font-size:15px"><span>Реал Мадрид</span><span>Севилья</span></div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:10px"><div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:14px;padding:4px"><button aria-label="Меньше — Реал" style="width:44px;height:44px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-size:22px">−</button><span class="disp" style="font-size:26px">2</span><button aria-label="Больше — Реал" style="width:44px;height:44px;border:none;border-radius:10px;background:transparent;color:var(--text);font-size:22px">+</button></div><span class="disp" style="font-size:22px;color:#3A4664">:</span><div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:14px;padding:4px"><button aria-label="Меньше — Севилья" style="width:44px;height:44px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-size:22px">−</button><span class="disp" style="font-size:26px">1</span><button aria-label="Больше — Севилья" style="width:44px;height:44px;border:none;border-radius:10px;background:transparent;color:var(--text);font-size:22px">+</button></div></div>
+    <div class="small muted" style="margin-top:16px">Первый гол Реала забьёт</div>
+    <div style="display:flex;gap:8px;margin-top:8px;overflow:hidden"><button style="height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--gold);background:var(--surface-2);color:var(--text);font-weight:600;font-size:13px;flex:none">Мбаппе</button><button style="height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--muted);font-weight:600;font-size:13px;flex:none">Винисиус</button><button style="height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--muted);font-weight:600;font-size:13px;flex:none">Беллингем</button><button style="height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--muted);font-weight:600;font-size:13px;flex:none">Гюлер</button></div>
+    <button style="width:100%;height:50px;margin-top:16px;border:none;border-radius:14px;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:15px">Сохранить прогноз</button>
+  </section>
+
+  <section aria-label="Как начисляются очки" class="card s13">
+    <h2 class="h2" style="margin-bottom:4px">Очки</h2>
+    <div class="list-item"><span style="flex:1">Точный счёт</span><b class="gold">+5</b></div>
+    <div class="list-item"><span style="flex:1">Угадана разница мячей</span><b>+3</b></div>
+    <div class="list-item"><span style="flex:1">Угадан исход</span><b>+2</b></div>
+    <div class="list-item"><span style="flex:1">Автор первого гола</span><b>+2</b></div>
+  </section>
+
+  <section aria-label="Рейтинг" class="card">
+    <div class="row between"><h2 class="h2">Рейтинг</h2></div>
+    <div class="tabs" style="margin:12px 0 4px"><a href="#" class="on">Сезон</a><a href="#">Месяц</a><a href="#">Друзья</a></div>
+    <div class="list-item"><span class="disp" style="width:22px;font-size:14px;color:var(--gold)">1</span><div class="av">Д</div><span style="flex:1;font-weight:500;font-size:14px">Дмитрий С.</span><b style="font-size:14px">47</b></div><div class="list-item"><span class="disp" style="width:22px;font-size:14px;color:var(--gold)">2</span><div class="av">М</div><span style="flex:1;font-weight:500;font-size:14px">Мадридиста_07</span><b style="font-size:14px">44</b></div><div class="list-item"><span class="disp" style="width:22px;font-size:14px;color:var(--gold)">3</span><div class="av">А</div><span style="flex:1;font-weight:500;font-size:14px">Анна В.</span><b style="font-size:14px">41</b></div><div class="list-item"><span class="disp" style="width:22px;font-size:14px;color:var(--muted)">4</span><div class="av">С</div><span style="flex:1;font-weight:500;font-size:14px">Сергей П.</span><b style="font-size:14px">38</b></div><div class="list-item"><span class="disp" style="width:22px;font-size:14px;color:var(--muted)">5</span><div class="av">К</div><span style="flex:1;font-weight:500;font-size:14px">Карим Т.</span><b style="font-size:14px">36</b></div>
+    <div class="list-item" style="margin-top:6px;padding:12px;border-radius:14px;background:var(--surface-2);border:none"><span class="disp" style="width:22px;font-size:14px">12</span><div class="av" style="background:var(--gold);color:var(--gold-ink)">Я</div><span style="flex:1;font-weight:700;font-size:14px">Ты</span><b style="font-size:14px">21</b></div>
+    <a href="#" style="display:flex;align-items:center;justify-content:center;height:48px;margin-top:14px;border-radius:14px;border:1px solid var(--line);color:var(--text);font-weight:600;font-size:14px">Позвать друга в свою лигу</a>
+  </section>
+  <nav class="bottom" aria-label="Разделы">
+    <a href="a-home.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Главная</a>
+    <a href="a-fixtures.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Матчи</a>
+    <a href="a-team.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2z"></path></svg>Команда</a>
+    <a href="a-media.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M10 10v5l4-2.5z"></path></svg>Медиа</a>
+    <a href="a-predict.html" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8"></path></svg>Прогнозы</a>
+  </nav>
+</main>
+</body>
+</html>
