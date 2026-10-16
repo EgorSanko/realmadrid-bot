@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+                                    <title>Чемпионат.com</title>
+                <description>Новости спорта, статистика и онлайн-трансляции на Чемпионат.com</description>
+                        <link>https://www.championat.com</link>
+            <language>ru</language>
+            <image>
+                <url>https://st.championat.com/i/rss-logo.png</url>
+                <title>Чемпионат.com</title>
+                <link>https://www.championat.com</link>
+            </image>
+            <atom:link rel="self" href="http://api.championat.com/export/rss/brief/?type=news&amp;category=football"/>
+                            <atom:link rel="next" href="http://api.championat.com/export/rss/brief/?type=news&amp;category=football&amp;cursor=6ad2719d9461238136067294"/>
+                                        <item >
+                                                            <guid>https://www.championat.com/football/news-6660596-nejmar-nazval-lamina-yamalya-luchshim-futbolistom-v-mire.html</guid>
+                                            <title>Неймар назвал Ламина Ямаля лучшим футболистом в мире</title>
+                                            <link>https://www.championat.com/football/news-6660596-nejmar-nazval-lamina-yamalya-luchshim-futbolistom-v-mire.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 01:46:57 +0300</pubDate>
+                                            <description>Нападающий «Сантоса» Неймар сделал в соцсетях репост записи аккаунта со статистикой Sofascore, где проведено сравнение его игры в сезоне-2017/2018 в составе «Пари Сен-Жермен» и текущих показателей испанского вингера каталонской «Барселоны» Ламина Ямаля.</description>
+                                <author>Елизавета Искам</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                            <category domain="sections">Южная Америка</category>
+                                    <category domain="tags">ФК Барселона</category><category domain="tags">ФК ПСЖ</category><category domain="tags">Неймар</category><category domain="tags">Ламин Ямаль</category><category domain="tags">ФК Сантос</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/x/j/nejmar-nazval-lamina-yamalya-luchshim-futbolistom-v-mire_1792190816301201411.jpg"
+                length="131797"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660594-dzhanni-velichajshij-blatter-otreagiroval-na-vystuplenie-infantino-pered-sovetom-fifa.html</guid>
+                                            <title>«Джанни, величайший!» Блаттер отреагировал на выступление Инфантино перед Советом ФИФА</title>
+                                            <link>https://www.championat.com/football/news-6660594-dzhanni-velichajshij-blatter-otreagiroval-na-vystuplenie-infantino-pered-sovetom-fifa.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 01:34:29 +0300</pubDate>
+                                            <description>Бывший президент Международной федерации футбола (ФИФА) Йозеф Блаттер прокомментировал выступление нынешнего главы организации Джанни Инфантино на заседании Совета ФИФА.</description>
+                                <author>Елизавета Искам</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Прочие</category>
+                            <category domain="sections">ЧМ-2026</category>
+                                    <category domain="tags">ЧМ-2026</category><category domain="tags">ФИФА</category><category domain="tags">Йозеф Блаттер</category><category domain="tags">Джанни Инфантино</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/v/c/dzhanni-velichajshij-blatter-otreagiroval-na-vystuplenie-infantino-pered-sovetom-fifa_1792190068452917053.jpg"
+                length="112118"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660592-posolstvo-rossii-v-turcii-opublikovalo-post-po-sluchayu-vstrechi-s-batrakovym.html</guid>
+                                            <title>Посольство России в Турции опубликовало пост по случаю встречи с Батраковым</title>
+                                            <link>https://www.championat.com/football/news-6660592-posolstvo-rossii-v-turcii-opublikovalo-post-po-sluchayu-vstrechi-s-batrakovym.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 01:21:09 +0300</pubDate>
+                                            <description>Аккаунт Посольства России в Турции опубликовал пост по случаю встречи чрезвычайного и полномочного посла Российской Федерации в Турции Сергея Вершинина и полузащитника «Галатасарая» Алексея Батракова в спортивном комплексе стамбульского клуба.</description>
+                                <author>Елизавета Искам</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Лига чемпионов</category>
+                            <category domain="sections">Испания</category>
+                            <category domain="sections">Прочие</category>
+                                    <category domain="tags">ФК Барселона</category><category domain="tags">ФК Галатасарай</category><category domain="tags">Алексей Батраков</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/j/u/posolstvo-rossii-v-turcii-opublikovalo-post-po-sluchayu-vstrechi-s-batrakovym_1792189264607228513.jpg"
+                length="101074"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html</guid>
+                                            <title>«Не хочу загадывать, что будет дальше». Карвахаль — о возможном участии в матче с «Реалом»</title>
+                                            <link>https://www.championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 01:05:28 +0300</pubDate>
+                                            <description>Бывший защитник мадридского «Реала» Даниэль Карвахаль, который ранее присоединился к «Хетафе», ответил, что думает о возможном участии в матче с «лос бланкос».</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Реал Мадрид</category><category domain="tags">ФК Хетафе</category><category domain="tags">Даниэль Карвахаль</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/d/y/ne-hochu-zagadyvat-chto-bude.jpg"
+                length="103334"
+                type="image/jpeg"
+                                source="Голубович Дмитрий, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html</guid>
+                                            <title>Два защитника, которых «Реал» рассматривал до Конате, остаются в списке целей — Sport.es</title>
+                                            <link>https://www.championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:59:23 +0300</pubDate>
+                                            <description>Центральные защитники Рубен Диаш из «Манчестер Сити» и Алессандро Бастони из «Интера», которыми мадридский «Реал» интересовался до подписания игрока обороны «Ливерпуля» Ибраима Конате в статусе свободного агента, всё ещё интересны клубу.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                            <category domain="sections">Италия</category>
+                            <category domain="sections">Испания</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Реал Мадрид</category><category domain="tags">ФК Манчестер Сити</category><category domain="tags">ФК Интер</category><category domain="tags">Ибраима Конате</category><category domain="tags">Рубен Диаш</category><category domain="tags">Эдер Милитао</category><category domain="tags">Алессандро Бастони</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/n/v/dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es_17921879631009791292.jpg"
+                length="134170"
+                type="image/jpeg"
+                                source="Soccrates/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660576-daniel-karvahal-otvetil-pochemu-reshil-perejti-v-hetafe.html</guid>
+                                            <title>Даниэль Карвахаль ответил, почему решил перейти в «Хетафе»</title>
+                                            <link>https://www.championat.com/football/news-6660576-daniel-karvahal-otvetil-pochemu-reshil-perejti-v-hetafe.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:57:08 +0300</pubDate>
+                                            <description>Бывший защитник мадридского «Реала» Даниэль Карвахаль ответил, почему ранее присоединился к «Хетафе».</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Хетафе</category><category domain="tags">Даниэль Карвахаль</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/m/g/daniel-karvahal-otvetil-poch.jpg"
+                length="145059"
+                type="image/jpeg"
+                                source="Голубович Дмитрий, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660552-baltika-nashla-zamenu-gassama-on-mozhet-stat-pervym-novichkom-panatinaikosa-v-yanvare.html</guid>
+                                            <title>«Балтика» нашла замену Гассама, он может стать первым новичком «Панатинаикоса» в январе</title>
+                                            <link>https://www.championat.com/football/news-6660552-baltika-nashla-zamenu-gassama-on-mozhet-stat-pervym-novichkom-panatinaikosa-v-yanvare.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:55:04 +0300</pubDate>
+                                            <description>Калининградская «Балтика» в последние дни нашла потенциальную замену защитнику Натану Гассама.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">РПЛ</category>
+                            <category domain="sections">Прочие</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Балтика</category><category domain="tags">ФК Панатинаикос</category><category domain="tags">Натан Гассама</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/j/f/baltika-nashla-zamenu-gassam.jpg"
+                length="142968"
+                type="image/jpeg"
+                                source="Сафонов Александр, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660574-tebas-otreagiroval-na-vozmozhnoe-nakazanie-za-slova-o-tv-reala-i-metodah-gebbelsa.html</guid>
+                                            <title>Тебас отреагировал на возможное наказание за слова о ТВ «Реала» и методах Геббельса</title>
+                                            <link>https://www.championat.com/football/news-6660574-tebas-otreagiroval-na-vozmozhnoe-nakazanie-za-slova-o-tv-reala-i-metodah-gebbelsa.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:48:56 +0300</pubDate>
+                                            <description>Президент Ла Лиги Хавьер Тебас прокомментировал новость, что Высший совет по спорту Испании (CSD) рассматривает возможность его наказания за сравнение деятельности телевидения мадридского «Реала» с пропагандистскими методами, применявшимися в нацистской Германии.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Реал Мадрид</category><category domain="tags">Хавьер Тебас</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/l/z/tebas-otreagiroval-na-vozmozhnoe-nakazanie-za-slova-o-tv-reala-i-metodah-gebbelsa_17921867541134789102.jpg"
+                length="137689"
+                type="image/jpeg"
+                                source="Eduardo Parra/Europa Press via Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660566-mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale.html</guid>
+                                            <title>«Мне 23, а я уже ветеран». Беллингем — о своём положении в «Реале»</title>
+                                            <link>https://www.championat.com/football/news-6660566-mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:31:22 +0300</pubDate>
+                                            <description>Полузащитник «Реала» Джуд Беллингем высказался о своей роли в мадридском клубе.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Лига чемпионов</category>
+                            <category domain="sections">Испания</category>
+                                    <category domain="tags">Фото</category><category domain="tags">ФК Реал Мадрид</category><category domain="tags">Джуд Беллингем</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/m/u/mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale_17921862742018414846.jpg"
+                length="119639"
+                type="image/jpeg"
+                                source="ФК «Реал» Мадрид"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660560-yap-stam-vyskazal-mnenie-pochemu-manchester-yunajted-ne-stoit-uvolnyat-kerrika.html</guid>
+                                            <title>Яп Стам высказал мнение, почему «Манчестер Юнайтед» не стоит увольнять Кэррика</title>
+                                            <link>https://www.championat.com/football/news-6660560-yap-stam-vyskazal-mnenie-pochemu-manchester-yunajted-ne-stoit-uvolnyat-kerrika.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:26:04 +0300</pubDate>
+                                            <description>Бывший защитник «Манчестер Юнайтед» Яп Стам поделился мнением, почему руководству манкунианцев не стоит увольнять главного тренера Майкла Кэррика.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                                    <category domain="tags">ФК Манчестер Юнайтед</category><category domain="tags">Майкл Кэррик</category><category domain="tags">Яп Стам</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/w/l/yap-stam-vyskazal-mnenie-pochemu-manchester-yunajted-ne-stoit-uvolnyat-kerrika_17921859541604651671.jpg"
+                length="75266"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660546-zaschitnik-red-star-elyas-zidan-otec-vsegda-ryadom-chtoby-podderzhat-menya.html</guid>
+                                            <title>Защитник «Ред Стар» Эльяс Зидан: отец всегда рядом, чтобы поддержать меня</title>
+                                            <link>https://www.championat.com/football/news-6660546-zaschitnik-red-star-elyas-zidan-otec-vsegda-ryadom-chtoby-podderzhat-menya.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:18:15 +0300</pubDate>
+                                            <description>Защитник клуба «Ред Стар» Эльяс Зидан, являющийся сыном главного тренера сборной Франции Зинедина Зидана, рассказал, как отец поддерживает его на профессиональном пути.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Франция</category>
+                                    <category domain="tags">Сборная Франции — Футбол</category><category domain="tags">Зинедин Зидан</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/i/z/zaschitnik-red-star-elyas-zidan-otec-vsegda-ryadom-chtoby-podderzhat-menya_17921855471001327325.jpg"
+                length="147032"
+                type="image/jpeg"
+                                source="Jean Catuffe/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660548-barkola-obyasnil-pochemu-v-liverpule-emu-igrat-prosche-chem-v-pszh.html</guid>
+                                            <title>Баркола объяснил, почему в «Ливерпуле» ему играть проще, чем в «ПСЖ»</title>
+                                            <link>https://www.championat.com/football/news-6660548-barkola-obyasnil-pochemu-v-liverpule-emu-igrat-prosche-chem-v-pszh.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:14:46 +0300</pubDate>
+                                            <description>Нападающий «Ливерпуля» Брэдли Баркола рассказал, почему в английском клубе ему проще играть, чем в «ПСЖ», откуда он перешёл минувшим летом.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                            <category domain="sections">Франция</category>
+                                    <category domain="tags">ФК Ливерпуль</category><category domain="tags">ФК ПСЖ</category><category domain="tags">Брэдли Баркола</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/r/g/barkola-obyasnil-pochemu-v-liverpule-emu-igrat-prosche-chem-v-pszh_1792185285541390876.jpg"
+                length="117763"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660538-panatinaikos-blizok-k-priobreteniyu-gassama-iz-baltiki-scorakias.html</guid>
+                                            <title>«Панатинаикос» близок к приобретению Гассама из «Балтики» — Scorakias</title>
+                                            <link>https://www.championat.com/football/news-6660538-panatinaikos-blizok-k-priobreteniyu-gassama-iz-baltiki-scorakias.html</link>
+                                                                <pubDate>Sat, 17 Oct 2026 00:09:45 +0300</pubDate>
+                                            <description>Греческий «Панатинаикос» близок к приобретению защитника Натана Гассама из калининградской «Балтики».</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">РПЛ</category>
+                            <category domain="sections">Прочие</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Балтика</category><category domain="tags">ФК Панатинаикос</category><category domain="tags">Натан Гассама</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/v/v/panatinaikos-blizok-k-priobr.jpg"
+                length="150339"
+                type="image/jpeg"
+                                source="Разина Елена, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660530-diego-simeone-pobeda-v-shesti-matchah-eschyo-ne-oznachaet-chto-vsyo-delaetsya-idealno.html</guid>
+                                            <title>Диего Симеоне: победа в шести матчах ещё не означает, что всё делается идеально</title>
+                                            <link>https://www.championat.com/football/news-6660530-diego-simeone-pobeda-v-shesti-matchah-eschyo-ne-oznachaet-chto-vsyo-delaetsya-idealno.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:59:14 +0300</pubDate>
+                                            <description>Главный тренер «Атлетико» Мадрид Диего Симеоне перед матчем 9-го тура Ла Лиги с «Эспаньолом» оценил нынешний уровень игры своей команды.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Атлетико Мадрид</category><category domain="tags">ФК Эспаньол</category><category domain="tags">Диего Симеоне</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/g/z/diego-simeone-pobeda-v-shest.jpg"
+                length="122508"
+                type="image/jpeg"
+                                source="Сахарова Алёна, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660516-diego-simeone-espanol-vsegda-umel-horosho-srazhatsya.html</guid>
+                                            <title>Диего Симеоне: «Эспаньол» всегда умел хорошо сражаться</title>
+                                            <link>https://www.championat.com/football/news-6660516-diego-simeone-espanol-vsegda-umel-horosho-srazhatsya.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:52:38 +0300</pubDate>
+                                            <description>Главный тренер «Атлетико» Мадрид Диего Симеоне поделился ожиданиями от матча 9-го тура Ла Лиги с «Эспаньолом».</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Атлетико Мадрид</category><category domain="tags">ФК Эспаньол</category><category domain="tags">Диего Симеоне</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/y/u/diego-simeone-espanol-vsegda-umel-horosho-srazhatsya_179218395728036940.jpg"
+                length="75251"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660520-kejn-prodolzhit-poluchat-eur-475-tys-v-nedelyu-po-novomu-kontraktu-v-bavarii-the-times.html</guid>
+                                            <title>Кейн продолжит получать € 475 тыс. в неделю по новому контракту в «Баварии» — The Times</title>
+                                            <link>https://www.championat.com/football/news-6660520-kejn-prodolzhit-poluchat-eur-475-tys-v-nedelyu-po-novomu-kontraktu-v-bavarii-the-times.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:50:34 +0300</pubDate>
+                                            <description>Нападающий «Баварии» Гарри Кейн будет зарабатывать £ 400 тыс.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Германия</category>
+                                    <category domain="tags">ФК Бавария</category><category domain="tags">Гарри Кейн</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/f/x/kejn-prodolzhit-poluchat-eur-475-tys-v-nedelyu-po-novomu-kontraktu-v-bavarii-the-times_17921838311881289254.jpg"
+                length="161122"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660502-marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej.html</guid>
+                                            <title>Marca: Тебас может быть наказан за сравнение методов ТВ «Реала» с нацистской Германией</title>
+                                            <link>https://www.championat.com/football/news-6660502-marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:40:57 +0300</pubDate>
+                                            <description>Высший совет по спорту Испании (CSD) рассматривает возможность принятия мер в адрес президента Ла Лиги Хавьера Тебаса, который сравнил деятельность телевидения мадридского «Реала» с пропагандистскими методами, применявшимися в нацистской Германии.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Реал Мадрид</category><category domain="tags">Хавьер Тебас</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/x/p/marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej_17921830551409265237.jpg"
+                length="112806"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660488-ajntraht-kyoln-rezultat-matcha-16-oktyabrya-schet-1-0-bundesliga-2026-2027.html</guid>
+                                            <title>«Айнтрахт» минимально обыграл «Кёльн» в 6-м туре Бундеслиги</title>
+                                            <link>https://www.championat.com/football/news-6660488-ajntraht-kyoln-rezultat-matcha-16-oktyabrya-schet-1-0-bundesliga-2026-2027.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:30:43 +0300</pubDate>
+                                            <description>Завершился матч 6-го тура немецкой Бундеслиги, в котором играли «Айнтрахт» Франкфурт-на-Майне и «Кёльн».</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Германия</category>
+                                    <category domain="tags">ФК Айнтрахт Франкфурт</category><category domain="tags">ФК Кёльн</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/o/v/ajntraht-minimalno-obygral-kyoln-v-6-m-ture-bundesligi_1792182642487246666.jpg"
+                length="157819"
+                type="image/jpeg"
+                                source="Alex Grimm/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660470-liverpul-vidit-zamenu-mak-allisteru-v-poluzaschitnike-aston-villy-the-sun.html</guid>
+                                            <title>«Ливерпуль» видит замену Мак Аллистеру в полузащитнике «Астон Виллы» — The Sun</title>
+                                            <link>https://www.championat.com/football/news-6660470-liverpul-vidit-zamenu-mak-allisteru-v-poluzaschitnike-aston-villy-the-sun.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 23:00:05 +0300</pubDate>
+                                            <description>«Ливерпуль» поставил перед собой цель следить за полузащитником «Астон Виллы» Йоханом Манзамби в течение сезона с целью попытаться приобрести его летом 2027 года.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Ливерпуль</category><category domain="tags">ФК Астон Вилла</category><category domain="tags">Алексис Мак Аллистер</category><category domain="tags">Йохан Манзамби</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/v/p/liverpul-vidit-zamenu-mak-allisteru-v-poluzaschitnike-aston-villy-the-sun_1792180432321153173.jpg"
+                length="124847"
+                type="image/jpeg"
+                                source="Michael Steele/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660474-napadayuschij-zenita-augusto-sovershenno-tochno-schitayu-chto-mogu-igrat-vmeste-s-sobolevym.html</guid>
+                                            <title>Нападающий «Зенита» Аугусто: совершенно точно считаю, что могу играть вместе с Соболевым</title>
+                                            <link>https://www.championat.com/football/news-6660474-napadayuschij-zenita-augusto-sovershenno-tochno-schitayu-chto-mogu-igrat-vmeste-s-sobolevym.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:58:59 +0300</pubDate>
+                                            <description>Нападающий «Зенита» Фелипе Аугусто ответил, чем отличается от своего одноклубника и коллеги по амплуа Александра Соболева в плане игровых характеристик.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">РПЛ</category>
+                                    <category domain="tags">ФК Зенит</category><category domain="tags">Александр Соболев</category><category domain="tags">Фелипе Аугусто</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/a/x/napadayuschij-zenita-augusto-sovershenno-tochno-schitayu-chto-mogu-igrat-vmeste-s-sobolevy_17921807381061698607.jpg"
+                length="110613"
+                type="image/jpeg"
+                                source="fc-zenit.ru"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660456-eto-process-adaptacii-napadayuschij-zenita-augusto-o-svoej-nyneshnej-rezultativnosti.html</guid>
+                                            <title>«Это процесс адаптации». Нападающий «Зенита» Аугусто — о своей нынешней результативности</title>
+                                            <link>https://www.championat.com/football/news-6660456-eto-process-adaptacii-napadayuschij-zenita-augusto-o-svoej-nyneshnej-rezultativnosti.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:50:41 +0300</pubDate>
+                                            <description>Нападающий «Зенита» Фелипе Аугусто поделился мнением о своём нынешнем уровне результативности.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">РПЛ</category>
+                                    <category domain="tags">ФК Зенит</category><category domain="tags">Фелипе Аугусто</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/g/r/eto-process-adaptacii-napadayuschij-zenita-augusto-o-svoej-nyneshnej-rezultativnosti_1792180241613102255.jpg"
+                length="121823"
+                type="image/jpeg"
+                                source="ФК «Зенит»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660450-errera-raskryl-prichinu-konflikta-mezhdu-mourinyu-i-pogba-v-manchester-yunajted.html</guid>
+                                            <title>Эррера раскрыл причину конфликта между Моуринью и Погба в «Манчестер Юнайтед»</title>
+                                            <link>https://www.championat.com/football/news-6660450-errera-raskryl-prichinu-konflikta-mezhdu-mourinyu-i-pogba-v-manchester-yunajted.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:36:40 +0300</pubDate>
+                                            <description>Бывший футболист «Манчестер Юнайтед» Андер Эррера поделился подробностями возникшего конфликта между полузащитником Полем Погба и экс-тренером «красных дьяволов» Жозе Моуринью.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                                    <category domain="tags">ФК Манчестер Юнайтед</category><category domain="tags">Жозе Моуринью</category><category domain="tags">Поль Погба</category><category domain="tags">Андер Эррера</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/t/x/errera-raskryl-prichinu-konf.jpg"
+                length="127471"
+                type="image/jpeg"
+                                source="Тырин Денис, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660442-igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es.html</guid>
+                                            <title>Игрок «Реала» предстанет перед судом после нападения его собаки на подростка — Sport.es</title>
+                                            <link>https://www.championat.com/football/news-6660442-igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:30:43 +0300</pubDate>
+                                            <description>Защитник мадридского «Реала» Ферлан Менди предстанет перед судом после нападения одной из его собак на несовершеннолетнего.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Реал Мадрид</category><category domain="tags">Ферлан Менди</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/x/p/igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es_1792179041361646136.jpg"
+                length="101237"
+                type="image/jpeg"
+                                source="Gonzalo Arroyo Moreno/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660440-trener-betisa-pellegrini-yamal-potryasayuschij-igrok-obladayuschij-mnozhestvom-yarkih-kachestv.html</guid>
+                                            <title>Тренер «Бетиса» Пеллегрини: Ямаль — потрясающий игрок, обладающий множеством ярких качеств</title>
+                                            <link>https://www.championat.com/football/news-6660440-trener-betisa-pellegrini-yamal-potryasayuschij-igrok-obladayuschij-mnozhestvom-yarkih-kachestv.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:30:07 +0300</pubDate>
+                                            <description>Главный тренер «Бетиса» Мануэль Пеллегрини перед матчем 9-го тура Ла Лиги с «Барселоной» высказался об уровне игры нападающего каталонской команды Ламина Ямаля.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Барселона</category><category domain="tags">ФК Бетис</category><category domain="tags">Ламин Ямаль</category><category domain="tags">Мануэль Пеллегрини</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/c/u/trener-betisa-pellegrini-yamal-potryasayuschij-igrok-obladayuschij-mnozhestvom-yarkih-kach_1792179006964825894.jpg"
+                length="104855"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660436-sport-es-arsenal-opasaetsya-iz-za-raboty-alvaresa-s-agentom-rodri.html</guid>
+                                            <title>Sport.es: «Арсенал» опасается из-за работы Альвареса с агентом Родри</title>
+                                            <link>https://www.championat.com/football/news-6660436-sport-es-arsenal-opasaetsya-iz-za-raboty-alvaresa-s-agentom-rodri.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:24:24 +0300</pubDate>
+                                            <description>«Арсенал» опасается, что «Барселона» может помешать им приобрести нападающего мадридского «Атлетико» Хулиана Альвареса, поскольку он близок к сотрудничеству с агентом Пабло Баркеро, который управлял переходом полузащитника Родри в каталонский клуб из «Манчестер Сити» минувшим летом.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                            <category domain="sections">Испания</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Барселона</category><category domain="tags">ФК Арсенал Лондон</category><category domain="tags">ФК Атлетико Мадрид</category><category domain="tags">Хулиан Альварес</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/i/g/sport-es-arsenal-opasaetsya-iz-za-raboty-alvaresa-s-agentom-rodri_17921786611352209458.jpg"
+                length="158321"
+                type="image/jpeg"
+                                source="Angel Martinez/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660416-perevodchik-spartaka-promes-kazhdyj-sezon-hotel-vyigrat-chempionat-i-iskrenne-veril.html</guid>
+                                            <title>Переводчик «Спартака»: Промес каждый сезон хотел выиграть чемпионат и искренне верил</title>
+                                            <link>https://www.championat.com/football/news-6660416-perevodchik-spartaka-promes-kazhdyj-sezon-hotel-vyigrat-chempionat-i-iskrenne-veril.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:12:46 +0300</pubDate>
+                                            <description>Переводчик московского «Спартака» Владимир Иринчеев поделился воспоминаниями о работе с нидерландским вингером Квинси Промесом.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">РПЛ</category>
+                                    <category domain="tags">ФК Спартак</category><category domain="tags">Квинси Промес</category><category domain="tags">Sports.ru</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/i/y/perevodchik-spartaka-promes-.jpg"
+                length="133606"
+                type="image/jpeg"
+                                source="Голубович Дмитрий, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660418-barselona-vnov-sledit-za-krupi-posle-ego-vosstanovleniya-ot-travmy-sport-es.html</guid>
+                                            <title>«Барселона» вновь следит за Крупи после его восстановления от травмы — Sport.es</title>
+                                            <link>https://www.championat.com/football/news-6660418-barselona-vnov-sledit-za-krupi-posle-ego-vosstanovleniya-ot-travmy-sport-es.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 22:12:18 +0300</pubDate>
+                                            <description>«Барселона» вновь обратила внимание на нападающего «Борнмута» Эли Крупи в связи с его восстановлением после травмы колена.</description>
+                                <author>Дмитрий Тучков</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                            <category domain="sections">Испания</category>
+                                    <category domain="tags">Трансферы</category><category domain="tags">ФК Барселона</category><category domain="tags">ФК Борнмут</category><category domain="tags">Эли Крупи</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/v/g/barselona-vnov-sledit-za-krupi-posle-ego-vosstanovleniya-ot-travmy-sport-es_17921779371607207116.jpg"
+                length="80991"
+                type="image/jpeg"
+                                source="Eddie Keogh/Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660412-budem-igrat-na-pobedu-trener-betisa-pellegrini-o-matche-s-barselonoj.html</guid>
+                                            <title>«Будем играть на победу». Тренер «Бетиса» Пеллегрини — о матче с «Барселоной»</title>
+                                            <link>https://www.championat.com/football/news-6660412-budem-igrat-na-pobedu-trener-betisa-pellegrini-o-matche-s-barselonoj.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 21:58:23 +0300</pubDate>
+                                            <description>Главный тренер «Бетиса» Мануэль Пеллегрини высказался о предстоящем матче 9-го тура Ла Лиги с «Барселоной».</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Испания</category>
+                                    <category domain="tags">ФК Барселона</category><category domain="tags">ФК Бетис</category><category domain="tags">Мануэль Пеллегрини</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/b/v/budem-igrat-na-pobedu-trener-betisa-pellegrini-o-matche-s-barselonoj_1792177100977165221.jpg"
+                length="94782"
+                type="image/jpeg"
+                                source="Getty Images"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660384-alisher-usmanov-pytaetsya-vernutsya-v-everton-i-vlozhit-v-klub-krupnuyu-summu-talksport.html</guid>
+                                            <title>Алишер Усманов пытается вернуться в «Эвертон» и вложить в клуб крупную сумму — talkSPORT</title>
+                                            <link>https://www.championat.com/football/news-6660384-alisher-usmanov-pytaetsya-vernutsya-v-everton-i-vlozhit-v-klub-krupnuyu-summu-talksport.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 21:55:21 +0300</pubDate>
+                                            <description>Российский миллиардер Алишер Усманов планирует вернуть себе контроль над клубом английской Премьер-лиги «Эвертон» и инвестировать в него крупную сумму.</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Англия</category>
+                                    <category domain="tags">ФК Эвертон</category><category domain="tags">Алишер Усманов</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/g/t/alisher-usmanov-pytaetsya-vernutsya-v-everton-i-vlozhit-v-klub-krupnuyu-summu-talksport_17921769201906613978.jpg"
+                length="182316"
+                type="image/jpeg"
+                                source="РИА Новости"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660398-video-manelov-mahnul-mimo-myacha-v-momente-s-pobednym-golom-sochi-v-vorota-rotora.html</guid>
+                                            <title>Видео: Манелов махнул мимо мяча в моменте с победным голом «Сочи» в ворота «Ротора»</title>
+                                            <link>https://www.championat.com/football/news-6660398-video-manelov-mahnul-mimo-myacha-v-momente-s-pobednym-golom-sochi-v-vorota-rotora.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 21:50:51 +0300</pubDate>
+                                            <description>Нападающий «Ротора» Ираклий Манелов махнул мимо мяча в эпизоде с голом полузащитника «Сочи» Михаила Игнатова в матче 14-го тура Лиги Pari сезона-2026/2027, в котором «горожане» одержали победу (1:0).</description>
+                                <author>Аслан Аршба</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Первая лига</category>
+                                    <category domain="tags">Видео</category><category domain="tags">ФК Сочи</category><category domain="tags">ФК Ротор</category><category domain="tags">Михаил Игнатов</category><category domain="tags">Ираклий Манелов</category>        <category domain="content_type">news</category>
+    <category domain="content_importance">breaking</category>                                            <enclosure
+                url="https://img.championat.com/news/big/y/y/video-manelov-mahnul-mimo-myacha-v-momente-s-pobednym-golom-sochi-v-vorota-rotora_17921766501375680318.jpg"
+                length="131399"
+                type="image/jpeg"
+                                source="ФК «Ротор»"
+                width="1350" height="900"
+            />
+                                                            </item>
+                    <item >
+                                                            <guid>https://www.championat.com/football/news-6660402-rezultaty-matchej-pervoj-ligi-2026-2027-na-16-oktyabrya.html</guid>
+                                            <title>Результаты матчей Первой лиги — 2026/2027 на 16 октября</title>
+                                            <link>https://www.championat.com/football/news-6660402-rezultaty-matchej-pervoj-ligi-2026-2027-na-16-oktyabrya.html</link>
+                                                                <pubDate>Fri, 16 Oct 2026 21:49:01 +0300</pubDate>
+                                            <description>В пятницу, 16 октября, состоялся стартовый матч 14-го тура Лиги Pari сезона-2026/2027.</description>
+                                <author>Максим Иванов</author>
+                                                        <category>Футбол</category>
+                                    <category domain="sections">Первая лига</category>
+                                    <category domain="tags">ФК Сочи</category><category domain="tags">ФК Ротор</category>        <category domain="content_type">news</category>
+                                                <enclosure
+                url="https://img.championat.com/news/big/t/b/rezultaty-matchej-pervoj-lig.jpg"
+                length="168446"
+                type="image/jpeg"
+                                source="Брещанов Эдгар, «Чемпионат»"
+                width="1350" height="900"
+            />
+                                                            </item>
+            </channel>
+</rss>

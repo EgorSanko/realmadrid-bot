@@ -1,0 +1,2220 @@
+{
+ "labeled_at": "2026-10-17",
+ "rule": "1 — новость про футбольный «Реал Мадрид»: клуб, его матчи, текущих игроков и тренера (в т.ч. в сборных и личные сюжеты), руководство, трансферы с участием Реала. 0 — другие «Реалы», бывшие игроки без Реала в сюжете, Моуринью о прошлых клубах, обзоры тура/таблицы, где Реал лишь в перечислении, реклама.",
+ "items": [
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660596-nejmar-nazval-lamina-yamalya-luchshim-futbolistom-v-mire.html",
+   "title": "Неймар назвал Ламина Ямаля лучшим футболистом в мире",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660594-dzhanni-velichajshij-blatter-otreagiroval-na-vystuplenie-infantino-pered-sovetom-fifa.html",
+   "title": "«Джанни, величайший!» Блаттер отреагировал на выступление Инфантино перед Советом ФИФА",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660592-posolstvo-rossii-v-turcii-opublikovalo-post-po-sluchayu-vstrechi-s-batrakovym.html",
+   "title": "Посольство России в Турции опубликовало пост по случаю встречи с Батраковым",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html",
+   "title": "«Не хочу загадывать, что будет дальше». Карвахаль — о возможном участии в матче с «Реалом»",
+   "rm": 1,
+   "note": "Карвахаль о матче с Реалом"
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html",
+   "title": "Два защитника, которых «Реал» рассматривал до Конате, остаются в списке целей — Sport.es",
+   "rm": 1
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660576-daniel-karvahal-otvetil-pochemu-reshil-perejti-v-hetafe.html",
+   "title": "Даниэль Карвахаль ответил, почему решил перейти в «Хетафе»",
+   "rm": 0,
+   "note": "бывший игрок Реала о переходе в Хетафе — Реал упомянут лишь в анонсе"
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660552-baltika-nashla-zamenu-gassama-on-mozhet-stat-pervym-novichkom-panatinaikosa-v-yanvare.html",
+   "title": "«Балтика» нашла замену Гассама, он может стать первым новичком «Панатинаикоса» в январе",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660574-tebas-otreagiroval-na-vozmozhnoe-nakazanie-za-slova-o-tv-reala-i-metodah-gebbelsa.html",
+   "title": "Тебас отреагировал на возможное наказание за слова о ТВ «Реала» и методах Геббельса",
+   "rm": 1
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660566-mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale.html",
+   "title": "«Мне 23, а я уже ветеран». Беллингем — о своём положении в «Реале»",
+   "rm": 1
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660560-yap-stam-vyskazal-mnenie-pochemu-manchester-yunajted-ne-stoit-uvolnyat-kerrika.html",
+   "title": "Яп Стам высказал мнение, почему «Манчестер Юнайтед» не стоит увольнять Кэррика",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660546-zaschitnik-red-star-elyas-zidan-otec-vsegda-ryadom-chtoby-podderzhat-menya.html",
+   "title": "Защитник «Ред Стар» Эльяс Зидан: отец всегда рядом, чтобы поддержать меня",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660548-barkola-obyasnil-pochemu-v-liverpule-emu-igrat-prosche-chem-v-pszh.html",
+   "title": "Баркола объяснил, почему в «Ливерпуле» ему играть проще, чем в «ПСЖ»",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660538-panatinaikos-blizok-k-priobreteniyu-gassama-iz-baltiki-scorakias.html",
+   "title": "«Панатинаикос» близок к приобретению Гассама из «Балтики» — Scorakias",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660530-diego-simeone-pobeda-v-shesti-matchah-eschyo-ne-oznachaet-chto-vsyo-delaetsya-idealno.html",
+   "title": "Диего Симеоне: победа в шести матчах ещё не означает, что всё делается идеально",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660516-diego-simeone-espanol-vsegda-umel-horosho-srazhatsya.html",
+   "title": "Диего Симеоне: «Эспаньол» всегда умел хорошо сражаться",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660520-kejn-prodolzhit-poluchat-eur-475-tys-v-nedelyu-po-novomu-kontraktu-v-bavarii-the-times.html",
+   "title": "Кейн продолжит получать € 475 тыс. в неделю по новому контракту в «Баварии» — The Times",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660502-marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej.html",
+   "title": "Marca: Тебас может быть наказан за сравнение методов ТВ «Реала» с нацистской Германией",
+   "rm": 1
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660488-ajntraht-kyoln-rezultat-matcha-16-oktyabrya-schet-1-0-bundesliga-2026-2027.html",
+   "title": "«Айнтрахт» минимально обыграл «Кёльн» в 6-м туре Бундеслиги",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660470-liverpul-vidit-zamenu-mak-allisteru-v-poluzaschitnike-aston-villy-the-sun.html",
+   "title": "«Ливерпуль» видит замену Мак Аллистеру в полузащитнике «Астон Виллы» — The Sun",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660474-napadayuschij-zenita-augusto-sovershenno-tochno-schitayu-chto-mogu-igrat-vmeste-s-sobolevym.html",
+   "title": "Нападающий «Зенита» Аугусто: совершенно точно считаю, что могу играть вместе с Соболевым",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660456-eto-process-adaptacii-napadayuschij-zenita-augusto-o-svoej-nyneshnej-rezultativnosti.html",
+   "title": "«Это процесс адаптации». Нападающий «Зенита» Аугусто — о своей нынешней результативности",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660450-errera-raskryl-prichinu-konflikta-mezhdu-mourinyu-i-pogba-v-manchester-yunajted.html",
+   "title": "Эррера раскрыл причину конфликта между Моуринью и Погба в «Манчестер Юнайтед»",
+   "rm": 0,
+   "note": "Моуринью и Погба в МЮ"
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660442-igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es.html",
+   "title": "Игрок «Реала» предстанет перед судом после нападения его собаки на подростка — Sport.es",
+   "rm": 1
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660440-trener-betisa-pellegrini-yamal-potryasayuschij-igrok-obladayuschij-mnozhestvom-yarkih-kachestv.html",
+   "title": "Тренер «Бетиса» Пеллегрини: Ямаль — потрясающий игрок, обладающий множеством ярких качеств",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660436-sport-es-arsenal-opasaetsya-iz-za-raboty-alvaresa-s-agentom-rodri.html",
+   "title": "Sport.es: «Арсенал» опасается из-за работы Альвареса с агентом Родри",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660416-perevodchik-spartaka-promes-kazhdyj-sezon-hotel-vyigrat-chempionat-i-iskrenne-veril.html",
+   "title": "Переводчик «Спартака»: Промес каждый сезон хотел выиграть чемпионат и искренне верил",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660418-barselona-vnov-sledit-za-krupi-posle-ego-vosstanovleniya-ot-travmy-sport-es.html",
+   "title": "«Барселона» вновь следит за Крупи после его восстановления от травмы — Sport.es",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660412-budem-igrat-na-pobedu-trener-betisa-pellegrini-o-matche-s-barselonoj.html",
+   "title": "«Будем играть на победу». Тренер «Бетиса» Пеллегрини — о матче с «Барселоной»",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660384-alisher-usmanov-pytaetsya-vernutsya-v-everton-i-vlozhit-v-klub-krupnuyu-summu-talksport.html",
+   "title": "Алишер Усманов пытается вернуться в «Эвертон» и вложить в клуб крупную сумму — talkSPORT",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660398-video-manelov-mahnul-mimo-myacha-v-momente-s-pobednym-golom-sochi-v-vorota-rotora.html",
+   "title": "Видео: Манелов махнул мимо мяча в моменте с победным голом «Сочи» в ворота «Ротора»",
+   "rm": 0
+  },
+  {
+   "feed": "championat",
+   "id": "championat.com/football/news-6660402-rezultaty-matchej-pervoj-ligi-2026-2027-na-16-oktyabrya.html",
+   "title": "Результаты матчей Первой лиги — 2026/2027 на 16 октября",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/neymar-nazval-lamina-yamalya-luchshim-v-mire-igrokom-2463932",
+   "title": "Неймар назвал Ламина Ямаля лучшим в мире игроком",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/france/news/trua-uvolil-sportivnogo-direktora-posle-seksistskogo-skandala-2463933",
+   "title": "«Труа» уволил спортивного директора после сексистского скандала",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/deportivo-levante-schet-i-rezultat-matcha-9-tura-la-ligi-16-oktyabrya-2026-2463925",
+   "title": "«Депортиво» и «Леванте» сыграли вничью в Ла лиге",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/italy/news/frozinone-sassuolo-schet-i-rezultat-matcha-7-tura-serii-a-16-oktyabrya-2026-2463924",
+   "title": "«Фрозиноне» одержал победу над «Сассуоло», Раймондо оформил хет-трик",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/france/news/le-man-tuluza-schet-i-rezultat-matcha-7-tura-ligi-1-16-oktyabrya-2026-2463923",
+   "title": "«Тулуза» разгромила «Ле Ман» в матче Лиги 1",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/germany/news/ayntraht-keln-schet-i-rezultat-matcha-6-tura-bundesligi-16-oktyabrya-2026-2463921",
+   "title": "«Айнтрахт» дома обыграл «Кельн»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/glavnyy-trener-betisa-manuel-pellegrini-kommentariy-pered-matchem-la-ligi-s-barselonoy-2463917",
+   "title": "Главный тренер «Бетиса» Пеллегрини — о матче с «Барселоной»: «Будем играть на победу»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_d1/news/rotor-sochi-schet-i-rezultat-matcha-14-tura-pervoy-ligi-16-oktyabrya-2026-goda-2463895",
+   "title": "«Сочи» обыграл «Ротор» в матче Первой лиги",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/stavki-na-sport/novosti-rynka/news/klient-fonbet-sobral-ekspress-iz-semi-matchey-lch-i-vyigral-7-mln-rubley-2463893",
+   "title": "Клиент FONBET собрал экспресс из семи матчей ЛЧ и выиграл 7 млн рублей",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/igrok-rostova-suleymanov-s-alboy-my-rasstalis-na-horoshey-note-no-dlya-nas-ego-uhod-byl-boleznennym-2463890",
+   "title": "Игрок «Ростова» Сулейманов: «С Альбой мы расстались на хорошей ноте, но для нас его уход был болезненным»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/trener-barselony-flik-betis-odna-iz-luchshih-komand-pellegrini-prodelyvaet-neveroyatnuyu-rabotu-2463888",
+   "title": "Тренер «Барселоны» Флик: «Бетис» — одна из лучших команд, Пеллегрини проделывает невероятную работу»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/england/news/glavnyy-trener-manchester-yunayted-maykl-kerrik-kommentariy-o-kritike-v-adres-komandy-2463885",
+   "title": "Кэррик — о критике «Манчестер Юнайтед»: «Игроки полностью верят мне»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/napadayuschiy-ahmata-kasadzhikov-o-vstreche-s-zenitom-match-dlya-menya-budet-osobennym-2463882",
+   "title": "Нападающий «Ахмата» Касаджиков о встрече с «Зенитом»: «Матч для меня будет особенным»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/prezident-la-ligi-haver-tebas-otreagiroval-na-zayavlenie-reala-s-trebovaniem-ego-otstavki-2463881",
+   "title": "Глава Ла лиги Тебас — о «Реале»: «Они стремятся уничтожить национальный турнир»",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_d1/news/rfs-vydal-sertifikat-sootvetstviya-dlya-provedeniya-oficialnyh-matchey-novomu-stadionu-torpedo-2463878",
+   "title": "РФС выдал сертификат соответствия для проведения официальных матчей новому стадиону «Торпедо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/v-chehii-futbolnogo-sudyu-diskvalificirovali-na-15-let-za-vzyatki-2463857",
+   "title": "В Чехии футбольного судью дисквалифицировали на 15 лет за взятки",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/franko-kamocci-schitaet-chto-spartak-ne-dolzhen-organizovyvat-artemu-dzyube-proschalnyy-match-2463850",
+   "title": "Камоцци считает, что «Спартак» не должен организовывать Дзюбе прощальный матч: «Его расцвет был в «Зените»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/zaschitnik-dani-karvahal-kommentariy-o-perehode-v-hetafe-2463847",
+   "title": "Карвахаль — о переходе в «Хетафе»: «Это проект, который меня очень мотивирует»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/france/news/trener-pszh-luis-enrike-akliush-horosho-nachal-sezon-a-zair-emeri-potencialnyy-igrok-startovogo-sostava-2463845",
+   "title": "Тренер «ПСЖ» Луис Энрике: «Аклиуш хорошо начал сезон, а Заир-Эмери — потенциальный игрок стартового состава»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/vosem-igrokov-propustyat-11-y-tur-rpl-iz-za-diskvalifikaciy-2463839",
+   "title": "Восемь игроков пропустят 11-й тур РПЛ из-за дисквалификаций",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/glavnyy-trener-manchester-siti-enco-mareska-kommentariy-o-vstreche-s-hosepom-gvardioloy-posle-matcha-s-pszh-2463837",
+   "title": "Мареска — о встрече с Гвардиолой после матча на «Этихаде»: «Это место всегда будет его домом»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/ignashevich-nashel-dlya-batrakova-paru-slov-pered-matchem-chtoby-ego-rasslabit-2463825",
+   "title": "Игнашевич: «Нашел для Батракова пару слов перед матчем, чтобы его расслабить»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/england/news/maykl-kerrik-kommentariy-glavnogo-trenera-manchester-yunayted-o-situacii-s-lisandro-martinesom-2463826",
+   "title": "Кэррик заявил, что Мартинес осознал свою ошибку: «Этого достаточно, чтобы двигаться дальше»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/rotor-sochi-vo-skolko-nachalo-matcha-pervoy-ligi-gde-smotret-translyaciyu-16-oktyabrya-2026-2463665",
+   "title": "«Ротор» — «Сочи»: во сколько начало матча Первой лиги",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/real-potreboval-otstavki-prezidenta-la-ligi-za-sravnenie-s-nacistskoy-germaniey-2463821",
+   "title": "«Реал» потребовал отставки президента Ла лиги за сравнение с нацистской Германией",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/apellyaciya-reala-na-diskvalifikaciyu-vinisiusa-otklonena-brazilec-propustit-klasiko-s-barselonoy-2463814",
+   "title": "Апелляция «Реала» на дисквалификацию Винисиуса отклонена, бразилец пропустит класико с «Барселоной»",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/sandro-shvarc-kommentariy-glavnogo-trenera-dinamo-o-podkaste-fedora-smolova-2463808",
+   "title": "Шварц о Смолове: «Он сделал большой шаг в развитии своего подкаста»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/sandro-shvarc-kommentariy-glavnogo-trenera-dinamo-o-progresse-v-izuchenii-russkogo-yazyka-2463804",
+   "title": "Шварц рассказал об изучении русского языка: «Клуб предоставил мне топовых преподавателей»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/glavnyy-trener-dinamo-sandro-shvarc-rasskazal-kogda-zaynutdinov-mozhet-vernutsya-na-pole-2463803",
+   "title": "Шварц рассказал, когда Зайнутдинов может вернуться на поле",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-ocenil-adaptaciyu-guterresa-i-kazimira-v-dinamo-2463801",
+   "title": "Шварц оценил адаптацию Гутьерреса и Казимира в «Динамо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-o-bitello-on-otrazhaet-identichnost-dinamo-2463800",
+   "title": "Шварц — о Бителло: «Он отражает идентичность «Динамо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-rasskazal-vliyaet-li-liderstvo-v-rpl-na-nastroy-igrokov-dinamo-2463799",
+   "title": "Шварц рассказал, влияет ли лидерство в РПЛ на настрой игроков «Динамо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/pivovarov-rasskazal-o-situacii-s-kontraktami-luneva-miranchuka-i-chavesa-2463795",
+   "title": "Пивоваров рассказал о ситуации с контрактами Лунева, Миранчука и Чавеса",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-otvetil-na-vopros-o-vozmozhnom-priglashenii-abdulhalikova-na-sbory-dinamo-2463796",
+   "title": "Шварц ответил на вопрос о возможном приглашении Абдулхаликова на сборы «Динамо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-o-golah-dinamo-so-standartov-nam-est-kuda-stremitsya-2463794",
+   "title": "Шварц — о голах «Динамо» со стандартов: «Нам есть куда стремиться»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-otvetil-na-vopros-nahoditsya-li-dinamo-na-poroge-bolshih-dostizheniy-2463792",
+   "title": "Шварц ответил на вопрос, находится ли «Динамо» на пороге больших достижений",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/pivovarov-rasskazal-podrobnosti-prodleniya-kontraktov-s-okishorom-marinkinym-i-glebovym-2463790",
+   "title": "Пивоваров рассказал подробности продления контрактов с Окишором, Маринкиным и Глебовым",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_d1/news/v-urale-nazvali-sluhami-informaciyu-o-predlozhennom-dzyube-kontrakte-2463788",
+   "title": "В «Урале» назвали слухами информацию о предложенном Дзюбе контракте",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-ob-igdisamove-trenery-mogut-brat-s-nego-primer-2463787",
+   "title": "Шварц об Игдисамове: «Тренеры могут брать с него пример»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-otvetil-na-vopros-mozhet-li-stat-dlya-dinamo-svoim-habi-alonso-2463789",
+   "title": "Шварц ответил на вопрос, может ли стать для «Динамо» своим Хаби Алонсо",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/shvarc-vysoko-ocenil-rabotu-igdisamova-v-cska-2463786",
+   "title": "Шварц высоко оценил работу Игдисамова в ЦСКА",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/vasilenko-esli-by-zavtra-pozvali-v-fakel-s-takim-sostavom-i-byudzhetom-otkazalsya-by-2463757",
+   "title": "Василенко: «Если бы завтра позвали в «Факел» с таким составом и бюджетом, отказался бы»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/trener-dinamo-shvarc-ob-otsutstvii-kaseresa-i-rubensa-v-matche-s-cska-oba-igroka-dlya-nas-vazhny-2463783",
+   "title": "Тренер «Динамо» Шварц об отсутствии Касереса и Рубенса в матче с ЦСКА: «Оба игрока для нас важны»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/glavnyy-trener-dinamo-sandro-shvarc-rasskazal-o-sostoyanii-travmirovannyh-maksima-osipenko-i-luisa-chavesa-2463785",
+   "title": "Шварц рассказал о состоянии травмированных Осипенко и Чавеса",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/eks-trener-fakela-vasilenko-o-sutormine-bolshoy-professional-2463755",
+   "title": "Экс-тренер «Факела» Василенко о Сутормине: «Большой профессионал»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/v-dinamo-soobschili-o-prodlenii-kontraktov-s-okishorom-marinkinym-i-glebovym-2463779",
+   "title": "В «Динамо» сообщили о продлении контрактов с Окишором, Маринкиным и Глебовым",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/madridskiy-real-blizok-k-prodleniyu-kontrakta-s-poluzaschitnikom-dzhudom-bellingemom-do-2031-goda-2463780",
+   "title": "Источник: «Реал» близок к продлению контракта с Беллингемом до 2031 года",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/vasilenko-o-selekcii-fakela-kuzyaev-vybral-mahachkalu-zdelar-ne-priehal-iz-za-iskusstvennogo-polya-2463753",
+   "title": "Василенко о селекции «Факела»: «Кузяев выбрал Махачкалу, Зделар не приехал из-за искусственного поля»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/kevin-andrade-kommentariy-zaschitnika-zenita-pered-matchem-protiv-ahmata-v-rpl-18-oktyabrya-2026-2463775",
+   "title": "Защитник «Зенита» Андраде: «Победы над «Краснодаром» и «Динамо» Мх подарили много приятных ощущений, надеемся продолжить победный путь»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/oleg-vasilenko-o-pobede-fakela-nad-krasnodarom-hochu-podderzhat-alekseya-rebko-2463752",
+   "title": "Василенко о победе «Факела» над «Краснодаром»: «Хочу поддержать Ребко»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/yflrussia/news/napadayuschiy-cska-tarasenko-ustanovil-rekord-mfl-po-golam-za-sezon-2463771",
+   "title": "Нападающий ЦСКА Тарасенко установил рекорд МФЛ по голам за сезон",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/eks-trener-fakela-vasilenko-i-tut-zvonit-marcel-lichka-oleg-izvini-ya-zdes-ni-pri-chem-2463751",
+   "title": "Экс-тренер «Факела» Василенко: «И тут звонит Марцел Личка: «Олег, извини! Я здесь ни при чем!»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/glavnyy-trener-zenita-sergey-semak-nazval-favorita-v-borbe-za-premiyu-zolotoy-myach-2026-2463769",
+   "title": "Семак: «При живом Месси Сафонову очень сложно конкурировать за «Золотой мяч»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/denisov-rasskazal-o-reakcii-igrokov-spartaka-na-novost-o-prodlenii-kontrakta-barko-2463759",
+   "title": "Денисов рассказал о реакции игроков «Спартака» на новость о продлении контракта Барко",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/sergey-semak-kommentariy-glavnogo-trenera-zenita-o-roli-brazilskogo-poluzaschitnika-vendela-v-komande-2463758",
+   "title": "Семак назвал Вендела лидером «Зенита»: «Не согласен, что он много берет на себя»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/oleg-vasilenko-o-matche-s-zenitom-i-penalti-fakel-naigral-na-nichyu-2463749",
+   "title": "Василенко о матче с «Зенитом» и пенальти в 6-м туре РПЛ: «Факел» наиграл на ничью»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/sergey-semak-kommentariy-glavnogo-trenera-zenita-ob-urovne-ahmata-2463754",
+   "title": "Главный тренер «Зенита» Семак: «Ахмат» в любом месте достаточно опасен, команда умеет играть на контратаках»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/trener-oleg-vasilenko-rasskazal-kak-proizoshlo-ego-uvolnenie-iz-fakela-2463748",
+   "title": "Василенко рассказал, как произошло его увольнение из «Факела»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rusteam/news/v-gosdume-podderzhali-ideyu-futbolnogo-matcha-mezhdu-rossiey-i-ssha-2463744",
+   "title": "В Госдуме поддержали идею футбольного матча между Россией и США",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/v-urugvae-ispytyvayut-elektronnuyu-kartochku-bloknot-dlya-futbolnyh-sudey-2463745",
+   "title": "В Уругвае испытывают электронную карточку-блокнот для футбольных судей",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/oleg-vasilenko-o-matche-fakela-s-loko-0-5-ne-po-igre-schet-na-tablo-2463746",
+   "title": "Василенко о матче «Факела» с «Локо»: «0:5 не по игре? Счет на табло»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/opredelilis-sudi-na-matchi-11-go-tura-rpl-2026-27-kto-rassudit-matchi-dinamo-cska-i-lokomotiv-krasnodar-2463737",
+   "title": "Судья Прокопов будет работать на матче «Динамо» — ЦСКА, Новиков назначен на игру «Локомотив» — «Краснодар»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/raspisanie-shestogo-raunda-puti-regionov-fonbet-kubka-rossii-2026-27-kogda-i-vo-skolko-proydut-matchi-2463732",
+   "title": "Определено расписание шестого раунда Пути регионов FONBET Кубка России 2026/27",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/igrok-spartaka-kristofev-vu-schitaet-chto-vratar-aleksandr-maksimenko-mog-by-igrat-na-pozicii-zaschitnika-2463726",
+   "title": "Ву считает, что Максименко мог бы играть на позиции защитника",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/zaschitnik-akrona-zhuan-eskoval-vyskazalsya-ob-otnoshenii-k-napadayuschemu-sbornoy-portugalii-krishtianu-ronaldu-2463730",
+   "title": "Эсковал — о Роналду: «Легенда и икона для Португалии»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/vu-ob-igre-pomazuna-v-matche-s-rodinoy-oshibki-sluchayutsya-vsegda-ilya-otlichnyy-vratar-2463725",
+   "title": "Ву — об игре Помазуна в матче с «Родиной»: «Ошибки случаются всегда. Илья — отличный вратарь»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/dinamo-ozhidaet-anshlag-na-matche-11-go-tura-rpl-protiv-cska-18-oktyabrya-kommentariy-press-sluzhby-kluba-2463724",
+   "title": "«Динамо» ожидает аншлаг на дерби с ЦСКА",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/sergey-semak-kommentariy-glavnogo-trenera-zenita-kto-ne-sygraet-protiv-ahmata-18-oktyabrya-2463719",
+   "title": "Главный тренер «Зенита» Семак: «Дивеев и Вендел не сыграют против «Ахмата»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/vu-ob-igre-pomazuna-posle-vtorogo-propuschennogo-myacha-ya-podoshel-k-ile-i-proveril-vse-li-s-nim-horosho-2463710",
+   "title": "Ву об игре Помазуна: «После второго пропущенного мяча я подошел к Илье и проверил, все ли с ним хорошо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-ob-iviche-obaldennyy-muzhik-kak-trener-silnee-yokanovicha-2463625",
+   "title": "Уваров — об Ивиче: «Обалденный мужик! Как тренер — сильнее Йокановича»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/la-liga-2026-27-raspisanie-matchey-i-translyaciy-9-go-tura-chempionata-ispanii-2463291",
+   "title": "Ла Лига-2026/27: расписание матчей и трансляций 9-го тура",
+   "rm": 0,
+   "note": "расписание тура Ла Лиги"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/spartak-podderzhit-angelinu-melnikovu-posle-otkaza-v-vize-na-chempionat-mira-po-sportivnoy-gimnastike-2463695",
+   "title": "«Спартак» поддержит Мельникову после отказа в визе на чемпионат мира по спортивной гимнастике",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-o-byshovce-eto-edinstvennyy-trener-kotorogo-nenavizhu-2463624",
+   "title": "Уваров — о Бышовце: «Это единственный тренер, которого ненавижу»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/apl-2026-27-raspisanie-matchey-i-translyaciy-7-go-tura-chempionata-anglii-2463290",
+   "title": "АПЛ-2026/27: расписание матчей и трансляций 7-го тура",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_d1/news/fnl-planiruet-prodavat-prava-na-translyacii-matchey-pervoy-ligi-v-indiyu-i-yuzhnuyu-ameriku-2463691",
+   "title": "ФНЛ планирует продавать права на трансляции матчей Первой лиги в Индию и Южную Америку",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/pari-pervaya-liga-2026-27-raspisanie-matchey-i-translyaciy-14-go-tura-2463293",
+   "title": "PARI Первая лига-2026/27: расписание матчей и трансляций 14-го тура",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/liga-1-2026-27-raspisanie-matchey-i-translyaciy-7-go-tura-chempionata-francii-2463289",
+   "title": "Лига 1-2026/27: расписание матчей и трансляций 7-го тура",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/seriya-a-2026-27-raspisanie-matchey-i-translyaciy-7-go-tura-chempionata-italii-2463292",
+   "title": "Серия А-2026/27: расписание матчей и трансляций 7-го тура",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/rpl-2026-27-raspisanie-matchey-i-translyaciy-11-go-tura-chempionata-rossii-2463288",
+   "title": "РПЛ-2026/27: расписание матчей и трансляций 11-го тура",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/danni-rel-kommentariy-po-porazheniyu-zalcburga-v-matche-ligi-evropy-s-milanom-2463657",
+   "title": "Рель: «Мы все увидели настоящее мастерство «Милана»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-ob-akinfeeve-v-poslednih-matchah-chasto-pytalsya-predugadyvat-esche-udara-net-a-on-uzhe-lozhitsya-zachem-2463621",
+   "title": "Уваров — об Акинфееве: «В последних матчах часто пытался предугадывать. Еще удара нет, а он уже ложится. Зачем?»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-proigrali-v-kieve-tolko-posle-matcha-uznal-chto-sdavali-kogda-mne-dengi-prinesli-2463620",
+   "title": "Уваров: «Проиграли в Киеве. Только после матча узнал, что сдавали. Когда мне деньги принесли»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/alfadzho-sisse-kommentariy-po-pobede-milana-nad-zalcburgom-v-matche-ligi-evropy-2463656",
+   "title": "Сиссе: «Стараюсь всегда сыграть на максимум, несмотря на позицию»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/ruben-amorim-kommentariy-po-pobede-milana-nad-zalcburgom-v-matche-ligi-evropy-2463654",
+   "title": "Аморим — о победе над «Зальцбургом»: «Не обращайте слишком много внимания на итоговый счет»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-o-dobrovolskom-pri-vstreche-ne-uznal-2463622",
+   "title": "Уваров — о Добровольском: «При встрече не узнал»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/klaudio-hiraldes-kommentariy-po-porazheniyu-selty-ot-yuventusa-v-lige-evropy-2463627",
+   "title": "Хиральдес: «Тяжко проигрывать на последней минуте, особенно из-за своих двух ошибок»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/per-sazh-kommentariy-po-porazheniyu-kristal-pelas-ot-liona-v-matche-ligi-evropy-2463614",
+   "title": "Саж: «В первом тайме «Кристал Пэлас» и близко не дотягивали до своих игровых стандартов»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/kups-kuopio-trabzonspor-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463608",
+   "title": "«КуПС» — «Трабзонспор»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/leh-bayer-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463605",
+   "title": "«Лех» — «Байер»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/lion-kristal-pelas-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463604",
+   "title": "«Лион» — «Кристал Пэлас»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/marsel-olimpiakos-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463603",
+   "title": "«Марсель» — «Олимпиакос»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/benfika-seltik-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463602",
+   "title": "«Бенфика» — «Селтик»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/bornmut-shturm-videoobzor-matcha-ligi-evropy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463601",
+   "title": "«Борнмут» — «Штурм»: видеообзор матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/cska-sofiya-monako-videoobzor-matcha-ligi-konferenciy-i-luchshie-momenty-igry-15-oktyabrya-2026-goda-2463600",
+   "title": "ЦСКА (София) — «Монако»: видеообзор матча Лиги конференций",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/bryuno-zhenezo-kommentariy-po-porazheniyu-marselya-ot-olimpiakosa-v-matche-ligi-evropy-2463612",
+   "title": "Женезьо — о поражении от «Олимпиакоса»: «Я обескуражен, даже зол»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/voltemade-nazval-vazhnoy-pobedu-yuventusa-nad-seltoy-v-lige-evropy-2463599",
+   "title": "Вольтемаде назвал важной победу «Ювентуса» над «Сельтой» в Лиге Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-o-porazhenii-ot-minskogo-dinamo-0-7-god-nazad-uznal-chto-byla-sdacha-2463590",
+   "title": "Уваров — о поражении от минского «Динамо» 0:7: «Год назад узнал, что была сдача»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/luchano-spalletti-kommentariy-po-pobede-yuventusa-nad-seltoy-v-lige-evropy-2463598",
+   "title": "Спаллетти — о победе над «Сельтой»: «Ювентус» сыграл ниже своих возможностей»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-gazzaev-vechno-podkalyval-bubnova-na-temu-seksa-2463589",
+   "title": "Уваров: «Газзаев вечно подкалывал Бубнова на тему секса»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/paulu-fonseka-kommentariy-po-pobede-liona-nad-kristal-pelas-v-matche-ligi-evropy-2463593",
+   "title": "Фонсека: «При счете 2:0 игроки «Лиона» стали больше думать о том, как сохранить преимущество»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-v-duble-dinamo-golodec-daval-chetyre-podryad-testa-kupera-2463588",
+   "title": "Уваров: «В дубле «Динамо» Голодец давал четыре подряд теста Купера»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/liga-evropy-2026-27-turnirnaya-tablica-obschego-etapa-posle-2-tura-polozhenie-na-15-oktyabrya-2026-goda-2463591",
+   "title": "«Ювентус» лидирует в турнирной таблице Лиги Европы после 2-го тура общего этапа",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/atalanta-pafos-kopengagen-braga-i-drugie-rezultaty-1-tura-obschego-etapa-ligi-konferenciy-2463592",
+   "title": "Лига конференций: «Аталанта» обыграла «Пафос», «Копенгаген» разгромил «Брагу»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/uvarov-menya-pohoronyat-v-orehovo-zueve-2463587",
+   "title": "Уваров: «Меня похоронят в Орехово-Зуеве»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/bornmut-shturm-schet-2-0-rezultat-matcha-ligi-evropy-15-oktyabrya-2026-goda-video-golov-2463585",
+   "title": "«Штурм» с Худяковым разгромно проиграл «Борнмуту»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/selta-yuventus-marsel-olimpiakos-i-drugie-rezultaty-2-tura-obschego-etapa-ligi-evropy-15-oktyabrya-2026-2463586",
+   "title": "«Ювентус» обыграл «Сельту», «Олимпиакос» победил «Марсель» в Лиге Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/trener-rubina-artiga-o-porazhenii-ot-orenburga-mogu-tolko-izvinitsya-pered-bolelschikami-2463583",
+   "title": "Тренер «Рубина» Артига о поражении от «Оренбурга»: «Могу только извиниться перед болельщиками»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/forvard-spartaka-daku-dlya-napadayuschego-vazhny-goly-i-mne-bylo-priyatno-snova-eto-pochuvstvovat-2463582",
+   "title": "Форвард «Спартака» Даку: «Для нападающего важны голы, и мне было приятно снова это почувствовать»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-chto-proveryali-sudya-i-var-v-konce-matcha-penalti-ili-neudalenie-gordyushenko-2463580",
+   "title": "«Родина» — «Спартак»: что проверяли судья и ВАР в конце матча — пенальти или неудаление Гордюшенко?",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/napadayuschiy-spartaka-daku-obratilsya-k-bolelschikam-na-russkom-yazyke-posle-matcha-s-rodinoy-s-pobedoy-2463579",
+   "title": "Нападающий «Спартака» Даку обратился к болельщикам на русском языке после матча с «Родиной»: «С победой!»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/gendirektor-spartaka-nekrasov-pohvalil-daku-za-dubl-v-matche-kubka-s-rodinoy-2463578",
+   "title": "Некрасов о дубле Даку в ворота «Родины»: «Заработал пенальти и забил два гола — молодец!»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/kubok-rossii-raspisanie-i-rezultaty-krasnodar-fakel-cska-rostov-dinamo-mahachkala-zenit-i-drugie-matchi-13-14-oktyabrya-2026-2462587",
+   "title": "FONBET Кубок России, результаты и видео голов 13-15 октября: «Родина» обыграла «Спартак», ЦСКА разгромил «Ростов» и другие матчи",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-schet-i-rezultat-matcha-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463573",
+   "title": "Дубль Даку помог «Спартаку» обыграть «Родину» в матче Кубка",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-ugalde-realizoval-penalti-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463576",
+   "title": "«Родина» — «Спартак»: Угальде реализовал пенальти",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/fonbet-organizoval-vip-klientam-poezdku-na-match-galatasaray-barselona-2463571",
+   "title": "FONBET организовал VIP-клиентам поездку на матч «Галатасарай» — «Барселона»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-daku-oformil-dubl-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463568",
+   "title": "«Родина» — «Спартак»: Даку оформил дубль",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/cska-sofiya-monako-schet-i-rezultat-matcha-1-go-tura-obschego-etapa-ligi-konferenciy-kak-sygral-golovin-2463570",
+   "title": "«Монако» обыграл софийский ЦСКА в Лиге конференций, Головин отыграл 31 минуту",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/hayduk-ayaks-schet-i-rezultat-matchey-1-tura-obschego-etapa-ligi-konferenciy-15-oktyabrya-2026-goda-2463572",
+   "title": "«Хайдук» обыграл «Аякс» в матче Лиги конференций",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/yunion-real-sosedad-schet-i-rezultat-matcha-2-go-tura-obschego-etapa-ligi-evropy-15-oktyabrya-2026-2463545",
+   "title": "«Реал Сосьедад» упустил победу над «Юнионом» в Лиге Европы, Захарян не вышел на поле",
+   "rm": 0,
+   "note": "«Реал Сосьедад»"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-daku-zabil-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463544",
+   "title": "«Родина» — «Спартак»: Даку забил дебютный гол за красно-белых в Кубке",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/zalcburg-milan-schet-i-rezultat-matchey-2-tura-obschego-etapa-ligi-evropy-15-oktyabrya-2026-goda-2463543",
+   "title": "«Милан» всухую разгромил «Зальцбург» в матче Лиги Европы, Сиссе оформил хет-трик",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-hozyaeva-vyigryvayut-posle-pervogo-tayma-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463537",
+   "title": "«Родина» — «Спартак»: хозяева выигрывают после первого тайма",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/hayduk-ayaks-match-ligi-konferenciy-prervali-na-77-y-minute-iz-za-fanatskoy-pirotehniki-2463536",
+   "title": "«Хайдук» — «Аякс»: матч Лиги конференций прервали на 77-й минуте из-за фанатской пиротехники",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-hozyaeva-zabili-2-gola-za-minutu-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463534",
+   "title": "«Родина» — «Спартак»: красно-белые пропустили два гола за минуту после ошибок Помазуна",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-markinos-vyvel-gostey-vpered-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463530",
+   "title": "«Родина» — «Спартак»: Маркиньос вывел гостей вперед",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/world/news/fifa-ocenit-celesoobraznost-premii-mira-pervym-laureatom-kotoroy-stal-prezident-ssha-donald-tramp-2463529",
+   "title": "ФИФА оценит целесообразность премии мира, первым лауреатом которой стал Трамп",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/forvard-cska-karmo-u-vinisiusa-poyavilsya-dvoynik-esli-by-on-byl-u-menya-ya-by-tozhe-ego-ispolzoval-2463521",
+   "title": "Форвард ЦСКА Кармо: «У Винисиуса появился двойник? Если бы он был у меня, я бы тоже его использовал»",
+   "rm": 1,
+   "note": "двойник Винисиуса — сюжет про игрока Реала, но рассказывает игрок ЦСКА"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/germany/news/v-bundeslige-ustanovlen-rekord-rezultativnosti-za-pervye-pyat-turov-2463518",
+   "title": "В Бундеслиге установлен рекорд результативности за первые пять туров",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/world/news/glava-fifa-infantino-prines-izvineniya-za-oshibki-svyazannye-s-proektom-po-prodazhe-prav-na-chm-2463516",
+   "title": "Глава ФИФА Инфантино принес извинения за ошибки, связанные с проектом по продаже прав на ЧМ",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-schet-i-rezultat-matcha-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463515",
+   "title": "«Оренбург» разгромил «Рубин» в матче FONBET Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-babaev-zabil-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463512",
+   "title": "«Рубин» — «Оренбург»: Бабаев забил гол престижа",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/world/news/fifa-planiruet-izmenenie-disciplinarnyh-pravil-posle-istorii-s-trampom-i-balogunom-na-chempionate-mira-2026-2463509",
+   "title": "ФИФА планирует изменение дисциплинарных правил после инцидента с Трампом и Балогуном",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-kasadzhikov-udalen-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463507",
+   "title": "«Рубин» — «Оренбург»: Касаджиков удален через три минуты после забитого мяча",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-kasadzhikov-zabil-chetvertyy-gol-gostey-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463505",
+   "title": "«Рубин» — «Оренбург»: Касаджиков забил четвертый гол гостей",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-hotulev-dovel-schet-do-razgromnogo-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463502",
+   "title": "«Рубин» — «Оренбург»: Хотулев довел счет до разгромного",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/benfika-seltik-vo-skolko-nachalo-matcha-ligi-evropy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463280",
+   "title": "«Бенфика» — «Селтик»: во сколько начало матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-pryamaya-translyaciya-matcha-kubka-rossii-video-onlayn-15-oktyabrya-2026-2463359",
+   "title": "«Родина» — «Спартак»: прямая трансляция матча Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-startovye-sostavy-komand-na-match-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463496",
+   "title": "«Родина» — «Спартак»: Даку и Умяров выйдут на поле с первых минут",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-gosti-pobezhdayut-posle-pervogo-tayma-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463494",
+   "title": "«Рубин» — «Оренбург»: гости побеждают после первого тайма в матче FONBET Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/cska-sofiya-monako-startovye-sostavy-komand-na-match-1-go-tura-obschego-etapa-ligi-konferenciy-15-oktyabrya-2463492",
+   "title": "ЦСКА София — «Монако»: Головин остался в запасе французского клуба на матч Лиги конференций",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/marsel-olimpiakos-vo-skolko-nachalo-matcha-ligi-evropy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463392",
+   "title": "«Марсель» — «Олимпиакос»: во сколько начало матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/selta-yuventus-vo-skolko-nachalo-matcha-ligi-evropy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463371",
+   "title": "«Сельта» — «Ювентус»: во сколько начало матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/al-ahli-al-nasr-vo-skolko-nachalo-matcha-chempionata-saudovskoy-aravii-s-ronaldu-gde-smotret-translyaciyu-15-oktyabrya-2026-2463282",
+   "title": "«Аль-Ахли» — «Аль-Наср»: во сколько начало матча чемпионата Саудовской Аравии",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/vitinya-yamal-keyn-i-barkolya-popali-v-komandu-nedeli-ligi-chempionov-2463488",
+   "title": "Витинья, Ямаль, Кейн и Барколя попали в команду недели Лиги чемпионов",
+   "rm": 0,
+   "note": "команда недели ЛЧ без игроков Реала"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/yunion-real-sosead-startovye-sostavy-komand-na-match-2-go-tura-obschego-etapa-ligi-evropy-15-oktyabrya-2463486",
+   "title": "«Юнион» — «Реал Сосьеад»: Захарян остался в запасе испанской команды на матч Лиги Европы",
+   "rm": 0,
+   "note": "«Реал Сосьеад» (опечатка в ленте)"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-golybin-udvoil-preimuschestvo-gostey-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463484",
+   "title": "«Рубин» — «Оренбург»: Голыбин удвоил преимущество гостей",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-nazarenko-vyvel-gostey-vpered-v-matche-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463483",
+   "title": "«Рубин» — «Оренбург»: Назаренко открыл счет в матче FONBET Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/vo-francii-ocenili-igru-matveya-safonova-v-matche-ligi-chempionov-pszh-manchester-siti-2463481",
+   "title": "L'Equipe: «Сафонов заставил критиков «ПСЖ» замолчать»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/vratar-akrona-terehovskiy-sobolev-nikogda-ne-stanet-dzyuboy-artem-vne-konkurencii-2463477",
+   "title": "Вратарь «Акрона» Тереховский: «Соболев никогда не станет Дзюбой, Артем вне конкуренции»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/dom-vingera-betisa-antoni-ograbili-vo-vremya-matcha-s-portu-2463466",
+   "title": "Дом вингера «Бетиса» Антони ограбили во время матча с «Порту»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/riga-kayrat-vo-skolko-nachalo-matcha-ligi-konferenciy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463281",
+   "title": "«Рига» — «Кайрат»: во сколько начало матча Лиги конференций",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-startovye-sostavy-komand-na-match-4-tura-puti-rpl-kubka-rossii-15-oktyabrya-2026-2463462",
+   "title": "«Рубин» и «Оренбург» назвали составы на матч FONBET Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/rubin-orenburg-pryamaya-translyaciya-matcha-kubka-rossii-video-onlayn-15-oktyabrya-2026-2463349",
+   "title": "«Рубин» — «Оренбург»: прямая трансляция матча Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/obshchestvo/news/dobrofon-perechislit-4-milliona-rubley-federacii-po-futbolu-lic-s-cerebralnym-paralichom-2463456",
+   "title": "ДоброFON перечислит 4 миллиона рублей Федерации по футболу лиц с церебральным параличом",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/prezident-afk-dopustil-perenos-kubka-azii-na-2028-god-2463449",
+   "title": "Президент АФК допустил перенос Кубка Азии на 2028 год",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/france/news/francuzskih-futbolnyh-sudey-poprosili-nadevat-rozovuyu-formu-2463452",
+   "title": "Французских футбольных судей попросили надевать розовую форму. Причина уважительная",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/rafinya-vernulsya-k-trenirovkam-v-obschey-gruppe-barselony-2463442",
+   "title": "Рафинья вернулся к тренировкам в общей группе «Барселоны»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/poluzaschitnik-liverpulya-bredli-barkolya-priznan-luchshim-igrokom-po-itogam-2-go-tura-ligi-chempionov-2463439",
+   "title": "Барколя признан лучшим игроком 2-го тура Лиги чемпионов за хет-трик ворота ЛАСКа",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/yunion-real-sosedad-vo-skolko-nachalo-matcha-ligi-evropy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463369",
+   "title": "«Юнион» — «Реал Сосьедад»: во сколько начало матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/zalcburg-milan-vo-skolko-nachalo-matcha-ligi-evropy-gde-smotret-translyaciyu-15-oktyabrya-2026-2463365",
+   "title": "«Зальцбург» — «Милан»: во сколько начало матча Лиги Европы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rusteam/news/specposlannik-trampa-zampolli-vystupil-za-organizaciyu-matcha-sbornyh-rossii-i-ssha-po-futbolu-2463431",
+   "title": "Спецпосланник Трампа Замполли выступил за организацию матча сборных России и США по футболу",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/venger-ne-budet-ballotirovatsya-na-post-prezidenta-fifa-2463425",
+   "title": "Венгер не будет баллотироваться на пост президента ФИФА",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/nation-league/news/vitinya-vyrazil-nadezhdu-na-vozvraschenie-krishtianu-ronaldu-v-sbornuyu-portugalii-2463428",
+   "title": "Витинья — о возможном возвращении Роналду в сборную Португалии: «Я думаю, что мы все этого хотим»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/zaschitnik-dinamo-rikardo-rasskazal-ob-interese-k-nemu-so-storony-cska-i-zenita-2463423",
+   "title": "Защитник «Динамо» Дэвид Рикардо: «У меня были предложения от «Зенита» и ЦСКА, но я — человек слова»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/england/news/the-athletic-martines-reshil-pokinut-manchester-yunayted-posle-kritiki-rukovodstva-2463411",
+   "title": "The Athletic: Мартинес решил покинуть «Манчестер Юнайтед» после критики руководства",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/world/news/rivaldo-schitaet-chto-sbornoy-brazilii-budet-tyazhelo-vyigrat-chm-2030-2463405",
+   "title": "Ривалдо: «Если в 2030-м Бразилия выиграет чемпионат мира, это будет чудо»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/marca-nominirovala-eks-poluzaschitnika-krasnodara-spercyana-na-priz-luchshemu-futbolistu-sezona-2463407",
+   "title": "Marca номинировала экс-полузащитника «Краснодара» Сперцяна на приз лучшему футболисту сезона",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/italy/news/napadayuschiy-intera-martines-mozhet-propustit-match-s-milanom-iz-za-travmy-2463402",
+   "title": "Нападающий «Интера» Мартинес может пропустить матч с «Миланом» из-за травмы",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/rivaldo-zaveril-chto-dvoynika-vinisiusa-ne-suschestvuet-2463403",
+   "title": "Ривалдо заверил, что двойника Винисиуса не существует",
+   "rm": 1,
+   "note": "двойник Винисиуса (Ривалдо)"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/rivaldo-zayavil-chto-akinfeev-zasluzhil-zolotoy-myach-2463400",
+   "title": "Ривалдо: «Акинфеев тоже заслужил «Золотой мяч»!",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-prognoz-stavka-i-koefficient-na-match-kubka-rossii-15-oktyabrya-2026-2463356",
+   "title": "«Родина» — «Спартак»: прогноз и коэффициенты на матч Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/holann-dovel-chislo-golov-v-lige-chempionov-do-61-za-60-matchey-2463376",
+   "title": "Холанн довел число голов в Лиге чемпионов до 61 за 60 матчей",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/kumas-povtoril-dostizhenie-dzherrarda-v-lige-chempionov-spustya-25-let-2463375",
+   "title": "Кумас повторил достижение Джеррарда в Лиге чемпионов спустя 25 лет",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_d1/news/tarhanov-stal-glavnym-trenerom-eniseya-2463396",
+   "title": "Тарханов стал главным тренером «Енисея»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/france/news/rivaldo-uveren-v-shansah-safonova-stat-luchshim-vratarem-mira-2463395",
+   "title": "Ривалдо уверен в шансах Сафонова стать лучшим вратарем мира",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/barkolya-oformil-13-y-het-trik-liverpulya-v-istorii-kubka-evropeyskih-chempionov-2463374",
+   "title": "Барколя оформил 13-й хет-трик «Ливерпуля» в истории Кубка европейских чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/news/mbappe-stal-vosmym-igrokom-zabivshim-v-svoem-100-m-matche-ligi-chempionov-2463373",
+   "title": "Мбаппе стал восьмым игроком, забившим в своем 100-м матче Лиги чемпионов",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/vtoroy-tur-ligi-chempionov-stal-samym-rezultativnym-v-istorii-turnira-2463372",
+   "title": "Второй тур Лиги чемпионов стал самым результативным в истории турнира",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/rivaldo-priznalsya-chto-emu-nravitsya-otnoshenie-moskvichey-k-nemu-2463370",
+   "title": "Ривалдо признался, что ему нравится отношение москвичей к нему",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/sky-sports-hetafe-hochet-podpisat-eks-igroka-manchester-yunayted-sancho-2463363",
+   "title": "Sky Sports: «Хетафе» хочет подписать экс-игрока «Манчестер Юнайтед» Санчо",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/rivaldo-sravnil-simonyana-s-pele-2463364",
+   "title": "Ривалдо сравнил Симоняна с Пеле",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/dyupin-zayavil-chto-ne-vidit-nichego-plohogo-v-kapitanah-inostrancah-2463361",
+   "title": "Дюпин — о словах Кривцова про Кордобу: «Если человек выполняет функции капитана, то не имеет значения, какой у него паспорт»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rodina-spartak-vo-skolko-nachalo-matcha-kubka-rossii-gde-smotret-translyaciyu-15-oktyabrya-2026-2463351",
+   "title": "«Родина» — «Спартак»: во сколько начало матча Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/gasperini-otvetil-na-slova-mourinyu-o-mertvyh-igrokah-romy-2463350",
+   "title": "Гасперини ответил на слова Моуринью о «мертвых» игроках «Ромы»",
+   "rm": 1,
+   "note": "Гасперини отвечает на слова Моуринью после Рома–Реал"
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/rubin-orenburg-vo-skolko-nachalo-matcha-kubka-rossii-gde-smotret-translyaciyu-15-oktyabrya-2026-2463348",
+   "title": "«Рубин» — «Оренбург»: во сколько начало матча Кубка России",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rus_cup/news/raspisanie-matchey-i-translyaciy-kubka-rossii-na-15-oktyabrya-2026-2463346",
+   "title": "Кубок России сезона-2026/27: расписание матчей на 15 октября",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/rfpl/news/rpl-izmenila-vremya-nachala-matchey-spartak-rubin-i-baltika-rostov-2463345",
+   "title": "РПЛ изменила время начала матчей «Спартак» — «Рубин» и «Балтика» — «Ростов»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/mourinyu-nazval-neuvazheniem-obyavlenie-diskvalifikacii-vinisiusa-za-chas-do-matcha-2463342",
+   "title": "Моуринью назвал неуважением объявление дисквалификации Винисиуса за час до матча",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/liga-konferencij/news/raspisanie-matchey-i-translyaciy-1-go-tura-ligi-konferenciy-sezona-2026-27-na-15-oktyabrya-2463343",
+   "title": "Лига конференций сезона-2026/27: расписание 1-го тура на 15 октября",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/raspisanie-matchey-i-translyaciy-2-go-tura-ligi-evropy-sezona-2026-27-na-15-oktyabrya-2463340",
+   "title": "Лига Европы сезона—2026/27: расписание матчей 2-го тура на 15 октября",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/italy/news/davide-nikola-stal-glavnym-trenerom-venecii-2463337",
+   "title": "Давиде Никола стал главным тренером «Венеции»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/spain/news/endrik-dopustil-uhod-iz-reala-v-yanvare-2463323",
+   "title": "Эндрик допустил уход из «Реала» в январе",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/foreign/news/byvshiy-glavnyy-trener-sbornoy-danii-po-futbolu-yuhansson-umer-v-vozraste-83-let-2463319",
+   "title": "Бывший главный тренер сборной Дании по футболу Юханссон умер в возрасте 83 лет",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/holann-pobil-dva-rekorda-messi-v-lige-chempionov-2463307",
+   "title": "Холанн побил два рекорда Месси в Лиге чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/pellegrini-obyasnil-kak-betisu-udalos-obygrat-portu-2463295",
+   "title": "Пеллегрини объяснил, как «Бетису» удалось обыграть «Порту»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/europa-league/news/unai-emeri-kommentariy-po-pobede-aston-villy-nad-fenerbahche-v-lige-chempionov-2463294",
+   "title": "Эмери: «Победа над «Фенербахче» должна придать «Астон Вилле» уверенности»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/niko-kovach-kommentariy-po-porazheniyu-borussii-ot-bude-glimta-v-matche-ligi-chempionov-2463279",
+   "title": "Ковач: «В целом матч «Борусии» не удался, а «Буде-Глимт» заслужил победу»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/milan-shkrinyar-kommentariy-po-pobede-aston-villy-nad-ferenbahche-v-lige-chempionov-2463272",
+   "title": "Шкриньяр: «Фенербахче» допустил несколько ошибок, и «Астон Вилла» ими воспользовалась»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/luis-enrike-kommentariy-po-pobede-pszh-nad-manchester-siti-v-lige-chempionov-2463271",
+   "title": "Энрике: «Главное — это победа в Лиге чемпионов. Не так важно быть лучшей командой в общем этапе»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/andoni-iraola-kommentariy-po-pobede-liverpulya-nad-lask-v-lige-chempionov-2463270",
+   "title": "Ираола — о хет-трик Браколя: «Брэдли показал, на что способен»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/mls/news/inter-mayami-nyu-york-siti-schet-2-0-rezultat-matcha-regulyarnogo-chempionata-mls-15-oktyabrya-2026-goda-2463299",
+   "title": "«Интер Майами» победил «Нью-Йорк Сити», Месси сделал голевую передачу",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/vinisius-zhunior-kommentariy-po-svoey-igre-za-real-v-etom-sezone-2463268",
+   "title": "Винисиус: «Сейчас у меня непростой период, но я вернусь»",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/mls/news/monreal-atlanta-yunayted-schet-0-3-rezultat-matcha-regulyarnogo-chempionata-mls-15-oktyabrya-2026-goda-2463298",
+   "title": "«Атланта» разгромила «Монреаль», Миранчук сыграл весь матч",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/ustanovlen-novyy-rekord-rezultativnosti-za-odin-tur-ligi-chempionov-2463266",
+   "title": "Установлен новый рекорд результативности за один тур Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/enco-mareska-kommentariy-po-porazheniyu-manchester-siti-ot-pszh-v-lige-chempionov-2463264",
+   "title": "Мареска: «Пропустили от «ПСЖ» два мяча за две минуты и немного «поплыли»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/magnes-akliush-kommentariy-po-pobede-pszh-nad-manchester-siti-v-lige-chempionov-2463262",
+   "title": "Аклиуш: «После перерыва «Сити» здорово давил, это очень сильная команда»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/shahter-aek-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463265",
+   "title": "«Шахтер» — АЕК: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/slovan-shtutgart-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463263",
+   "title": "«Слован» — «Штутгарт»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/vitinya-kommentariy-po-pobede-pszh-nad-manchester-siti-v-lige-chempionov-2463260",
+   "title": "Витинья: «ПСЖ» нужно поработать над ошибками, но победа над «Сити» абсолютно заслуженная»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/feyenoord-komo-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463261",
+   "title": "«Фейеноорд» — «Комо»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/matias-soule-kommentariy-po-porazheniyu-romy-ot-reala-v-lige-chempionov-2463259",
+   "title": "Соуле: «Рома» держала игру под контролем, а потом — три угловых и три гола «Реала»",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/betis-portu-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463258",
+   "title": "«Бетис» — «Порту»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/bude-glimt-borussiya-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463257",
+   "title": "«Буде-Глимт» — «Боруссия»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/aston-villa-fenerbahche-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463255",
+   "title": "«Астон Вилла» — «Фенербахче»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/antonio-ryudiger-kommentariy-po-pobede-reala-nad-romoy-v-lige-chempionov-2463254",
+   "title": "Рюдигер: «Именно так, как в концовке, «Реалу» и нужно играть: решительнее, смелее и с большей верой в себя»",
+   "rm": 1
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/lask-liverpul-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463253",
+   "title": "ЛАСК — «Ливерпуль»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/manchester-siti-pszh-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463252",
+   "title": "«Манчестер Сити» — «ПСЖ»: видеообзор матча Лиги чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/uefa-nazval-pretendentov-na-zvanie-luchshego-igroka-nedeli-v-lige-chempionov-2463251",
+   "title": "Ямаль, Барколя, Кейн и Треcольди претендуют на звание игрока недели в Лиге чемпионов",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/lisandro-martines-prokommentiroval-svoyu-kritiku-v-adres-rukovodstva-manchester-yunayted-2463250",
+   "title": "Мартинес: «Я хочу видеть «Манчестер Юнайтед» борющимся за самые значимые трофеи»",
+   "rm": 0
+  },
+  {
+   "feed": "sportexpress",
+   "id": "sport-express.ru/football/champions-league/news/roma-real-videoobzor-matcha-ligi-chempionov-i-luchshie-momenty-igry-14-oktyabrya-2026-goda-2463249",
+   "title": "«Рома» — «Реал»: видеообзор матча Лиги чемпионов",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/betting/1117403230-nashi-v-nxl-kak-u-nix-dela-sledite-za-matchami-ovechkina-kucherova-i-d.html",
+   "title": "Наши в НХЛ – как у них дела? Следите за матчами Овечкина, Кучерова и других с бонусами БК",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/hockey/1117403308-nxl-kolorado-primet-pittsburg-anaxajm-sygraet-s-bostonom.html",
+   "title": "НХЛ. «Колорадо» примет «Питтсбург», «Анахайм» сыграет с «Бостоном»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/hockey/1117040578-samomu-molodomu-rossiyaninu-bravshemu-kubok-stenli-byl-21-god-vspomnit.html",
+   "title": "Звездные легионеры из НХЛ: от Пастрняка до Драйзайтля – вспоминаем всех",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403511-endrik-oboshel-braima-v-komandnoj-ierarxii-reala-posle-udachnoj-igry-s.html",
+   "title": "Эндрик обошел Браима в командной иерархии «Реала» после удачной игры с «Ромой». Диас может уйти в аренду",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403499-sportivnyj-sovet-ispanii-dumaet-nakazat-tebasa-za-slova-o-reale.html",
+   "title": "Национальный спортивный совет Испании может наказать Тебаса за слова о ТВ «Мадрида» и методах Геббельса",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403484-otstupnye-glebova-po-novomu-kontraktu-s-dinamo-20-mln-evro-dlya-5-evro.html",
+   "title": "Отступные Глебова по новому контракту с «Динамо» – 20 млн евро для топ-5 лиг, Окишора – от 5 до 11,6 млн в зависимости от игрового времени",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403478-bavariya-predlozhila-kejnu-te-zhe-400-000-funtov-v-nedelyu-chto-i-prez.html",
+   "title": "«Бавария» предложила Кейну те же 475 000 евро в неделю, что и прежде. Они договорились продлить контракт до 2029-го, хотя форвард хотел до 2030-го",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403460-rovno-22-goda-nazad-messi-debyutiroval-za-barselonu-klub-pokazal-vyxod.html",
+   "title": "Ровно 22 года назад Месси дебютировал за «Барселону». Клуб показал выход Лео на поле: «А дальше – история 🐐»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403442-usmanov-pytaetsya-vernutsya-v-everton-s-ochen-sereznymi-dengami-rasska.html",
+   "title": "Усманов «пытается вернуться» в «Эвертон» с «очень серьезными деньгами», рассказал экс-форвард «МЮ» Брэйзил",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/hockey/1117402658-fonbet-chempionat-kxl-spartak-v-gostyax-u-admirala-avangard-primet-avt.html",
+   "title": "Фонбет Чемпионат КХЛ. «Торпедо» одолело «Динамо» Москва, «Авангард» обыграл «Автомобилист», «Спартак» победил «Адмирал»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/hockey/1117403405-dinamo-proigralo-8-iz-9-poslednix-matchej-segodnya-45-ot-torpedo-koman.html",
+   "title": "«Динамо» проиграло 8 из 9 последних матчей – сегодня 4:5 от «Торпедо». Команда Тамбиева идет 9-й на Западе",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403377-kerrik-govorit-chto-rezultaty-nuzhny-ne-lichno-emu-a-myu-prevyshe-vseg.html",
+   "title": "Кэррик про 5 матчей подряд без побед: «Результаты нужны не мне, а «МЮ». Клуб выше любого человека – меня, игроков»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403371-arteta-o-sokrashheniyax-v-arsenale-mne-obyasnili-chto-vse-radi-togo-ch.html",
+   "title": "Артета о сокращениях в «Арсенале»: «Мне объяснили, что все это – ради постоянного развития»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117280341-pomnite-priem-v-stile-paragvaya-na-chm-2010.html",
+   "title": "Диарра, Павлюченко, Билялетдинов – за какую команду РПЛ они играли?",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/figure-skating/1117402298-budapest-trophy-grigoreva-i-artyushhenko-kuzmina-i-studenikin-smart-i-.html",
+   "title": "⛸️ Budapest Trophy. Смарт и Дик выиграли ритм-танец, Григорьева и Артющенко – 12-е, Кузьмина и Студеникин – 13-е",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403352-sestra-dzhordzhiny-otvetila-na-kritiku-pevcza-sobrala-v-adres-ronaldu.html",
+   "title": "Сестра Джорджины ответила на критику в адрес Роналду от победителя «Евровидения» Собрала: «Твои 5 минут славы. Если бы ты говорил с уважением, твои слова не стали бы вирусными»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/figure-skating/1117403358-rodnina-ob-otkaze-v-vizax-rossijskim-gimnastkam-eto-ne-soprotivlenie-n.html",
+   "title": "Роднина об отказе в визах российским гимнасткам: «Это не сопротивление нашим спортсменам – это сопротивление нашей стране»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403333-tebas-o-zayavlenii-reala-eto-nazyvaetsya-zapugivaniem-xvatit-veshat-mi.html",
+   "title": "Тебас о заявлении «Реала»: «Это называется запугиванием. Они стремятся уничтожить чемпионат, сделать то, чего не добились с Суперлигой. Они атакуют престиж турнира, в котором участвуют»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/figure-skating/1117403292-isu-rassmotrit-vozmozhnost-razreshit-figuristam-osparivat-rezultaty.html",
+   "title": "ISU рассмотрит возможность разрешить фигуристам оспаривать оценки за прокаты",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_top",
+   "id": "sports.ru/football/1117403316-siti-optimistichno-nastroen-naschet-apellyaczii-i-predostavit-svezhie-.html",
+   "title": "«Сити» оптимистично настроен насчет апелляции по делу о финансовых нарушениях и предоставит свежие данные. В клубе считают, что комиссия ранее проигнорировала почти все доказательства",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403538-tebas-o-vozmozhnom-nakazanii-za-slova-o-tv-madrida-i-metodax-gebbelsa.html",
+   "title": "Тебас о возможном наказании за слова о ТВ «Мадрида» и методах Геббельса: «Свобода слова не должна зависеть от фамилии говорящего. Перес публично высказывался про арбитров и кражу титулов»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402771-chempionat-ispanii-deportivo-primet-levante-v-subbotu-atletiko-sygraet.html",
+   "title": "Чемпионат Испании. «Депортиво» и «Леванте» сыграли вничью, «Атлетико» и «Барселона» проведут матчи в субботу, «Реал» – в воскресенье",
+   "rm": 0,
+   "note": "анонс тура Ла Лиги: Реал упомянут в перечислении"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3563790.html",
+   "title": "«Реал» требует отставки Тебаса. Он сказал, что клуб действует в стиле Геббельса",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403260-tebas-o-reale-i-dvux-let-ne-proshlo-so-dnya-kogda-peres-govoril-my-s-b.html",
+   "title": "Тебас о деле Негрейры: «2 года назад Перес говорил: «Мы и «Барса» должны помогать друг другу». Почему эскалация совпадает с выходом каталонцев из Суперлиги? Где ТВ «Реала» было раньше?»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "video.sports.ru/video/W3wMYTM250RyLfw5FBYuVTOZz8rKK2yJ5PoIqqCxNcs",
+   "title": "Моуринью снова сделал Беллингема великим – в чем секрет формы Джуда?",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403223-rivaldo-o-zolotom-myache-u-yamalya-otlichnye-shansy-on-vyigral-chm-i-y.html",
+   "title": "Ривалдо о «Золотом мяче»: «У Ямаля отличные шансы, он выиграл ЧМ и ярко играет за «Барселону». А Месси показывает мировой уровень даже в США»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3560575.html",
+   "title": "Жизнь Кассано – скандалы, нутелла и секс. Он ушел из «Ромы» в «Реал» ради ЧМ, но жутко облажался",
+   "rm": 0,
+   "note": "биография Кассано, переход в Реал в прошлом"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403105-real-potreboval-nemedlennoj-otstavki-tebasa-posle-slov-prezidenta-la-l.html",
+   "title": "«Реал» потребовал немедленной отставки Тебаса после слов президента Ла Лиги про ТВ «Мадрида» и методы Геббельса. Клуб также упомянул дело Негрейры",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403097-apellyacziya-reala-na-ban-vinisiusa-otklonena-klub-obratitsya-v-admini.html",
+   "title": "Апелляция «Реала» на бан Винисиуса отклонена. Клуб обратится в Административный суд по вопросам спорта",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403059-mourinyu-poxozh-na-simpsonov-vse-chto-on-govorit-sluchaetsya-v-budushh.html",
+   "title": "«Моуринью похож на «Симпсонов»: все, что он говорит, случается в будущем. Он был зол, что «Сити» подписывает игроков по щелчку пальцев, и был прав». Эррера о Жозе",
+   "rm": 0,
+   "note": "Эррера о Моуринью времён МЮ"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403048-flik-o-3-matchax-za-8-dnej-skazal-igrokam-chto-opravdanij-net-my-ne-mo.html",
+   "title": "Флик о 3 матчах за 8 дней: «Сказал игрокам, что оправданий нет. Мы не можем изменить ситуацию, нужно ее принять. Я на 100% уверен в своей команде, у нас невероятный уровень футболистов»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117403035-real-i-bellingem-prodlyat-kontrakt-do-2031-goda-xavbeku-povysyat-zarpl.html",
+   "title": "«Реал» и Беллингем продлят контракт до 2031 года. Хавбеку повысят зарплату",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402993-morentes-o-bane-vinisiusa-chetyre-matcha-eto-vozmutitelno-dvux-bylo-by.html",
+   "title": "Морьентес о бане Винисиуса: «Четыре матча – это возмутительно, двух было бы более чем достаточно. Какую агрессию вы здесь видите?»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/predictions/3563614-la-liga-real-madrid-sevilya-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Реал Мадрид – Севилья, прогноз на матч и шансы команд на победу",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402908-kanisares-o-press-konferencziyax-mourinyu-on-tolko-i-delaet-chto-sozda.html",
+   "title": "Канисарес о Моуринью: «Он только и делает, что создает шумиху, злит всех. Это похоже на модных политиков, которые стремятся разделить общество»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/1117402923-barselona-podavlyayushhij-favorit-la-ligi-u-bukmekerov-veroyatnost-zol.html",
+   "title": "«Барселона» – подавляющий фаворит Ла Лиги у букмекеров. Вероятность золота каталонцев – 79%",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402904-tebas-o-syuzhetax-tv-reala-napominaet-propagandistskie-priemy-gebbelsa.html",
+   "title": "Тебас о ТВ «Реала»: «Напоминает пропагандистские приемы Геббельса: систематическое повторение, создание образа врага. Клуб всегда должен выглядеть жертвой»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sirena.sports.ru/labyrinth",
+   "title": "Дойти до конца этой игры было еще сложнее, чем поймать все яйца в игре «Ну, погоди!»",
+   "rm": 0,
+   "note": "реклама sirena.sports.ru в ленте тега"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562796.html",
+   "title": "«Рома» была в шаге от катарсиса, но «Реал» снова буднично выкрутился",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3561069.html",
+   "title": "Погоня за бунтарем «МЮ», Моуринью готов драться с журналистами и за Эндрика. «Реал» шумно начал октябрь",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402429-ii-rolik-o-poxishhenii-zolotogo-myacha-s-yamalem-kejnom-i-xolandom-nab.html",
+   "title": "ИИ-ролик о похищении «Золотого мяча» с Ямалем, Кейном и Холандом набрал более 20 млн просмотров. Фанаты сравнили его с культовой рекламой Nike и Adidas",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402453-real-naznachil-rukovoditelya-superligi-rajxarta-na-post-direktora-komm.html",
+   "title": "«Реал» назначил бывшего руководителя Суперлиги Райхарта на пост директора коммерческого отдела",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402404-karmo-ispolzoval-by-dvojnika-esli-by-on-u-nego-byl-no-ne-verit-v-teori.html",
+   "title": "Кармо использовал бы двойника, если бы он у него был, но не верит в теорию заговора вокруг Винисиуса: «Уверен в Вини»",
+   "rm": 1,
+   "note": "двойник Винисиуса (Кармо)"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402378-fanaty-sosedada-skandirovali-vinisius-imbeczil-i-atletiko-dermo-na-igr.html",
+   "title": "Фанаты «Сосьедада» скандировали «Винисиус – имбецил» и «Атлетико» – дерьмо» на игре с «Депортиво»",
+   "rm": 1,
+   "note": "фанаты Сосьедада оскорбили Винисиуса"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402346-mourinyu-pro-lch-u-reala-6-ochkov-my-na-polputi-k-vyxodu-v-plej-off-u-.html",
+   "title": "Моуринью про ЛЧ: «У «Реала» 6 очков после игр с топами Италии – мы на полпути к выходу в плей-офф. Для нас это очень хорошо. У «Бенфики» было 4 очка после 4 игр год назад, но мы прошли дальше»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3563118.html",
+   "title": "Вундеркинд из «МЮ» требует миллион зарплаты в 16 лет. «Реал» уже включился",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402278-zhoze-mourinyu-igra-vinisiusa-v-1-m-tajme-s-romoj-moya-vina-ya-tozhe-o.html",
+   "title": "Жозе Моуринью: «Игра Винисиуса в 1-м тайме с «Ромой» – моя вина, я тоже ошибаюсь. Мне не понравилось бы, если бы он пнул бутылку, но недовольство заменой – это нормально»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402266-rivaldo-o-zolotom-myache-xavi-inesta-totti-ego-zasluzhivali-akinfeev-t.html",
+   "title": "Ривалдо о «Золотом мяче»: «Хави, Иньеста, Тотти, Батистута его заслуживали. Акинфеев тоже может быть в этом списке»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/industry/1117402135-kazhdaya-sedmaya-stavka-pri-31-v-matche-roma-real-byla-na-kambek-madri.html",
+   "title": "Каждая седьмая ставка при 3:1 в матче «Рома» – «Реал» была на камбэк мадридцев (Olimpbet)",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402093-pszh-glavnyj-favorit-lch-posle-2-go-tura-po-versii-goal-barsa-2-ya-ars.html",
+   "title": "«ПСЖ» – главный фаворит ЛЧ после 2-го тура по версии Goal. «Барса» – 2-я, «Арсенал» – 3-й, «Бавария» – 4-й, «Реал» – 5-й, «Ман Сити» – 6-й",
+   "rm": 0,
+   "note": "рейтинг фаворитов ЛЧ, Реал 5-й"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402080-uesli-snejder-esli-mbappe-vruchat-zolotoj-myach-eto-budet-absolyutno-z.html",
+   "title": "Уэсли Снейдер: «Если Мбаппе вручат «Золотой мяч», это будет абсолютно заслуженно. Прошлый сезон в его исполнении получился выдающимся»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402059-karrager-pro-43-reala-s-romoj-neubeditelno-vse-razvalivaetsya-i-oni-pr.html",
+   "title": "Каррагер про 4:3 «Реала» с «Ромой»: «Неубедительно – все разваливается, и они просто держатся. Моуринью в «Мадриде» не может быть собой»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117402029-rivaldo-ne-verit-chto-u-vinisiusa-est-dvojnik-on-nastoyashhij-u-nego-t.html",
+   "title": "Ривалдо не верит, что у Винисиуса есть двойник: «Он настоящий! У него тяжелый период, но он снова станет хорошо играть. Один автобус от него уезжает, но совсем скоро придет следующий»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562547.html",
+   "title": "Сафонов лучше Доннаруммы, другой испанский камбэк, гол травмировал игрока, АПЛ выиграла 6:3, 6:0, Пеп увековечен. Главное в ЛЧ, кроме «Реала»",
+   "rm": 0,
+   "note": "«Главное в ЛЧ, кроме Реала»"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/1117402033-betboom-rasschital-vyigryshi-stavki-na-pobedu-romy-nad-realom-rimlyane.html",
+   "title": "BETBOOM рассчитал выигрышем ставки на победу «Ромы» над «Реалом». Римляне проиграли, ведя 3:1 к 83-й минуте",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401960-sperczyan-messi-ronaldu-mbappe-yamal-kejn-rafinya-vinisius-xvicha-xola.html",
+   "title": "Сперцян, Месси, Роналду, Мбаппе, Ямаль, Кейн, Рафинья, Винисиус, Хвича, Холанд, Дембеле, Родри, Беллингем, Педри, Бруну, Райс – среди номинантов на приз лучшему игроку сезона от Marca",
+   "rm": 0,
+   "note": "номинанты Marca: среди многих — Мбаппе, Винисиус, Беллингем"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401931-iturralde-o-zhalobax-mourinyu-na-sudejstvo-on-mnogo-znaet-o-futbole-no.html",
+   "title": "Итурральде о жалобах Моуринью на судейство: «Он много знает о футболе, но мало что понимает в правилах, а в протоколе ВАР – и того меньше»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562902.html",
+   "title": "Мбаппе выбил Рауля из топ-5, Холанд мчит в бешеном темпе. Новые рекорды ЛЧ",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401897-endrik-o-43-s-romoj-ya-razgovarival-s-bogom-a-potom-vstupil-v-igru-i-p.html",
+   "title": "Эндрик о 4:3 с «Ромой»: «Я разговаривал с Богом, а потом вступил в игру и получал игровое время. Быть в «Реале» тяжело, ты должен бороться. И я всегда буду бороться»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/specials/players-numbers",
+   "title": "Винисиус – худшая семерка «Реала»? Вспомните всех, кто носил этот номер до него",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401877-vinisius-zhunior-na-500-folov-na-mne-prixoditsya-5-krasnyx-kartochek-a.html",
+   "title": "Винисиус Жуниор: «На 500 фолов на мне приходится 5 красных карточек, а желтые всегда получает Вини – не понимаю судей. Особенных игроков, как Ямаль или Альварес, нужно защищать»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562742.html",
+   "title": "Камбэчище «Реала» в ЛЧ! Горели 1:3 к 83-й, но выиграли 4:3 – магия с Жозе на месте!",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401860-zheltaya-konate-v-matche-s-vilyarrealom-otmenena-zashhitnik-reala-mog-.html",
+   "title": "Желтая Конате в матче с «Вильярреалом» отменена. Защитник «Реала» мог пропустить класико в случае карточки в игре с «Севильей»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401834-barsa-sygraet-v-klasiko-v-futbolke-s-logotipom-golf-wang-brenla-odezhd.html",
+   "title": "«Барса» сыграет в класико в футболке с логотипом Golf Wang – бренда одежды от рэпера Tyler, The Creator",
+   "rm": 0,
+   "note": "форма Барсы на класико"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401823-vinisius-o-sviste-bolelshhikov-lyudi-platyat-dengi-menya-proshhe-vsego.html",
+   "title": "Винисиус о свисте болельщиков: «Люди платят деньги. Меня проще всего выбрать объектом для критики. Надо мной смеялись, когда я пришел в «Реал», а в итоге забил больше 100 голов»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/specials/managers-winners",
+   "title": "«Милан» уже два сезона без ЛЧ, а выигрывал турнир последний раз в 2007-м. С кем из тренеров это было?",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401813-mourinyu-o-kalendare-reala-sygraem-s-aek-v-sredu-a-s-valensiej-v.html",
+   "title": "Моуринью о календаре «Реала»: «Сыграем с АЕК в среду, а с «Валенсией» – в субботу. Абсурд. Я 25 лет в футболе, не принимаю отговорки про ТВ. Сделаю все, чтобы открыть людям глаза»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562805.html",
+   "title": "«Почему он меняет меня?» Винисиус сгорел из-за ранней замены, хотя сам привез – Жозе спародировал его пятку",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3562817.html",
+   "title": "Анатомия камбэка «Реала» – как удалось на этот раз? Моуринью усложнил все сам",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401801-endrik-o-bane-vinisiusa-na-4-matcha-eto-neveroyatno-bezumie-tak-budet-.html",
+   "title": "Эндрик о бане Винисиуса на 4 матча: «Это невероятно, безумие, так будет происходить и дальше. Ничего не меняется. На Вини идет охота, но он крепкий парень»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401727-mourinyu-o-diskvalifikaczii-vinisiusa-portugalskaya-pogovorka-kot-prya.html",
+   "title": "Моуринью о дисквалификации Винисиуса: «Португальская поговорка: «Кот прячется, но хвост торчит». Но кот уже даже не пытается спрятаться – он действует бесстыдно»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401636-valverde-pro-43-s-romoj-gorzhus-tem-chto-real-proyavil-stojkost-iz.html",
+   "title": "Вальверде про 4:3 с «Ромой»: «Горжусь тем, что «Реал» проявил стойкость. Из-за наших ошибок игра превратилась в тяжелое испытание, но главное – удалось переломить ход матча»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117399877-mbappe-i-ego-mat-dali-pokazaniya-po-delu-o-korrupczii-eks-glavy-oxrany.html",
+   "title": "Мбаппе и его мать дали показания по делу о коррупции экс-главы охраны сборной Франции. Килиан выплатил Санхаджи более 60 000 евро с призовых на ЧМ-2022",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401630-soule-pro-34-s-realom-net-slov-match-byl-polnostyu-pod-kontrolem-romy-.html",
+   "title": "Соуле про 3:4 с «Реалом»: «Нет слов. Матч был полностью под контролем «Ромы». Что-то нет так, раз мы пропустили три идентичных гола за семь минут – дело в психологии»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401619-vinisius-o-nedovolstve-zamenoj-eto-normalno-ya-vsegda-xochu-byt-v-luch.html",
+   "title": "Винисиус о недовольстве заменой: «Это нормально, я всегда хочу быть в лучшей форме и помогать «Реалу». Злюсь сам на себя. Но Вини всегда возвращается»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/blogs/3474721.html",
+   "title": "«Реал» – главный, «Барса» и «ПСЖ» следом, другие топы рухнули. Фавориты ЛЧ: все обновления",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/blogs/3562801.html",
+   "title": "Невероятность камбэка «Реала» в цифрах",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401609-zhoze-mourinyu-pri-13-moglo-pokazatsya-chto-intriga-mertva-no-mertvymi.html",
+   "title": "Жозе Моуринью: «При 1:3 могло показаться, что интрига мертва, но мертвыми были игроки «Ромы». В конце «Реал» было не остановить, соперник не справился с лавиной атакующего футбола»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401601-vinisius-o-bane-za-to-chto-sxvatil-igroka-za-volosy-pravilo-novoe-ego-.html",
+   "title": "Винисиус о бане на 4 игры за то, что схватил соперника за волосы: «Правило новое, его нам не объясняли. Меня часто бьют, а карточка достается мне»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401607-real-za-743-otygral-dva-gola-i-vyshel-vered-v-schete-v-matche-s-romoj-.html",
+   "title": "«Реал» за 7:43 отыграл два гола и вышел вперед в счете в матче с «Ромой» – это самый быстрый гостевой камбэк в ЛЧ",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401604-78-golov-za-tur-novyj-rekord-ligi-chempionov-proshlyj-byl-ustanovlen-v.html",
+   "title": "78 голов за тур – новый рекорд Лиги чемпионов. Прошлый был установлен в предыдущем сезоне",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401600-mourinyu-dognal-vengera-po-pobedam-v-lch-po-86-bolshe-tolko-u-anchelot.html",
+   "title": "Моуринью догнал Венгера по победам в ЛЧ – по 86. Больше только у Анчелотти, Гвардиолы и Фергюсона",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401590-gasperini-pro-34-s-realom-roma-neozhidanno-spotknulas-u-samogo-finisha.html",
+   "title": "Гасперини про 3:4 с «Реалом»: «Рома» неожиданно споткнулась у самого финиша. Мы их полностью переиграли, они были не на уровне»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401582-mourinyu-o-43-roma-nas-udivila-no-v-futbole-chudes-ne-byvaet-nevozmozh.html",
+   "title": "Моуринью о 4:3: «Рома» нас удивила, но в футболе чудес не бывает – невозможно поддерживать такую интенсивность все 90 минут. Было сложно, они играют не в такой футбол, как мы привыкли»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401573-etot-sudejskij-komitet-pozornyj-kak-zhe-stydno-roberto-karlos-posle-ba.html",
+   "title": "«Этот судейский комитет – позорный. Как же стыдно». Роберто Карлос после бана Винисиуса",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401577-vinisius-o-mourinyu-posle-zameny-na-59-j-pochemu-on-menya-menyaet.html",
+   "title": "Винисиус о Моуринью после замены на 59-й: «Почему он меня меняет?»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401574-pszh-lidiruet-v-lch-posle-dvux-turov-barselona-2-ya-arsenal-7-j-real-8.html",
+   "title": "«ПСЖ» лидирует в ЛЧ после двух туров. «Барселона» – 2-я, «Арсенал» – 7-й, «Реал» – 8-й, «Бавария» – 10-я, «МЮ» – 13-й, «Сити» – 17-й, «Интер» – 29-й, «Галатасарай» Батракова – 35-й",
+   "rm": 0,
+   "note": "таблица ЛЧ, Реал 8-й"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/1117401569-51-00-davali-na-kambek-reala-s-romoj-pri-schete-13-na-80-j-minute.html",
+   "title": "51.00 давали на камбэк «Реала» с «Ромой» при счете 1:3 на 80-й минуте",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401552-real-vyigral-8-iz-10-matchej-pri-mourinyu.html",
+   "title": "«Реал» выиграл 8 из 10 матчей после возвращения Моуринью",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117399578-real-sygraet-v-gostyax-s-romoj-v-2-m-ture-lch-match-nachnetsya-v-2200.html",
+   "title": "«Реал» ушел с 1:3 от «Ромы» и победил в гостях (4:3) в 2-м туре ЛЧ! Эспи забил на 83-й, Эндрик – на 85-й, Рюдигер – на 90-й, у Гюлера 2 ассиста",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117399477-liga-chempionov-liverpul-v-gostyax-u-lask-real-protiv-romy-man-siti-pr.html",
+   "title": "Лига чемпионов. «Реал» победил «Рому», «Ман Сити» уступил «ПСЖ», «Боруссия» проиграла «Буде-Глимт», «Ливерпуль» забил 6 голов ЛАСК",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401521-malen-zabil-8-golov-v-8-matchax-sezona-i-23-v-28-igrax-za-romu.html",
+   "title": "Мален забил 8 голов в 8 матчах сезона и 23 в 28 играх за «Рому» за все время",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401511-u-vinisiusa-1-gol-v-10-matchax-za-real-v-etom-sezone.html",
+   "title": "У Винисиуса 1 гол в 10 матчах за «Реал» в этом сезоне – в августе",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401478-real-propustil-ot-romy-posle-poteri-vinisiusa-otdavshego-pas-pyatkoj-v.html",
+   "title": "«Реал» пропустил от «Ромы» после потери Винисиуса, отдавшего пас пяткой в центре поля. Моуринью заменил бразильца на 59-й минуте",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401382-mbappe-zabil-72-j-gol-v-lch-i-operedil-raulya-v-spiske-bombardirov-bol.html",
+   "title": "Мбаппе забил 72-й гол в ЛЧ и опередил Рауля в списке бомбардиров. Больше только у Роналду, Месси, Левандовского и Бензема",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401378-man-siti-propustil-tri-gola-za-1-j-tajm-vpervye-s-marta-togda-gorozhan.html",
+   "title": "«Ман Сити» пропустил три гола за 1-й тайм впервые с марта. Тогда «горожан» разгромил «Реал»",
+   "rm": 0,
+   "note": "Ман Сити; упоминание прошлого разгрома от Реала"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401333-u-mbappe-12-102-ochkov-v-11-matchax-sezona-za-klub-i-sbornuyu-forvard-.html",
+   "title": "У Мбаппе 12 (10+2) очков в 11 матчах сезона за клуб и сборную. Форвард «Реала» забил «Роме»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401200-tv-reala-o-diskvalifikaczii-vinisiusa-eto-vojna-ne-xvatalo-tolko-chtob.html",
+   "title": "ТВ «Реала» о дисквалификации Винисиуса: «Это война. Не хватало только, чтобы испанские судьи работали на наших матчах в ЛЧ, это было бы ужасно»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401180-mbappe-samyj-molodoj-igrok-so-100-matchami-v-lch-kilian-pobil-rekord-m.html",
+   "title": "Мбаппе – самый молодой игрок с 100 матчами в ЛЧ. Форвард «Реала» побил рекорд Месси",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401149-mostovoj-o-zolotom-myache-modricha-lyudi-zabivayut-po-50-golov-i-otday.html",
+   "title": "Мостовой о «Золотом мяче» Модрича: «Люди забивают по 50 голов и отдают по 50 передач, а человек забил 3 и 3 отдал – и ему дают за один турнир. Это не совсем правильно»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401116-mourinyu-o-bane-vinisiusa-pochemu-ob-etom-obyavlyayut-za-2-chasa-do-va.html",
+   "title": "Моуринью о бане Винисиуса: «Почему объявляют за 2 часа до важного матча «Реала»? Почему не сделать это завтра утром? Они считают, что это может повлиять на нас»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401097.html",
+   "title": "Хавбек «Вильярреала» Комесанья о судействе с «Реалом»: «Не знаю, на что они жалуются. Если это красная, то это красная. Они приставали к судье с первой минуты»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401064-tv-reala-o-tom-chto-ispanskix-arbitrov-ne-naznachili-na-tur-evrokubkov.html",
+   "title": "ТВ «Реала» о том, что испанских арбитров не назначили на тур еврокубков: «Это отражает низкий уровень испанского судейства»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401046-real-podast-apellyacziyu-na-4-matchevyj-ban-vinisiusa.html",
+   "title": "«Реал» подаст апелляцию на 4-матчевый бан Винисиуса",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117401017-vinisius-diskvalificzirovan-na-4-matcha-la-ligi-za-krasnuyu-v-igre-s-v.html",
+   "title": "Винисиус дисквалифицирован на 4 матча Ла Лиги за красную в игре с «Вильярреалом». Вингер «Реала» не сыграет с «Барсой»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117400965-mourinyu-o-tom-pochemu-ego-lyubyat-v-byvshix-komandax-ya-ostayus-soboj.html",
+   "title": "Моуринью о том, почему его любят в бывших командах: «Я остаюсь собой, интересы клуба и игроков всегда выше моих собственных – и люди это ценят»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3560367.html",
+   "title": "«Негрейра не был декоративной фигурой – очень много решал». Скандальный арбитр Ла Лиги вспомнил босса",
+   "rm": 0,
+   "note": "Негрейра; пенальти Реала в анонсе"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117400897.html",
+   "title": "Жозе Моуринью: «Я доверяю судьям. Смущает только, когда имя арбитра известно за три недели до матча, а не за 24 часа»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3560160.html",
+   "title": "Безумный год Винисиуса: ругался со своими и чужими, получил красную вместо гола, запутался в отношениях",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117399785-kassano-o-messi-takix-bolshe-ne-budet-v-futbole-ne-bylo-nikogo-podobno.html",
+   "title": "Кассано о Месси: «Таких больше не будет. В футболе не было никого подобного ему, иной уровень. Нравятся Ямаль, Рафинья, Родриго, но Лионель далеко впереди всех них»",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/1117399734-antonio-kassano-vinisius-eto-prosto-xoroshij-futbolist-on-zabivaet-no-.html",
+   "title": "Антонио Кассано: «Винисиус – это просто хороший футболист. Он забивает, но не суперзвезда. Родриго гораздо лучше»",
+   "rm": 1,
+   "note": "Кассано: Винисиус хороший, Родриго лучше"
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/betting/1117399679-real-vyigral-21-iz-23-poslednix-matchej-protiv-italyanskix-klubov-1-96.html",
+   "title": "«Реал» выиграл 21 из 23 последних матчей против итальянских клубов. 1.96 – обыграет «Рому»",
+   "rm": 1
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "sports.ru/football/blogs/3560599.html",
+   "title": "One of one: лучший вратарь XXI века",
+   "rm": 0
+  },
+  {
+   "feed": "sportsru_real",
+   "id": "specials.sports.ru/loko-anniversary/start",
+   "title": "Помните, как «Локомотив» блистал в нулевые?",
+   "rm": 0
+  }
+ ]
+}

@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse
 from . import config, store
 from .model import ts
 from .predictions import api as predict_api
+from .sources import media
 from .stream import router as stream_router
 
 VERSION = "0.2.0"
@@ -24,7 +25,8 @@ predict_api.install(app)  # /api/predict/* — этап 10
 # через сколько секунд снимок считается устаревшим (≈ 3 пропущенных цикла сборщика)
 STALE_AFTER = {"fixtures": 3 * config.TEAM_INTERVAL, "tables": 3 * config.TEAM_INTERVAL,
                "team": 3 * config.TEAM_INTERVAL, "match_live": 6 * config.LIVE_INTERVAL,
-               "match_idle": 2 * config.IDLE_MATCH_INTERVAL + 60}
+               "match_idle": 2 * config.IDLE_MATCH_INTERVAL + 60,
+               "news": 3 * config.NEWS_INTERVAL, "videos": 3 * config.VIDEO_INTERVAL}
 
 
 def _db():
@@ -200,6 +202,71 @@ def team() -> JSONResponse:
         conn.close()
 
 
+# ---------- медиа: новости и видео ----------
+
+def _limit(v: int | None, default: int, top: int) -> int:
+    try:
+        return max(1, min(top, int(v if v is not None else default)))
+    except (TypeError, ValueError):
+        return default
+
+
+_NEWS_FIELDS = ("id", "title", "summary", "source", "url", "published", "image")
+
+
+@app.get("/api/news")
+def news(limit: int | None = None) -> JSONResponse:
+    conn = _db()
+    try:
+        snap = store.get(conn, "news")
+        if not snap:
+            return _no_data("news")
+        items = [{**{k: it.get(k) for k in _NEWS_FIELDS}, "also": it.get("also") or []}
+                 for it in snap["data"]["items"][:_limit(limit, 20, 100)]]
+        feeds = {k: {"ok": v.get("ok"), **({"error": v["error"]} if v.get("error") else {})}
+                 for k, v in (snap["data"].get("feeds") or {}).items()}
+        avail = ["news"] if items else []
+        if any(i["image"] for i in items):
+            avail.append("images")
+        return _resp({**_meta(snap, STALE_AFTER["news"]), "available": avail, "feeds": feeds,
+                      "count": len(items), "items": items}, 60)
+    finally:
+        conn.close()
+
+
+_VIDEO_FIELDS = ("id", "title", "published", "thumb", "url", "short", "kind", "channel")
+
+
+@app.get("/api/videos")
+def videos(limit: int | None = None) -> JSONResponse:
+    """Лента канала + «обзоры матчей» (highlights из снимков матчей, запасной вариант — ролик канала)."""
+    conn = _db()
+    try:
+        snap = store.get(conn, "videos")
+        fx = store.get(conn, "fixtures")
+        vids = (snap["data"]["items"] if snap else [])
+        finished = [f for f in (fx["data"] if fx else []) if f["status"]["finished"] and isinstance(f.get("id"), int)]
+        finished = finished[-8:]
+        snaps = {}
+        for f in finished:
+            m = store.get(conn, f"match:{f['id']}")
+            if m:
+                snaps[str(f["id"])] = m["data"]
+        highlights = media.match_highlights(finished, snaps, vids, limit=5)
+        if not snap and not highlights:
+            return _no_data("videos")
+        items = [{k: v.get(k) for k in _VIDEO_FIELDS} for v in vids[:_limit(limit, 15, 40)]]
+        avail = [k for k, v in (("videos", items), ("highlights", highlights)) if v]
+        if any(v["short"] for v in items):
+            avail.append("shorts")
+        meta = _meta(snap, STALE_AFTER["videos"]) if snap else \
+            {"source": None, "updated_at": None, "age_s": None, "stale": True}
+        return _resp({**meta, "available": avail, "highlights": highlights, "count": len(items),
+                      "items": items}, 60)
+    finally:
+        conn.close()
+
+
 # ---------- здоровье источников ----------
 
 @app.get("/api/health/sources")
@@ -220,6 +287,8 @@ def health_sources() -> JSONResponse:
         snaps = {k: v for k, v in store.ages(conn).items() if not k.startswith("ctx:")}
         return _resp({"collector": {**(collector or {}), "heartbeat_age_s": hb},
                       "sources": [states[n] for n in config.SOURCE_ORDER if n in states],
+                      # медиа — отдельный список: в цепочку данных матча они не входят
+                      "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
                       "snapshots": snaps, "idmap": store.map_count(conn)}, 0)
     finally:
         conn.close()

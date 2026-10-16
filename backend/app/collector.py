@@ -5,6 +5,7 @@ API во внешние источники не ходит никогда — т
 
   python -m app.collector                       # демон
   python -m app.collector once team|mapping     # один цикл команды / сопоставления id
+  python -m app.collector once news|videos      # один цикл новостей (RSS) / видео (YouTube)
   python -m app.collector once match <id>       # один цикл матча (цепочка источников)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
@@ -25,7 +26,7 @@ from datetime import datetime, timedelta, timezone
 
 from . import config, store
 from .model import name_key, same_team, ts
-from .sources import espn, fotmob, livescore, sofascore
+from .sources import espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
 log = logging.getLogger("collector")
@@ -49,13 +50,103 @@ class Collector:
         self.sofa_events: list = []               # последние события Реала в SofaScore
         self.miss: dict[tuple, float] = {}        # (источник, id) → когда не нашли сопоставление
         self.ls_by_date: dict[str, dict] = {}
-        self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0}
+        # медиа — свои HTTP-клиенты (breaker и счётчики у каждого сайта), в цепочку матча не входят
+        self.media = media.make_sources()
+        self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0}
         self.last_team = 0.0
         self.last_mapping = 0.0
+        self.last_news = 0.0
+        self.last_videos = 0.0
 
     async def close(self):
-        for s in self.sources.values():
+        for s in (*self.sources.values(), *self.media.values()):
             await s.close()
+
+    # ================= медиа: новости и видео =================
+
+    def _squad_ids(self) -> set[int] | None:
+        """Игроки и тренер из снимка команды — для фильтра новостей. Нет снимка — None (все фамилии)."""
+        t = store.get(self.conn, "team")
+        if not t:
+            return None
+        d = t["data"]
+        ids = {p["id"] for line in (d.get("squad") or {}).values() for p in line if p.get("id")}
+        if (d.get("coach") or {}).get("id"):
+            ids.add(d["coach"]["id"])
+        return ids or None
+
+    async def refresh_news(self, og_limit: int | None = None) -> dict:
+        """Ленты RSS → фильтр «про Реал» → без дублей → снимок `news`. Упали все ленты — снимок не трогаем."""
+        self.cycles["news"] += 1
+        self.last_news = time.time()
+        feeds, fresh, ok_sites = {}, [], []
+        squad = self._squad_ids()
+
+        async def pull(f: media.Feed):
+            src = self.media[f.site]
+            if not src.available():
+                return f, None, "disabled" if src.disabled() else "breaker open"
+            try:
+                return f, media.parse_rss(f, await src.text(f.url, kind=f.key)), None
+            except (SourceError, ValueError) as e:
+                return f, None, str(e)[:200]
+
+        for f, items, err in await asyncio.gather(*(pull(f) for f in media.NEWS_FEEDS)):
+            if items is None:
+                feeds[f.key] = {"ok": False, "error": err}
+                continue
+            matched = [i for i in items if media.is_about_rm(i, squad)]
+            feeds[f.key] = {"ok": True, "items": len(items), "matched": len(matched)}
+            fresh += matched
+            if f.site not in ok_sites:
+                ok_sites.append(f.site)
+        if not ok_sites:
+            log.warning("news: все ленты недоступны: %s", feeds)
+            return {"news": "stale", "feeds": feeds}
+        prev = store.get(self.conn, "news")
+        merged = media.merge_news((prev["data"]["items"] if prev else []), fresh, squad)
+        og = await self._news_images(merged, config.NEWS_OG_PER_CYCLE if og_limit is None else og_limit)
+        store.put(self.conn, "news", "+".join(ok_sites),
+                  {"items": merged, "feeds": feeds, "og_fetched": og})
+        return {"news": len(merged), "fresh": len(fresh), "og": og, "feeds": feeds}
+
+    async def _news_images(self, items: list[dict], limit: int) -> int:
+        """У Sports.ru в RSS нет картинок: берём og:image со страницы — только для новостей про Реал,
+        не больше `limit` за цикл, по одному разу на новость."""
+        src = self.media["sportsru_pages"]
+        n = 0
+        for it in items[:40]:
+            if n >= limit or not src.available():
+                break
+            if it.get("image") or it.get("img_tried") or it.get("site") != "sportsru":
+                continue
+            n += 1
+            it["img_tried"] = True
+            try:
+                page = await src.text(it["url"], kind="og")
+            except SourceError as e:
+                log.info("news og: %s: %s", it["url"], e)
+                continue
+            it["image"] = media.news_image_path(media.og_image(page))
+        return n
+
+    async def refresh_videos(self) -> dict:
+        """RSS официального канала → снимок `videos` (последние 40). Обзоры матчей собирает API
+        из снимков матчей, здесь — только лента канала."""
+        self.cycles["videos"] += 1
+        self.last_videos = time.time()
+        src = self.media["youtube"]
+        try:
+            fresh = media.parse_youtube(await src.text(media.YT_FEED, kind="channel"))
+        except (SourceError, ValueError) as e:
+            log.warning("videos: youtube: %s", e)
+            return {"videos": "stale", "error": str(e)[:200]}
+        if not fresh:
+            return {"videos": "stale", "error": "пустая лента"}
+        prev = store.get(self.conn, "videos")
+        merged = media.merge_videos((prev["data"]["items"] if prev else []), fresh)
+        store.put(self.conn, "videos", "youtube", {"items": merged})
+        return {"videos": len(merged), "fresh": len(fresh), "shorts": sum(v["short"] for v in fresh)}
 
     # ================= команда / календарь / таблицы =================
 
@@ -463,11 +554,12 @@ class Collector:
 
     def write_state(self):
         with self.conn:
-            for name, s in self.sources.items():
+            for name, s in (*self.sources.items(), *self.media.items()):
                 store.put_source_state(self.conn, name, s.snapshot())
             store.put_source_state(self.conn, "_collector", {
                 "pid": os.getpid(), "cycles": self.cycles, "last_team": self.last_team,
-                "last_mapping": self.last_mapping, "in_window": self.window(time.time()),
+                "last_mapping": self.last_mapping, "last_news": self.last_news, "last_videos": self.last_videos,
+                "in_window": self.window(time.time()),
                 "disabled": sorted(config.disabled_sources()),
             })
 
@@ -482,6 +574,13 @@ class Collector:
                 if now - self.last_mapping >= config.MAPPING_INTERVAL:
                     log.info("mapping: %s", await self.refresh_mapping())
                 win = self.window(now)
+                # медиа — после команды (нужен состав для фильтра). Ленты качаются параллельно,
+                # такт держат не дольше одного таймаута; в окне матча страницы ради картинок не открываем
+                if now - self.last_news >= config.NEWS_INTERVAL:
+                    r = await self.refresh_news(og_limit=0 if win else config.NEWS_OG_PER_CYCLE)
+                    log.info("news: %s", {k: v for k, v in r.items() if k != "feeds"})
+                if now - self.last_videos >= config.VIDEO_INTERVAL:
+                    log.info("videos: %s", await self.refresh_videos())
                 for fid in win:
                     if now >= self.match_due.get(fid, 0):
                         self.match_due[fid] = now + config.LIVE_INTERVAL
@@ -578,6 +677,12 @@ async def _cli(args) -> int:
                 print(json.dumps(await c.refresh_team(), ensure_ascii=False))
             elif args.what == "mapping":
                 print(json.dumps(await c.refresh_mapping(), ensure_ascii=False))
+            elif args.what == "news":
+                print(json.dumps(await c.refresh_news(), ensure_ascii=False))
+                c.write_state()
+            elif args.what == "videos":
+                print(json.dumps(await c.refresh_videos(), ensure_ascii=False))
+                c.write_state()
             elif args.what == "match":
                 print(_summary(await c.refresh_match(args.id)))
         elif args.cmd == "live":
@@ -611,7 +716,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")
