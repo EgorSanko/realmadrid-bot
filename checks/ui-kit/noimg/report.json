@@ -1,0 +1,137 @@
+{
+  "mode": "noimg",
+  "hosts": {
+    "localhost:4193": 45
+  },
+  "foreignHosts": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/league/87.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8633.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8634.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/9906.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8686.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8302.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/1.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/999999.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/701154.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/846033.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/1077894.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/1253890.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/league/42.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/flag/es.svg",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/flag/fr.svg",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/flag/br.svg",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/flag/tr.svg",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8686.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8633.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/team/8302.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/1077894.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/846033.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/701154.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/1253890.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/170323.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/276738.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/743533.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/player/914458.png",
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway) @ /img/news/missing.jpg"
+  ],
+  "consoleErrorsNotImg": [],
+  "imgResponses": {
+    "/img/league/87.png": 502,
+    "/img/team/8633.png": 502,
+    "/img/team/8634.png": 502,
+    "/img/team/9906.png": 502,
+    "/img/team/8686.png": 502,
+    "/img/team/8302.png": 502,
+    "/img/team/1.png": 502,
+    "/img/team/999999.png": 502,
+    "/img/player/701154.png": 502,
+    "/img/player/846033.png": 502,
+    "/img/player/1077894.png": 502,
+    "/img/player/1253890.png": 502,
+    "/img/league/42.png": 502,
+    "/img/flag/es.svg": 502,
+    "/img/flag/fr.svg": 502,
+    "/img/flag/br.svg": 502,
+    "/img/flag/tr.svg": 502,
+    "/img/player/170323.png": 502,
+    "/img/player/276738.png": 502,
+    "/img/player/743533.png": 502,
+    "/img/player/914458.png": 502,
+    "/img/news/missing.jpg": 502
+  },
+  "images": {
+    "total": 40,
+    "failed": 40,
+    "loaded": 0
+  },
+  "failedVisible": [],
+  "withFrame": [],
+  "sizeMismatch": [],
+  "notLazy": [],
+  "noAlt": [],
+  "silhouettes": 19,
+  "cls": {
+    "cls": 0.0076,
+    "shifts": [
+      {
+        "v": 0.0045,
+        "src": "ui-card,ui-tabs ui-tabs--segmented,kit-sec,ui-section-head ui-section-head--page,kit-row"
+      },
+      {
+        "v": 0.0032,
+        "src": "ui-card,ui-tabs ui-tabs--segmented,ui-section-head ui-section-head--page,kit-sec,ui-badge ui-badge--injury"
+      }
+    ]
+  },
+  "scrollW": 390,
+  "countdown": "До начала: 1 день 22 часа 15 минут",
+  "navHasDev": false,
+  "layout": [
+    {
+      "id": "base",
+      "h": 710
+    },
+    {
+      "id": "states",
+      "h": 1690
+    },
+    {
+      "id": "images",
+      "h": 794
+    },
+    {
+      "id": "match-card",
+      "h": 702
+    },
+    {
+      "id": "score-header",
+      "h": 344
+    },
+    {
+      "id": "form",
+      "h": 1155
+    },
+    {
+      "id": "timeline",
+      "h": 868
+    },
+    {
+      "id": "pitch",
+      "h": 900
+    },
+    {
+      "id": "stats",
+      "h": 1044
+    },
+    {
+      "id": "media",
+      "h": 1439
+    },
+    {
+      "id": "predict",
+      "h": 915
+    }
+  ],
+  "pairs": []
+}

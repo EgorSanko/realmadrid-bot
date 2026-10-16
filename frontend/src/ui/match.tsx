@@ -467,10 +467,10 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, cl
           {zones.map((z, i) => (
             <Fragment key={i}>
               <span className="ui-table__zone" style={{ background: z.color }} />
-              <span>{z.label}</span>
+              <span>{i === zones.length - 1 && footnote ? `${z.label} · ${footnote}` : z.label}</span>
             </Fragment>
           ))}
-          {footnote && <span>{zones.length > 0 ? `· ${footnote}` : footnote}</span>}
+          {footnote && zones.length === 0 && <span>{footnote}</span>}
         </div>
       )}
     </div>

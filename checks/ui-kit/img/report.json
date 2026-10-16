@@ -1,0 +1,157 @@
+{
+  "mode": "img",
+  "hosts": {
+    "localhost:4194": 38
+  },
+  "foreignHosts": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found) @ /img/team/999999.png",
+    "Failed to load resource: the server responded with a status of 404 (Not Found) @ /img/news/missing.jpg"
+  ],
+  "consoleErrorsNotImg": [],
+  "imgResponses": {
+    "/img/team/8633.png": 200,
+    "/img/league/87.png": 200,
+    "/img/team/8686.png": 200,
+    "/img/team/8302.png": 200,
+    "/img/team/8634.png": 200,
+    "/img/team/9906.png": 200,
+    "/img/team/999999.png": 404,
+    "/img/team/1.png": 200,
+    "/img/player/701154.png": 200,
+    "/img/player/846033.png": 200,
+    "/img/player/1077894.png": 200,
+    "/img/player/1253890.png": 200,
+    "/img/league/42.png": 200,
+    "/img/flag/es.svg": 200,
+    "/img/flag/fr.svg": 200,
+    "/img/flag/br.svg": 200,
+    "/img/flag/tr.svg": 200,
+    "/img/player/276738.png": 200,
+    "/img/player/170323.png": 200,
+    "/img/player/743533.png": 200,
+    "/img/player/914458.png": 200,
+    "/img/news/missing.jpg": 404
+  },
+  "images": {
+    "total": 52,
+    "failed": 2,
+    "loaded": 50
+  },
+  "failedVisible": [],
+  "withFrame": [],
+  "sizeMismatch": [],
+  "notLazy": [],
+  "noAlt": [],
+  "silhouettes": 7,
+  "cls": {
+    "cls": 0.0083,
+    "shifts": [
+      {
+        "v": 0.0083,
+        "src": "ui-card,ui-tabs ui-tabs--segmented,ui-section-head ui-section-head--page,kit-sec,kit-row"
+      }
+    ]
+  },
+  "scrollW": 390,
+  "countdown": "До начала: 1 день 22 часа 15 минут",
+  "navHasDev": false,
+  "layout": [
+    {
+      "id": "base",
+      "h": 710
+    },
+    {
+      "id": "states",
+      "h": 1690
+    },
+    {
+      "id": "images",
+      "h": 794
+    },
+    {
+      "id": "match-card",
+      "h": 702
+    },
+    {
+      "id": "score-header",
+      "h": 344
+    },
+    {
+      "id": "form",
+      "h": 1155
+    },
+    {
+      "id": "timeline",
+      "h": 868
+    },
+    {
+      "id": "pitch",
+      "h": 900
+    },
+    {
+      "id": "stats",
+      "h": 1044
+    },
+    {
+      "id": "media",
+      "h": 1439
+    },
+    {
+      "id": "predict",
+      "h": 915
+    }
+  ],
+  "pairs": [
+    {
+      "name": "match-upcoming",
+      "mock": "358x304",
+      "ours": "358x304"
+    },
+    {
+      "name": "match-live",
+      "mock": "358x254",
+      "ours": "358x254"
+    },
+    {
+      "name": "match-finished",
+      "mock": "358x80",
+      "ours": "358x80"
+    },
+    {
+      "name": "score-header",
+      "mock": "390x138",
+      "ours": "390x138"
+    },
+    {
+      "name": "timeline",
+      "mock": "358x676",
+      "ours": "358x676"
+    },
+    {
+      "name": "standings",
+      "mock": "358x343",
+      "ours": "358x342"
+    },
+    {
+      "name": "pitch",
+      "mock": "358x470",
+      "ours": "358x470"
+    },
+    {
+      "name": "momentum",
+      "mock": "358x214",
+      "ours": "358x214"
+    },
+    {
+      "name": "statrow",
+      "mock": "358x501",
+      "ours": "358x501"
+    },
+    {
+      "name": "shotmap",
+      "mock": "358x268",
+      "ours": "358x265"
+    }
+  ]
+}
