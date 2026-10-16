@@ -18,21 +18,19 @@ import json
 import os
 import tempfile
 import threading
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlsplit
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response
 from pydantic import BaseModel
-from telegram_webapp_auth.auth import TelegramAuthenticator, generate_secret_key
-from telegram_webapp_auth.errors import BaseTWAError
+from app.auth import INIT_DATA_MAX_AGE, InitDataError, is_tma, validate_tma  # noqa: F401
 
 router = APIRouter()
 
 URL_MAX = 2000
 TITLE_MAX = 200
-INIT_DATA_MAX_AGE = timedelta(hours=24)
 
 _lock = threading.Lock()
 
@@ -162,15 +160,16 @@ def require_admin(
             return "token"
         raise _deny(401, "Неверный токен")
 
-    if authorization and authorization[:4].lower() == "tma ":
+    if is_tma(authorization):
         if not tg_enabled:
             raise _deny(401, "Вход через Telegram не настроен")
-        auth = TelegramAuthenticator(generate_secret_key(bot_token))
         try:
-            data = auth.validate(authorization[4:].strip(), expr_in=INIT_DATA_MAX_AGE)
-        except BaseTWAError:
-            raise _deny(401, "Подпись Telegram не прошла проверку") from None
-        if data.user is None or data.user.id not in admin_ids:
+            data = validate_tma(authorization, bot_token)
+        except InitDataError as e:
+            if e.reason == "no_user":
+                raise _deny(403, "Нет доступа") from None
+            raise _deny(401, e.message) from None
+        if data.user.id not in admin_ids:
             raise _deny(403, "Нет доступа")
         return f"tg:{data.user.id}"
 
