@@ -1,0 +1,25 @@
+/* Только для /dev/ui: обвязка демо, не компоненты. */
+.kit { line-height: normal; }
+.kit-sec { padding-bottom: 8px; }
+.kit-sec__title { margin: 28px 16px 0; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+.kit-muted { font-size: 13px; color: var(--muted); }
+.kit-cap { font-size: 12px; color: var(--muted); }
+.kit-mt12 { margin-top: 12px; }
+.kit-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.kit-row--crests { gap: 12px; margin-top: 10px; }
+.kit-name { font-size: 13px; color: var(--muted); }
+.kit-probe { min-height: 36px; }
+.kit-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 14px 16px 0; }
+.kit-live-ev { display: grid; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; }
+.kit-min { width: 30px; color: var(--dim); }
+.kit-icons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 8px; }
+.kit-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); text-align: center; }
+.kit-icon > :first-child { height: 16px; }
+.kit-lineup-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 16px 16px 0; }
+.kit-formation { font-family: var(--display); font-weight: 700; font-size: 14px; }
+.kit-li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.kit-li:last-child { border-bottom: none; }
+.kit-li__name { font-weight: 600; font-size: 14px; }
+.kit-hscroll { display: flex; gap: 12px; overflow-x: auto; padding: 12px 16px 0; scrollbar-width: none; }
+.kit-hscroll::-webkit-scrollbar { display: none; }
+.kit-pred-teams { display: flex; justify-content: space-between; margin-top: 14px; font-weight: 600; font-size: 15px; }

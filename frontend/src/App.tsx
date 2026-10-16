@@ -6,6 +6,7 @@ import { SECTIONS } from './sections';
 
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
+const UiKitPage = lazy(() => import('./dev/UiKitPage'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -29,6 +30,15 @@ export function App() {
             element={
               <Suspense fallback={null}>
                 <AdminScreen />
+              </Suspense>
+            }
+          />
+          {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк */}
+          <Route
+            path="/dev/ui"
+            element={
+              <Suspense fallback={null}>
+                <UiKitPage />
               </Suspense>
             }
           />
