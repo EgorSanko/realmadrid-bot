@@ -52,7 +52,8 @@ def _status(st: dict) -> dict:
         if reason.upper() == "HT":
             return status("halftime", 45, label="HT")
         mi, add = _minute(st.get("liveTime"))
-        return status("live", mi, add, label=(st.get("liveTime") or {}).get("short"))
+        lt = st.get("liveTime") or {}
+        return status("live", mi, add, label=re.sub(r"[^\d+:’']", "", lt.get("long") or lt.get("short") or ""))
     return status("scheduled")
 
 
@@ -223,8 +224,10 @@ def normalize_match(raw: dict) -> dict:
             "situation": s.get("situation"), "body": s.get("shotType"), "period": s.get("period"),
         })
 
+    # в лайве FotMob заранее кладёт будущие минуты со value=null — отбрасываем
     m["momentum"] = [{"minute": p.get("minute"), "value": p.get("value")}
-                     for p in ((c.get("momentum") or {}).get("main") or {}).get("data") or []]
+                     for p in ((c.get("momentum") or {}).get("main") or {}).get("data") or []
+                     if p.get("value") is not None]
 
     potm = mf.get("playerOfTheMatch") or {}
     if potm.get("id"):

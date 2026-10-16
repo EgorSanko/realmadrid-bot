@@ -331,6 +331,8 @@ class Collector:
                 errors[name] = "no id mapping"
                 continue
             m["fetched_from"] = name
+            for other in ("sofascore", "espn", "livescore"):
+                m["ids"][other] = m["ids"].get(other) or store.from_fotmob(self.conn, "match", other, fid)
             m["fallback_errors"] = errors or None
             # момент, когда впервые увидели «завершён» — для окна +30 мин
             seen = (prev or {}).get("data", {}).get("finished_seen_at") if prev else None
@@ -544,10 +546,12 @@ def _summary(m: dict | None) -> str:
     if not m:
         return "нет данных (все источники недоступны или нет сопоставления)"
     ev = m["events"]
+    st = {x["key"]: f"{x['home']}-{x['away']}" for x in (m.get("stats") or {}).get("all", [])}
     return (f"[{m['source']}] {m['home']['name']} {m['home']['score']}:{m['away']['score']} {m['away']['name']} | "
             f"state={m['status']['state']} min={m['status']['minute']}{'+' + str(m['status']['added']) if m['status']['added'] else ''} | "
             f"events={len(ev)} goals={sum(1 for e in ev if e['type'] == 'goal')} shots={len(m['shots'])} "
-            f"momentum={len(m['momentum'])} | available={','.join(m['available'])}")
+            f"momentum={len(m['momentum'])} | clock={m['status']['label']} poss={st.get('possession')} "
+            f"shots={st.get('shots_total')} xg={st.get('xg')} | available={','.join(m['available'])}")
 
 
 async def _cli(args) -> int:

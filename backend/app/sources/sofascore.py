@@ -267,7 +267,7 @@ def normalize_match(b: dict, ctx: dict | None = None, now: float | None = None) 
     m["shots"].sort(key=lambda s: ((s["minute"] or 0), (s["added"] or 0)))
 
     m["momentum"] = [{"minute": p.get("minute"), "value": p.get("value")}
-                     for p in (b.get("graph") or {}).get("graphPoints") or []]
+                     for p in (b.get("graph") or {}).get("graphPoints") or [] if p.get("value") is not None]
 
     best = b.get("best") or {}
     potm = best.get("playerOfTheMatch") or {}
