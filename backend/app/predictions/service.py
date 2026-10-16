@@ -365,8 +365,8 @@ class PredictionService:
             mid = n["id"]
             periods = self._periods(old["season"], old["month"]) | self._periods(season_of(n["kickoff"]),
                                                                                  month_of(n["kickoff"]))
-            preds = c.execute("SELECT * FROM predictions WHERE match_id=?", (mid,)).fetchall()
-            res["predictions"] = len(preds)
+            total = c.execute("SELECT COUNT(*) FROM predictions WHERE match_id=?", (mid,)).fetchone()[0]
+            res["predictions"] = total
             touched: set[str] = set()
             if n["status"] in VOID_STATUSES:
                 changed = c.execute("""UPDATE predictions SET points=NULL, points_score=NULL, points_scorer=NULL,
@@ -376,7 +376,7 @@ class PredictionService:
                     c.execute("UPDATE matches SET settled_sig=NULL, settled_at=NULL WHERE id=?", (mid,))
                     c.execute("""INSERT INTO settle_audit(match_id, at, kind, old_result, new_result, predictions, changed)
                                  VALUES (?,?,?,?,?,?,?)""",
-                              (mid, now, "void", old["settled_sig"], n["status"], len(preds), changed))
+                              (mid, now, "void", old["settled_sig"], n["status"], total, changed))
                     touched = periods
                     res["result"] = "voided"
                 else:
@@ -390,7 +390,7 @@ class PredictionService:
                     res["result"] = "unchanged"
                 else:
                     upd = []
-                    for p in preds:
+                    for p in c.execute("SELECT * FROM predictions WHERE match_id=?", (mid,)).fetchall():
                         pts = rules.compute(p["home"], p["away"], p["first_scorer"], n["score_home"],
                                             n["score_away"], n["first_scorer"], n["rm_is_home"])
                         if (p["points"], p["points_score"], p["points_scorer"]) != (pts.total, pts.score, pts.scorer):
@@ -402,7 +402,7 @@ class PredictionService:
                     if old["settled_sig"] != sig:
                         c.execute("""INSERT INTO settle_audit(match_id, at, kind, old_result, new_result, predictions,
                                      changed) VALUES (?,?,?,?,?,?,?)""",
-                                  (mid, now, kind, old["settled_sig"], sig, len(preds), len(upd)))
+                                  (mid, now, kind, old["settled_sig"], sig, total, len(upd)))
                     touched = periods
                     res["result"] = "settled" if kind == "settle" else "resettled"
                     res["changed"] = len(upd)
