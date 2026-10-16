@@ -1,0 +1,43 @@
+/* Дизайн-токены стиля A «Ночной Бернабеу» (из design/screens/a.css) */
+:root {
+  --bg: #0A0F1E;
+  --surface: #121A2E;
+  --surface-2: #1A2440;
+  --line: #1E2942;
+  --text: #EEF1F7;
+  --muted: #9AA4BC;
+  --dim: #5E6A86;
+  --gold: #D6B25E;
+  --gold-hover: #E8C878;
+  --gold-ink: #0A0F1E;
+  --live: #FF5A4E;
+
+  /* нижнее меню */
+  --nav-bg: #0D1324;
+  --nav-ink: #8590AA;
+  --nav-h: 76px;
+
+  /* пустые плашки / рамки иконок */
+  --ring: #2A3654;
+
+  --display: 'Unbounded', sans-serif;
+  --body: 'Onest', sans-serif;
+
+  --radius-card: 22px;
+  --radius-btn: 14px;
+
+  /*
+   * Safe-area. В Telegram SDK выставляет --tg-viewport-*-safe-area-inset-*
+   * (системная зона + зона под элементами Telegram). В браузере — env().
+   */
+  --safe-top: calc(
+    var(--tg-viewport-safe-area-inset-top, env(safe-area-inset-top, 0px)) +
+      var(--tg-viewport-content-safe-area-inset-top, 0px)
+  );
+  --safe-bottom: calc(
+    var(--tg-viewport-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)) +
+      var(--tg-viewport-content-safe-area-inset-bottom, 0px)
+  );
+  --safe-left: var(--tg-viewport-safe-area-inset-left, env(safe-area-inset-left, 0px));
+  --safe-right: var(--tg-viewport-safe-area-inset-right, env(safe-area-inset-right, 0px));
+}
