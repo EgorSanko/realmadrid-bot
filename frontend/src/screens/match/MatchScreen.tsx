@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { ApiMatch } from '../../api/match';
 import { useTelegramBackButton } from '../../lib/tmaNav';
@@ -38,12 +38,13 @@ export default function MatchScreen() {
   const navigate = useNavigate();
   const tab = tabFromPath(location.pathname);
 
-  // прямой заход по ссылке (история пуста) — «назад» ведёт в календарь, а не из приложения
-  const [direct] = useState(() => location.key === 'default');
+  // прямой заход по ссылке (за нами нет страниц приложения) — «назад» ведёт в календарь, а не из приложения.
+  // idx в history.state ведёт react-router: push +1, replace — без изменений; переживает перезагрузку.
   const goBack = useCallback(() => {
-    if (direct) navigate('/matches', { replace: true });
+    const idx = (window.history.state as { idx?: number } | null)?.idx;
+    if (!idx) navigate('/matches', { replace: true });
     else navigate(-1);
-  }, [direct, navigate]);
+  }, [navigate]);
   const nativeBack = useTelegramBackButton(goBack);
 
   const { state, reload } = useMatch(id);

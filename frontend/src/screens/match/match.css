@@ -87,3 +87,6 @@
 /* статистика */
 .mt-periods { margin-top: 14px; }
 .mt-stats { margin-top: 8px; }
+
+/* длинная фамилия у бровки (Alexander-Arnold) не должна обрезаться краем поля */
+.mt .ui-pl__nm { max-width: 80px; overflow: hidden; text-overflow: ellipsis; }

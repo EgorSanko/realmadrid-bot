@@ -1,0 +1,38 @@
+{
+ "id": 5868105,
+ "ids": {
+  "fotmob": 5868105,
+  "sofascore": "16421080",
+  "espn": "401882832",
+  "livescore": null
+ },
+ "kickoff": "2026-10-25T20:00:00Z",
+ "tournament": {
+  "id": 87,
+  "name": "LaLiga",
+  "round": null,
+  "logo": "/img/league/87.png"
+ },
+ "home": {
+  "id": 8634,
+  "name": "Barcelona",
+  "score": null,
+  "logo": "/img/team/8634.png"
+ },
+ "away": {
+  "id": 8633,
+  "name": "Real Madrid",
+  "score": null,
+  "logo": "/img/team/8633.png"
+ },
+ "status": {
+  "state": "scheduled",
+  "live": false,
+  "finished": false,
+  "minute": null,
+  "added": null,
+  "label": null
+ },
+ "is_home": false,
+ "result": null
+}
