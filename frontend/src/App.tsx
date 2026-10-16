@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
 import { SectionScreen } from './screens/SectionScreen';
 import { SECTIONS } from './sections';
+
+// скрытый маршрут, отдельный чанк — зрителям не грузится
+const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,6 +24,14 @@ export function App() {
           {SECTIONS.map((s) => (
             <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
           ))}
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={null}>
+                <AdminScreen />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

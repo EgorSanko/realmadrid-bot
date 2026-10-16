@@ -1,0 +1,218 @@
+/* Плеер эфира — как секция «Плеер» в design/screens/a-live.html */
+
+.player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #04070f;
+  overflow: hidden;
+  color: #fff;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.player__pitch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  fill: none;
+  stroke: #9fc5a0;
+  stroke-width: 1.5;
+}
+
+.player__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent;
+}
+
+.player[data-phase='error'] .player__video,
+.player[data-phase='ended'] .player__video {
+  visibility: hidden;
+}
+
+.player__badge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  /* поверх светлой картинки полупрозрачный красный не читается — подложка темнее */
+  background: rgba(10, 15, 30, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.player__unmute {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(10, 15, 30, 0.72);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.player__unmute svg {
+  width: 16px;
+  height: 16px;
+}
+
+.player__spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--gold);
+  animation: player-spin 0.9s linear infinite;
+}
+
+@keyframes player-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player__spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+.player__bigplay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--gold-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player__bigplay svg {
+  width: 26px;
+  height: 26px;
+  margin-left: 3px;
+}
+
+.player__msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 24px 40px;
+  text-align: center;
+  background: rgba(4, 7, 15, 0.72);
+}
+
+.player__msg p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.player__retry {
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.player__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  transition: opacity 0.25s ease;
+}
+
+.player--idle .player__bar,
+.player--idle .player__unmute {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.player--idle {
+  cursor: none;
+}
+
+.player__bar button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.player__bar button:disabled {
+  opacity: 0.35;
+}
+
+.player__bar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.player__spacer {
+  flex: 1;
+}
+
+/* полноэкранный режим: нативный (Fullscreen API) и запасной на стилях (WebView без API) */
+.player--fs {
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.player--css-fs {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.player--fs .player__bar {
+  bottom: var(--safe-bottom, 0px);
+}
