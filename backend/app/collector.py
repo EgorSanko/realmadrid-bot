@@ -214,16 +214,30 @@ class Collector:
             for sid, start, hname, aname, hid, aid, note in items:
                 if not start:
                     continue
-                for f in fixtures:
-                    ko = ts(f["kickoff"])
-                    if ko is None or abs(ko - float(start)) > 3 * 3600:
-                        continue
-                    if same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname):
-                        store.map_set(self.conn, "match", source, sid, f["id"], note)
-                        store.map_set(self.conn, "team", source, hid, f["home"]["id"])
-                        store.map_set(self.conn, "team", source, aid, f["away"]["id"])
-                        n += 1
+                near = [f for f in fixtures
+                        if ts(f["kickoff"]) is not None and abs(ts(f["kickoff"]) - float(start)) <= 3 * 3600]
+                for f in near:
+                    names_ok = same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)
+                    # Реал не играет два матча за 3 часа: единственный кандидат с Реалом на той же
+                    # стороне — тот же матч, даже если имена соперника не совпали
+                    # («Racing Santander» / «Real Racing Club»)
+                    real_side_ok = len(near) == 1 and (
+                        (f["home"]["id"] == config.TEAM_ID and same_team(hname, "Real Madrid")) or
+                        (f["away"]["id"] == config.TEAM_ID and same_team(aname, "Real Madrid")))
+                    if names_ok or real_side_ok:
                         break
+                else:
+                    # дальние туры без назначенного времени: у источников разные даты-заглушки.
+                    # Пара «хозяин–гость» за ±4 дня не повторяется — сопоставляем по ней.
+                    f = next((f for f in fixtures if ts(f["kickoff"]) is not None
+                              and abs(ts(f["kickoff"]) - float(start)) <= 4 * 86400
+                              and same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)), None)
+                    if not f:
+                        continue
+                store.map_set(self.conn, "match", source, sid, f["id"], note)
+                store.map_set(self.conn, "team", source, hid, f["home"]["id"])
+                store.map_set(self.conn, "team", source, aid, f["away"]["id"])
+                n += 1
         return n
 
     async def _match_info(self, fid) -> dict | None:

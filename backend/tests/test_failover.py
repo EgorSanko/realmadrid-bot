@@ -175,3 +175,24 @@ def test_live_cycles_spare_sofascore(tmp_db, monkeypatch):
     by = c.ss.by_kind
     assert by["event"] == 6 and by["incidents"] == 6 and by["statistics"] == 2 and by["shotmap"] == 2
     run(c.close())
+
+
+def test_mapping_by_kickoff_when_names_differ(tmp_db):
+    """«Racing Santander» (FotMob) / «Real Racing Club» (SofaScore): матч Реала находится по времени."""
+    from app.model import ts
+    from app.sources import fotmob
+    conn = store.connect()
+    c = Collector(conn)
+    fixtures = fotmob.normalize_fixtures(load("fotmob_team_8633.json"))
+    evs = load("sofa_team_last.json")["events"] + load("sofa_team_next.json")["events"]
+    items = [(str(e["id"]), e["startTimestamp"], e["homeTeam"]["name"], e["awayTeam"]["name"],
+              e["homeTeam"]["id"], e["awayTeam"]["id"], None) for e in evs]
+    n = c._map_list(fixtures, "sofascore", items)
+    racing = next(f for f in fixtures if f["home"]["name"] == "Racing Santander")
+    assert store.from_fotmob(conn, "match", "sofascore", racing["id"])
+    assert store.from_fotmob(conn, "match", "sofascore", 6106274) == "16938872"
+    assert store.to_fotmob(conn, "team", "sofascore", 2702) == "8686"  # Рома
+    # всё, что SofaScore отдаёт в двух страницах (до ноября), сопоставлено
+    horizon = max(e["startTimestamp"] for e in evs)
+    assert n == sum(1 for f in fixtures if ts(f["kickoff"]) <= horizon + 3600)
+    run(c.close())

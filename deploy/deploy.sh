@@ -18,6 +18,8 @@ CERTBOT="${CERTBOT:-0}"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WEBROOT="$REMOTE_DIR/frontend-dist"
+IMGROOT="$REMOTE_DIR/img-fallback"          # заглушки для /img/* (силуэт игрока, прозрачный 1×1)
+IMG_CONF="/etc/nginx/conf.d/rmv2-img-cache.conf"  # proxy_cache_path (http-контекст), зона rmv2img
 SSH="ssh -o BatchMode=yes $SERVER"
 
 log() { printf '\n\033[1;33m==> %s\033[0m\n' "$*"; }
@@ -46,9 +48,10 @@ tar -czf - -C "$ROOT/frontend/dist" . \
           if [ -d '$WEBROOT' ]; then mv '$WEBROOT' '$WEBROOT.old'; fi;
           mv '$WEBROOT.new' '$WEBROOT'; rm -rf '$WEBROOT.old'"
 
-# ---------- 4. backend в docker ----------
+# ---------- 4. backend в docker (api + collector) ----------
+# том со снимками: создаём, но никогда не перезаписываем; владелец — uid пользователя app в образе
 log "docker compose up -d --build"
-$SSH "cd '$REMOTE_DIR' && docker compose up -d --build && docker compose ps"
+$SSH "mkdir -p '$REMOTE_DIR/data' && chown 10001 '$REMOTE_DIR/data' && cd '$REMOTE_DIR' && docker compose up -d --build && docker compose ps"
 
 # ---------- 5. сертификат (по желанию и только при живом DNS) ----------
 if [ "$CERTBOT" = "1" ]; then
@@ -63,7 +66,11 @@ if [ "$CERTBOT" = "1" ]; then
   fi
 fi
 
-# ---------- 6. nginx: только свой файл, проверка перед reload ----------
+# ---------- 6. nginx: только свои файлы, проверка перед reload ----------
+log "заглушки картинок → $IMGROOT"
+tar -czf - -C "$ROOT/deploy/img" . \
+  | $SSH "set -e; mkdir -p '$IMGROOT'; tar -xzf - -C '$IMGROOT'; chmod -R a+rX '$IMGROOT'
+          mkdir -p /var/cache/nginx/rmv2img; chown www-data /var/cache/nginx/rmv2img"
 log "nginx: /etc/nginx/sites-available/$SITE_NAME"
 if $SSH "test -f '/etc/letsencrypt/live/$DOMAIN/fullchain.pem'"; then
   HTTPS=1
@@ -93,19 +100,28 @@ CONF="${CONF//\{\{REDIRECT\}\}/$REDIRECT}"
 CONF="${CONF//\{\{DOMAIN\}\}/$DOMAIN}"
 CONF="${CONF//\{\{WEBROOT\}\}/$WEBROOT}"
 CONF="${CONF//\{\{API_PORT\}\}/$API_PORT}"
+CONF="${CONF//\{\{IMGROOT\}\}/$IMGROOT}"
+IMGC="$(cat "$ROOT/deploy/nginx-img-cache.conf")"
 
 AV="/etc/nginx/sites-available/$SITE_NAME"
 EN="/etc/nginx/sites-enabled/$SITE_NAME"
+# conf.d-файл с зоной кэша картинок (http-контекст) — кладём первым, сайт на него ссылается
+printf '%s\n' "$IMGC" | $SSH "set -e
+  if [ -f '$IMG_CONF' ]; then cp '$IMG_CONF' '/tmp/rmv2-img-cache.conf.prev'; else rm -f '/tmp/rmv2-img-cache.conf.prev'; fi
+  cat > '/tmp/rmv2-img-cache.conf.new'"
 printf '%s\n' "$CONF" | $SSH "set -e
   if [ -f '$AV' ]; then cp '$AV' '/tmp/$SITE_NAME.nginx.prev'; fi
-  cat > '$AV.tmp' && mv '$AV.tmp' '$AV'
+  cat > '$AV.tmp'
+  mv '/tmp/rmv2-img-cache.conf.new' '$IMG_CONF'
+  mv '$AV.tmp' '$AV'
   ln -sfn '$AV' '$EN'
   if nginx -t; then
     systemctl reload nginx
     echo 'nginx: reload ok'
   else
-    echo 'nginx -t FAILED — откатываю свой конфиг' >&2
+    echo 'nginx -t FAILED — откатываю свои файлы' >&2
     if [ -f '/tmp/$SITE_NAME.nginx.prev' ]; then cp '/tmp/$SITE_NAME.nginx.prev' '$AV'; else rm -f '$EN' '$AV'; fi
+    if [ -f '/tmp/rmv2-img-cache.conf.prev' ]; then cp '/tmp/rmv2-img-cache.conf.prev' '$IMG_CONF'; else rm -f '$IMG_CONF'; fi
     nginx -t && exit 1
   fi"
 
