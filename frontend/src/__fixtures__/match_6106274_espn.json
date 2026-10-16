@@ -1,0 +1,1288 @@
+{
+ "id": 6106274,
+ "ids": {
+  "fotmob": 6106274,
+  "sofascore": null,
+  "espn": "401915414",
+  "livescore": null
+ },
+ "kickoff": "2026-10-14T19:00:00Z",
+ "status": {
+  "state": "finished",
+  "live": false,
+  "finished": true,
+  "minute": null,
+  "added": null,
+  "label": "FT"
+ },
+ "tournament": {
+  "id": 42,
+  "name": "UEFA Champions League",
+  "round": null,
+  "logo": "/img/league/42.png"
+ },
+ "venue": {
+  "name": "Olimpico",
+  "city": "Roma"
+ },
+ "referee": null,
+ "attendance": 64256,
+ "home": {
+  "id": null,
+  "name": "AS Roma",
+  "short": "AS Roma",
+  "score": 3,
+  "ht_score": 1,
+  "logo": null
+ },
+ "away": {
+  "id": 8633,
+  "name": "Real Madrid",
+  "short": "Real Madrid",
+  "score": 4,
+  "ht_score": 1,
+  "logo": "/img/team/8633.png"
+ },
+ "events": [
+  {
+   "type": "sub",
+   "minute": 17,
+   "added": null,
+   "side": "home",
+   "player_in": {
+    "id": 1451196,
+    "name": "Niccolò Pisilli",
+    "photo": "/img/player/1451196.png"
+   },
+   "player_out": {
+    "id": 1016132,
+    "name": "Manu Koné",
+    "photo": "/img/player/1016132.png"
+   },
+   "injury": true
+  },
+  {
+   "type": "goal",
+   "minute": 20,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 198559,
+    "name": "Marten de Roon",
+    "photo": "/img/player/198559.png"
+   },
+   "assist": {
+    "id": 1280082,
+    "name": "Matìas Soulè",
+    "photo": "/img/player/1280082.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    1,
+    0
+   ]
+  },
+  {
+   "type": "goal",
+   "minute": 25,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "assist": {
+    "id": 1735453,
+    "name": "Yan Diomande",
+    "photo": "/img/player/1735453.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    1,
+    1
+   ]
+  },
+  {
+   "type": "sub",
+   "minute": 45,
+   "added": null,
+   "side": "home",
+   "player_in": {
+    "id": 1525065,
+    "name": "Rodrigo Mora",
+    "photo": "/img/player/1525065.png"
+   },
+   "player_out": {
+    "id": 325916,
+    "name": "Paulo Dybala",
+    "photo": "/img/player/325916.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "period",
+   "minute": 45,
+   "added": null,
+   "side": null,
+   "label": "HT",
+   "score": [
+    1,
+    1
+   ]
+  },
+  {
+   "type": "goal",
+   "minute": 51,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 660301,
+    "name": "Donyell Malen",
+    "photo": "/img/player/660301.png"
+   },
+   "assist": {
+    "id": 1525065,
+    "name": "Rodrigo Mora",
+    "photo": "/img/player/1525065.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    2,
+    1
+   ]
+  },
+  {
+   "type": "goal",
+   "minute": 57,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 660301,
+    "name": "Donyell Malen",
+    "photo": "/img/player/660301.png"
+   },
+   "assist": {
+    "id": 1280082,
+    "name": "Matìas Soulè",
+    "photo": "/img/player/1280082.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    3,
+    1
+   ]
+  },
+  {
+   "type": "sub",
+   "minute": 59,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": 1406729,
+    "name": "Endrick",
+    "photo": "/img/player/1406729.png"
+   },
+   "player_out": {
+    "id": 846033,
+    "name": "Vinícius Júnior",
+    "photo": "/img/player/846033.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "sub",
+   "minute": 59,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": 1253890,
+    "name": "Arda Güler",
+    "photo": "/img/player/1253890.png"
+   },
+   "player_out": {
+    "id": 593118,
+    "name": "Denzel Dumfries",
+    "photo": "/img/player/593118.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "card",
+   "minute": 60,
+   "added": null,
+   "side": "home",
+   "card": "yellow",
+   "player": {
+    "id": 588687,
+    "name": "Gianluca Mancini",
+    "photo": "/img/player/588687.png"
+   },
+   "reason": null
+  },
+  {
+   "type": "sub",
+   "minute": 63,
+   "added": null,
+   "side": "home",
+   "player_in": {
+    "id": 540307,
+    "name": "Lorenzo Pellegrini",
+    "photo": "/img/player/540307.png"
+   },
+   "player_out": {
+    "id": 1280082,
+    "name": "Matìas Soulè",
+    "photo": "/img/player/1280082.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "sub",
+   "minute": 63,
+   "added": null,
+   "side": "home",
+   "player_in": {
+    "id": 958464,
+    "name": "Leonardo Balerdi",
+    "photo": "/img/player/958464.png"
+   },
+   "player_out": {
+    "id": 588687,
+    "name": "Gianluca Mancini",
+    "photo": "/img/player/588687.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "card",
+   "minute": 69,
+   "added": null,
+   "side": "home",
+   "card": "yellow",
+   "player": {
+    "id": 1320176,
+    "name": "Wesley",
+    "photo": "/img/player/1320176.png"
+   },
+   "reason": null
+  },
+  {
+   "type": "sub",
+   "minute": 70,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": 488139,
+    "name": "Bernardo Silva",
+    "photo": "/img/player/488139.png"
+   },
+   "player_out": {
+    "id": 914458,
+    "name": "Aurélien Tchouaméni",
+    "photo": "/img/player/914458.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "sub",
+   "minute": 78,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": 1190025,
+    "name": "Álvaro Carreras",
+    "photo": "/img/player/1190025.png"
+   },
+   "player_out": {
+    "id": 873289,
+    "name": "Marc Cucurella",
+    "photo": "/img/player/873289.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "sub",
+   "minute": 78,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": 1610744,
+    "name": "Carlos Espí",
+    "photo": "/img/player/1610744.png"
+   },
+   "player_out": {
+    "id": 1735453,
+    "name": "Yan Diomande",
+    "photo": "/img/player/1735453.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "sub",
+   "minute": 81,
+   "added": null,
+   "side": "home",
+   "player_in": {
+    "id": 1337884,
+    "name": "Konstantinos Koulierakis",
+    "photo": "/img/player/1337884.png"
+   },
+   "player_out": {
+    "id": 671203,
+    "name": "Mario Hermoso",
+    "photo": "/img/player/671203.png"
+   },
+   "injury": false
+  },
+  {
+   "type": "goal",
+   "minute": 83,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 1610744,
+    "name": "Carlos Espí",
+    "photo": "/img/player/1610744.png"
+   },
+   "assist": null,
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    3,
+    2
+   ]
+  },
+  {
+   "type": "goal",
+   "minute": 85,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 1406729,
+    "name": "Endrick",
+    "photo": "/img/player/1406729.png"
+   },
+   "assist": {
+    "id": 1253890,
+    "name": "Arda Güler",
+    "photo": "/img/player/1253890.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    3,
+    3
+   ]
+  },
+  {
+   "type": "card",
+   "minute": 89,
+   "added": null,
+   "side": "home",
+   "card": "yellow",
+   "player": {
+    "id": 540307,
+    "name": "Lorenzo Pellegrini",
+    "photo": "/img/player/540307.png"
+   },
+   "reason": null
+  },
+  {
+   "type": "goal",
+   "minute": 90,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 276738,
+    "name": "Antonio Rüdiger",
+    "photo": "/img/player/276738.png"
+   },
+   "assist": {
+    "id": 1253890,
+    "name": "Arda Güler",
+    "photo": "/img/player/1253890.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    3,
+    4
+   ]
+  },
+  {
+   "type": "card",
+   "minute": 90,
+   "added": 5,
+   "side": "away",
+   "card": "yellow",
+   "player": {
+    "id": 1190025,
+    "name": "Álvaro Carreras",
+    "photo": "/img/player/1190025.png"
+   },
+   "reason": null
+  },
+  {
+   "type": "period",
+   "minute": 90,
+   "added": null,
+   "side": null,
+   "label": "FT",
+   "score": [
+    3,
+    4
+   ]
+  }
+ ],
+ "lineups": {
+  "confirmed": true,
+  "home": {
+   "team_id": null,
+   "formation": "3-4-2-1",
+   "rating": null,
+   "coach": null,
+   "starters": [
+    {
+     "id": 553849,
+     "source_id": "206587",
+     "name": "Pierluigi Gollini",
+     "number": 95,
+     "position": "G",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/553849.png"
+    },
+    {
+     "id": 1320176,
+     "source_id": "332354",
+     "name": "Wesley",
+     "number": 43,
+     "position": "RM",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1320176.png"
+    },
+    {
+     "id": 726345,
+     "source_id": "164826",
+     "name": "Nahuel Molina",
+     "number": 20,
+     "position": "LM",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/726345.png"
+    },
+    {
+     "id": 671203,
+     "source_id": "222529",
+     "name": "Mario Hermoso",
+     "number": 22,
+     "position": "CD-L",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 81,
+     "photo": "/img/player/671203.png"
+    },
+    {
+     "id": 787242,
+     "source_id": "242593",
+     "name": "Evan Ndicka",
+     "number": 5,
+     "position": "CD",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/787242.png"
+    },
+    {
+     "id": 588687,
+     "source_id": "212597",
+     "name": "Gianluca Mancini",
+     "number": 23,
+     "position": "CD-R",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 63,
+     "photo": "/img/player/588687.png"
+    },
+    {
+     "id": 198559,
+     "source_id": "146335",
+     "name": "Marten de Roon",
+     "number": 15,
+     "position": "CM-R",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/198559.png"
+    },
+    {
+     "id": 1016132,
+     "source_id": "285226",
+     "name": "Manu Koné",
+     "number": 17,
+     "position": "CM-L",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 17,
+     "photo": "/img/player/1016132.png"
+    },
+    {
+     "id": 660301,
+     "source_id": "259481",
+     "name": "Donyell Malen",
+     "number": 14,
+     "position": "F",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/660301.png"
+    },
+    {
+     "id": 1280082,
+     "source_id": "323974",
+     "name": "Matìas Soulè",
+     "number": 18,
+     "position": "CF-R",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 63,
+     "photo": "/img/player/1280082.png"
+    },
+    {
+     "id": 325916,
+     "source_id": "164839",
+     "name": "Paulo Dybala",
+     "number": 21,
+     "position": "CF-L",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 45,
+     "photo": "/img/player/325916.png"
+    }
+   ],
+   "subs": [
+    {
+     "id": 1667016,
+     "source_id": "398120",
+     "name": "Giorgio De Marzi",
+     "number": 70,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1667016.png"
+    },
+    {
+     "id": 1451196,
+     "source_id": "360235",
+     "name": "Niccolò Pisilli",
+     "number": 61,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 17,
+     "sub_out": null,
+     "photo": "/img/player/1451196.png"
+    },
+    {
+     "id": 1186685,
+     "source_id": "234300",
+     "name": "Devis Vásquez",
+     "number": 32,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1186685.png"
+    },
+    {
+     "id": 1800491,
+     "source_id": "409371",
+     "name": "Emanuele Lulli",
+     "number": 77,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1800491.png"
+    },
+    {
+     "id": 1525065,
+     "source_id": "387204",
+     "name": "Rodrigo Mora",
+     "number": 86,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 45,
+     "sub_out": null,
+     "photo": "/img/player/1525065.png"
+    },
+    {
+     "id": 1337884,
+     "source_id": "336104",
+     "name": "Konstantinos Koulierakis",
+     "number": 3,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 81,
+     "sub_out": null,
+     "photo": "/img/player/1337884.png"
+    },
+    {
+     "id": 1180321,
+     "source_id": "297300",
+     "name": "Devyne Rensch",
+     "number": 2,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1180321.png"
+    },
+    {
+     "id": 958464,
+     "source_id": "271555",
+     "name": "Leonardo Balerdi",
+     "number": 26,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 63,
+     "sub_out": null,
+     "photo": "/img/player/958464.png"
+    },
+    {
+     "id": 1386006,
+     "source_id": "340705",
+     "name": "Daniele Ghilardi",
+     "number": 87,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1386006.png"
+    },
+    {
+     "id": 540307,
+     "source_id": "204320",
+     "name": "Lorenzo Pellegrini",
+     "number": 7,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 63,
+     "sub_out": null,
+     "photo": "/img/player/540307.png"
+    },
+    {
+     "id": 1282008,
+     "source_id": "250284",
+     "name": "Santiago Castro",
+     "number": 9,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1282008.png"
+    }
+   ],
+   "unavailable": []
+  },
+  "away": {
+   "team_id": 8633,
+   "formation": "4-2-3-1",
+   "rating": null,
+   "coach": null,
+   "starters": [
+    {
+     "id": 170323,
+     "source_id": "134283",
+     "name": "Thibaut Courtois",
+     "number": 1,
+     "position": "G",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/170323.png"
+    },
+    {
+     "id": 593118,
+     "source_id": "213248",
+     "name": "Denzel Dumfries",
+     "number": 24,
+     "position": "RB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 59,
+     "photo": "/img/player/593118.png"
+    },
+    {
+     "id": 873289,
+     "source_id": "259910",
+     "name": "Marc Cucurella",
+     "number": 17,
+     "position": "LB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 78,
+     "photo": "/img/player/873289.png"
+    },
+    {
+     "id": 914458,
+     "source_id": "265919",
+     "name": "Aurélien Tchouaméni",
+     "number": 14,
+     "position": "LM",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 70,
+     "photo": "/img/player/914458.png"
+    },
+    {
+     "id": 820140,
+     "source_id": "251634",
+     "name": "Ibrahima Konaté",
+     "number": 16,
+     "position": "CD-R",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/820140.png"
+    },
+    {
+     "id": 276738,
+     "source_id": "169438",
+     "name": "Antonio Rüdiger",
+     "number": 22,
+     "position": "CD-L",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/276738.png"
+    },
+    {
+     "id": 1735453,
+     "source_id": "402479",
+     "name": "Yan Diomande",
+     "number": 25,
+     "position": "AM-R",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 78,
+     "photo": "/img/player/1735453.png"
+    },
+    {
+     "id": 743533,
+     "source_id": "235818",
+     "name": "Federico Valverde",
+     "number": 8,
+     "position": "RM",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/743533.png"
+    },
+    {
+     "id": 701154,
+     "source_id": "231388",
+     "name": "Kylian Mbappé",
+     "number": 10,
+     "position": "F",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/701154.png"
+    },
+    {
+     "id": 1077894,
+     "source_id": "291281",
+     "name": "Jude Bellingham",
+     "number": 5,
+     "position": "AM",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1077894.png"
+    },
+    {
+     "id": 846033,
+     "source_id": "252107",
+     "name": "Vinícius Júnior",
+     "number": 7,
+     "position": "AM-L",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 59,
+     "photo": "/img/player/846033.png"
+    }
+   ],
+   "subs": [
+    {
+     "id": 1015185,
+     "source_id": "285150",
+     "name": "Eduardo Camavinga",
+     "number": 6,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1015185.png"
+    },
+    {
+     "id": 760712,
+     "source_id": "223532",
+     "name": "Trent Alexander-Arnold",
+     "number": 12,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/760712.png"
+    },
+    {
+     "id": 1796908,
+     "source_id": "409019",
+     "name": "Thiago Pitarch",
+     "number": 27,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1796908.png"
+    },
+    {
+     "id": 1367619,
+     "source_id": "356000",
+     "name": "Dean Huijsen",
+     "number": 4,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1367619.png"
+    },
+    {
+     "id": 750027,
+     "source_id": "246532",
+     "name": "Brahim Díaz",
+     "number": 21,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/750027.png"
+    },
+    {
+     "id": 1405014,
+     "source_id": "350351",
+     "name": "Sergio Mestre",
+     "number": 26,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1405014.png"
+    },
+    {
+     "id": 488139,
+     "source_id": "199833",
+     "name": "Bernardo Silva",
+     "number": 20,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 70,
+     "sub_out": null,
+     "photo": "/img/player/488139.png"
+    },
+    {
+     "id": 1253890,
+     "source_id": "310452",
+     "name": "Arda Güler",
+     "number": 15,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 59,
+     "sub_out": null,
+     "photo": "/img/player/1253890.png"
+    },
+    {
+     "id": 800882,
+     "source_id": "257237",
+     "name": "Andriy Lunin",
+     "number": 13,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/800882.png"
+    },
+    {
+     "id": 1610744,
+     "source_id": "380286",
+     "name": "Carlos Espí",
+     "number": 19,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 78,
+     "sub_out": null,
+     "photo": "/img/player/1610744.png"
+    },
+    {
+     "id": 1406729,
+     "source_id": "346612",
+     "name": "Endrick",
+     "number": 9,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 59,
+     "sub_out": null,
+     "photo": "/img/player/1406729.png"
+    },
+    {
+     "id": 1190025,
+     "source_id": "310637",
+     "name": "Álvaro Carreras",
+     "number": 18,
+     "position": "SUB",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 78,
+     "sub_out": null,
+     "photo": "/img/player/1190025.png"
+    }
+   ],
+   "unavailable": []
+  }
+ },
+ "stats": {
+  "all": [
+   {
+    "key": "possession",
+    "group": "top",
+    "home": 54,
+    "away": 46
+   },
+   {
+    "key": "shots_total",
+    "group": "top",
+    "home": 14,
+    "away": 16
+   },
+   {
+    "key": "shots_on_target",
+    "group": "top",
+    "home": 7,
+    "away": 8
+   },
+   {
+    "key": "corners",
+    "group": "top",
+    "home": 5,
+    "away": 9
+   },
+   {
+    "key": "shots_blocked",
+    "group": "shots",
+    "home": 3,
+    "away": 0
+   },
+   {
+    "key": "passes_total",
+    "group": "passes",
+    "home": 546,
+    "away": 459
+   },
+   {
+    "key": "passes_accurate",
+    "group": "passes",
+    "home": 471,
+    "away": 385
+   },
+   {
+    "key": "long_balls_accurate",
+    "group": "passes",
+    "home": 32,
+    "away": 22
+   },
+   {
+    "key": "crosses_accurate",
+    "group": "passes",
+    "home": 2,
+    "away": 4
+   },
+   {
+    "key": "tackles",
+    "group": "defence",
+    "home": 12,
+    "away": 15
+   },
+   {
+    "key": "interceptions",
+    "group": "defence",
+    "home": 14,
+    "away": 13
+   },
+   {
+    "key": "clearances",
+    "group": "defence",
+    "home": 23,
+    "away": 22
+   },
+   {
+    "key": "saves",
+    "group": "defence",
+    "home": 4,
+    "away": 4
+   },
+   {
+    "key": "fouls",
+    "group": "discipline",
+    "home": 15,
+    "away": 8
+   },
+   {
+    "key": "offsides",
+    "group": "discipline",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "yellow_cards",
+    "group": "discipline",
+    "home": 3,
+    "away": 1
+   },
+   {
+    "key": "red_cards",
+    "group": "discipline",
+    "home": 0,
+    "away": 0
+   }
+  ],
+  "first_half": [],
+  "second_half": []
+ },
+ "shots": [],
+ "momentum": [],
+ "potm": null,
+ "highlights": null,
+ "h2h": null,
+ "form": {
+  "home": [
+   {
+    "result": "W",
+    "score": "2-1",
+    "kickoff": "2026-09-05T18:45:00Z"
+   },
+   {
+    "result": "D",
+    "score": "1-1",
+    "kickoff": "2026-09-10T16:45:00Z"
+   },
+   {
+    "result": "W",
+    "score": "2-0",
+    "kickoff": "2026-09-14T16:30:00Z"
+   },
+   {
+    "result": "D",
+    "score": "2-2",
+    "kickoff": "2026-09-19T16:00:00Z"
+   },
+   {
+    "result": "D",
+    "score": "0-0",
+    "kickoff": "2026-10-11T10:30:00Z"
+   }
+  ],
+  "away": [
+   {
+    "result": "W",
+    "score": "2-1",
+    "kickoff": "2026-09-08T19:00:00Z"
+   },
+   {
+    "result": "W",
+    "score": "4-1",
+    "kickoff": "2026-09-12T19:00:00Z"
+   },
+   {
+    "result": "W",
+    "score": "3-2",
+    "kickoff": "2026-09-15T19:30:00Z"
+   },
+   {
+    "result": "L",
+    "score": "2-1",
+    "kickoff": "2026-09-20T14:15:00Z"
+   },
+   {
+    "result": "W",
+    "score": "1-0",
+    "kickoff": "2026-10-10T19:00:00Z"
+   }
+  ]
+ },
+ "source": "espn",
+ "available": [
+  "events",
+  "assists",
+  "lineups",
+  "player_photos",
+  "stats",
+  "form",
+  "venue"
+ ],
+ "fetched_from": "espn",
+ "fallback_errors": null,
+ "updated_at": "2026-10-16T22:34:07Z",
+ "age_s": 30.0,
+ "stale": false
+}

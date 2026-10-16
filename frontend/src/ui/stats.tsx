@@ -195,7 +195,10 @@ export function MomentumChart({
 export interface Shot {
   /** FotMob: 0..105 вдоль поля, ворота соперника — x = 105 */
   x: number;
-  /** FotMob: 0..68 поперёк поля */
+  /**
+   * FotMob: 0..68 поперёк поля, система Opta: y = 0 — правая бровка
+   * с точки зрения атакующих, y = 68 — левая. На карте (ворота сверху) левая бровка — слева.
+   */
   y: number;
   xg: number;
   outcome: 'goal' | 'saved' | 'missed' | 'blocked' | 'post';
@@ -213,7 +216,10 @@ export interface ShotMapProps {
 const SM_W = 326;
 const SM_H = 170;
 const SM_S = 324 / 68;
-const smX = (y: number) => 1 + y * SM_S;
+// y растёт к левой бровке атакующих, а на карте они смотрят вверх — значит, слева: зеркалим.
+// Проверено на 6106274: левый защитник Cucurella бьёт с y≈43, Malen и Soulé (правый фланг Ромы) — с y≈16–24;
+// goalCrossedY > 34 ↔ onGoalShot.x < 1 (левая штанга); точки макета a-match-stats.html совпадают с этой формулой.
+const smX = (y: number) => 1 + (68 - y) * SM_S;
 const smY = (x: number) => 1 + (105 - x) * SM_S;
 const shotR = (xg: number) => Math.min(12, 3 + 14.4 * Math.max(0, xg));
 

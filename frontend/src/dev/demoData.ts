@@ -111,7 +111,7 @@ export const MOMENTUM: MomentumPoint[] = MOM_PX.map((h, i) => ({
 const S = 324 / 68;
 const shot = (cx: number, cy: number, r: number, outcome: Shot['outcome']): Shot => ({
   x: +(105 - (cy - 1) / S).toFixed(2),
-  y: +((cx - 1) / S).toFixed(2),
+  y: +(68 - (cx - 1) / S).toFixed(2), // ось y зеркальная: см. smX в ui/stats.tsx
   xg: +((r - 3) / 14.4).toFixed(3),
   outcome,
 });
