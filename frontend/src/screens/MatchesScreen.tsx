@@ -17,12 +17,20 @@ import {
 } from '../lib/mapMatches';
 import { useSpaLink } from '../lib/spaLink';
 import { usePoll } from '../lib/usePoll';
-import { EmptyState, ErrorState, FixtureRow, SectionHeader, Skeleton, StandingsTable, Tabs } from '../ui';
-import { CalendarRow } from '../ui/matchExtra';
+import { EmptyState, ErrorState, SectionHeader, Skeleton, StandingsTable, Tabs } from '../ui';
+import { MatchRow } from '../ui/matchExtra';
 import './screens.css';
 
-const UPCOMING_SHOWN = 6;
-const RESULTS_SHOWN = 5;
+const UPCOMING_SHOWN = 8;
+const RESULTS_SHOWN = 10;
+
+/** что показываем: ближайшие, сыгранные или таблицы — сразу видно, где прошлые матчи */
+type View = 'calendar' | 'results' | 'tables';
+const VIEW_TABS: Array<{ id: View; label: string }> = [
+  { id: 'calendar', label: 'Календарь' },
+  { id: 'results', label: 'Результаты' },
+  { id: 'tables', label: 'Таблица' },
+];
 
 const fixturesPoll = (d: ApiFixtures | null) => (d?.matches?.some((m) => m.status?.live) ? 15_000 : 60_000);
 const tablesPoll = () => 5 * 60_000;
@@ -54,6 +62,7 @@ function LeagueTable({ table, title }: { table: ApiTable; title: string }) {
 
 export default function MatchesScreen() {
   const [tab, setTab] = useState<CompTab>('all');
+  const [view, setView] = useState<View>('calendar');
   const [allUpcoming, setAllUpcoming] = useState(false);
   const [allResults, setAllResults] = useState(false);
   const fx = usePoll<ApiFixtures>('/api/fixtures', fixturesPoll);
@@ -79,16 +88,10 @@ export default function MatchesScreen() {
   let fixturesBlock;
   if (!fx.data && fx.loading) {
     fixturesBlock = (
-      <>
-        <section className="ui-card" aria-label="Ближайшие матчи">
-          <SectionHeader title="Ближайшие" />
-          <Skeleton shape="list" rows={4} />
-        </section>
-        <section className="ui-card" aria-label="Результаты">
-          <SectionHeader title="Результаты" />
-          <Skeleton shape="list" rows={3} />
-        </section>
-      </>
+      <section className="ui-card" aria-label={view === 'results' ? 'Результаты' : 'Ближайшие матчи'}>
+        <SectionHeader title={view === 'results' ? 'Результаты' : 'Ближайшие'} />
+        <Skeleton shape="list" rows={5} />
+      </section>
     );
   } else if (!lists) {
     const e = errorText(fx.error);
@@ -96,8 +99,7 @@ export default function MatchesScreen() {
   } else {
     const up = allUpcoming ? lists.upcoming : lists.upcoming.slice(0, UPCOMING_SHOWN);
     const res = allResults ? lists.results : lists.results.slice(0, RESULTS_SHOWN);
-    fixturesBlock = (
-      <>
+    const upcomingCard = (
         <section className="ui-card" aria-label="Ближайшие матчи">
           <SectionHeader title="Ближайшие" aside={note ?? undefined} />
           {up.length === 0 ? (
@@ -105,7 +107,7 @@ export default function MatchesScreen() {
           ) : (
             <div className="screen-list">
               {up.map((m) => (
-                <CalendarRow key={m.id} {...m} {...link(m.href)} />
+                <MatchRow key={m.id} kind="upcoming" {...m} {...link(m.href)} />
               ))}
             </div>
           )}
@@ -118,23 +120,16 @@ export default function MatchesScreen() {
             />
           )}
         </section>
+    );
+    const resultsCard = (
         <section className="ui-card" aria-label="Результаты">
-          <SectionHeader title="Результаты" />
+          <SectionHeader title="Результаты" aside={note ?? undefined} />
           {res.length === 0 ? (
             <EmptyState plain title="Пока без результатов" text="Здесь появятся сыгранные матчи" />
           ) : (
             <div className="screen-list">
               {res.map((m) => (
-                <FixtureRow
-                  key={m.id}
-                  kind="result"
-                  kickoff={m.kickoff}
-                  home={m.home}
-                  away={m.away}
-                  score={m.score}
-                  result={m.result}
-                  {...link(m.href)}
-                />
+                <MatchRow key={m.id} kind="result" {...m} {...link(m.href)} />
               ))}
             </div>
           )}
@@ -147,8 +142,8 @@ export default function MatchesScreen() {
             />
           )}
         </section>
-      </>
     );
+    fixturesBlock = view === 'results' ? resultsCard : upcomingCard;
   }
 
   const showLaliga = tab !== 'ucl';
@@ -181,9 +176,9 @@ export default function MatchesScreen() {
         <h1 className="topbar__title">Матчи</h1>
         <span className="topbar__aside">{aside}</span>
       </header>
-      <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel="Фильтр турниров" />
-      {fixturesBlock}
-      {tablesBlock}
+      <Tabs items={VIEW_TABS} value={view} onChange={setView} ariaLabel="Раздел" />
+      <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel="Фильтр турниров" variant="pill" className="matches__comp" />
+      {view === 'tables' ? tablesBlock : fixturesBlock}
     </main>
   );
 }

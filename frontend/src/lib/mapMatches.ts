@@ -246,6 +246,7 @@ export interface ResultItem {
   away: TeamRef;
   score: [number, number];
   result?: Outcome;
+  competition: Competition;
 }
 
 function noteOf(f: ApiFixture): string | undefined {
@@ -291,6 +292,7 @@ export function splitFixtures(matches: ApiFixture[], tab: CompTab): { upcoming: 
       away: teamRef(f.away),
       score: scoreOf(f)!,
       result: outcomeOf(f),
+      competition: competitionOf(f.tournament),
     }));
 
   return { upcoming, results };

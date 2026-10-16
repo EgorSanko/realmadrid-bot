@@ -17,3 +17,22 @@ a.hero-mc:active { border-color: var(--ring); }
 .cal-row__chip { flex: none; }
 .cal-row .ui-fx__date .ui-badge--live { padding: 3px 7px; font-size: 11px; }
 .cal-row__minute { margin-top: 4px; color: var(--gold); font-weight: 700; }
+
+/* MatchRow — строки «Матчей»: эмблемы команд, логотип турнира, компактные подписи */
+.mrow { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); color: var(--text); -webkit-tap-highlight-color: transparent; }
+.mrow:last-child { border-bottom: none; }
+.mrow--next { margin: 6px 0; padding: 11px 12px; border: 1px solid var(--gold-edge); border-radius: 16px; background: var(--gold-tint); }
+.mrow__when { width: 62px; flex: none; display: flex; flex-direction: column; gap: 2px; }
+.mrow__day { font-size: 12px; font-weight: 600; color: var(--text); }
+.mrow__time { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mrow__minute { font-size: 12px; font-weight: 700; color: var(--gold-light); }
+.mrow__when .ui-badge--live { align-self: flex-start; padding: 2px 6px; font-size: 10px; }
+.mrow__teams { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.mrow__team { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mrow__team--lost .mrow__name, .mrow__team--lost .mrow__goals { color: var(--muted); }
+.mrow__crest-gap { width: 24px; height: 24px; flex: none; }
+.mrow__name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mrow__goals { flex: none; min-width: 16px; text-align: right; font-family: var(--display); font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+.mrow__note { margin-top: -1px; padding-left: 32px; font-size: 11px; color: var(--muted); }
+.mrow__side { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 26px; }
+.mrow__comp { font-size: 10px; font-weight: 700; color: var(--gold-light); }

@@ -38,3 +38,6 @@
 .home-skel-last { margin: 14px 16px 0; }
 .home-next { padding: 16px; border-radius: 20px; }
 .home-next .ui-fx { padding-bottom: 0; }
+
+/* «Матчи»: под переключателем раздела — фильтр турниров помельче */
+.matches__comp { margin: 10px 16px 0; }

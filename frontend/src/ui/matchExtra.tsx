@@ -7,8 +7,8 @@
 import type { MouseEventHandler, ReactNode } from 'react';
 import { Badge, Chip } from './base';
 import { cx, formatKickoff, formatTime, formatWeekdayShort, formatDayShort, type DateInput } from './format';
-import { TeamCrest } from './images';
-import { Countdown, type CompetitionRef, type MatchStatus, type TeamRef } from './match';
+import { LeagueLogo, TeamCrest } from './images';
+import { Countdown, OutcomeBadge, type CompetitionRef, type MatchStatus, type Outcome, type TeamRef } from './match';
 import './matchExtra.css';
 
 type CrestSize = 52 | 68;
@@ -169,6 +169,86 @@ export function CalendarRow({ kickoff, home, away, competition: c, note, live, h
   );
   const cls = cx('ui-fx', 'cal-row', highlighted && 'ui-fx--next', className);
   const label = `${home.name} — ${away.name}, ${c.name}`;
+  return href != null ? (
+    <a className={cls} href={href} onClick={onClick} aria-label={label}>
+      {inner}
+    </a>
+  ) : (
+    <div className={cls} aria-label={label}>
+      {inner}
+    </div>
+  );
+}
+
+/* ---------- MatchRow ---------- */
+
+export interface MatchRowProps {
+  kind: 'upcoming' | 'result';
+  kickoff: DateInput;
+  home: TeamRef;
+  away: TeamRef;
+  competition: CompetitionRef;
+  /** result: счёт [хозяева, гости] */
+  score?: [number, number];
+  /** result: исход для Реала */
+  result?: Outcome;
+  /** upcoming: «дома» / «в гостях» / стадион */
+  note?: string;
+  /** upcoming, идёт: «67′» */
+  live?: string;
+  highlighted?: boolean;
+  href?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  className?: string;
+}
+
+/**
+ * Строка матча для «Матчей»: эмблемы обеих команд, логотип турнира вместо «ЛЛ»/«ЛЧ».
+ * Будущий матч — дата и время слева; сыгранный — дата, голы напротив каждой команды и В/Н/П.
+ */
+export function MatchRow(p: MatchRowProps) {
+  const { kind, kickoff, home, away, competition: c, score, result, href, onClick, className } = p;
+  const done = kind === 'result' && score != null;
+  const win = done ? (score![0] === score![1] ? null : score![0] > score![1] ? 0 : 1) : null;
+  const team = (t: TeamRef, i: 0 | 1) => (
+    <div className={cx('mrow__team', done && win !== null && win !== i && 'mrow__team--lost')}>
+      {t.id != null ? <TeamCrest id={t.id} name={t.name} size={24} /> : <span className="mrow__crest-gap" aria-hidden="true" />}
+      <span className="mrow__name">{t.name}</span>
+      {done && <b className="mrow__goals">{score![i]}</b>}
+    </div>
+  );
+  const inner = (
+    <>
+      <div className="mrow__when">
+        {p.live ? (
+          <>
+            <Badge tone="live" />
+            <span className="mrow__minute">{p.live}</span>
+          </>
+        ) : (
+          <>
+            <span className="mrow__day">{done ? formatDayShort(kickoff) : formatWeekdayShort(kickoff)}</span>
+            {!done && <span className="mrow__time">{formatTime(kickoff)}</span>}
+          </>
+        )}
+      </div>
+      <div className="mrow__teams">
+        {team(home, 0)}
+        {team(away, 1)}
+        {p.note && <div className="mrow__note">{p.note}</div>}
+      </div>
+      <div className="mrow__side">
+        {c.id != null ? (
+          <LeagueLogo id={c.id} name={c.name} size={24} />
+        ) : (
+          <span className="mrow__comp">{c.short ?? c.name}</span>
+        )}
+        {done && result && <OutcomeBadge result={result} size={20} />}
+      </div>
+    </>
+  );
+  const label = done ? `${home.name} ${score![0]}:${score![1]} ${away.name}, ${c.name}` : `${home.name} — ${away.name}, ${c.name}`;
+  const cls = cx('mrow', p.highlighted && 'mrow--next', className);
   return href != null ? (
     <a className={cls} href={href} onClick={onClick} aria-label={label}>
       {inner}
