@@ -18,6 +18,7 @@ import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
 import { EmptyState, ErrorState, FormStrip, MatchCard, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
+import { LatestNews } from './media/LatestNews';
 import './screens.css';
 
 /** Тик раз в минуту — для подписи «обновлено N мин назад» и смены «только что сыгран» → «ближайший». */
@@ -149,8 +150,8 @@ export default function HomeScreen() {
         </section>
       ) : null}
 
-      {/* 6. НОВОСТИ — место для блока агента «Медиа» (этап 9): заголовок «Новости» + «Все» → /media,
-          2–3 NewsItem из ui/media.tsx. Подключается при слиянии; здесь намеренно пусто. */}
+      {/* 6. новости — блок раздела «Медиа»; нет данных — блок не показывается */}
+      <LatestNews limit={3} />
     </main>
   );
 }

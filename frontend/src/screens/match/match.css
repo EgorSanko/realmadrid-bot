@@ -43,11 +43,11 @@
 .mt-tl .ui-tl__row { border-radius: 12px; }
 .mt-tl .ui-tl__row.mt-new { animation: mt-flash 2.4s ease-out; }
 @keyframes mt-flash {
-  0%, 30% { background: rgba(214, 178, 94, .22); }
+  0%, 30% { background: rgba(212, 175, 55, .22); }
   100% { background: transparent; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mt-tl .ui-tl__row.mt-new { animation: none; background: rgba(214, 178, 94, .16); }
+  .mt-tl .ui-tl__row.mt-new { animation: none; background: rgba(212, 175, 55, .16); }
 }
 
 /* о матче */
