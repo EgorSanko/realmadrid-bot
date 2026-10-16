@@ -216,3 +216,36 @@
 .player--fs .player__bar {
   bottom: var(--safe-bottom, 0px);
 }
+
+/* сцена занимает весь плеер; всё содержимое позиционируется внутри неё */
+.player__stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* полный экран на «стилях» поверх всего, включая нижнее меню */
+.player--css-fs {
+  background: #000;
+}
+
+/* Телефон в полном экране, а сам экран вертикальный (Telegram, iPhone, запрет поворота):
+   поворачиваем сцену на 90°, картинка встаёт горизонтально на весь экран.
+   Повернёт человек телефон сам — экран станет горизонтальным и поворот снимется. */
+@media (orientation: portrait) {
+  .player--rotate .player__stage {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: 100vh;
+    width: 100dvh;
+    height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  /* в повёрнутом виде «низ» сцены — правый край телефона: отступ от выреза/закруглений */
+  .player--rotate .player__bar {
+    bottom: 0;
+    padding-left: max(8px, env(safe-area-inset-top, 0px));
+    padding-right: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+}

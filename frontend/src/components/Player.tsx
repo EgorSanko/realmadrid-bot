@@ -36,6 +36,13 @@ function prefersNativeHls(video: HTMLVideoElement): boolean {
 const fullscreenElement = () =>
   document.fullscreenElement ?? (document as WebkitDoc).webkitFullscreenElement ?? null;
 
+/** Телефон: сенсорный экран и короткая сторона меньше 600 px (планшеты и ПК — нет). */
+const isPhone = () =>
+  window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 600;
+
+type LockableOrientation = ScreenOrientation & { lock?: (o: string) => Promise<void>; unlock?: () => void };
+const orientation = () => (screen.orientation as LockableOrientation | undefined) ?? undefined;
+
 interface Props {
   src: string;
   /** подпись для скринридера */
@@ -57,6 +64,9 @@ export function Player({ src, title }: Props) {
   const [attempt, setAttempt] = useState(0);
   const [controlsOn, setControlsOn] = useState(true);
   const [fs, setFs] = useState<'off' | 'native' | 'css'>('off');
+  /** на телефоне в полном экране картинка всегда горизонтальная: если сам экран
+   *  остаётся вертикальным (Telegram, iPhone, запрет поворота) — поворачиваем сцену CSS-ом */
+  const [rotate, setRotate] = useState(false);
   const hideTimer = useRef(0);
 
   // ---------- загрузка потока ----------
@@ -187,8 +197,25 @@ export function Player({ src, title }: Props) {
   }, []);
 
   // ---------- полноэкранный режим ----------
+  // Схема одна для всех устройств:
+  //  ПК            — Fullscreen API на блоке плеера (стандартный или webkit);
+  //  Android Chrome — Fullscreen API + попытка повернуть экран (orientation.lock);
+  //  Telegram, iPhone, WebView без API — плеер растягивается стилями на весь экран,
+  //                   в Telegram вдобавок разворачивается само мини-приложение.
+  //  На телефоне, пока экран вертикальный, сцена плеера повёрнута на 90° (см. player.css).
   useEffect(() => {
-    const sync = () => setFs((cur) => (fullscreenElement() ? 'native' : cur === 'native' ? 'off' : cur));
+    const sync = () =>
+      setFs((cur) => {
+        if (fullscreenElement()) return 'native';
+        if (cur === 'native') {
+          // вышли системным жестом/Esc — вернуть экран и мини-апп в обычное состояние
+          orientation()?.unlock?.();
+          tgFullscreen(false);
+          setRotate(false);
+          return 'off';
+        }
+        return cur;
+      });
     document.addEventListener('fullscreenchange', sync);
     document.addEventListener('webkitfullscreenchange', sync);
     return () => {
@@ -196,6 +223,26 @@ export function Player({ src, title }: Props) {
       document.removeEventListener('webkitfullscreenchange', sync);
     };
   }, []);
+
+  // в режиме «на стилях» системная кнопка «Назад» должна сворачивать плеер, а не уводить со страницы;
+  // и страница под плеером не должна прокручиваться
+  useEffect(() => {
+    if (fs !== 'css') return;
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    history.pushState({ playerFs: true }, '');
+    const onPop = () => {
+      tgFullscreen(false);
+      setRotate(false);
+      setFs('off');
+    };
+    window.addEventListener('popstate', onPop);
+    return () => {
+      root.style.overflow = prevOverflow;
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [fs]);
 
   const tgFullscreen = (on: boolean) => {
     try {
@@ -217,28 +264,44 @@ export function Player({ src, title }: Props) {
         if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
         else (document as WebkitDoc).webkitExitFullscreen?.();
       }
+      orientation()?.unlock?.();
       tgFullscreen(false);
-      setFs('off');
+      setRotate(false);
+      // «на стилях» мы сами добавили запись в историю — снимаем её, выход сделает обработчик popstate
+      if (fs === 'css' && history.state?.playerFs) history.back();
+      else setFs('off');
       return;
     }
+    const phone = isPhone();
+    // вертикальный ролик (редкость) не поворачиваем
+    setRotate(phone && !(video.videoHeight > video.videoWidth));
+    const cssFallback = () => {
+      setFs('css');
+      tgFullscreen(true);
+    };
     // вызов — синхронно в обработчике нажатия, иначе браузер не даст fullscreen
     if (wrap.requestFullscreen) {
       wrap
-        .requestFullscreen()
+        .requestFullscreen({ navigationUI: 'hide' })
         .then(() => {
-          const o = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
-          o?.lock?.('landscape').catch(() => {});
+          // Android Chrome умеет повернуть экран сам; где не умеет — сцену повернёт CSS
+          if (phone) orientation()?.lock?.('landscape').catch(() => {});
         })
-        .catch(() => setFs('css')); // WebView без Fullscreen API — растягиваем плеер стилями
+        .catch(cssFallback); // Telegram Android / WebView без Fullscreen API
       tgFullscreen(true);
     } else if (wrap.webkitRequestFullscreen) {
-      wrap.webkitRequestFullscreen();
+      wrap.webkitRequestFullscreen(); // Safari на Mac и iPad
       tgFullscreen(true);
-    } else if (video.webkitEnterFullscreen) {
-      video.webkitEnterFullscreen(); // iPhone: системный плеер
+      // если WebKit молча не перешёл в полный экран — растягиваем стилями
+      window.setTimeout(() => {
+        if (!fullscreenElement()) setFs((cur) => (cur === 'off' ? 'css' : cur));
+      }, 400);
+    } else if (phone || !video.webkitEnterFullscreen) {
+      // iPhone (Safari и Telegram): системный плеер не поворачивается при блокировке поворота,
+      // поэтому свой полный экран на стилях — с горизонтальной картинкой всегда
+      cssFallback();
     } else {
-      setFs('css');
-      tgFullscreen(true);
+      video.webkitEnterFullscreen();
     }
   }, [fs]);
 
@@ -288,12 +351,20 @@ export function Player({ src, title }: Props) {
   return (
     <div
       ref={wrapRef}
-      className={`player${fs !== 'off' ? ' player--fs' : ''}${fs === 'css' ? ' player--css-fs' : ''}${controlsOn ? '' : ' player--idle'}`}
+      className={`player${fs !== 'off' ? ' player--fs' : ''}${fs === 'css' ? ' player--css-fs' : ''}${fs !== 'off' && rotate ? ' player--rotate' : ''}${controlsOn ? '' : ' player--idle'}`}
       data-phase={phase}
       onPointerUp={onSurfaceTap}
       role="region"
       aria-label={title ? `Трансляция: ${title}` : 'Трансляция'}
     >
+      {/* сцена: всё содержимое плеера. Её, а не сам блок, поворачиваем на телефоне —
+          браузер запрещает трансформировать элемент, который в полноэкранном режиме */}
+      <div
+        className="player__stage"
+        onDoubleClick={(e) => {
+          if (!(e.target as HTMLElement).closest('button')) toggleFullscreen();
+        }}
+      >
       <svg className="player__pitch" viewBox="0 0 390 219" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
         <rect x="20" y="16" width="350" height="187" />
         <line x1="195" y1="16" x2="195" y2="203" />
@@ -363,6 +434,7 @@ export function Player({ src, title }: Props) {
             </svg>
           )}
         </button>
+      </div>
       </div>
     </div>
   );
