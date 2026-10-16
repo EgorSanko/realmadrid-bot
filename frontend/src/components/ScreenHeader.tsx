@@ -13,8 +13,22 @@ export function ScreenHeader({
     return (
       <header className="brandbar">
         <h1 className="brand" aria-label={`Мадридиста — ${title}`}>
-          <span className="brand__mark" aria-hidden="true" />
-          МАДРИДИСТА
+          {/* настоящая эмблема клуба из нашего кэша /img; не загрузилась — просто прячется */}
+          <img
+            className="brand__crest"
+            src="/img/team/8633.png"
+            width={34}
+            height={34}
+            alt=""
+            decoding="async"
+            onError={(e) => {
+              e.currentTarget.style.visibility = 'hidden';
+            }}
+          />
+          <span className="brand__word">
+            МАДРИДИСТА
+            <span className="brand__sub">Real Madrid · фан-приложение</span>
+          </span>
         </h1>
         {live && (
           <span className="badge-live">

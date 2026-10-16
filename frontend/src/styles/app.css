@@ -99,11 +99,31 @@ button {
   letter-spacing: 0.08em;
 }
 
-.brand__mark {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--gold);
+.brand {
+  gap: 10px;
+}
+
+.brand__crest {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(214, 178, 94, 0.25));
+}
+
+.brand__word {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand__sub {
+  margin-top: 4px;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 
 /* ---------- пустое состояние ---------- */
