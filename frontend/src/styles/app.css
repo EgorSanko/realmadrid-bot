@@ -180,7 +180,7 @@ button {
 
 .bottom-nav__inner {
   max-width: 480px;
-  height: var(--nav-h);
+  height: calc(var(--nav-h) - 1px); /* 76px вместе с border-top, как в макете */
   margin: 0 auto;
   padding-bottom: 8px;
   display: grid;
