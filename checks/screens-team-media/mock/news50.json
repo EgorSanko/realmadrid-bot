@@ -1,0 +1,539 @@
+{
+ "source": "championat+sportexpress+sportsru",
+ "updated_at": "2026-10-16T23:28:33Z",
+ "age_s": 0.9,
+ "stale": false,
+ "available": [
+  "news",
+  "images"
+ ],
+ "feeds": {
+  "championat": {
+   "ok": true
+  },
+  "sportexpress": {
+   "ok": true
+  },
+  "sportsru_top": {
+   "ok": true
+  },
+  "sportsru_real": {
+   "ok": true
+  }
+ },
+ "count": 50,
+ "items": [
+  {
+   "id": "championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html",
+   "title": "«Не хочу загадывать, что будет дальше». Карвахаль — о возможном участии в матче с «Реалом»",
+   "summary": "Бывший защитник мадридского «Реала» Даниэль Карвахаль, который ранее присоединился к «Хетафе», ответил, что думает о возможном участии в матче с «лос бланкос».",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660590-ne-hochu-zagadyvat-chto-budet-dalshe-karvahal-o-vozmozhnom-uchastii-v-matche-s-realom.html",
+   "published": "2026-10-16T22:05:28Z",
+   "image": "/img/news/championat/news/big/d/y/ne-hochu-zagadyvat-chto-bude.jpg",
+   "also": []
+  },
+  {
+   "id": "championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html",
+   "title": "Два защитника, которых «Реал» рассматривал до Конате, остаются в списке целей — Sport.es",
+   "summary": "Центральные защитники Рубен Диаш из «Манчестер Сити» и Алессандро Бастони из «Интера», которыми мадридский «Реал» интересовался до подписания игрока обороны «Ливерпуля» Ибраима Конате в статусе свободного агента, всё ещё интересны клубу.",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660582-dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es.html",
+   "published": "2026-10-16T21:59:23Z",
+   "image": "/img/news/championat/news/big/n/v/dva-zaschitnika-kotoryh-real-rassmatrival-do-konate-ostayutsya-v-spiske-celej-sport-es_17921879631009791292.jpg",
+   "also": []
+  },
+  {
+   "id": "championat.com/football/news-6660566-mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale.html",
+   "title": "«Мне 23, а я уже ветеран». Беллингем — о своём положении в «Реале»",
+   "summary": "Полузащитник «Реала» Джуд Беллингем высказался о своей роли в мадридском клубе.",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660566-mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale.html",
+   "published": "2026-10-16T21:31:22Z",
+   "image": "/img/news/championat/news/big/m/u/mne-23-a-ya-uzhe-veteran-bellingem-o-svoyom-polozhenii-v-reale_17921862742018414846.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117403538-tebas-o-vozmozhnom-nakazanii-za-slova-o-tv-madrida-i-metodax-gebbelsa.html",
+   "title": "Тебас о возможном наказании за слова о ТВ «Мадрида» и методах Геббельса: «Свобода слова не должна зависеть от фамилии говорящего. Перес публично высказывался про арбитров и кражу титулов»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117403538-tebas-o-vozmozhnom-nakazanii-za-slova-o-tv-madrida-i-metodax-gebbelsa.html",
+   "published": "2026-10-16T21:23:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/353/8/share/e6c98b_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402771-chempionat-ispanii-deportivo-primet-levante-v-subbotu-atletiko-sygraet.html",
+   "title": "Чемпионат Испании. «Депортиво» и «Леванте» сыграли вничью, «Атлетико» и «Барселона» проведут матчи в субботу, «Реал» – в воскресенье",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402771-chempionat-ispanii-deportivo-primet-levante-v-subbotu-atletiko-sygraet.html",
+   "published": "2026-10-16T20:59:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/277/1/share/93a9b2_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117403511-endrik-oboshel-braima-v-komandnoj-ierarxii-reala-posle-udachnoj-igry-s.html",
+   "title": "Эндрик обошел Браима в командной иерархии «Реала» после удачной игры с «Ромой». Диас может уйти в аренду",
+   "summary": "Браим Диас, вероятно, будет получать все меньше игрового времени в «Реале».",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117403511-endrik-oboshel-braima-v-komandnoj-ierarxii-reala-posle-udachnoj-igry-s.html",
+   "published": "2026-10-16T20:50:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/351/1/share/4a485d_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117403499-sportivnyj-sovet-ispanii-dumaet-nakazat-tebasa-za-slova-o-reale.html",
+   "title": "Национальный спортивный совет Испании может наказать Тебаса за слова о ТВ «Мадрида» и методах Геббельса",
+   "summary": "Национальный спортивный совет Испании (CSD) рассматривает возможность разбирательства в связи с высказываниями президента Ла Лиги и вице-президента Королевской испанской футбольной федерации (RFEF) Хавьера Тебаса по собственной инициативе.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117403499-sportivnyj-sovet-ispanii-dumaet-nakazat-tebasa-za-slova-o-reale.html",
+   "published": "2026-10-16T20:41:00Z",
+   "image": "/img/news/championat/news/big/l/z/tebas-otreagiroval-na-vozmozhnoe-nakazanie-za-slova-o-tv-reala-i-metodah-gebbelsa_17921867541134789102.jpg",
+   "also": [
+    "Чемпионат"
+   ]
+  },
+  {
+   "id": "championat.com/football/news-6660502-marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej.html",
+   "title": "Marca: Тебас может быть наказан за сравнение методов ТВ «Реала» с нацистской Германией",
+   "summary": "Высший совет по спорту Испании (CSD) рассматривает возможность принятия мер в адрес президента Ла Лиги Хавьера Тебаса, который сравнил деятельность телевидения мадридского «Реала» с пропагандистскими методами, применявшимися в нацистской Германии.",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660502-marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej.html",
+   "published": "2026-10-16T20:40:57Z",
+   "image": "/img/news/championat/news/big/x/p/marca-tebas-mozhet-byt-nakazan-za-sravnenie-metodov-tv-reala-s-nacistskoj-germaniej_17921830551409265237.jpg",
+   "also": []
+  },
+  {
+   "id": "championat.com/football/news-6660442-igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es.html",
+   "title": "Игрок «Реала» предстанет перед судом после нападения его собаки на подростка — Sport.es",
+   "summary": "Защитник мадридского «Реала» Ферлан Менди предстанет перед судом после нападения одной из его собак на несовершеннолетнего.",
+   "source": "Чемпионат",
+   "url": "https://www.championat.com/football/news-6660442-igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es.html",
+   "published": "2026-10-16T19:30:43Z",
+   "image": "/img/news/championat/news/big/x/p/igrok-reala-predstanet-pered-sudom-posle-napadeniya-ego-sobaki-na-podrostka-sport-es_1792179041361646136.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3563790.html",
+   "title": "«Реал» требует отставки Тебаса. Он сказал, что клуб действует в стиле Геббельса",
+   "summary": "Жесткое сравнение.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3563790.html",
+   "published": "2026-10-16T17:40:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/379/0/share/215b3c_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/prezident-la-ligi-haver-tebas-otreagiroval-na-zayavlenie-reala-s-trebovaniem-ego-otstavki-2463881",
+   "title": "Глава Ла лиги Тебас — о «Реале»: «Они стремятся уничтожить национальный турнир»",
+   "summary": "Президент Ла лиги Хавьер Тебас прокомментировал заявление «Реала», в котором мадридский клуб потребовал его немедленной отставки.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/prezident-la-ligi-haver-tebas-otreagiroval-na-zayavlenie-reala-s-trebovaniem-ego-otstavki-2463881/",
+   "published": "2026-10-16T16:39:00Z",
+   "image": null,
+   "also": [
+    "Sports.ru"
+   ]
+  },
+  {
+   "id": "sports.ru/football/1117403260-tebas-o-reale-i-dvux-let-ne-proshlo-so-dnya-kogda-peres-govoril-my-s-b.html",
+   "title": "Тебас о деле Негрейры: «2 года назад Перес говорил: «Мы и «Барса» должны помогать друг другу». Почему эскалация совпадает с выходом каталонцев из Суперлиги? Где ТВ «Реала» было раньше?»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117403260-tebas-o-reale-i-dvux-let-ne-proshlo-so-dnya-kogda-peres-govoril-my-s-b.html",
+   "published": "2026-10-16T16:01:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/326/0/share/b0ac14_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3560575.html",
+   "title": "Жизнь Кассано – скандалы, нутелла и секс. Он ушел из «Ромы» в «Реал» ради ЧМ, но жутко облажался",
+   "summary": "Потерянный талант.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3560575.html",
+   "published": "2026-10-16T14:25:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/057/5/share/1b0865_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/real-potreboval-otstavki-prezidenta-la-ligi-za-sravnenie-s-nacistskoy-germaniey-2463821",
+   "title": "«Реал» потребовал отставки президента Ла лиги за сравнение с нацистской Германией",
+   "summary": "Руководство «Реала» потребовало немедленной отставки Хавьера Тебаса с поста президента Ла лиги за сравнение деятельности клубного телеканала мадридского клуба с пропагандистскими приемами политика эпохи нацистской Германии Йозефа Геббельса. Об этом говорится в заявлении…",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/real-potreboval-otstavki-prezidenta-la-ligi-za-sravnenie-s-nacistskoy-germaniey-2463821/",
+   "published": "2026-10-16T13:49:00Z",
+   "image": null,
+   "also": [
+    "Sports.ru"
+   ]
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/apellyaciya-reala-na-diskvalifikaciyu-vinisiusa-otklonena-brazilec-propustit-klasiko-s-barselonoy-2463814",
+   "title": "Апелляция «Реала» на дисквалификацию Винисиуса отклонена, бразилец пропустит класико с «Барселоной»",
+   "summary": "Наказание нападающего мадридского «Реала» Винисиуса Жуниора осталось в силе: жалобу клуба на четырехматчевую дисквалификацию отклонили в Королевской испанской футбольной федерации, сообщает Marca.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/apellyaciya-reala-na-diskvalifikaciyu-vinisiusa-otklonena-brazilec-propustit-klasiko-s-barselonoy-2463814/",
+   "published": "2026-10-16T13:31:01Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117403097-apellyacziya-reala-na-ban-vinisiusa-otklonena-klub-obratitsya-v-admini.html",
+   "title": "Апелляция «Реала» на бан Винисиуса отклонена. Клуб обратится в Административный суд по вопросам спорта",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117403097-apellyacziya-reala-na-ban-vinisiusa-otklonena-klub-obratitsya-v-admini.html",
+   "published": "2026-10-16T13:12:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/309/7/share/bfc62c_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402993-morentes-o-bane-vinisiusa-chetyre-matcha-eto-vozmutitelno-dvux-bylo-by.html",
+   "title": "Морьентес о бане Винисиуса: «Четыре матча – это возмутительно, двух было бы более чем достаточно. Какую агрессию вы здесь видите?»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402993-morentes-o-bane-vinisiusa-chetyre-matcha-eto-vozmutitelno-dvux-bylo-by.html",
+   "published": "2026-10-16T12:05:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/299/3/share/79f721_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/madridskiy-real-blizok-k-prodleniyu-kontrakta-s-poluzaschitnikom-dzhudom-bellingemom-do-2031-goda-2463780",
+   "title": "Источник: «Реал» близок к продлению контракта с Беллингемом до 2031 года",
+   "summary": "«Реал» рассчитывает в ближайшее время заключить новый контракт с полузащитником Джудом Беллингемом. По информации Diario AS, переговоры о продлении идут успешно, и стороны близки к соглашению, рассчитанному до лета 2031 года.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/madridskiy-real-blizok-k-prodleniyu-kontrakta-s-poluzaschitnikom-dzhudom-bellingemom-do-2031-goda-2463780/",
+   "published": "2026-10-16T12:01:00Z",
+   "image": null,
+   "also": [
+    "Sports.ru"
+   ]
+  },
+  {
+   "id": "sports.ru/football/predictions/3563614-la-liga-real-madrid-sevilya-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "title": "Ла Лига: Реал Мадрид – Севилья, прогноз на матч и шансы команд на победу",
+   "summary": "«Реал» Мадрид встретится с «Севильей» 18 октября на стадионе «Сантьяго Бернабеу». Мадридцы выиграли пять последних очных матчей с «Севильей» и не пропускали в трех предыдущих встречах. При этом «Севилья» забивает в 13 матчах подряд и не проигрывала в семи из девяти последних…",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/predictions/3563614-la-liga-real-madrid-sevilya-prognoz-na-match-i-shansy-komand-na-pobedu.html",
+   "published": "2026-10-16T11:04:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/361/4/share/4a64c4_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402908-kanisares-o-press-konferencziyax-mourinyu-on-tolko-i-delaet-chto-sozda.html",
+   "title": "Канисарес о Моуринью: «Он только и делает, что создает шумиху, злит всех. Это похоже на модных политиков, которые стремятся разделить общество»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402908-kanisares-o-press-konferencziyax-mourinyu-on-tolko-i-delaet-chto-sozda.html",
+   "published": "2026-10-16T10:57:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/290/8/share/df95fc_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402904-tebas-o-syuzhetax-tv-reala-napominaet-propagandistskie-priemy-gebbelsa.html",
+   "title": "Тебас о ТВ «Реала»: «Напоминает пропагандистские приемы Геббельса: систематическое повторение, создание образа врага. Клуб всегда должен выглядеть жертвой»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402904-tebas-o-syuzhetax-tv-reala-napominaet-propagandistskie-priemy-gebbelsa.html",
+   "published": "2026-10-16T10:37:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/290/4/share/7825ee_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3562796.html",
+   "title": "«Рома» была в шаге от катарсиса, но «Реал» снова буднично выкрутился",
+   "summary": "О том как испортить шикарный вечер",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3562796.html",
+   "published": "2026-10-16T08:23:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/279/6/share/c47c95_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3561069.html",
+   "title": "Погоня за бунтарем «МЮ», Моуринью готов драться с журналистами и за Эндрика. «Реал» шумно начал октябрь",
+   "summary": "Изучаем.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3561069.html",
+   "published": "2026-10-16T06:20:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/106/9/share/20ce71_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402453-real-naznachil-rukovoditelya-superligi-rajxarta-na-post-direktora-komm.html",
+   "title": "«Реал» назначил бывшего руководителя Суперлиги Райхарта на пост директора коммерческого отдела",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402453-real-naznachil-rukovoditelya-superligi-rajxarta-na-post-direktora-komm.html",
+   "published": "2026-10-15T19:03:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/245/3/share/48af86_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/rfpl/news/forvard-cska-karmo-u-vinisiusa-poyavilsya-dvoynik-esli-by-on-byl-u-menya-ya-by-tozhe-ego-ispolzoval-2463521",
+   "title": "Форвард ЦСКА Кармо: «У Винисиуса появился двойник? Если бы он был у меня, я бы тоже его использовал»",
+   "summary": "Нападающий ЦСКА Энрике Кармо ответил на вопрос «СЭ» о двойнике футболиста сборной Бразилии Винисиуса.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/rfpl/news/forvard-cska-karmo-u-vinisiusa-poyavilsya-dvoynik-esli-by-on-byl-u-menya-ya-by-tozhe-ego-ispolzoval-2463521/",
+   "published": "2026-10-15T17:54:01Z",
+   "image": null,
+   "also": [
+    "Sports.ru"
+   ]
+  },
+  {
+   "id": "sports.ru/football/1117402378-fanaty-sosedada-skandirovali-vinisius-imbeczil-i-atletiko-dermo-na-igr.html",
+   "title": "Фанаты «Сосьедада» скандировали «Винисиус – имбецил» и «Атлетико» – дерьмо» на игре с «Депортиво»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402378-fanaty-sosedada-skandirovali-vinisius-imbeczil-i-atletiko-dermo-na-igr.html",
+   "published": "2026-10-15T17:41:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/237/8/share/200f0b_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402346-mourinyu-pro-lch-u-reala-6-ochkov-my-na-polputi-k-vyxodu-v-plej-off-u-.html",
+   "title": "Моуринью про ЛЧ: «У «Реала» 6 очков после игр с топами Италии – мы на полпути к выходу в плей-офф. Для нас это очень хорошо. У «Бенфики» было 4 очка после 4 игр год назад, но мы прошли дальше»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402346-mourinyu-pro-lch-u-reala-6-ochkov-my-na-polputi-k-vyxodu-v-plej-off-u-.html",
+   "published": "2026-10-15T17:30:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/234/6/share/527c70_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3563118.html",
+   "title": "Вундеркинд из «МЮ» требует миллион зарплаты в 16 лет. «Реал» уже включился",
+   "summary": "За нового Месси борются топ-клубы.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3563118.html",
+   "published": "2026-10-15T16:40:00Z",
+   "image": "/img/news/sportsru/dynamic_images/post/356/311/8/share/21cd80_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402278-zhoze-mourinyu-igra-vinisiusa-v-1-m-tajme-s-romoj-moya-vina-ya-tozhe-o.html",
+   "title": "Жозе Моуринью: «Игра Винисиуса в 1-м тайме с «Ромой» – моя вина, я тоже ошибаюсь. Мне не понравилось бы, если бы он пнул бутылку, но недовольство заменой – это нормально»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402278-zhoze-mourinyu-igra-vinisiusa-v-1-m-tajme-s-romoj-moya-vina-ya-tozhe-o.html",
+   "published": "2026-10-15T16:08:00Z",
+   "image": "/img/news/sportsru/dynamic_images/news/111/740/227/8/share/1834bf_no_logo_no_text.jpg",
+   "also": []
+  },
+  {
+   "id": "sports.ru/betting/industry/1117402135-kazhdaya-sedmaya-stavka-pri-31-v-matche-roma-real-byla-na-kambek-madri.html",
+   "title": "Каждая седьмая ставка при 3:1 в матче «Рома» – «Реал» была на камбэк мадридцев (Olimpbet)",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/betting/industry/1117402135-kazhdaya-sedmaya-stavka-pri-31-v-matche-roma-real-byla-na-kambek-madri.html",
+   "published": "2026-10-15T13:45:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402080-uesli-snejder-esli-mbappe-vruchat-zolotoj-myach-eto-budet-absolyutno-z.html",
+   "title": "Уэсли Снейдер: «Если Мбаппе вручат «Золотой мяч», это будет абсолютно заслуженно. Прошлый сезон в его исполнении получился выдающимся»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402080-uesli-snejder-esli-mbappe-vruchat-zolotoj-myach-eto-budet-absolyutno-z.html",
+   "published": "2026-10-15T12:54:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117402059-karrager-pro-43-reala-s-romoj-neubeditelno-vse-razvalivaetsya-i-oni-pr.html",
+   "title": "Каррагер про 4:3 «Реала» с «Ромой»: «Неубедительно – все разваливается, и они просто держатся. Моуринью в «Мадриде» не может быть собой»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117402059-karrager-pro-43-reala-s-romoj-neubeditelno-vse-razvalivaetsya-i-oni-pr.html",
+   "published": "2026-10-15T12:33:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/betting/1117402033-betboom-rasschital-vyigryshi-stavki-na-pobedu-romy-nad-realom-rimlyane.html",
+   "title": "BETBOOM рассчитал выигрышем ставки на победу «Ромы» над «Реалом». Римляне проиграли, ведя 3:1 к 83-й минуте",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/betting/1117402033-betboom-rasschital-vyigryshi-stavki-na-pobedu-romy-nad-realom-rimlyane.html",
+   "published": "2026-10-15T11:47:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/rivaldo-zaveril-chto-dvoynika-vinisiusa-ne-suschestvuet-2463403",
+   "title": "Ривалдо заверил, что двойника Винисиуса не существует",
+   "summary": "Бывший нападающий сборной Бразилии Ривалдо в интервью «СЭ» ответил на вопрос, есть ли у футболиста «Реала» Винисиуса двойник.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/rivaldo-zaveril-chto-dvoynika-vinisiusa-ne-suschestvuet-2463403/",
+   "published": "2026-10-15T11:20:00Z",
+   "image": null,
+   "also": [
+    "Sports.ru"
+   ]
+  },
+  {
+   "id": "sport-express.ru/football/news/mbappe-stal-vosmym-igrokom-zabivshim-v-svoem-100-m-matche-ligi-chempionov-2463373",
+   "title": "Мбаппе стал восьмым игроком, забившим в своем 100-м матче Лиги чемпионов",
+   "summary": "Нападающий «Реала» Килиан Мбаппе отметился голом в игре общего этапа Лиги чемпионов с «Ромой» (4:3). Встреча стала для француза 100-й в турнире.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/news/mbappe-stal-vosmym-igrokom-zabivshim-v-svoem-100-m-matche-ligi-chempionov-2463373/",
+   "published": "2026-10-15T10:32:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401931-iturralde-o-zhalobax-mourinyu-na-sudejstvo-on-mnogo-znaet-o-futbole-no.html",
+   "title": "Итурральде о жалобах Моуринью на судейство: «Он много знает о футболе, но мало что понимает в правилах, а в протоколе ВАР – и того меньше»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401931-iturralde-o-zhalobax-mourinyu-na-sudejstvo-on-mnogo-znaet-o-futbole-no.html",
+   "published": "2026-10-15T10:17:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3562902.html",
+   "title": "Мбаппе выбил Рауля из топ-5, Холанд мчит в бешеном темпе. Новые рекорды ЛЧ",
+   "summary": "Крушат лучший турнир мира.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3562902.html",
+   "published": "2026-10-15T09:50:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401897-endrik-o-43-s-romoj-ya-razgovarival-s-bogom-a-potom-vstupil-v-igru-i-p.html",
+   "title": "Эндрик о 4:3 с «Ромой»: «Я разговаривал с Богом, а потом вступил в игру и получал игровое время. Быть в «Реале» тяжело, ты должен бороться. И я всегда буду бороться»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401897-endrik-o-43-s-romoj-ya-razgovarival-s-bogom-a-potom-vstupil-v-igru-i-p.html",
+   "published": "2026-10-15T09:38:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401877-vinisius-zhunior-na-500-folov-na-mne-prixoditsya-5-krasnyx-kartochek-a.html",
+   "title": "Винисиус Жуниор: «На 500 фолов на мне приходится 5 красных карточек, а желтые всегда получает Вини – не понимаю судей. Особенных игроков, как Ямаль или Альварес, нужно защищать»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401877-vinisius-zhunior-na-500-folov-na-mne-prixoditsya-5-krasnyx-kartochek-a.html",
+   "published": "2026-10-15T09:18:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3562742.html",
+   "title": "Камбэчище «Реала» в ЛЧ! Горели 1:3 к 83-й, но выиграли 4:3 – магия с Жозе на месте!",
+   "summary": "Сразу после замены Винисиуса.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3562742.html",
+   "published": "2026-10-15T09:05:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401860-zheltaya-konate-v-matche-s-vilyarrealom-otmenena-zashhitnik-reala-mog-.html",
+   "title": "Желтая Конате в матче с «Вильярреалом» отменена. Защитник «Реала» мог пропустить класико в случае карточки в игре с «Севильей»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401860-zheltaya-konate-v-matche-s-vilyarrealom-otmenena-zashhitnik-reala-mog-.html",
+   "published": "2026-10-15T08:47:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/mourinyu-nazval-neuvazheniem-obyavlenie-diskvalifikacii-vinisiusa-za-chas-do-matcha-2463342",
+   "title": "Моуринью назвал неуважением объявление дисквалификации Винисиуса за час до матча",
+   "summary": "Главный тренер «Реала» Жозе Моуринью раскритиковал обстоятельства, при которых стало известно о дисквалификации Винисиуса. Об этом португалец заявил после матча Лиги чемпионов с «Ромой» (4:3).",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/mourinyu-nazval-neuvazheniem-obyavlenie-diskvalifikacii-vinisiusa-za-chas-do-matcha-2463342/",
+   "published": "2026-10-15T08:33:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401823-vinisius-o-sviste-bolelshhikov-lyudi-platyat-dengi-menya-proshhe-vsego.html",
+   "title": "Винисиус о свисте болельщиков: «Люди платят деньги. Меня проще всего выбрать объектом для критики. Надо мной смеялись, когда я пришел в «Реал», а в итоге забил больше 100 голов»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401823-vinisius-o-sviste-bolelshhikov-lyudi-platyat-dengi-menya-proshhe-vsego.html",
+   "published": "2026-10-15T08:01:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3562805.html",
+   "title": "«Почему он меняет меня?» Винисиус сгорел из-за ранней замены, хотя сам привез – Жозе спародировал его пятку",
+   "summary": "Без него перевернули.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3562805.html",
+   "published": "2026-10-15T07:40:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401813-mourinyu-o-kalendare-reala-sygraem-s-aek-v-sredu-a-s-valensiej-v.html",
+   "title": "Моуринью о календаре «Реала»: «Сыграем с АЕК в среду, а с «Валенсией» – в субботу. Абсурд. Я 25 лет в футболе, не принимаю отговорки про ТВ. Сделаю все, чтобы открыть людям глаза»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401813-mourinyu-o-kalendare-reala-sygraem-s-aek-v-sredu-a-s-valensiej-v.html",
+   "published": "2026-10-15T07:40:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/blogs/3562817.html",
+   "title": "Анатомия камбэка «Реала» – как удалось на этот раз? Моуринью усложнил все сам",
+   "summary": "И разрулил.",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/blogs/3562817.html",
+   "published": "2026-10-15T07:30:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/spain/news/endrik-dopustil-uhod-iz-reala-v-yanvare-2463323",
+   "title": "Эндрик допустил уход из «Реала» в январе",
+   "summary": "Нападающий «Реала» Эндрик заявил, что может покинуть клуб в зимнее трансферное окно.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/spain/news/endrik-dopustil-uhod-iz-reala-v-yanvare-2463323/",
+   "published": "2026-10-15T07:28:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401801-endrik-o-bane-vinisiusa-na-4-matcha-eto-neveroyatno-bezumie-tak-budet-.html",
+   "title": "Эндрик о бане Винисиуса на 4 матча: «Это невероятно, безумие, так будет происходить и дальше. Ничего не меняется. На Вини идет охота, но он крепкий парень»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401801-endrik-o-bane-vinisiusa-na-4-matcha-eto-neveroyatno-bezumie-tak-budet-.html",
+   "published": "2026-10-15T07:25:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sports.ru/football/1117401727-mourinyu-o-diskvalifikaczii-vinisiusa-portugalskaya-pogovorka-kot-prya.html",
+   "title": "Моуринью о дисквалификации Винисиуса: «Португальская поговорка: «Кот прячется, но хвост торчит». Но кот уже даже не пытается спрятаться – он действует бесстыдно»",
+   "summary": "",
+   "source": "Sports.ru",
+   "url": "https://www.sports.ru/football/1117401727-mourinyu-o-diskvalifikaczii-vinisiusa-portugalskaya-pogovorka-kot-prya.html",
+   "published": "2026-10-15T05:57:00Z",
+   "image": null,
+   "also": []
+  },
+  {
+   "id": "sport-express.ru/football/champions-league/news/vinisius-zhunior-kommentariy-po-svoey-igre-za-real-v-etom-sezone-2463268",
+   "title": "Винисиус: «Сейчас у меня непростой период, но я вернусь»",
+   "summary": "Нападающий «Реала» Винисиус Жуниор после победы над «Ромой» (4:3) в матче 2-го тура общего этапа Лиги чемпионов заявил, что вскоре наберет оптимальную форму.",
+   "source": "Спорт-Экспресс",
+   "url": "https://www.sport-express.ru/football/champions-league/news/vinisius-zhunior-kommentariy-po-svoey-igre-za-real-v-etom-sezone-2463268/",
+   "published": "2026-10-15T01:50:00Z",
+   "image": null,
+   "also": []
+  }
+ ]
+}

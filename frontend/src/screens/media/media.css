@@ -1,0 +1,35 @@
+/* Экран «Медиа» и блок LatestNews (design/screens/a-media.html). Префикс mx- — только свои классы. */
+
+/* ссылка-обёртка вокруг NewsItem / VideoCard из ui/ (сами компоненты не трогаем) */
+.mx-link { display: block; color: var(--text); -webkit-tap-highlight-color: transparent; }
+.mx-link:active { opacity: .85; }
+
+/* строки ленты: разделитель между обёртками, у последней — нет */
+.mx-news-list { margin-top: 8px; }
+.mx-news-list > .mx-link:not(:last-child) > .ui-news--list { border-bottom: 1px solid var(--line); }
+.mx-news-list > .mx-link:last-child > .ui-news--list { border-bottom: none; }
+.mx-more { margin-top: 12px; }
+
+/* лента видео клуба: горизонтальная прокрутка до края экрана */
+.mx-videos { margin-top: 22px; }
+.mx-videos > .ui-section-head--page { margin-top: 0; }
+.mx-rail {
+  display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+  padding: 12px 16px 2px; scroll-padding-inline: 16px; scroll-snap-type: x proximity; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.mx-rail::-webkit-scrollbar { display: none; }
+.mx-rail__item, .mx-rail__skel { flex: none; scroll-snap-align: start; }
+
+/* сетка в «Видео»: две плитки в ряд */
+.mx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; padding: 12px 16px 0; }
+.mx-grid .ui-vtile { width: auto; }
+.mx-grid .ui-vtile__screen { height: auto; aspect-ratio: 16 / 9; }
+
+/* метка Shorts на превью */
+.mx-tile { position: relative; }
+.mx-short-tag {
+  position: absolute; left: 8px; top: 8px; padding: 2px 7px; border-radius: 6px;
+  background: rgba(10, 15, 30, .78); color: var(--text); font-size: 11px; font-weight: 600; letter-spacing: .02em;
+}
+.mx-link .ui-vtile__title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

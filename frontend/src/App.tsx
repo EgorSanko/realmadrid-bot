@@ -7,6 +7,9 @@ import { SECTIONS } from './sections';
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage = lazy(() => import('./dev/UiKitPage'));
+// этапы 8 и 9 — свои ленивые чанки
+const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
+const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -22,6 +25,23 @@ export function App() {
       <ScrollToTop />
       <div className="app">
         <Routes>
+          {/* раньше заглушек из SECTIONS: при одинаковом пути побеждает первый маршрут */}
+          <Route
+            path="/team"
+            element={
+              <Suspense fallback={null}>
+                <TeamScreen />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/media"
+            element={
+              <Suspense fallback={null}>
+                <MediaScreen />
+              </Suspense>
+            }
+          />
           {SECTIONS.map((s) => (
             <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
           ))}

@@ -1,0 +1,191 @@
+{
+ "source": "youtube",
+ "updated_at": "2026-10-16T23:28:34Z",
+ "age_s": 0.5,
+ "stale": false,
+ "available": [
+  "videos",
+  "highlights",
+  "shorts"
+ ],
+ "highlights": [
+  {
+   "match_id": 6106274,
+   "video_id": "zkgpyvjJl84",
+   "title": "Roma 3:4 Real Madrid",
+   "home": {
+    "id": 8686,
+    "name": "Roma",
+    "score": 3,
+    "logo": "/img/team/8686.png"
+   },
+   "away": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "score": 4,
+    "logo": "/img/team/8633.png"
+   },
+   "tournament": {
+    "id": 42,
+    "name": "Champions League"
+   },
+   "kickoff": "2026-10-14T19:00:00Z",
+   "thumb": "/img/yt/zkgpyvjJl84.jpg",
+   "url": "https://www.youtube.com/watch?v=zkgpyvjJl84",
+   "origin": "match"
+  }
+ ],
+ "count": 15,
+ "items": [
+  {
+   "id": "yaadxZp8v84",
+   "title": "Vini Jr.",
+   "published": "2026-10-16T17:24:50Z",
+   "thumb": "/img/yt/yaadxZp8v84.jpg",
+   "url": "https://www.youtube.com/shorts/yaadxZp8v84",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "EoNQQxVIW-Q",
+   "title": "Getting READY for SEVILLA with some BRILLIANT goals!",
+   "published": "2026-10-16T17:18:34Z",
+   "thumb": "/img/yt/EoNQQxVIW-Q.jpg",
+   "url": "https://www.youtube.com/watch?v=EoNQQxVIW-Q",
+   "short": false,
+   "kind": "video",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "K0VgSkQ9F3A",
+   "title": "5, 4, 3, 2, 1...",
+   "published": "2026-10-16T09:49:53Z",
+   "thumb": "/img/yt/K0VgSkQ9F3A.jpg",
+   "url": "https://www.youtube.com/shorts/K0VgSkQ9F3A",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "j11mBZhYtvM",
+   "title": "Simply, Antonioooo!",
+   "published": "2026-10-15T21:00:39Z",
+   "thumb": "/img/yt/j11mBZhYtvM.jpg",
+   "url": "https://www.youtube.com/shorts/j11mBZhYtvM",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "hRC-Smza4iA",
+   "title": "WHAT a header!",
+   "published": "2026-10-15T20:00:10Z",
+   "thumb": "/img/yt/hRC-Smza4iA.jpg",
+   "url": "https://www.youtube.com/shorts/hRC-Smza4iA",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "Di940Xy6c5Y",
+   "title": "C.Espí time!",
+   "published": "2026-10-15T19:00:24Z",
+   "thumb": "/img/yt/Di940Xy6c5Y.jpg",
+   "url": "https://www.youtube.com/shorts/Di940Xy6c5Y",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "XTwwWBXVcgg",
+   "title": "Pure instinct!",
+   "published": "2026-10-15T18:00:21Z",
+   "thumb": "/img/yt/XTwwWBXVcgg.jpg",
+   "url": "https://www.youtube.com/shorts/XTwwWBXVcgg",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "HypVlm9K7Jk",
+   "title": "Epic? EPIC.",
+   "published": "2026-10-15T17:08:07Z",
+   "thumb": "/img/yt/HypVlm9K7Jk.jpg",
+   "url": "https://www.youtube.com/shorts/HypVlm9K7Jk",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "hQZE4AwBRmw",
+   "title": "REAL MADRID’S EPIC COMEBACK IN ROME! | Roma 3-4 Real Madrid",
+   "published": "2026-10-15T17:00:17Z",
+   "thumb": "/img/yt/hQZE4AwBRmw.jpg",
+   "url": "https://www.youtube.com/watch?v=hQZE4AwBRmw",
+   "short": false,
+   "kind": "video",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "yOpDsMsMBJQ",
+   "title": "GOALS | Roma 3-4 Real Madrid | Champions League",
+   "published": "2026-10-15T17:00:13Z",
+   "thumb": "/img/yt/yOpDsMsMBJQ.jpg",
+   "url": "https://www.youtube.com/shorts/yOpDsMsMBJQ",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "qKlOMeS-520",
+   "title": "Now it’s your turn. Download and play the FC Mobile 27 update. Can you beat their tally?",
+   "published": "2026-10-15T14:25:51Z",
+   "thumb": "/img/yt/qKlOMeS-520.jpg",
+   "url": "https://www.youtube.com/shorts/qKlOMeS-520",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "akR6zl81ca8",
+   "title": "ACCESS DENIED",
+   "published": "2026-10-15T10:03:17Z",
+   "thumb": "/img/yt/akR6zl81ca8.jpg",
+   "url": "https://www.youtube.com/shorts/akR6zl81ca8",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "zkgpyvjJl84",
+   "title": "HIGHLIGHTS | Roma 3-4 Real Madrid | Champions League",
+   "published": "2026-10-14T23:00:13Z",
+   "thumb": "/img/yt/zkgpyvjJl84.jpg",
+   "url": "https://www.youtube.com/watch?v=zkgpyvjJl84",
+   "short": false,
+   "kind": "highlights",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "PV9MMhn07NY",
+   "title": "MVP of the night!",
+   "published": "2026-10-14T22:17:47Z",
+   "thumb": "/img/yt/PV9MMhn07NY.jpg",
+   "url": "https://www.youtube.com/shorts/PV9MMhn07NY",
+   "short": true,
+   "kind": "short",
+   "channel": "Real Madrid"
+  },
+  {
+   "id": "aYCYIRoO9II",
+   "title": "MINUTO A MINUTO | AS Roma vs Real Madrid | Champions League",
+   "published": "2026-10-14T21:07:53Z",
+   "thumb": "/img/yt/aYCYIRoO9II.jpg",
+   "url": "https://www.youtube.com/watch?v=aYCYIRoO9II",
+   "short": false,
+   "kind": "video",
+   "channel": "Real Madrid"
+  }
+ ]
+}

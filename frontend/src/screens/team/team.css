@@ -1,0 +1,51 @@
+/* Экран «Команда» (design/screens/a-team.html). Префикс tm- — чтобы не задеть чужие экраны. */
+
+.tm-season { font-size: 12px; color: var(--muted); }
+.tm-stale { margin: 6px 16px 0; font-size: 12px; color: var(--muted); }
+
+/* лидеры сезона: три карточки в ряд */
+.tm-leaders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 14px 16px 0; }
+.tm-leader { padding: 14px 12px 14px 14px; min-width: 0; }
+.tm-leader__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.tm-leader__label { font-size: 12px; color: var(--muted); }
+.tm-leader__val { margin-top: 2px; font-size: 26px; line-height: 1.15; }
+.tm-leader__name {
+  margin-top: 2px; font-size: 13px; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* списки */
+.tm-list { list-style: none; margin: 0; padding: 0; }
+.tm-group { margin: 16px 0 2px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.tm-group--back { color: var(--gold); }
+.tm-name { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tm-sub { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tm-flag { flex: none; }
+
+/* лазарет */
+.tm-inj { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.tm-list > li:last-child { border-bottom: none; }
+.tm-inj__main { flex: 1; min-width: 0; }
+.tm-inj__ret { flex: none; max-width: 48%; text-align: right; font-size: 13px; color: var(--muted); }
+.tm-inj__ret.gold { color: var(--gold); }
+
+/* состав */
+.tm-player { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); min-height: 56px; }
+.tm-player__num {
+  flex: none; width: 22px; text-align: right; font-size: 12px; font-weight: 700;
+  color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.tm-player__main { flex: 1; min-width: 0; }
+
+/* трансферы */
+.tm-tr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.tm-tr__main { flex: 1; min-width: 0; }
+.tm-tr__main .tm-sub { overflow: hidden; text-overflow: ellipsis; }
+.tm-tr__crest { width: 16px !important; height: 16px !important; flex: none; }
+.tm-tr__fee { flex: none; font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.tm-tr__fee--loan { color: var(--gold); font-weight: 500; }
+.tm-more {
+  display: block; width: 100%; margin-top: 6px; padding: 10px 0; min-height: 40px;
+  border: 0; border-radius: 12px; background: var(--surface-2); color: var(--text);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
