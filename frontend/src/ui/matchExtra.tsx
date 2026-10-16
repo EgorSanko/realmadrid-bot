@@ -43,7 +43,7 @@ export interface HeroMatchCardProps {
 const MORE_LABEL: Record<MatchStatus, string> = {
   upcoming: '',
   live: 'Весь матч: события, составы, статистика',
-  finished: 'Обзор матча: события, составы, статистика',
+  finished: 'Обзор матча',
 };
 
 /**
