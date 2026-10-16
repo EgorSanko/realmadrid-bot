@@ -14,7 +14,7 @@ app = FastAPI(
 )
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 async def health() -> dict:
     return {
         "status": "ok",

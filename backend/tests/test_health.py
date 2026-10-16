@@ -19,3 +19,7 @@ def test_health_ok():
 
 def test_unknown_route_404():
     assert client.get("/api/nope").status_code == 404
+
+
+def test_health_head():
+    assert client.head("/api/health").status_code == 200

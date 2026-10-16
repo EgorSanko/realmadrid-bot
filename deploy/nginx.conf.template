@@ -1,0 +1,59 @@
+# Мадридиста (rm-v2). Сгенерировано deploy/deploy.sh из deploy/nginx.conf.template — руками не править.
+# Плейсхолдеры в двойных фигурных скобках: DOMAIN, LISTEN, REDIRECT, WEBROOT, API_PORT.
+{{REDIRECT}}
+server {
+{{LISTEN}}
+    server_name {{DOMAIN}} www.{{DOMAIN}};
+
+    root {{WEBROOT}};
+    index index.html;
+    charset utf-8;
+    client_max_body_size 2m;
+
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 6;
+    gzip_min_length 256;
+    gzip_proxied any;
+    gzip_types text/plain text/css application/javascript text/javascript application/json image/svg+xml application/manifest+json;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    # API (FastAPI в docker на 127.0.0.1:{{API_PORT}}); буферизация выключена под будущий SSE
+    location /api/ {
+        proxy_pass http://127.0.0.1:{{API_PORT}};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 3600s;
+        add_header Cache-Control "no-store" always;
+    }
+
+    # хэшированные файлы сборки
+    location /assets/ {
+        try_files $uri =404;
+        access_log off;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
+    location = /index.html {
+        add_header Cache-Control "no-cache" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+    }
+
+    # SPA: всё прочее — на index.html
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+    }
+}

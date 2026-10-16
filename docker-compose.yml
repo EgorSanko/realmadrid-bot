@@ -1,0 +1,25 @@
+name: rm-v2
+
+services:
+  api:
+    build:
+      context: ./backend
+    image: rm-v2-api:latest
+    container_name: rm-v2-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8010:8000"
+    mem_limit: 256m
+    environment:
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
