@@ -250,7 +250,7 @@ function Profile({ link }: { link: LinkFn }) {
 function Crest({ t }: { t: { id: number | null; name: string } }) {
   return (
     <span className="pf-crest" title={t.name}>
-      {t.id != null ? <TeamCrest id={t.id} name={t.name} size={28} /> : <span className="pf-crest__ph">{t.name.slice(0, 1)}</span>}
+      {t.id != null ? <TeamCrest id={t.id} name={t.name} size={28} /> : <span className="pf-crest__ph" aria-hidden="true" />}
     </span>
   );
 }

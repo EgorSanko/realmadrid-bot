@@ -8,8 +8,6 @@ import { StartParamHandler } from './components/StartParamHandler';
 import { Toaster } from './components/Toaster';
 import { backgroundOf } from './lib/playerNav';
 import { useDesktop } from './lib/shell';
-import { SectionScreen } from './screens/SectionScreen';
-import { SECTIONS } from './sections';
 import HomeScreen from './screens/HomeScreen';
 import MatchesScreen from './screens/MatchesScreen';
 
@@ -34,6 +32,8 @@ const PredictScreen = lazy(() => import('./screens/predict/PredictScreen'));
 // игры раздела «Игры» — викторина и пенальти, каждая своим ленивым чанком
 const QuizScreen = lazy(() => import('./screens/games/QuizScreen'));
 const PenaltyScreen = lazy(() => import('./screens/games/PenaltyScreen'));
+// неизвестный адрес — страница «не найдено» (раньше молча уводили на главную)
+const NotFoundScreen = lazy(() => import('./screens/NotFoundScreen'));
 
 function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
@@ -120,10 +120,6 @@ function AppRoutes() {
               </Suspense>
             }
           />
-          {/* оставшиеся разделы-заглушки (сейчас — нет) */}
-          {SECTIONS.filter((s) => !['/', '/matches', '/team', '/media', '/predict'].includes(s.path)).map((s) => (
-            <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
-          ))}
           <Route
             path="/admin"
             element={
@@ -162,7 +158,14 @@ function AppRoutes() {
               }
             />
           )}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="*"
+            element={
+              <Suspense fallback={null}>
+                <NotFoundScreen />
+              </Suspense>
+            }
+          />
         </Routes>
       </div>
       {desktop ? <SiteFooter /> : <BottomNav />}

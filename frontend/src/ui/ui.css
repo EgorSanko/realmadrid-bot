@@ -28,7 +28,9 @@
 .ui-section-head--page { margin: 22px 16px 0; align-items: baseline; }
 .ui-section-head__title { margin: 0; font-size: 18px; font-weight: 700; }
 .ui-section-head__aside { font-size: 12px; color: var(--muted); }
-.ui-section-head__action { padding: 0; border: 0; background: none; font: inherit; font-size: 13px; color: var(--gold); cursor: pointer; }
+.ui-section-head__action { position: relative; padding: 0; border: 0; background: none; font: inherit; font-size: 13px; color: var(--gold); cursor: pointer; }
+/* «Все» — мелкая надпись, а палец должен попадать: невидимая зона нажатия ~47×45 вокруг */
+.ui-section-head__action::after { content: ''; position: absolute; inset: -14px -12px; }
 .ui-section-head__aside + .ui-section-head__action { margin-left: -4px; }
 
 /* ---------- Tabs ---------- */
@@ -267,7 +269,7 @@
 .ui-pl { position: absolute; width: 64px; margin: -20px 0 0 -32px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .ui-pl__shirt { position: relative; width: 40px; height: 40px; }
 .ui-pl__rating { position: absolute; right: -18px; top: -8px; }
-.ui-pl__num { position: absolute; left: -7px; bottom: -3px; min-width: 17px; height: 17px; padding: 0 3px; border-radius: 9px; background: var(--bg); border: 1px solid var(--ui-pitch-line); color: #E3E8F2; font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; font-variant-numeric: tabular-nums; }
+.ui-pl__num { position: absolute; left: -7px; bottom: -3px; min-width: 17px; height: 17px; padding: 0 3px; border-radius: 9px; background: var(--bg); border: 1px solid var(--ui-pitch-line); color: #E3E8F2; font-size: 11px; font-weight: 700; line-height: 15px; text-align: center; font-variant-numeric: tabular-nums; }
 .ui-pl__nm { font-size: 12px; font-weight: 600; white-space: nowrap; text-shadow: 0 1px 2px #000; }
 /* нажимаемый игрок на поле: та же колонка, что и .ui-pl — вёрстка не меняется */
 .ui-pl__tap { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 100%; }

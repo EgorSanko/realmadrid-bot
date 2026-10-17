@@ -1,0 +1,248 @@
+{
+ "states": {
+  "home": {
+   "loadingSkeleton": 15,
+   "errorText": [
+    "Данные ещё собираютсяСервер пока не получил расписание. Попробуй через минутуПовторить",
+    "Данные ещё собираются",
+    "Сервер пока не получил расписание. Попробуй через минуту"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": [
+    "обновлено 2 ч назад",
+    "Чемпионат · 54 мин назад",
+    "Чемпионат · 59 мин назад"
+   ]
+  },
+  "matches": {
+   "loadingSkeleton": 16,
+   "errorText": [
+    "Данные ещё собираютсяСервер пока не получил расписание. Попробуй через минутуПовторить",
+    "Данные ещё собираются",
+    "Сервер пока не получил расписание. Попробуй через минуту"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": [
+    "обновлено 2 ч назад"
+   ]
+  },
+  "team": {
+   "loadingSkeleton": 41,
+   "errorText": [
+    "Не удалось загрузитьПроверь соединение и попробуй ещё разПовторить",
+    "Не удалось загрузить",
+    "Проверь соединение и попробуй ещё раз"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": [
+    "Данные могли устареть · обновлено в 17:24 МСК"
+   ]
+  },
+  "media": {
+   "loadingSkeleton": 22,
+   "errorText": [
+    "Не удалось загрузитьПроверь соединение и попробуй ещё разПовторить",
+    "Не удалось загрузить",
+    "Проверь соединение и попробуй ещё раз"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": [
+    "могли устареть",
+    "Чемпионат · 54 мин назад",
+    "Чемпионат · 59 мин назад"
+   ]
+  },
+  "player": {
+   "loadingSkeleton": 18,
+   "errorText": [
+    "Данные игрока недоступныИсточник сейчас не отвечает — попробуй чуть позжеПовторить",
+    "Данные игрока недоступны",
+    "Источник сейчас не отвечает — попробуй чуть позже"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": [
+    "Данные могли устареть · FotMob · обновлено в 12:02 МСК"
+   ]
+  },
+  "match": {
+   "loadingSkeleton": 26,
+   "errorText": [
+    "Данные ещё собираютсяСервер только что запустился. Попробуем снова через несколько секундПовторить",
+    "Данные ещё собираются",
+    "Сервер только что запустился. Попробуем снова через несколько секунд"
+   ],
+   "retryVisible": true,
+   "recoveredAfterRetry": true,
+   "staleShown": []
+  }
+ },
+ "keys": {
+  "steps": [
+   {
+    "el": "a.sh__brand",
+    "name": "Мадридиста — на главную",
+    "focusVisible": true
+   },
+   {
+    "el": "a.sh__link",
+    "name": "Главная",
+    "focusVisible": true
+   },
+   {
+    "el": "a.sh__link",
+    "name": "Матчи",
+    "focusVisible": true
+   },
+   {
+    "el": "a.sh__link",
+    "name": "Команда",
+    "focusVisible": true
+   },
+   {
+    "el": "a.sh__link",
+    "name": "Медиа",
+    "focusVisible": true
+   },
+   {
+    "el": "a.sh__link",
+    "name": "Игры",
+    "focusVisible": true
+   },
+   {
+    "el": "a.badge-live",
+    "name": "Идёт эфир — смотреть на главно",
+    "focusVisible": true
+   },
+   {
+    "el": "button.sh-login__btn",
+    "name": "Войти через Telegram",
+    "focusVisible": true
+   },
+   {
+    "el": "a.ui-mc",
+    "name": "Ла Лига\nВс, 18 октября · 22:00",
+    "focusVisible": true
+   },
+   {
+    "el": "div.player",
+    "name": "Трансляция",
+    "focusVisible": true
+   },
+   {
+    "el": "button.player__unmute",
+    "name": "Включить звук",
+    "focusVisible": true
+   },
+   {
+    "el": "button.",
+    "name": "Пауза",
+    "focusVisible": true
+   },
+   {
+    "el": "button.",
+    "name": "Включить звук",
+    "focusVisible": true
+   },
+   {
+    "el": "button.",
+    "name": "На весь экран",
+    "focusVisible": true
+   },
+   {
+    "el": "a.hp-more",
+    "name": "Подробнее",
+    "focusVisible": true
+   },
+   {
+    "el": "button.ui-stepper__btn",
+    "name": "Больше голов — Real Madrid",
+    "focusVisible": true
+   },
+   {
+    "el": "button.ui-stepper__btn",
+    "name": "Больше голов — Sevilla",
+    "focusVisible": true
+   },
+   {
+    "el": "button.tg-login__btn",
+    "name": "Войти через Telegram",
+    "focusVisible": true
+   },
+   {
+    "el": "button.ui-section-head__action",
+    "name": "Все",
+    "focusVisible": true
+   },
+   {
+    "el": "a.mrow",
+    "name": "Roma 3:4 Real Madrid, Лига чем",
+    "focusVisible": true
+   },
+   {
+    "el": "a.mrow",
+    "name": "Real Madrid 1:0 Villarreal, Ла",
+    "focusVisible": true
+   },
+   {
+    "el": "a.mrow",
+    "name": "Atlético Madrid 2:1 Real Madri",
+    "focusVisible": true
+   },
+   {
+    "el": "a.screen-more",
+    "name": "Вся таблица и календарь",
+    "focusVisible": true
+   },
+   {
+    "el": "button.ui-section-head__action",
+    "name": "Календарь",
+    "focusVisible": true
+   },
+   {
+    "el": "a.mrow",
+    "name": "Real Madrid — RB Leipzig, Лига",
+    "focusVisible": true
+   }
+  ],
+  "noVisibleFocus": []
+ },
+ "contrast": {
+  "home": {
+   "lowN": 2,
+   "low": [
+    "3.21 20px rgb(90, 96, 114) «−»"
+   ]
+  },
+  "matches": {
+   "lowN": 0,
+   "low": []
+  },
+  "team": {
+   "lowN": 0,
+   "low": []
+  },
+  "media": {
+   "lowN": 0,
+   "low": []
+  },
+  "predict": {
+   "lowN": 2,
+   "low": [
+    "3.21 22px rgb(90, 96, 114) «−»"
+   ]
+  },
+  "profile": {
+   "lowN": 0,
+   "low": []
+  },
+  "match": {
+   "lowN": 0,
+   "low": []
+  }
+ }
+}

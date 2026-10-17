@@ -5,4 +5,6 @@
   <url><loc>https://realmadridfan.ru/team</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://realmadridfan.ru/media</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
   <url><loc>https://realmadridfan.ru/predict</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://realmadridfan.ru/games/quiz</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://realmadridfan.ru/games/penalty</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
 </urlset>

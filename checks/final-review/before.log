@@ -1,0 +1,79 @@
+ids {
+  past: 6106274,
+  future: 5868098,
+  player: 170323,
+  news: 'ee83a07c352b',
+  video: 'EoNQQxVIW-Q'
+}
+m390 home / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 6 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+m390 matches /matches | Матчи «Реала»: календарь, результаты, таблица — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 match-past /match/6106274 | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 match-past-lineups /match/6106274/lineups | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 match-past-stats /match/6106274/stats | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 match-future /match/5868098 | Real Madrid — Sevilla — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 team /team | Состав «Реала», лазарет и трансферы — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 player /player/170323 | Thibaut Courtois — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 media /media | Новости и видео «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 1 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 news /news/ee83a07c352b | Лапорта: «Реал» хочет уничтожить всё: Ла Лигу, судей, Федерацию. Они ничем не довольны — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 video /video/EoNQQxVIW-Q | Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com,fonts.gstatic.com,www.google.com,i.ytimg.com,yt3.ggpht.com,www.gstatic.com,jnn-pa.googleapis.com doc 200 
+m390 predict /predict | Прогнозы на матчи «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com doc 200 
+m390 quiz /games/quiz | Викторина о «Реале» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 penalty /games/penalty | Пенальти — игра «Мадридиста» | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 profile /profile | Профиль — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+m390 admin /admin | Эфир — админка | hs 0 broken 0 small 0 tiny 0 noName 1 ph 0 err 0 bad 0 ext  doc 200 
+m390 notfound / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 6 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+m390 notfound-match /match/abc | Матч — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 1 bad 1 ext  doc 200 
+tma390 home / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 6 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+tma390 matches /matches | Матчи «Реала»: календарь, результаты, таблица — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 match-past /match/6106274 | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 match-past-lineups /match/6106274/lineups | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 match-past-stats /match/6106274/stats | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 match-future /match/5868098 | Real Madrid — Sevilla — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 team /team | Состав «Реала», лазарет и трансферы — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 player /player/170323 | Thibaut Courtois — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 media /media | Новости и видео «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 1 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 news /news/ee83a07c352b | Лапорта: «Реал» хочет уничтожить всё: Ла Лигу, судей, Федерацию. Они ничем не довольны — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 video /video/EoNQQxVIW-Q | Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com,fonts.gstatic.com,www.google.com,i.ytimg.com,yt3.ggpht.com,www.gstatic.com,jnn-pa.googleapis.com doc 200 
+tma390 predict /predict | Прогнозы на матчи «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com doc 200 
+tma390 quiz /games/quiz | Викторина о «Реале» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 penalty /games/penalty | Пенальти — игра «Мадридиста» | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 profile /profile | Профиль — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+tma390 admin /admin | Эфир — админка | hs 0 broken 0 small 0 tiny 0 noName 1 ph 0 err 0 bad 0 ext  doc 200 
+tma390 notfound / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 6 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+tma390 notfound-match /match/abc | Матч — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 1 bad 1 ext  doc 200 
+d1440 home / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1440 matches /matches | Матчи «Реала»: календарь, результаты, таблица — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1440 match-past /match/6106274 | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 match-past-lineups /match/6106274/lineups | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 match-past-stats /match/6106274/stats | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 match-future /match/5868098 | Real Madrid — Sevilla — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 1 err 0 bad 0 ext  doc 200 
+d1440 team /team | Состав «Реала», лазарет и трансферы — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 player /player/170323 | Thibaut Courtois — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 media /media | Новости и видео «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 news /news/ee83a07c352b | Лапорта: «Реал» хочет уничтожить всё: Ла Лигу, судей, Федерацию. Они ничем не довольны — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 video /video/EoNQQxVIW-Q | Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com,fonts.gstatic.com,www.google.com,i.ytimg.com,yt3.ggpht.com,www.gstatic.com,jnn-pa.googleapis.com doc 200 
+d1440 predict /predict | Прогнозы на матчи «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com doc 200 
+d1440 quiz /games/quiz | Викторина о «Реале» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 penalty /games/penalty | Пенальти — игра «Мадридиста» | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 profile /profile | Профиль — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1440 admin /admin | Эфир — админка | hs 0 broken 0 small 0 tiny 0 noName 1 ph 0 err 0 bad 0 ext  doc 200 
+d1440 notfound / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1440 notfound-match /match/abc | Матч — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 1 bad 1 ext bulbikjoe.hayuhi.online doc 200 
+d1280 home / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1280 matches /matches | Матчи «Реала»: календарь, результаты, таблица — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1280 match-past /match/6106274 | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 match-past-lineups /match/6106274/lineups | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 match-past-stats /match/6106274/stats | Roma 3 : 4 Real Madrid — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 match-future /match/5868098 | Real Madrid — Sevilla — Мадридиста | hs 0 broken 0 small 11 tiny 0 noName 0 ph 1 err 0 bad 0 ext  doc 200 
+d1280 team /team | Состав «Реала», лазарет и трансферы — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 player /player/170323 | Thibaut Courtois — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 media /media | Новости и видео «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 news /news/ee83a07c352b | Лапорта: «Реал» хочет уничтожить всё: Ла Лигу, судей, Федерацию. Они ничем не довольны — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 video /video/EoNQQxVIW-Q | Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com,fonts.gstatic.com,www.google.com,i.ytimg.com,yt3.ggpht.com,www.gstatic.com,jnn-pa.googleapis.com doc 200 
+d1280 predict /predict | Прогнозы на матчи «Реала» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext www.youtube-nocookie.com doc 200 
+d1280 quiz /games/quiz | Викторина о «Реале» — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 penalty /games/penalty | Пенальти — игра «Мадридиста» | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 profile /profile | Профиль — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext  doc 200 
+d1280 admin /admin | Эфир — админка | hs 0 broken 0 small 0 tiny 0 noName 1 ph 0 err 0 bad 0 ext  doc 200 
+d1280 notfound / | Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 0 bad 0 ext bulbikjoe.hayuhi.online doc 200 
+d1280 notfound-match /match/abc | Матч — Мадридиста | hs 0 broken 0 small 0 tiny 0 noName 0 ph 0 err 1 bad 1 ext bulbikjoe.hayuhi.online doc 200 

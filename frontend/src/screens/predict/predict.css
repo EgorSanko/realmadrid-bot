@@ -129,7 +129,9 @@
 .hp-teams { display: inline-flex; align-items: center; gap: 4px; flex: none; }
 .hp-pick { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
 .hp-pick .ui-score-pick { flex: 1; min-width: 0; gap: 8px; }
-.hp-step .ui-stepper__btn { width: 36px; height: 36px; font-size: 20px; }
+.hp-step .ui-stepper__btn { position: relative; width: 36px; height: 36px; font-size: 20px; }
+/* кнопка 36 px на вид, зона нажатия — 44 px */
+.hp-step .ui-stepper__btn::after { content: ''; position: absolute; inset: -4px; }
 .hp-step .ui-stepper__val { font-size: 22px; }
 .hp-save { margin-top: 12px; height: 46px !important; }
 .hp .tg-login { margin-top: 12px; }
