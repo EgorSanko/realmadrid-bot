@@ -142,50 +142,10 @@ export interface CalendarRowProps {
   className?: string;
 }
 
-/** Строка «Ближайших» (a-fixtures.html). Как FixtureRow kind="upcoming", плюс логотип турнира и LIVE. */
-export function CalendarRow({ kickoff, home, away, competition: c, note, live, highlighted, href, onClick, className }: CalendarRowProps) {
-  const inner = (
-    <>
-      <div className="ui-fx__date">
-        {live ? (
-          <>
-            <Badge tone="live" />
-            <div className="ui-fx__time cal-row__minute">{live}</div>
-          </>
-        ) : (
-          <>
-            <div className="ui-fx__day">{formatWeekdayShort(kickoff)}</div>
-            <div className="ui-fx__time">{formatTime(kickoff)}</div>
-          </>
-        )}
-      </div>
-      <div className="ui-fx__teams">
-        {[home, away].map((t, i) => (
-          <div key={i} className="ui-fx__team cal-row__team">
-            {t.id != null ? (
-              <TeamCrest id={t.id} name="" size={20} />
-            ) : (
-              <span className="ui-crest-gap" style={{ width: 20, height: 20 }} aria-hidden="true" />
-            )}
-            <span className="cal-row__nm">{t.name}</span>
-          </div>
-        ))}
-        {note && <div className="ui-fx__note">{note}</div>}
-      </div>
-      <Chip label={c.short ?? c.name} tone={c.tone} size="sm" leagueId={c.withLogo ? c.id : undefined} className="cal-row__chip" />
-    </>
-  );
-  const cls = cx('ui-fx', 'cal-row', highlighted && 'ui-fx--next', className);
-  const label = `${home.name} — ${away.name}, ${c.name}`;
-  return href != null ? (
-    <a className={cls} href={href} onClick={onClick} aria-label={label}>
-      {inner}
-    </a>
-  ) : (
-    <div className={cls} aria-label={label}>
-      {inner}
-    </div>
-  );
+/** Строка «Ближайших» — теперь та же MatchRow: эмблемы команд и логотип турнира вместо «ЛЛ»/«ЛЧ»
+ *  (просьба владельца — нигде не показывать турниры текстовыми сокращениями). */
+export function CalendarRow({ competition, ...rest }: CalendarRowProps) {
+  return <MatchRow kind="upcoming" competition={competition} {...rest} />;
 }
 
 /* ---------- MatchRow ---------- */
