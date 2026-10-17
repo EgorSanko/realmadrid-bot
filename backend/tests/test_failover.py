@@ -119,22 +119,28 @@ def test_match_chain_failover(tmp_db, monkeypatch):
     c, calls = _fake_collector(conn, monkeypatch)
     flag = tmp_db / "disabled_sources"
 
+    def drop():  # проверяем саму цепочку: прежний полный снимок не должен перекрывать резерв
+        conn.execute("DELETE FROM snapshots WHERE key='match:6106274'")
+
     m = run(c.refresh_match("6106274"))
     assert m["source"] == "fotmob" and calls["sofascore"] == 0
     assert store.get(conn, "ctx:match:6106274")  # номера/имена FotMob для фото у резервов
 
     flag.write_text("fotmob")
+    drop()
     m = run(c.refresh_match("6106274"))
     assert m["source"] == "sofascore"
     assert {"ratings", "shotmap", "momentum", "player_photos"} <= set(m["available"])
     assert m["id"] == 6106274 and m["fallback_errors"]["fotmob"] == "disabled"
 
     flag.write_text("fotmob,sofascore")
+    drop()
     m = run(c.refresh_match("6106274"))
     assert m["source"] == "espn"
     assert not {"ratings", "xg", "shotmap", "momentum"} & set(m["available"])
 
     flag.write_text("fotmob,sofascore,espn")
+    drop()
     m = run(c.refresh_match("6106274"))
     assert m["source"] == "livescore"
 

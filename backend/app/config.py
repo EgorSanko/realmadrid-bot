@@ -69,6 +69,20 @@ WINDOW_AFTER_START = 150 * 60  # ~2,5 ч после старта, если «з�
 WINDOW_AFTER_FINISH = 30 * 60  # после «завершён» — ещё 30 мин на добор оценок и статистики
 WINDOW_HARD_CAP = 4 * 3600     # предохранитель: дольше 4 ч от старта не держим лайв-режим
 
+# --- полнота снимка матча ---
+# завершённый матч: более полный снимок (больше пунктов available) не заменяем более бедным,
+# пока он моложе KEEP_FULL_DAYS (исключение — изменились счёт или статус)
+KEEP_FULL_DAYS = _int("KEEP_FULL_DAYS", 14)
+# идущий матч: блоков, которых нет в свежем снимке (оценки, xG, давление, удары, статистика),
+# берём из прошлого снимка того же матча, если сами блоки не старше LIVE_BORROW_MAX_AGE секунд
+LIVE_BORROW_MAX_AGE = _int("LIVE_BORROW_MAX_AGE", 10 * 60)
+
+# --- очистка (раз в сутки в сборщике) ---
+CLEANUP_INTERVAL = _int("CLEANUP_INTERVAL", 24 * 3600)
+ARTICLE_TEXT_TTL_DAYS = _int("ARTICLE_TEXT_TTL_DAYS", 90)     # тексты статей; сами новости в ленте остаются
+AVATAR_TTL_DAYS = _int("AVATAR_TTL_DAYS", 180)                 # аватар пользователя, который давно не заходил
+FOREIGN_PLAYER_TTL_DAYS = _int("FOREIGN_PLAYER_TTL_DAYS", 30)  # снимки карточек чужих игроков
+
 # --- надёжность источников ---
 HTTP_TIMEOUT = float(os.environ.get("HTTP_TIMEOUT", "10"))
 SOFA_TIMEOUT = float(os.environ.get("SOFA_TIMEOUT", "15"))

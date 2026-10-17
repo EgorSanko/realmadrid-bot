@@ -34,7 +34,7 @@ from . import avatars, config, store
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
-from .model import iso_utc, name_key, same_person, same_team, ts
+from .model import compute_available, iso_utc, name_key, same_person, same_team, ts
 from .sources import article, espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
@@ -788,6 +788,13 @@ class Collector:
             for other in ("sofascore", "espn", "livescore"):
                 m["ids"][other] = m["ids"].get(other) or store.from_fotmob(self.conn, "match", other, fid)
             m["fallback_errors"] = errors or None
+            now = time.time()
+            if keep_fuller(prev, m, now):
+                # завершённый матч, счёт и статус те же, а старый снимок полнее — его и оставляем
+                log.info("match %s: %s беднее снимка %s (%d < %d пунктов) — оставляю прежний", fid, name,
+                         prev["source"], len(m.get("available") or []), len(prev["data"].get("available") or []))
+                return prev["data"]
+            borrow_live_blocks(prev, m, now)
             # новый или исправленный итог — очки прогнозов пересчитать в этом же такте
             if m["status"]["finished"] and _result_of(m) != _result_of((prev or {}).get("data")):
                 self.settle_due = True
@@ -1029,6 +1036,115 @@ def _ctx_from_match(m: dict) -> dict:
     for d in dup:
         last.pop(d, None)
     return {"numbers": numbers, "names": names, "last": last}
+
+
+# ================= полнота снимка матча =================
+
+def _score_state(m: dict) -> tuple:
+    return (m["status"]["state"], m["home"].get("score"), m["away"].get("score"))
+
+
+def keep_fuller(prev: dict | None, new: dict, now: float) -> bool:
+    """True — новый снимок завершённого матча беднее прежнего (меньше пунктов available и не надмножество),
+    счёт и статус не изменились, а прежний моложе KEEP_FULL_DAYS: прежний не заменяем.
+
+    Пример: FotMob дал 18 пунктов, потом FotMob недоступен и ESPN приносит 6 — остаются 18."""
+    if not prev or not new["status"]["finished"]:
+        return False
+    old = prev["data"]
+    if not (old.get("status") or {}).get("finished") or _score_state(old) != _score_state(new):
+        return False
+    if now - prev["fetched_at"] >= config.KEEP_FULL_DAYS * 86400:
+        return False
+    a_old, a_new = set(old.get("available") or []), set(new.get("available") or [])
+    return len(a_new) < len(a_old) and not a_new >= a_old
+
+
+# блоки, которые в лайве берём из прошлого снимка, если в свежем их нет: ключ available → поле
+LIVE_BLOCKS = ("ratings", "xg", "stats", "momentum", "shotmap")
+
+
+def _block_at(prev: dict, block: str) -> float:
+    """Когда блок прежнего снимка получен от источника: если его самого уже заимствовали — время оригинала."""
+    b = (prev["data"].get("borrowed") or {}).get(block)
+    return b["at"] if b else prev["fetched_at"]
+
+
+def _copy_ratings(dst: dict, src: dict) -> bool:
+    """Оценки игроков из прошлых составов в свежие: по id FotMob, иначе по стороне и имени."""
+    n = 0
+    for side in ("home", "away"):
+        old = (src.get(side) or {})
+        by_id, by_name = {}, {}
+        for p in (old.get("starters") or []) + (old.get("subs") or []):
+            if p.get("rating") is None:
+                continue
+            if p.get("id"):
+                by_id[p["id"]] = p["rating"]
+            if p.get("name"):
+                by_name[name_key(p["name"])] = p["rating"]
+        new = dst.get(side) or {}
+        for p in (new.get("starters") or []) + (new.get("subs") or []):
+            if p.get("rating") is not None:
+                continue
+            r = by_id.get(p.get("id")) if p.get("id") else None
+            if r is None and p.get("name"):
+                r = by_name.get(name_key(p["name"]))
+            if r is not None:
+                p["rating"] = r
+                n += 1
+    return n > 0
+
+
+def borrow_live_blocks(prev: dict | None, m: dict, now: float) -> list[str]:
+    """Идущий матч: свежесть важнее полноты, но блоки, которых нет в новом снимке (оценки, xG, статистика,
+    давление, удары), берём из прошлого снимка того же матча, если им не больше LIVE_BORROW_MAX_AGE.
+    Так экран не «мигает» блоками, когда FotMob на цикл-другой уступает резервному источнику.
+    Что взято — в m["borrowed"] = {блок: {source, at}}; возвращает список взятых блоков."""
+    m.pop("borrowed", None)
+    if not prev or not m["status"]["live"]:
+        return []
+    old = prev["data"]
+    have, had = set(m.get("available") or []), set(old.get("available") or [])
+    borrowed = {}
+    for block in LIVE_BLOCKS:
+        if block in have or block not in had:
+            continue
+        at = _block_at(prev, block)
+        if now - at > config.LIVE_BORROW_MAX_AGE:
+            continue
+        src = ((old.get("borrowed") or {}).get(block) or {}).get("source") or prev["source"]
+        ok = False
+        if block == "ratings":
+            if not m.get("lineups"):
+                m["lineups"] = old.get("lineups")
+                ok = bool(m["lineups"])
+            else:
+                ok = _copy_ratings(m["lineups"], old.get("lineups") or {})
+        elif block == "stats":
+            if not (m.get("stats") or {}).get("all"):
+                m["stats"] = old.get("stats")
+                ok = True
+        elif block == "xg":
+            xg = next((x for x in (old.get("stats") or {}).get("all") or [] if x.get("key") == "xg"), None)
+            if xg and (m.get("stats") or {}).get("all") is not None:
+                m["stats"]["all"].append(xg)
+                ok = True
+        elif block == "momentum":
+            m["momentum"] = old.get("momentum") or []
+            ok = bool(m["momentum"])
+        elif block == "shotmap":
+            m["shots"] = old.get("shots") or []
+            ok = bool(m["shots"])
+        if ok:
+            borrowed[block] = {"source": src, "at": at}
+    if borrowed:
+        m["available"] = compute_available(m)
+        # xG статистики взяли вместе с блоком stats — помечаем и его тем же временем
+        if "stats" in borrowed and "xg" in m["available"] and "xg" not in have:
+            borrowed.setdefault("xg", borrowed["stats"])
+        m["borrowed"] = borrowed
+    return list(borrowed)
 
 
 # ================= CLI =================
