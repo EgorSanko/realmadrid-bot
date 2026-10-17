@@ -2,11 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { LoginButton } from '../../components/LoginButton';
 import { UserAvatar } from '../../components/UserAvatar';
-import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, signOut, useAuth } from '../../lib/auth';
+import { AuthFetchError, BOT_USERNAME, authFetch, deleteAccount, inMiniApp, signOut, useAuth } from '../../lib/auth';
+import { showToast } from '../../lib/toast';
 import { historyRow, isSoftUnavailable, pointsTiles } from '../../lib/profile';
 import type { League, PredictMe } from '../../lib/profile';
 import { copyText, shareLink } from '../../lib/share';
 import { inviteLink } from '../../lib/startParam';
+import { isNativeApp } from '../../lib/shell';
 import { useSpaLink } from '../../lib/spaLink';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { Card, ErrorState, SectionHeader, Skeleton, TeamCrest, formatDayShort, plural } from '../../ui';
@@ -46,6 +48,7 @@ export default function ProfileScreen() {
   const location = useLocation();
   const link = useSpaLink();
   const tma = inMiniApp();
+  const native = isNativeApp();
   const flash = (location.state as { flash?: string } | null)?.flash ?? null;
 
   const goBack = useCallback(() => {
@@ -113,7 +116,7 @@ export default function ProfileScreen() {
             {auth.user.username && <p className="pf-hero__sub">@{auth.user.username}</p>}
           </section>
           <Profile link={link} />
-          {auth.isAdmin && (
+          {auth.isAdmin && !native && (
             <Card className="pf-admin">
               <a className="pf-row-link" {...link('/admin')}>
                 <span>
@@ -137,9 +140,76 @@ export default function ProfileScreen() {
               </button>
             </div>
           )}
+          {!tma && <DeleteAccount />}
         </>
       )}
+
+      {/* политика конфиденциальности — на сайте и в приложении (мини-апп не меняем) */}
+      {!tma && (
+        <p className="pf-legal">
+          <a {...link('/privacy')}>Политика конфиденциальности</a>
+          <span aria-hidden="true"> · </span>
+          <a {...link('/terms')}>Условия использования</a>
+        </p>
+      )}
     </main>
+  );
+}
+
+/** «Удалить аккаунт»: подтверждение, затем DELETE /api/auth/me — прогнозы, лиги, итоги игр, сессии. */
+function DeleteAccount() {
+  const [step, setStep] = useState<'idle' | 'confirm' | 'busy'>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  if (step === 'idle') {
+    return (
+      <div className="pf-delete">
+        <button type="button" className="pf-delete__open" onClick={() => setStep('confirm')}>
+          Удалить аккаунт
+        </button>
+      </div>
+    );
+  }
+  return (
+    <section className="pf-delete pf-delete--confirm" role="alertdialog" aria-labelledby="pf-del-title" aria-describedby="pf-del-text">
+      <p className="pf-delete__title" id="pf-del-title">
+        Удалить аккаунт?
+      </p>
+      <p className="pf-muted" id="pf-del-text">
+        Удалятся ваш профиль, все прогнозы и очки, места в рейтингах, созданные вами лиги, результаты игр и
+        аватар. Это нельзя отменить. Войти снова через Telegram можно будет в любой момент — с нуля.
+      </p>
+      {error && (
+        <p className="pf-delete__err" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="pf-delete__actions">
+        <button type="button" className="ui-btn ui-btn--secondary" disabled={step === 'busy'} onClick={() => setStep('idle')}>
+          Отмена
+        </button>
+        <button
+          type="button"
+          className="ui-btn pf-delete__go"
+          disabled={step === 'busy'}
+          onClick={async () => {
+            setStep('busy');
+            setError(null);
+            try {
+              await deleteAccount();
+              showToast('Аккаунт удалён');
+              navigate('/profile', { replace: true });
+            } catch (e) {
+              setError((e as Error).message || 'Не удалось удалить аккаунт');
+              setStep('confirm');
+            }
+          }}
+        >
+          {step === 'busy' ? 'Удаляем…' : 'Удалить навсегда'}
+        </button>
+      </div>
+    </section>
   );
 }
 

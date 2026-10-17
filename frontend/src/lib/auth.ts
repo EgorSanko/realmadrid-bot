@@ -213,6 +213,23 @@ export async function signOut(): Promise<void> {
   set({ status: 'anon', user: null, isAdmin: false });
 }
 
+/**
+ * Вход по коду проверки магазина приложений (POST /api/auth/review): модератор RuStore не может войти
+ * через Telegram — ему в комментарии даётся постоянный код. Ошибка — AuthFetchError с текстом по-русски.
+ */
+export async function reviewSignIn(code: string): Promise<AuthState> {
+  const r = await authFetch<AuthResponse>('/api/auth/review', { method: 'POST', body: { code } });
+  return acceptSession(r);
+}
+
+/** Удалить аккаунт (DELETE /api/auth/me): все данные пользователя на сервере, затем — локальный выход. */
+export async function deleteAccount(): Promise<void> {
+  await authFetch('/api/auth/me', { method: 'DELETE', body: { confirm: true } });
+  token = null;
+  avatarRetries = 0;
+  set({ status: 'anon', user: null, isAdmin: false });
+}
+
 /** Для тестов. */
 export function _resetAuth() {
   state = { status: 'loading', user: null, isAdmin: false, startParam: null };

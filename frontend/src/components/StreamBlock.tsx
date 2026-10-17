@@ -1,8 +1,13 @@
 import type { StreamState } from '../lib/stream';
+import { isNativeApp } from '../lib/shell';
 import { Player } from './Player';
 
-/** Блок трансляции на главной: плеер, пока эфир включён, иначе — заглушка из a-home.html. */
+/**
+ * Блок трансляции на главной: плеер, пока эфир включён, иначе — заглушка из a-home.html.
+ * В приложении из RuStore блока нет совсем (ни плеера, ни заглушки; hls.js не грузится).
+ */
 export function StreamBlock({ stream }: { stream: StreamState | null }) {
+  if (isNativeApp()) return null;
   if (stream?.live && stream.url) {
     return (
       <section className="stream" aria-label="Трансляция">

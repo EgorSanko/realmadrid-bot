@@ -10,11 +10,19 @@ GET  /api/auth/code/status → {status: pending|expired|missing} или, ког�
                            /api/auth/telegram (cookie + token, via="code"). Заявка при этом удаляется.
 GET  /api/auth/me        → {user|null, is_admin}
 POST /api/auth/logout    → выход: cookie стирается, сессии пользователя отзываются (session_epoch + 1).
+POST /api/auth/review    {code} → вход для проверки магазином приложений (модератор RuStore не может войти
+                           через Telegram): код из REVIEW_LOGIN_CODE (.env сервера; не задан — выключено, 404),
+                           сравнение за постоянное время, 10 попыток с IP за 10 мин. Входит в тестового
+                           пользователя «RuStore Проверка» (REVIEW_USER_ID), никогда не админа.
+DELETE /api/auth/me      {confirm: true} → удалить аккаунт: пользователь, прогнозы, места в рейтинге, свои лиги,
+                           итоги игр, заявки на вход, аватар; cookie стирается.
 """
 from __future__ import annotations
 
+import hmac
 import logging
 import os
+import re
 from datetime import datetime, timezone
 from typing import Any, Optional
 
@@ -36,6 +44,9 @@ BODY_MAX = 8192
 LOGIN_COOKIE = "rm_login"
 LOGIN_COOKIE_PATH = "/api/auth/code"
 DEFAULT_BOT = "Real_Madrid_football_bot"
+REVIEW_USER_ID_DEFAULT = 9_000_000_000_001   # вне диапазона id Telegram — с живым человеком не совпадёт
+REVIEW_NAME = "RuStore Проверка"
+REVIEW_CODE_MIN = 10                          # короче — считаем, что вход проверки не настроен
 
 
 def _json(body: Any, status: int = 200) -> JSONResponse:
@@ -174,6 +185,77 @@ def code_status(request: Request, svc: PredictionService = Depends(get_service))
     _seen(svc, uid)
     resp = _session_response(svc, uid, "code", extra={"status": "ok"})
     _clear_login_cookie(resp)
+    return resp
+
+
+# ---------- вход для проверки магазином приложений ----------
+
+def _norm_review(text: Any) -> str:
+    """«rs-7k4p q9tx» → «RS7K4PQ9TX»: регистр, пробелы и дефисы не важны (модератор вводит руками)."""
+    if not isinstance(text, str) or len(text) > 64:
+        return ""
+    return re.sub(r"[\s\-–—_]", "", text).upper()
+
+
+def review_user_id() -> int:
+    raw = os.environ.get("REVIEW_USER_ID", "").strip()
+    try:
+        return int(raw) if raw else REVIEW_USER_ID_DEFAULT
+    except ValueError:
+        return REVIEW_USER_ID_DEFAULT
+
+
+@router.post("/review")
+async def review_login(request: Request, svc: PredictionService = Depends(get_service)):
+    secret = _norm_review(os.environ.get("REVIEW_LOGIN_CODE", ""))
+    if len(secret) < REVIEW_CODE_MIN:
+        return _err(404, "not_enabled", "Вход по коду проверки выключен")
+    if _cross_site(request):
+        return _err(403, "cross_site", "Запрос с чужого сайта отклонён")
+    if not svc.review_limiter.hit(_client_ip(request)):
+        return _err(429, "rate_limited", "Слишком много попыток — подождите несколько минут")
+    raw = await request.body()
+    if len(raw) > 1024:
+        return _err(413, "too_large", "Слишком большой запрос")
+    try:
+        body = await request.json()
+    except ValueError:
+        return _err(422, "validation", "Неверный запрос")
+    given = _norm_review(body.get("code") if isinstance(body, dict) else None)
+    if not given or not hmac.compare_digest(given.encode(), secret.encode()):
+        return _err(401, "bad_code", "Неверный код")
+    try:
+        _session_key()
+    except InitDataError as e:
+        return _err(503, "not_configured", e.message)
+    uid = review_user_id()
+    if uid in admin_ids():  # тестовый вход никогда не даёт прав админа
+        return _err(503, "not_configured", "Вход по коду проверки настроен неверно")
+    svc.upsert_user({"id": uid, "first_name": REVIEW_NAME, "last_name": None, "username": None}, keep_photo=True)
+    _seen(svc, uid)
+    log.info("review login from %s", _client_ip(request))
+    return _session_response(svc, uid, "review")
+
+
+@router.delete("/me")
+async def delete_account(request: Request, authorization: Optional[str] = Header(default=None),
+                         svc: PredictionService = Depends(get_service)):
+    if not has_credentials(request, authorization):
+        return _err(401, "unauthorized", "Нужна авторизация")
+    try:
+        p = authenticate(request, authorization, svc)
+    except InitDataError as e:
+        return _err(401, "unauthorized", e.message)
+    try:
+        body = await request.json()
+    except ValueError:
+        body = None
+    if not isinstance(body, dict) or body.get("confirm") is not True:
+        return _err(422, "validation", "Подтвердите удаление аккаунта")
+    deleted = svc.delete_user(p.id)
+    log.info("account deleted: %s (%s)", p.id, "ok" if deleted else "already gone")
+    resp = _json({"ok": True, "deleted": deleted})
+    _clear_cookie(resp)
     return resp
 
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { isNativeApp } from './shell';
 
 export interface StreamState {
   live: boolean;
@@ -87,6 +88,8 @@ export function useStream(): StreamState | null {
   const [state, setState] = useState<StreamState | null>(shared);
 
   useEffect(() => {
+    // приложение из RuStore: эфира нет совсем — /api/stream не опрашиваем, состояние всегда «нет эфира»
+    if (isNativeApp()) return;
     subs.add(setState);
     setState(shared);
     if (!stopPoll) stopPoll = startPoll();

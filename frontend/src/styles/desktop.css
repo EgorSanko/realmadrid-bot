@@ -295,6 +295,15 @@ html.desk .app {
   color: var(--dim);
 }
 
+.sf__legal a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.sf__legal a:hover {
+  color: var(--gold);
+}
+
 /* ---------- раскладки ---------- */
 
 /* две колонки: широкая слева, узкая справа */

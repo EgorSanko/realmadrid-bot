@@ -14,7 +14,7 @@ import {
   splitFixtures,
   staleNote,
 } from '../lib/mapMatches';
-import { useDesktop } from '../lib/shell';
+import { isNativeApp, useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
@@ -45,7 +45,9 @@ export default function HomeScreen() {
   const desktop = useDesktop();
 
   useEffect(() => {
-    document.title = 'Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости';
+    document.title = isNativeApp()
+      ? 'Мадридиста — фан-приложение Real Madrid: матчи, новости, прогнозы'
+      : 'Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости';
   }, []);
 
   const d = home.data;

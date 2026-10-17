@@ -352,3 +352,69 @@ html.desk .pf {
 .pf-logout {
   margin: 22px 16px 0;
 }
+
+/* удаление аккаунта и ссылки на документы (не в мини-аппе) */
+.pf-delete {
+  margin: 12px 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.pf-delete__open {
+  padding: 8px 10px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pf-delete--confirm {
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid rgba(255, 90, 78, 0.35);
+  border-radius: var(--radius-card);
+  background: var(--card-grad);
+}
+
+.pf-delete__title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.pf-delete__err {
+  margin: 0;
+  color: var(--live);
+  font-size: 13px;
+}
+
+.pf-delete__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pf-delete__go {
+  height: 48px;
+  background: rgba(255, 90, 78, 0.14);
+  border: 1px solid rgba(255, 90, 78, 0.45);
+  color: #ff8a80;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.pf-legal {
+  margin: 22px 16px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.pf-legal a {
+  color: var(--muted);
+  text-decoration: none;
+}
