@@ -40,6 +40,8 @@ from .sources.base import NotFound, SourceError
 
 log = logging.getLogger("collector")
 
+SOFA_NEXT_PAGES = 5   # страниц team/…/events/next за раз — с запасом (сезон помещается в 2)
+
 
 def _ymd(iso: str, sep: str = "") -> str:
     return iso[:10].replace("-", sep)
@@ -398,9 +400,20 @@ class Collector:
         return ctx
 
     async def _sofa_team_events(self) -> list:
+        """Последние матчи Реала (страница 0) и все будущие: team/2829/events/next/{page} листаем,
+        пока hasNextPage (по 30 матчей на странице; на сезон — 2 страницы, предохранитель — SOFA_NEXT_PAGES).
+        Дальние туры (апрель–май) лежат только на второй странице."""
         last = await self.ss.team_events("last")
-        nxt = await self.ss.team_events("next")
-        self.sofa_events = (last.get("events") or []) + (nxt.get("events") or [])
+        evs = list(last.get("events") or [])
+        for page in range(SOFA_NEXT_PAGES):
+            try:
+                nxt = await self.ss.team_events("next", page)
+            except NotFound:
+                break                         # за последней страницей SofaScore отвечает 404
+            evs += nxt.get("events") or []
+            if not nxt.get("hasNextPage"):
+                break
+        self.sofa_events = evs
         return self.sofa_events
 
     async def _espn_schedules(self, leagues=None) -> dict:
@@ -472,7 +485,10 @@ class Collector:
                 res["sofascore"] = self._map_list(fixtures, "sofascore", [
                     (str(e.get("id")), e.get("startTimestamp"), (e.get("homeTeam") or {}).get("name"),
                      (e.get("awayTeam") or {}).get("name"), (e.get("homeTeam") or {}).get("id"),
-                     (e.get("awayTeam") or {}).get("id"), None) for e in evs])
+                     (e.get("awayTeam") or {}).get("id"), None,
+                     config.SOFA_TO_FM_LEAGUE.get(((e.get("tournament") or {}).get("uniqueTournament") or {}).get("id")))
+                    for e in evs])
+                res["sofascore_events"] = len(evs)
             except SourceError as e:
                 log.warning("mapping: sofascore: %s", e)
         if self.es.available():
@@ -482,7 +498,8 @@ class Collector:
                 items = []
                 for f in espn.normalize_fixtures(sched):
                     items.append((str(f["ids"]["espn"]), ts(f["kickoff"]), f["home"]["name"], f["away"]["name"],
-                                  f["_espn_team_ids"][0], f["_espn_team_ids"][1], f["ids"]["espn_league"]))
+                                  f["_espn_team_ids"][0], f["_espn_team_ids"][1], f["ids"]["espn_league"],
+                                  config.ESPN_TO_FM_LEAGUE.get(f["ids"]["espn_league"])))
                 res["espn"] = self._map_list(fixtures, "espn", items)
             except SourceError as e:
                 log.warning("mapping: espn: %s", e)
@@ -513,34 +530,53 @@ class Collector:
         return n
 
     def _map_list(self, fixtures, source, items) -> int:
+        """items: (id, начало unix, хозяева, гости, id хозяев, id гостей, note[, турнир FotMob]).
+        Турнир (если источник его дал) обязан совпасть: иначе в запасном правиле ±4 дня матч Ла Лиги
+        с Реал Сосьедадом 7 февраля уходил в Суперкубок с той же парой 3 февраля."""
         n = 0
+        teams = store.map_all(self.conn, "team", source)
+
+        def team_ok(fside: dict, name, sid_team) -> bool:
+            # имя или уже известный id команды у источника («Real Racing Club» = «Racing Santander»)
+            return same_team(fside["name"], name) or (
+                sid_team is not None and teams.get(str(sid_team)) == str(fside.get("id")))
+
+        def league_ok(f: dict, league) -> bool:
+            return league is None or (f.get("tournament") or {}).get("id") in (None, league)
+
         with self.conn:
-            for sid, start, hname, aname, hid, aid, note in items:
+            for sid, start, hname, aname, hid, aid, note, *rest in items:
+                league = rest[0] if rest else None
                 if not start:
                     continue
                 near = [f for f in fixtures
                         if ts(f["kickoff"]) is not None and abs(ts(f["kickoff"]) - float(start)) <= 3 * 3600]
                 for f in near:
-                    names_ok = same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)
+                    names_ok = team_ok(f["home"], hname, hid) and team_ok(f["away"], aname, aid)
                     # Реал не играет два матча за 3 часа: единственный кандидат с Реалом на той же
                     # стороне — тот же матч, даже если имена соперника не совпали
                     # («Racing Santander» / «Real Racing Club»)
                     real_side_ok = len(near) == 1 and (
                         (f["home"]["id"] == config.TEAM_ID and same_team(hname, "Real Madrid")) or
                         (f["away"]["id"] == config.TEAM_ID and same_team(aname, "Real Madrid")))
-                    if names_ok or real_side_ok:
+                    if (names_ok or real_side_ok) and league_ok(f, league):
                         break
                 else:
                     # дальние туры без назначенного времени: у источников разные даты-заглушки.
-                    # Пара «хозяин–гость» за ±4 дня не повторяется — сопоставляем по ней.
-                    f = next((f for f in fixtures if ts(f["kickoff"]) is not None
-                              and abs(ts(f["kickoff"]) - float(start)) <= 4 * 86400
-                              and same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)), None)
-                    if not f:
+                    # Пара «хозяин–гость» в одном турнире за ±4 дня не повторяется — сопоставляем по ней,
+                    # из нескольких кандидатов — ближайший по времени.
+                    cands = [f for f in fixtures if ts(f["kickoff"]) is not None
+                             and abs(ts(f["kickoff"]) - float(start)) <= 4 * 86400 and league_ok(f, league)
+                             and team_ok(f["home"], hname, hid) and team_ok(f["away"], aname, aid)]
+                    if not cands:
                         continue
+                    f = min(cands, key=lambda f: abs(ts(f["kickoff"]) - float(start)))
                 store.map_set(self.conn, "match", source, sid, f["id"], note)
                 store.map_set(self.conn, "team", source, hid, f["home"]["id"])
                 store.map_set(self.conn, "team", source, aid, f["away"]["id"])
+                for t_sid, t_fid in ((hid, f["home"]["id"]), (aid, f["away"]["id"])):
+                    if t_sid not in (None, "") and t_fid not in (None, ""):
+                        teams[str(t_sid)] = str(t_fid)
                 n += 1
         return n
 

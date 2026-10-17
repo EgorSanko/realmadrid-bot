@@ -1,0 +1,1036 @@
+[
+{
+"id": 5868025,
+"ids": {
+"fotmob": 5868025
+},
+"kickoff": "2026-08-22T19:30:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8558,
+"name": "Espanyol"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868018,
+"ids": {
+"fotmob": 5868018
+},
+"kickoff": "2026-08-26T19:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8560,
+"name": "Real Sociedad"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868038,
+"ids": {
+"fotmob": 5868038
+},
+"kickoff": "2026-08-30T15:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9864,
+"name": "Málaga"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868043,
+"ids": {
+"fotmob": 5868043
+},
+"kickoff": "2026-09-04T19:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8603,
+"name": "Real Betis"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 6106242,
+"ids": {
+"fotmob": 6106242
+},
+"kickoff": "2026-09-08T19:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8636,
+"name": "Inter"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868057,
+"ids": {
+"fotmob": 5868057
+},
+"kickoff": "2026-09-12T19:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8370,
+"name": "Rayo Vallecano"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868065,
+"ids": {
+"fotmob": 5868065
+},
+"kickoff": "2026-09-15T19:30:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 10268,
+"name": "Elche"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868072,
+"ids": {
+"fotmob": 5868072
+},
+"kickoff": "2026-09-20T14:15:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 9906,
+"name": "Atlético Madrid"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868089,
+"ids": {
+"fotmob": 5868089
+},
+"kickoff": "2026-10-10T19:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 10205,
+"name": "Villarreal"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 6106274,
+"ids": {
+"fotmob": 6106274
+},
+"kickoff": "2026-10-14T19:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8686,
+"name": "Roma"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "finished"
+}
+},
+{
+"id": 5868098,
+"ids": {
+"fotmob": 5868098
+},
+"kickoff": "2026-10-18T19:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8302,
+"name": "Sevilla"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106244,
+"ids": {
+"fotmob": 6106244
+},
+"kickoff": "2026-10-21T19:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 178475,
+"name": "RB Leipzig"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868105,
+"ids": {
+"fotmob": 5868105
+},
+"kickoff": "2026-10-25T20:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8634,
+"name": "Barcelona"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868118,
+"ids": {
+"fotmob": 5868118
+},
+"kickoff": "2026-11-01T15:15:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8696,
+"name": "Racing Santander"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106401,
+"ids": {
+"fotmob": 6106401
+},
+"kickoff": "2026-11-04T17:45:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8563,
+"name": "AEK Athens"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868129,
+"ids": {
+"fotmob": 5868129
+},
+"kickoff": "2026-11-07T20:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 10267,
+"name": "Valencia"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868139,
+"ids": {
+"fotmob": 5868139
+},
+"kickoff": "2026-11-22T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9910,
+"name": "Celta Vigo"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106243,
+"ids": {
+"fotmob": 6106243
+},
+"kickoff": "2026-11-24T20:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8640,
+"name": "PSV Eindhoven"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868148,
+"ids": {
+"fotmob": 5868148
+},
+"kickoff": "2026-11-29T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9866,
+"name": "Deportivo Alavés"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868152,
+"ids": {
+"fotmob": 5868152
+},
+"kickoff": "2026-12-06T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8315,
+"name": "Athletic Club"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106258,
+"ids": {
+"fotmob": 6106258
+},
+"kickoff": "2026-12-09T20:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 9825,
+"name": "Arsenal"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868168,
+"ids": {
+"fotmob": 5868168
+},
+"kickoff": "2026-12-13T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8371,
+"name": "Osasuna"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868174,
+"ids": {
+"fotmob": 5868174
+},
+"kickoff": "2026-12-20T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 9783,
+"name": "Deportivo A Coruña"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868188,
+"ids": {
+"fotmob": 5868188
+},
+"kickoff": "2027-01-03T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8305,
+"name": "Getafe"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868198,
+"ids": {
+"fotmob": 5868198
+},
+"kickoff": "2027-01-10T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8581,
+"name": "Levante"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868207,
+"ids": {
+"fotmob": 5868207
+},
+"kickoff": "2027-01-17T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 9864,
+"name": "Málaga"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106245,
+"ids": {
+"fotmob": 6106245
+},
+"kickoff": "2027-01-19T20:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9977,
+"name": "LASK"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868218,
+"ids": {
+"fotmob": 5868218
+},
+"kickoff": "2027-01-24T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8603,
+"name": "Real Betis"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6106334,
+"ids": {
+"fotmob": 6106334
+},
+"kickoff": "2027-01-27T20:00:00Z",
+"tournament": {
+"id": 42,
+"name": "Champions League"
+},
+"home": {
+"id": 9728,
+"name": "Shakhtar Donetsk"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868228,
+"ids": {
+"fotmob": 5868228
+},
+"kickoff": "2027-01-31T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8370,
+"name": "Rayo Vallecano"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 6019526,
+"ids": {
+"fotmob": 6019526
+},
+"kickoff": "2027-02-03T19:00:00Z",
+"tournament": {
+"id": 139,
+"name": "Super Cup"
+},
+"home": {
+"id": 8560,
+"name": "Real Sociedad"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868239,
+"ids": {
+"fotmob": 5868239
+},
+"kickoff": "2027-02-07T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8560,
+"name": "Real Sociedad"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868246,
+"ids": {
+"fotmob": 5868246
+},
+"kickoff": "2027-02-14T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8315,
+"name": "Athletic Club"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868259,
+"ids": {
+"fotmob": 5868259
+},
+"kickoff": "2027-02-21T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8302,
+"name": "Sevilla"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868269,
+"ids": {
+"fotmob": 5868269
+},
+"kickoff": "2027-02-28T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 10267,
+"name": "Valencia"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868280,
+"ids": {
+"fotmob": 5868280
+},
+"kickoff": "2027-03-07T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 10205,
+"name": "Villarreal"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868290,
+"ids": {
+"fotmob": 5868290
+},
+"kickoff": "2027-03-14T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8558,
+"name": "Espanyol"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868292,
+"ids": {
+"fotmob": 5868292
+},
+"kickoff": "2027-03-21T14:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 9910,
+"name": "Celta Vigo"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868309,
+"ids": {
+"fotmob": 5868309
+},
+"kickoff": "2027-04-04T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9906,
+"name": "Atlético Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868315,
+"ids": {
+"fotmob": 5868315
+},
+"kickoff": "2027-04-11T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8371,
+"name": "Osasuna"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868327,
+"ids": {
+"fotmob": 5868327
+},
+"kickoff": "2027-04-18T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8305,
+"name": "Getafe"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868337,
+"ids": {
+"fotmob": 5868337
+},
+"kickoff": "2027-04-21T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 10268,
+"name": "Elche"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868347,
+"ids": {
+"fotmob": 5868347
+},
+"kickoff": "2027-05-02T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8581,
+"name": "Levante"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868358,
+"ids": {
+"fotmob": 5868358
+},
+"kickoff": "2027-05-09T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8634,
+"name": "Barcelona"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868368,
+"ids": {
+"fotmob": 5868368
+},
+"kickoff": "2027-05-16T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 8696,
+"name": "Racing Santander"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868371,
+"ids": {
+"fotmob": 5868371
+},
+"kickoff": "2027-05-23T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 9866,
+"name": "Deportivo Alavés"
+},
+"away": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"status": {
+"state": "scheduled"
+}
+},
+{
+"id": 5868389,
+"ids": {
+"fotmob": 5868389
+},
+"kickoff": "2027-05-30T13:00:00Z",
+"tournament": {
+"id": 87,
+"name": "LaLiga"
+},
+"home": {
+"id": 8633,
+"name": "Real Madrid"
+},
+"away": {
+"id": 9783,
+"name": "Deportivo A Coruña"
+},
+"status": {
+"state": "scheduled"
+}
+}
+]
