@@ -126,61 +126,20 @@ button {
   color: var(--muted);
 }
 
-/* ---------- пустое состояние ---------- */
+/* ---------- страница «не найдено» ---------- */
 
-.empty {
-  margin: 6px 16px 0;
-  padding: 40px 24px;
-  border-radius: 24px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+.nf__more {
+  margin: 14px 16px 0;
   text-align: center;
+  font-size: 14px;
 }
 
-.empty__icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1px solid var(--ring);
-  display: flex;
+.nf__more a {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--dim);
-}
-
-.empty__icon svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-}
-
-.empty__chip {
-  margin-top: 6px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: var(--surface-2);
+  min-height: 44px;
+  padding: 0 12px;
   color: var(--gold);
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.empty__title {
-  margin: 0;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.empty__text {
-  margin: 0;
-  max-width: 260px;
-  font-size: 13px;
-  color: var(--muted);
 }
 
 /* ---------- нижнее меню (nav.bottom в a.css) ---------- */

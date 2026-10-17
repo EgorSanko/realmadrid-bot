@@ -39,4 +39,4 @@ a.hero-mc:active { border-color: var(--ring); }
 .mrow__goals { flex: none; min-width: 16px; text-align: right; font-family: var(--display); font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
 .mrow__note { margin-top: -1px; padding-left: 32px; font-size: 11px; color: var(--muted); }
 .mrow__side { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 26px; }
-.mrow__comp { font-size: 10px; font-weight: 700; color: var(--gold-light); }
+.mrow__comp { font-size: 11px; font-weight: 700; color: var(--gold-light); }
