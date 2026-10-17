@@ -10,6 +10,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once player <id>      # карточка игрока (FotMob → SofaScore)
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
   python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
+  python -m app.collector once settle           # начислить очки прогнозов за сыгранные матчи
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -30,6 +31,8 @@ from datetime import datetime, timedelta, timezone
 
 from . import avatars, config, store
 from .predictions import db as predictions_db
+from .predictions.service import PredictionService, utcnow
+from .predictions.snapshot_provider import SnapshotProvider
 from .model import iso_utc, name_key, same_person, same_team, ts
 from .sources import espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
@@ -68,6 +71,11 @@ class Collector:
         self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
         self._avatar_close = None
         self._avatar_task: asyncio.Task | None = None
+        # начисление очков прогнозов: раз в SETTLE_INTERVAL и сразу, как увидели новый/исправленный итог
+        self.last_settle = 0.0
+        self.settle_due = False
+        self.predict_clock = utcnow                # подменяется в тестах
+        self._predict: PredictionService | None = None
 
     async def close(self):
         for s in (*self.sources.values(), *self.media.values()):
@@ -106,6 +114,43 @@ class Collector:
         finally:
             conn.close()
         return done
+
+    # ================= прогнозы: начисление очков =================
+
+    def _predictions(self) -> PredictionService:
+        if self._predict is None:
+            # матчи — из тех же снимков, что пишет сборщик; прогнозы — DATA_DIR/predictions.db
+            self._predict = PredictionService(SnapshotProvider(), clock=self.predict_clock)
+        return self._predict
+
+    async def tick_settle(self, now: float, force: bool = False) -> list | None:
+        """settle_pending(): матчи, которые начались и ещё не рассчитаны, и исправления итогов за 14 дней.
+
+        Идемпотентно: неизменившийся итог — 'unchanged', очки не удваиваются. Лёгкий проход — раз в 10 мин;
+        вне очереди — когда снимок матча впервые стал «завершён» или поменялся итог (счёт, голы).
+        """
+        if not (force or self.settle_due or now - self.last_settle >= config.SETTLE_INTERVAL):
+            return None
+        self.last_settle = now
+        self.settle_due = False
+        try:
+            res = await asyncio.to_thread(self._predictions().settle_pending)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("settle: ошибка (продолжаю)")
+            return None
+        for r in res:
+            if r["result"] in ("settled", "resettled", "voided"):
+                log.info("settle %s → %s: прогнозов %s, изменено %s", r["match_id"], r["result"],
+                         r["predictions"], r["changed"])
+        self.cycles["settle"] = self.cycles.get("settle", 0) + 1
+        return res
+
+    def _results_sig(self) -> tuple:
+        """Итоги сыгранных/идущих матчей календаря — заметить исправление результата после refresh_team."""
+        return tuple((f.get("id"), f["status"]["state"], f["home"].get("score"), f["away"].get("score"))
+                     for f in self._fixtures() if f["status"].get("finished") or f["status"].get("live"))
 
     # ================= медиа: новости и видео =================
 
@@ -642,6 +687,9 @@ class Collector:
             for other in ("sofascore", "espn", "livescore"):
                 m["ids"][other] = m["ids"].get(other) or store.from_fotmob(self.conn, "match", other, fid)
             m["fallback_errors"] = errors or None
+            # новый или исправленный итог — очки прогнозов пересчитать в этом же такте
+            if m["status"]["finished"] and _result_of(m) != _result_of((prev or {}).get("data")):
+                self.settle_due = True
             # момент, когда впервые увидели «завершён» — для окна +30 мин
             seen = (prev or {}).get("data", {}).get("finished_seen_at") if prev else None
             m["finished_seen_at"] = seen or (time.time() if m["status"]["finished"] else None)
@@ -781,7 +829,10 @@ class Collector:
             now = time.time()
             try:
                 if now - self.last_team >= config.TEAM_INTERVAL:
+                    before = self._results_sig()
                     log.info("team: %s", await self.refresh_team())
+                    if self._results_sig() != before:
+                        self.settle_due = True
                 if now - self.last_mapping >= config.MAPPING_INTERVAL:
                     log.info("mapping: %s", await self.refresh_mapping())
                 win = self.window(now)
@@ -811,6 +862,8 @@ class Collector:
                         log.info("demand %s → %s", fid, m and m["source"])
                 # карточки игроков: заявки — всегда, плановое обновление состава — вне окна матча
                 await self.tick_players(now, squad=not win)
+                # очки прогнозов: после «завершён», при исправлении итога и раз в 10 мин
+                await self.tick_settle(now)
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
@@ -876,6 +929,16 @@ def _ctx_from_match(m: dict) -> dict:
 
 # ================= CLI =================
 
+def _result_of(m: dict | None) -> tuple | None:
+    """Всё, от чего зависят очки: статус, счёт, голы (минута, сторона, автор, автогол, серия)."""
+    if not m:
+        return None
+    goals = tuple((e.get("minute"), e.get("added"), e.get("side"), (e.get("player") or {}).get("id"),
+                   bool(e.get("own_goal")), bool(e.get("shootout")))
+                  for e in m.get("events") or [] if e.get("type") == "goal")
+    return (m["status"]["state"], m["home"].get("score"), m["away"].get("score"), goals)
+
+
 def _summary(m: dict | None) -> str:
     if not m:
         return "нет данных (все источники недоступны или нет сопоставления)"
@@ -910,6 +973,9 @@ async def _cli(args) -> int:
                 print(json.dumps({k: p.get(k) for k in ("id", "name", "source", "available")} if p else None,
                                  ensure_ascii=False))
                 c.write_state()
+            elif args.what == "settle":
+                res = await c.tick_settle(time.time(), force=True) or []
+                print(json.dumps([r for r in res if r["result"] != "unchanged"], ensure_ascii=False))
             elif args.what == "avatars":
                 c.last_avatars = 0.0
                 print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
@@ -955,7 +1021,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players", "avatars"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players", "avatars", "settle"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")
