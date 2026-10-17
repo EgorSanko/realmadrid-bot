@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 
 from . import auth_api, config, store
 from .model import ts
+from .games import api as games_api
 from .predictions import api as predict_api
 from .predictions.snapshot_provider import SnapshotProvider
 from .sources import article, media
@@ -28,6 +29,7 @@ app = FastAPI(title="Мадридиста API", version=VERSION, docs_url=None, 
 app.include_router(stream_router)
 predict_api.install(app)  # /api/predict/* — этап 10
 auth_api.install(app)     # /api/auth/* — вход через Telegram и сессия
+games_api.install(app)    # /api/games/* — викторина и пенальти (отдельный рейтинг, без очков прогнозов)
 
 # прогнозы читают матчи из снимков сборщика (rm.sqlite3); тесты и проверки подставляют свой сервис сами
 if predict_api._service is None:
