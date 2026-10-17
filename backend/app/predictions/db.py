@@ -130,6 +130,22 @@ MIGRATIONS: list[str] = [
     """
     ALTER TABLE users ADD COLUMN seen_at TEXT;
     """,
+    # v4 — мини-игры (викторина, пенальти): итоги партий вошедших пользователей.
+    # Отдельный рейтинг: в standings и очки прогнозов не попадает никогда (app/games/service.py).
+    """
+    CREATE TABLE game_results (
+        id          INTEGER PRIMARY KEY,
+        user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        game        TEXT NOT NULL CHECK (game IN ('quiz', 'penalty')),
+        level       TEXT NOT NULL,
+        score       INTEGER NOT NULL CHECK (score >= 0),
+        detail      TEXT NOT NULL DEFAULT '{}',          -- JSON: верных/голов, серия, счёт серии…
+        week        TEXT NOT NULL,                       -- неделя по МСК, понедельник: 'YYYY-MM-DD'
+        created_at  TEXT NOT NULL
+    );
+    CREATE INDEX game_results_week ON game_results(game, week, score DESC);
+    CREATE INDEX game_results_user ON game_results(user_id, game, level, score DESC);
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

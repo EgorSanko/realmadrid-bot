@@ -1,7 +1,8 @@
-import { NavLink } from 'react-router';
-import { Icon, SECTIONS } from '../sections';
+import { NavLink, useLocation } from 'react-router';
+import { Icon, SECTIONS, sectionActive } from '../sections';
 
 export function BottomNav() {
+  const { pathname } = useLocation();
   return (
     <nav className="bottom-nav" aria-label="Разделы">
       <div className="bottom-nav__inner">
@@ -10,7 +11,7 @@ export function BottomNav() {
             key={s.path}
             to={s.path}
             end={s.path === '/'}
-            className={({ isActive }) => (isActive ? 'on' : undefined)}
+            className={({ isActive }) => (isActive || sectionActive(s, pathname) ? 'on' : undefined)}
           >
             <Icon>{s.icon}</Icon>
             {s.label}

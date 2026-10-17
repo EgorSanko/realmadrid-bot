@@ -1,0 +1,6 @@
+/* Вкладки раздела «Игры» поверх Прогнозов, Викторины и Пенальти (стиль ui-tabs--segmented, но ссылками) */
+.gtabs { margin-top: 2px; }
+.gtabs__tab { display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; }
+.gtabs__tab.is-on { color: var(--text); box-shadow: inset 0 -2px 0 var(--gold); }
+.gtabs__tab:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+html.desk .gtabs { margin: 0 0 22px; }

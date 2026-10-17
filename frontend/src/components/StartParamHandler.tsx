@@ -14,6 +14,7 @@ function launchStartParam(): string | null {
 
 /**
  * Разбор `startapp` мини-аппа один раз за запуск: profile → /profile, match_<id> → /match/<id>,
+ * quiz / penalty → /games/…,
  * league_<код> → вступить в лигу и открыть профиль с сообщением. Берём start_param из подписанного
  * initData (ответ входа), иначе — из параметров запуска.
  */
@@ -37,6 +38,7 @@ export function StartParamHandler() {
       }
       if (act.kind === 'profile') navigate('/profile');
       else if (act.kind === 'match') navigate(`/match/${act.id}`);
+      else if (act.kind === 'game') navigate(`/games/${act.game}`);
       else {
         let flash: string;
         try {

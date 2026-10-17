@@ -180,7 +180,7 @@ async def _on_predict_error(request: Request, exc: PredictError):
 
 
 async def _on_validation(request: Request, exc: RequestValidationError):
-    if request.url.path.startswith(PREFIX):
+    if request.url.path.startswith((PREFIX, "/api/games")):
         return _err(422, "validation", _validation_message(exc))
     return await request_validation_exception_handler(request, exc)
 

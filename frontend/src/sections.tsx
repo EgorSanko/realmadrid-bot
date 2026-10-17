@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
 
-/** Пять разделов нижнего меню. Иконки — ровно те, что в макете a-home.html. */
+/** Пять разделов нижнего меню. Иконки — ровно те, что в макете a-home.html («Игры» — кубок прогнозов). */
 export interface Section {
   path: string;
   label: string;
   stage: number;
   /** что появится в разделе — описание продукта, не данные */
   about: string;
+  /** другие адреса, на которых пункт меню тоже подсвечен */
+  also?: string[];
   icon: ReactNode;
 }
 
@@ -50,10 +52,13 @@ export const SECTIONS: Section[] = [
     ),
   },
   {
+    // «Игры»: внутри вкладки «Прогнозы / Викторина / Пенальти» (components/GamesTabs.tsx).
+    // Пункт ведёт на прогнозы — главную игру раздела, викторина и пенальти — /games/*.
     path: '/predict',
-    label: 'Прогнозы',
+    label: 'Игры',
     stage: 10,
-    about: 'Прогнозы на матчи и таблица болельщиков.',
+    about: 'Прогнозы на матчи, викторина и пенальти.',
+    also: ['/games'],
     icon: <path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8" />,
   },
 ];
@@ -64,4 +69,10 @@ export function Icon({ children }: { children: ReactNode }) {
       {children}
     </svg>
   );
+}
+
+/** Пункт меню подсвечен: свой адрес или один из `also`. */
+export function sectionActive(s: Section, pathname: string): boolean {
+  if (s.path === '/') return pathname === '/';
+  return [s.path, ...(s.also ?? [])].some((p) => pathname === p || pathname.startsWith(p + '/'));
 }

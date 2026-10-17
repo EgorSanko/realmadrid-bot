@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import { GamesTabs } from '../../components/GamesTabs';
 import { LoginButton } from '../../components/LoginButton';
 import { useDesktop } from '../../lib/shell';
 import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, useAuth } from '../../lib/auth';
@@ -57,9 +58,10 @@ export default function PredictScreen() {
     return (
       <main className="pd pd--desk">
         <header className="topbar pd-top">
-          <h1 className="topbar__title">Прогнозы</h1>
-          {season && <span className="pd-top__aside">сезон {season}</span>}
+          <h1 className="topbar__title">Игры</h1>
+          {season && <span className="pd-top__aside">прогнозы · сезон {season}</span>}
         </header>
+        <GamesTabs />
         <div className="dk-split pd-desk">
           <div className="dk-col">
       {/* Мои итоги / вход */}
@@ -149,9 +151,10 @@ export default function PredictScreen() {
   return (
     <main className="pd">
       <header className="topbar pd-top">
-        <h1 className="topbar__title">Прогнозы</h1>
-        {season && <span className="pd-top__aside">сезон {season}</span>}
+        <h1 className="topbar__title">Игры</h1>
+        {season && <span className="pd-top__aside">прогнозы · сезон {season}</span>}
       </header>
+      <GamesTabs />
 
       {/* Мои итоги / вход */}
       {authed ? (
