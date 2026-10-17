@@ -1,5 +1,6 @@
 import { shareURL } from '@tma.js/sdk-react';
 import { inMiniApp } from './auth';
+import { nativeShare } from './nativeBridge';
 
 /** Скопировать текст: Clipboard API, иначе — старый способ через скрытое поле. */
 export async function copyText(text: string): Promise<boolean> {
@@ -25,7 +26,7 @@ export async function copyText(text: string): Promise<boolean> {
   }
 }
 
-/** Поделиться: в Telegram — shareURL из SDK; в браузере — системное меню; иначе копируем. */
+/** Поделиться: в Telegram — shareURL из SDK; в приложении RuStore — меню Android; в браузере — системное меню; иначе копируем. */
 export async function shareLink(url: string, text: string): Promise<'shared' | 'copied' | 'failed'> {
   if (inMiniApp()) {
     try {
@@ -37,6 +38,7 @@ export async function shareLink(url: string, text: string): Promise<'shared' | '
       console.warn('[tma] shareURL недоступен', e);
     }
   }
+  if (nativeShare(url, text)) return 'shared';
   if (typeof navigator.share === 'function') {
     try {
       await navigator.share({ url, text });

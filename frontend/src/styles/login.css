@@ -91,6 +91,43 @@
   cursor: pointer;
 }
 
+/* ---------- код доступа (приложение из RuStore, LoginButton → ReviewLogin) ---------- */
+
+.review-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-login__label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.review-login__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--gold-edge);
+  border-radius: var(--radius-btn);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-login__input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.review-login__input::placeholder {
+  color: var(--dim);
+  letter-spacing: 0.08em;
+}
+
 /* ---------- вход по коду (components/CodeLogin.tsx) ---------- */
 
 .code-login {

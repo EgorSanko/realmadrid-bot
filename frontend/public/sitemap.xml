@@ -7,4 +7,6 @@
   <url><loc>https://realmadridfan.ru/predict</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://realmadridfan.ru/games/quiz</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://realmadridfan.ru/games/penalty</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://realmadridfan.ru/privacy</loc><changefreq>monthly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://realmadridfan.ru/terms</loc><changefreq>monthly</changefreq><priority>0.2</priority></url>
 </urlset>

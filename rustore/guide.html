@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>RuStore — инструкция и материалы</title>
+<!-- Шаблон PDF. Собирается tools/rustore/make-guide.js: {{ROOT}} — путь к репозиторию, {{MODER}} — строка
+     комментария модератору из файла вне репозитория (в репозитории — только заглушка). -->
+<link rel="stylesheet" href="{{ROOT}}/design/fonts/fonts.css">
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  :root { --bg: #06070B; --navy: #0B0F1D; --gold: #D4AF37; --gold-l: #F4D57A; --text: #1B1D24; --muted: #5F6576; --line: #E3E0D6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Onest', sans-serif; font-size: 10.6pt; line-height: 1.5; color: var(--text); }
+  h1, h2, h3 { font-family: 'Unbounded', sans-serif; font-weight: 700; color: var(--navy); line-height: 1.25; }
+  h2 { font-size: 15pt; margin: 0 0 10px; padding-top: 4px; border-top: 3px solid var(--gold); padding-top: 12px; }
+  h3 { font-size: 11.5pt; margin: 18px 0 6px; font-weight: 500; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  a { color: #8A6A10; text-decoration: none; border-bottom: 1px solid rgba(212, 175, 55, .5); }
+  code, .mono { font-family: Consolas, 'Courier New', monospace; font-size: 9.4pt; background: #F4F1E8; padding: 1px 4px; border-radius: 4px; }
+  .page { page-break-after: always; }
+  @page cover { margin: 0; }
+  .cover { page: cover; width: 210mm; height: 296mm; margin: 0; padding: 26mm 20mm; color: #EEF0F5;
+    background: radial-gradient(520px 420px at 50% 18%, rgba(212, 175, 55, .22), transparent 70%), linear-gradient(180deg, #0B0F1D, #06070B 60%);
+    display: flex; flex-direction: column; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cover .kicker { color: var(--gold); letter-spacing: .24em; font-weight: 600; font-size: 10pt; }
+  .cover h1 { color: #F6F2E6; font-size: 30pt; margin: 14px 0 6px; }
+  .cover .sub { color: rgba(238, 240, 245, .75); font-size: 13pt; }
+  .cover .icons { display: flex; gap: 22px; margin: 34px 0 26px; align-items: flex-end; }
+  .cover .icons img { width: 120px; height: 120px; border-radius: 26px; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+  .cover .icons span { display: block; font-size: 8.5pt; color: rgba(238, 240, 245, .6); margin-top: 6px; text-align: center; }
+  .cover .files { margin-top: auto; font-size: 9.6pt; color: rgba(238, 240, 245, .85); }
+  .cover .files b { color: var(--gold-l); font-weight: 600; }
+  .cover .files div { margin: 3px 0; }
+  .box { border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 8px; padding: 10px 12px; margin: 10px 0; background: #FBFAF6; }
+  .warn { border-left-color: #D2483C; background: #FDF6F4; }
+  .ok { border-left-color: #2E9D6A; background: #F4FBF7; }
+  .paste { font-family: 'Onest', sans-serif; white-space: pre-wrap; border: 1px dashed #C9B26A; background: #FFFDF5; border-radius: 8px; padding: 10px 12px; margin: 6px 0 12px; font-size: 10pt; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.8pt; }
+  th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; color: var(--navy); background: #F6F3EA; }
+  h2, h3 { break-after: avoid; }
+  .step, tr, .box { break-inside: avoid; }
+  .shots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0; }
+  .shots figure { margin: 0; }
+  .shots img { width: 100%; border-radius: 6px; display: block; }
+  .shots figcaption { font-size: 8pt; color: var(--muted); margin-top: 3px; }
+  .step { display: grid; grid-template-columns: 28px 1fr; gap: 8px; margin: 9px 0; }
+  .step .n { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: var(--gold-l); font-weight: 700; font-size: 10pt;
+    display: flex; align-items: center; justify-content: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .muted { color: var(--muted); }
+  .small { font-size: 9pt; }
+  .tag { display: inline-block; padding: 0 6px; border-radius: 10px; background: #F1E7C5; font-size: 8.6pt; font-weight: 600; color: #6B5310; }
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div class="kicker">МАДРИДИСТА · RUSTORE</div>
+  <h1>Публикация приложения<br>в RuStore</h1>
+  <div class="sub">Инструкция по шагам, тексты карточки, скриншоты, комментарий модератору и риски</div>
+  <div class="icons">
+    <div><img src="{{ROOT}}/rustore/icon-512.png"><span>основная иконка</span></div>
+    <div><img src="{{ROOT}}/rustore/fallback-icon/icon-512.png"><span>запасная, без эмблемы</span></div>
+  </div>
+  <div class="files">
+    <div><b>Пакет:</b> ru.realmadridfan.app · версия 1.0.0 (versionCode 1) · minSdk 24 · targetSdk 35</div>
+    <div><b>Файлы:</b> C:\Users\egor3\Downloads\Мадридиста-RuStore\ — madridista-1.0.0-release.apk, …aab, screenshots\, icons\</div>
+    <div><b>Ключ подписи:</b> C:\Users\egor3\.keystores\realmadridfan-release.jks (+ .txt с паролем и отпечатком)</div>
+    <div><b>SHA-256 сертификата:</b> {{SHA256}}</div>
+    <div><b>Код для модератора:</b> C:\Users\egor3\.keystores\realmadridfan-rustore-review.txt</div>
+    <div><b>Политика:</b> https://realmadridfan.ru/privacy · <b>условия:</b> https://realmadridfan.ru/terms</div>
+    <div style="margin-top:10px" class="muted">Собрано {{DATE}}. Ветка репозитория: {{BRANCH}}.</div>
+  </div>
+</section>
+
+<section class="page">
+  <h2>1. Сначала — сервер (до отправки на модерацию)</h2>
+  <div class="box warn">
+    Модератор откроет приложение, а оно показывает живой сайт. Пока новая версия сайта не выложена, в приложении
+    будет блок трансляции, не будет «У меня есть код доступа», удаления аккаунта и страницы /privacy.
+    <b>Поэтому порядок такой: выкладка сайта → проверка → потом консоль RuStore.</b>
+  </div>
+  <div class="step"><div class="n">1</div><div>Выложить ветку (<code>deploy/deploy.sh</code>). В новой версии: скрытие эфира в приложении, вход кодом
+    доступа, удаление аккаунта, страницы <code>/privacy</code> и <code>/terms</code> (они уже в регулярке nginx и в sitemap).</div></div>
+  <div class="step"><div class="n">2</div><div>Добавить в <code>/opt/rm-v2/.env</code> строку <code>REVIEW_LOGIN_CODE=…</code> из файла
+    <code>C:\Users\egor3\.keystores\realmadridfan-rustore-review.txt</code> и перезапустить API. Без неё вход кодом выключен (ответ 404).</div></div>
+  <div class="step"><div class="n">3</div><div>Проверить на телефоне: открыть <a href="https://realmadridfan.ru/privacy">realmadridfan.ru/privacy</a>;
+    поставить APK, войти кодом (Профиль → «Войти через Telegram» → «У меня есть код доступа»), увидеть «RuStore Проверка»,
+    сохранить прогноз. На главной не должно быть блока «Трансляция».</div></div>
+  <div class="step"><div class="n">4</div><div><b>Email в политике — решите сами</b> (TODO): правило RuStore 5.1 требует «контактные данные лица,
+    ответственного за обработку персональных данных». Сейчас указан Telegram-бот. Если добавите email — впишите его в
+    <code>frontend/src/screens/legal/LegalScreen.tsx</code> (раздел 10) и в контакты карточки.</div></div>
+  <div class="step"><div class="n">5</div><div>Сделать резервную копию папки <code>C:\Users\egor3\.keystores\</code> (флешка / зашифрованное облако).
+    Без ключа обновления в той же карточке невозможны.</div></div>
+
+  <h2 style="margin-top:22px">2. Консоль RuStore: первая публикация</h2>
+  <p>Через API нельзя создать новую карточку: черновик версии создаётся только у приложения, у которого уже есть
+  активная версия. Поэтому первая версия — вручную в консоли, все следующие — скриптом <code>rustore/publish.py</code>.
+  Справка: <a href="https://www.rustore.ru/help/developers/publishing-and-verifying-apps/app-publication">«Публикация приложения»</a>.</p>
+  <div class="step"><div class="n">1</div><div>Войти в <a href="https://console.rustore.ru/">console.rustore.ru</a> под ролью <b>«Владелец компании»</b>
+    (только она может добавить новое приложение) → <b>Приложения → Добавить приложение</b> → название «Мадридиста».</div></div>
+  <div class="step"><div class="n">2</div><div><b>Загрузить версию → APK</b>: <code>madridista-1.0.0-release.apk</code>. Выбираем APK, а не AAB:
+    APK уже подписан нашим ключом и RuStore публикует его как есть. Для AAB RuStore подписывает сборку сам, и сначала
+    пришлось бы передать ему ключ (ZIP из утилиты PEPK + сертификат,
+    <a href="https://www.rustore.ru/help/developers/publishing-and-verifying-apps/app-publication/new-version-app/upload-aab">справка про AAB</a>).
+    Приложение весит меньше 1 МБ — выгоды от AAB нет. AAB лежит рядом на всякий случай.
+    Пакет и подпись у всех следующих версий должны совпадать с первой, versionCode — расти
+    (<a href="https://www.rustore.ru/help/developers/publishing-and-verifying-apps/app-publication/apk-signature">справка про подпись</a>).</div></div>
+  <div class="step"><div class="n">3</div><div><b>Тип</b> — «Универсальный» (телефоны и планшеты), не «Только для ТВ». Бесплатное.</div></div>
+  <div class="step"><div class="n">4</div><div><b>Карточка</b>: название, краткое и полное описание, «Что нового» — из раздела 3 (копировать как есть).
+    <b>Категория</b> — «Спорт» (вторая — «Новости»). <b>Теги</b> — «Агрегаторы новостей», «События» (тег «Футбол» в RuStore только для игр).</div></div>
+  <div class="step"><div class="n">5</div><div><b>Возраст — 12+</b>
+    (<a href="https://www.rustore.ru/help/developers/publishing-and-verifying-apps/app-publication/new-version-app/age-restrictions">справка</a>).
+    Обоснование: свои разделы (матчи, статистика, игры) — 0+, но в приложении показываются тексты новостей сторонних
+    спортивных СМИ без нашей премодерации (травмы, конфликты, эпизоды матчей) — по 436-ФЗ это эпизодические
+    ненатуралистичные описания, допустимые для 12+. Ставок, платежей, чата между пользователями нет. Если хотите 6+ —
+    тоже защитимо, но модератор вправе поднять рейтинг.</div></div>
+  <div class="step"><div class="n">6</div><div><b>Иконка</b> — <code>icons\icon-512.png</code> (512×512, без прозрачности, совпадает с иконкой на устройстве).
+    <b>Скриншоты</b> — 9 файлов из <code>screenshots\</code> строго по порядку имён (01 … 09), все вертикальные 1080×1920 (9:16), PNG до 1 МБ.</div></div>
+  <div class="step"><div class="n">7</div><div><b>Контакты разработчика</b> (нужно хотя бы одно): сайт <code>https://realmadridfan.ru</code>; email — если решите (см. TODO).
+    Отдельного поля для политики конфиденциальности в форме нет: ссылка стоит в конце полного описания и внутри
+    приложения (Профиль → «Политика конфиденциальности»), как требует правило 5.1.</div></div>
+  <div class="step"><div class="n">8</div><div><b>Безопасность данных</b> (декларация): см. раздел 4 — что собираем и зачем. Разрешения: только «Интернет».</div></div>
+  <div class="step"><div class="n">9</div><div><b>Комментарий для модератора</b> — строка из раздела 5 (143 символа, лимит 180). → <b>«Отправить на модерацию»</b>.
+    Проверка — до 72 часов. Пока идёт модерация, не меняйте сайт в той части, что видит модератор.</div></div>
+</section>
+
+<section class="page">
+  <h2>3. Тексты карточки (копировать как есть)</h2>
+  <table>
+    <tr><th style="width:30%">Поле</th><th>Значение</th></tr>
+    <tr><td>Название (≤ 30)</td><td><b>{{APPNAME}}</b> <span class="muted small">— совпадает с названием на устройстве</span></td></tr>
+    <tr><td>Краткое описание (≤ 80)</td><td>{{SHORT}} <span class="muted small">({{SHORT_LEN}} симв.)</span></td></tr>
+    <tr><td>Категории</td><td>Спорт (sport), Новости (news)</td></tr>
+    <tr><td>Возраст</td><td>12+ (обоснование — в шаге 5 выше)</td></tr>
+    <tr><td>Теги</td><td>Агрегаторы новостей, События</td></tr>
+    <tr><td>Ключевые слова для поиска<br><span class="muted small">(в RuStore отдельного поля нет — слова уже есть в описании)</span></td>
+      <td>Реал Мадрид, футбол, Ла Лига, Лига чемпионов, расписание матчей, статистика матчей, составы, прогнозы на футбол, викторина, Мбаппе, Винисиус, мадридиста</td></tr>
+  </table>
+  <h3>Что нового (версия 1.0.0)</h3>
+  <div class="paste">{{WHATSNEW}}</div>
+  <h3>Полное описание ({{FULL_LEN}} символов из 4000)</h3>
+  <div class="paste small">{{FULL}}</div>
+</section>
+
+<section class="page">
+  <h2>4. Данные пользователей (для декларации безопасности)</h2>
+  <table>
+    <tr><th style="width:32%">Что</th><th>Когда и зачем</th></tr>
+    <tr><td>Telegram ID, имя, фамилия, @username, фото профиля</td><td>Только после входа через Telegram — чтобы вести профиль, показывать имя и фото в рейтингах и лигах. Не продаются и не передаются третьим лицам.</td></tr>
+    <tr><td>Прогнозы, очки, лиги, результаты игр</td><td>Действия пользователя в приложении после входа — для рейтингов.</td></tr>
+    <tr><td>Cookie сессии <code>rm_session</code></td><td>Держит вход до 30 дней; <code>rm_login</code> — 5 минут на время входа по коду.</td></tr>
+    <tr><td>Технические журналы сервера (IP, время, адрес)</td><td>Работа и защита сервера, до 14 дней.</td></tr>
+    <tr><td>Геолокация, контакты, камера, микрофон, файлы, реклама, аналитика</td><td><b>Не собираются.</b> Разрешение одно — «Интернет». Push-уведомлений нет.</td></tr>
+  </table>
+  <p>Шифрование при передаче — да (только HTTPS). Удаление — в приложении: Профиль → «Удалить аккаунт» → подтверждение
+  (удаляются профиль, фото, прогнозы, рейтинг, свои лиги, игры, сессии и коды входа — правило 5.4). Полный текст — на
+  <a href="https://realmadridfan.ru/privacy">/privacy</a>.</p>
+
+  <h2 style="margin-top:22px">5. Комментарий для модератора</h2>
+  <p>Урок прошлой модерации (КиТ): без данных для входа RuStore отклоняет. Логин и пароль дать нельзя — вход только
+  через Telegram, поэтому сделан <b>постоянный код доступа</b>: он вводится прямо в приложении, без Telegram, и входит в
+  тестового пользователя «RuStore Проверка» (без прав администратора).</p>
+  <div class="paste"><b>{{MODER}}</b></div>
+  <p class="small muted">Тот же текст — строка <code>moderInfo:</code> в <code>C:\Users\egor3\.keystores\realmadridfan-rustore-review.txt</code>
+  (её читает <code>rustore/publish.py</code>). В репозитории — шаблон с заглушкой <code>rustore/moderator-comment.txt</code>.</p>
+  <p>Если модератор спросит подробнее (ответ в консоли или поддержке):</p>
+  <div class="paste small">Приложение — неофициальный фан-проект о ФК «Реал Мадрид». Все разделы (матчи, статистика, составы, таблицы, игроки, новости, видео, викторина, пенальти) доступны без входа. Вход нужен только для сохранения прогнозов и результатов игр; обычные пользователи входят через Telegram-бота, для проверки сделан постоянный код доступа: Профиль → «Войти через Telegram» → «У меня есть код доступа» → ввести код → «Войти». Профиль «RuStore Проверка» можно удалить там же («Удалить аккаунт»). Платежей, рекламы, push-уведомлений и трансляций нет. Данные матчей — из открытых источников.</div>
+
+  <div style="break-inside: avoid">
+  <h2 style="margin-top:22px">6. Скриншоты — порядок загрузки</h2>
+  <div class="shots">{{SHOTS}}</div>
+  <p class="small muted">Реальные экраны приложения (сборка с User-Agent приложения, живые данные 17.10.2026), без эфира, без входа и чужих
+  личных данных; системных панелей Android нет. Пересобрать: <code>tools/rustore/make-screenshots.js</code>.</p>
+  </div>
+</section>
+
+<section class="page">
+  <h2>7. Риски модерации и что делать</h2>
+  <table>
+    <tr><th style="width:28%">Риск (пункт правил)</th><th>Что сделано</th><th style="width:30%">Если отклонят</th></tr>
+    <tr><td><b>Чужой товарный знак</b> — эмблема и название Real Madrid в иконке, скриншотах, описании (4.1, 4.6, 6.4)</td>
+      <td>Везде «неофициальное фан-приложение», «не связано с Real Madrid C.F.», товарные знаки — у владельцев; слов «официальный» и «лучший» нет. Название — «Мадридиста», без «Real Madrid».</td>
+      <td>Сменить иконку на запасную «М» (<code>rustore/fallback-icon/</code>, README там же), убрать «REAL MADRID» из надписи на скриншотах, поднять versionCode, отправить снова. Эмблемы клубов внутри приложения — это информация о матчах; если потребуют и это — обсуждать отдельно.</td></tr>
+    <tr><td><b>Обёртка сайта</b> — WebView без доп. функций запрещён (8.2)</td>
+      <td>Нативное: свой экран «Нет соединения» / «Сервер не отвечает», системный splash, «Назад» по истории, полноэкранное видео с поворотом, <b>«Добавить в календарь»</b> (календарь телефона) и <b>«Поделиться»</b> (меню Android), открытие Telegram. Push нет — по решению владельца.</td>
+      <td>В ответе модератору перечислить эти функции. Дальше по силе: офлайн-режим (кэш последних данных), виджет «ближайший матч» на рабочем столе. Push — только если передумаете.</td></tr>
+    <tr><td><b>Вход только через мессенджер</b> (8.5: «запрещена авторизация только через сторонние мессенджеры»)</td>
+      <td>Вход не обязателен — всё работает без него; модератору дан код доступа.</td>
+      <td>Самый вероятный формальный повод. Решение — второй способ входа без Telegram: VK ID / Яндекс ID или вход по email-коду. Нужна регистрация приложения у провайдера (Егор) и доработка (1–2 дня).</td></tr>
+    <tr><td><b>Нет данных для входа</b> (8.5)</td><td>Код доступа в комментарии.</td><td>Проверить, что <code>REVIEW_LOGIN_CODE</code> есть в .env и API перезапущен.</td></tr>
+    <tr><td><b>Политика и удаление</b> (5.1, 5.4)</td><td>/privacy и /terms на русском, ссылка в описании и в профиле; удаление аккаунта в приложении.</td><td>Если попросят email ответственного — добавить (TODO).</td></tr>
+    <tr><td><b>Контент новостей / видео</b></td><td>Новости — со ссылкой на источник, видео — встроенный плеер YouTube. Трансляций нет.</td><td>Ответить, что это открытые материалы с указанием источника.</td></tr>
+  </table>
+
+  <h2 style="margin-top:22px">8. Следующие версии — через API</h2>
+  <p>Ключ API один на аккаунт (лежит в проекте F1, никуда не копируется). Скрипт без <code>--yes</code> только показывает,
+  что сделает. Запуск: <code>PYTHONIOENCODING=utf-8 python rustore/publish.py …</code></p>
+  <ol>
+    <li>поднять <code>versionCode</code>/<code>versionName</code> в <code>android/app/build.gradle.kts</code>, собрать <code>assembleRelease</code>;</li>
+    <li><code>draft --card rustore/card.json --yes</code> (тексты, «Что нового» из <code>rustore/whats-new.txt</code>, комментарий — из файла с кодом);</li>
+    <li><code>upload-apk …/app-release.apk --yes</code>; при необходимости <code>upload-screens rustore/screenshots --yes</code>, <code>upload-icon rustore/icon-512.png --yes</code>;</li>
+    <li><code>commit --yes</code> — отправка на модерацию. Проверить: <code>status</code>.</li>
+  </ol>
+  <p class="small muted">Справка API: <a href="https://www.rustore.ru/help/work-with-rustore-api/api-authorization-token/">авторизация</a>,
+  <a href="https://www.rustore.ru/help/work-with-rustore-api/api-upload-publication-app/create-draft-version">черновик версии</a>,
+  <a href="https://www.rustore.ru/help/work-with-rustore-api/api-upload-publication-app/upload-screenshot-v2">скриншоты v2</a>,
+  <a href="https://www.rustore.ru/help/work-with-rustore-api/api-upload-publication-app/apk-icon-upload">иконка</a>.
+  Правила модерации: <a href="https://www.rustore.ru/help/developers/publishing-and-verifying-apps/requirement-apps">требования к приложениям</a>.</p>
+
+  <h2 style="margin-top:22px">9. Что проверено</h2>
+  <div class="box ok small">
+    Эмулятор Android 15 (x86_64, Pixel 7, аппаратное ускорение WHPX): установлен подписанный release-APK — splash, загрузка
+    живого сайта, экран «Нет соединения» без сети. Сборка «check» (тот же R8, что в релизе) на локальной копии нового
+    сайта с живыми данными: главная без эфира (запросов к /api/stream нет), матчи, матч (обзор/статистика/составы),
+    таблица, команда, игрок, медиа, новость, видео, викторина, пенальти, профиль; «Открыть Telegram» → внешний переход
+    (Telegram на эмуляторе нет — открылся браузер); вход кодом доступа → «RuStore Проверка» → прогноз сохранён и виден
+    после перезапуска (cookie живёт); «Назад» по истории и выход на корне; поворот; полноэкранное видео YouTube с
+    поворотом и выход «Назад»; нет сети → «Повторить»; ответ 503 → «Сервер не отвечает»; «Добавить в календарь» →
+    Google Календарь; «Поделиться» → меню Android. Видео YouTube играет внутри (проверено на realmadridfan.ru).
+    Тесты: backend pytest, frontend npm test и сборка с проверкой типов — зелёные. Скриншоты проверок — <code>checks/rustore/</code>.
+  </div>
+  <p class="small muted">Не проверено: настоящий телефон с установленным Telegram (переход в приложение Telegram по tg://), вход
+  через бота по-настоящему (нужен сервер), работа кода доступа на боевом сервере (до выкладки), планшет в альбомной ориентации.</p>
+</section>
+
+</body>
+</html>

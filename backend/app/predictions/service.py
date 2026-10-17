@@ -40,6 +40,13 @@ JOIN_RATE = (20, 60.0)      # попытки вступления по коду 
 LOGIN_RATE = (30, 60.0)     # входов с одного IP в минуту (/api/auth/telegram)
 CODE_RATE = (10, 600.0)     # кодов входа с одного IP за 10 мин (POST /api/auth/code)
 CODE_POLL_RATE = (300, 60.0)  # опросов статуса кода с одного IP в минуту (браузер — 40/мин)
+REVIEW_RATE = (10, 600.0)   # попыток входа кодом проверки магазина с одного IP за 10 мин
+
+
+def first_epoch() -> int:
+    """Начальный счётчик сессий нового пользователя — случайный, не 0: если аккаунт удалили и человек
+    зарегистрировался снова, старые сессии (подписанные прежним счётчиком) не оживают."""
+    return secrets.randbelow(2**31 - 1) + 1
 
 
 class PredictError(Exception):
@@ -132,12 +139,13 @@ def upsert_names(c: sqlite3.Connection, uid: int, first: Optional[str], last: Op
                  username: Optional[str], now: str) -> None:
     """Пользователь по имени и username, photo_url не трогаем (вход по коду, бот)."""
     c.execute(
-        """INSERT INTO users(id, first_name, last_name, username, created_at, updated_at) VALUES (?,?,?,?,?,?)
+        """INSERT INTO users(id, first_name, last_name, username, created_at, updated_at, session_epoch)
+           VALUES (?,?,?,?,?,?,?)
            ON CONFLICT(id) DO UPDATE SET first_name=excluded.first_name, last_name=excluded.last_name,
                username=excluded.username, updated_at=excluded.updated_at
            WHERE users.first_name IS NOT excluded.first_name OR users.last_name IS NOT excluded.last_name
               OR users.username IS NOT excluded.username""",
-        (uid, (first or "")[:128], last, username, now, now))
+        (uid, (first or "")[:128], last, username, now, now, first_epoch()))
 
 
 class PredictionService:
@@ -153,6 +161,7 @@ class PredictionService:
         self.login_limiter = RateLimiter(*LOGIN_RATE, clock=rate_clock)
         self.code_limiter = RateLimiter(*CODE_RATE, clock=rate_clock)
         self.code_poll_limiter = RateLimiter(*CODE_POLL_RATE, clock=rate_clock)
+        self.review_limiter = RateLimiter(*REVIEW_RATE, clock=rate_clock)
 
     # --- инфраструктура ---
 
@@ -207,13 +216,15 @@ class PredictionService:
             return uid
         with self.conn() as c:
             c.execute(
-                """INSERT INTO users(id, first_name, last_name, username, photo_url, created_at, updated_at)
-                   VALUES (?,?,?,?,?,?,?)
+                """INSERT INTO users(id, first_name, last_name, username, photo_url, created_at, updated_at,
+                                     session_epoch)
+                   VALUES (?,?,?,?,?,?,?,?)
                    ON CONFLICT(id) DO UPDATE SET first_name=excluded.first_name, last_name=excluded.last_name,
                        username=excluded.username, photo_url=excluded.photo_url, updated_at=excluded.updated_at
                    WHERE users.first_name IS NOT excluded.first_name OR users.last_name IS NOT excluded.last_name
                       OR users.username IS NOT excluded.username OR users.photo_url IS NOT excluded.photo_url""",
-                (uid, (g("first_name") or "")[:128], g("last_name"), g("username"), g("photo_url"), now, now))
+                (uid, (g("first_name") or "")[:128], g("last_name"), g("username"), g("photo_url"), now, now,
+                 first_epoch()))
         return uid
 
     def session_epoch(self, user_id: int) -> Optional[int]:
@@ -226,6 +237,21 @@ class PredictionService:
         with self.conn() as c:
             c.execute("UPDATE users SET session_epoch = session_epoch + 1, updated_at=? WHERE id=?",
                       (iso(self.now()), user_id))
+
+    def delete_user(self, user_id: int) -> bool:
+        """Удалить аккаунт целиком: пользователь, его прогнозы, места в рейтинге, лиги, которые он создал
+        (вместе с участниками), членство в чужих лигах, итоги игр, заявка на аватар (каскад по FK users),
+        его заявки на вход по коду и файл аватара. Сессии перестают действовать: пользователя нет.
+        Рейтинг (standings) — по строкам пользователей, места остальных сдвигаются сами."""
+        with self.tx() as c:
+            c.execute("DELETE FROM login_codes WHERE user_id=?", (user_id,))
+            cur = c.execute("DELETE FROM users WHERE id=?", (user_id,))
+            gone = cur.rowcount > 0
+        try:
+            avatars.remove(user_id)
+        except OSError:
+            log.exception("avatar remove: %s", user_id)
+        return gone
 
     def touch_seen(self, user_id: int) -> bool:
         """Отметить визит: seen_at — не чаще раза в сутки (иначе каждый /me был бы записью в базу)."""

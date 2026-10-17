@@ -51,7 +51,8 @@ export function SiteFooter() {
       </div>
       <p className="sf__legal">
         Неофициальный фан-проект, не связан с Real Madrid CF. Данные: FotMob, SofaScore, ESPN; новости: Чемпионат,
-        Спорт-Экспресс, Sports.ru.
+        Спорт-Экспресс, Sports.ru. <a {...link('/privacy')}>Политика конфиденциальности</a> ·{' '}
+        <a {...link('/terms')}>Условия</a>
       </p>
     </footer>
   );

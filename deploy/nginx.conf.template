@@ -472,7 +472,7 @@ server {
         add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=()" always;
 {{HSTS}}
     }
-    location ~ "^/(?:matches|team|media|predict|profile|admin|games(?:/quiz|/penalty)?|match/[^/]+(?:/.*)?|player/[^/]+|news/[^/]+|video/[^/]+)/?$" {
+    location ~ "^/(?:matches|team|media|predict|profile|privacy|terms|admin|games(?:/quiz|/penalty)?|match/[^/]+(?:/.*)?|player/[^/]+|news/[^/]+|video/[^/]+)/?$" {
         try_files /index.html =404;
         add_header Cache-Control "no-cache" always;
         add_header X-Content-Type-Options nosniff always;

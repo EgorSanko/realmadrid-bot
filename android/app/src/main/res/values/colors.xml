@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- палитра сайта (frontend/src/styles/tokens.css) -->
+    <color name="bg">#FF06070B</color>
+    <color name="surface">#FF0F1218</color>
+    <color name="line">#FF1F2330</color>
+    <color name="text">#FFEEF0F5</color>
+    <color name="muted">#FF8A90A1</color>
+    <color name="gold">#FFD4AF37</color>
+    <color name="gold_light">#FFF4D57A</color>
+    <color name="gold_ink">#FF1A1408</color>
+</resources>

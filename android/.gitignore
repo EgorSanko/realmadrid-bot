@@ -1,0 +1,12 @@
+.gradle/
+.kotlin/
+build/
+app/build/
+local.properties
+# ключ подписи и пароли — только вне репозитория (см. README.md)
+keystore.properties
+*.jks
+*.keystore
+captures/
+.idea/
+*.iml

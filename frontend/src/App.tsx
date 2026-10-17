@@ -32,6 +32,8 @@ const PredictScreen = lazy(() => import('./screens/predict/PredictScreen'));
 // игры раздела «Игры» — викторина и пенальти, каждая своим ленивым чанком
 const QuizScreen = lazy(() => import('./screens/games/QuizScreen'));
 const PenaltyScreen = lazy(() => import('./screens/games/PenaltyScreen'));
+// политика конфиденциальности и условия — свой ленивый чанк
+const LegalScreen = lazy(() => import('./screens/legal/LegalScreen'));
 // неизвестный адрес — страница «не найдено» (раньше молча уводили на главную)
 const NotFoundScreen = lazy(() => import('./screens/NotFoundScreen'));
 
@@ -147,6 +149,22 @@ function AppRoutes() {
           <Route path="/player/:id" element={player} />
           <Route path="/news/:id" element={newsReader} />
           <Route path="/video/:id" element={videoPlayer} />
+          <Route
+            path="/privacy"
+            element={
+              <Suspense fallback={null}>
+                <LegalScreen doc="privacy" />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/terms"
+            element={
+              <Suspense fallback={null}>
+                <LegalScreen doc="terms" />
+              </Suspense>
+            }
+          />
           {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк, в прод-сборку не входит */}
           {UiKitPage && (
             <Route
