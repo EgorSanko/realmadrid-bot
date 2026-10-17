@@ -107,6 +107,24 @@ MIGRATIONS: list[str] = [
     );
     CREATE INDEX settle_audit_match ON settle_audit(match_id);
     """,
+    # v2 — вход на сайте и аватары
+    """
+    -- «Выйти» увеличивает счётчик: все выданные раньше сессии пользователя недействительны
+    ALTER TABLE users ADD COLUMN session_epoch INTEGER NOT NULL DEFAULT 0;
+    -- photo_url, по которому скачан файл аватара, и когда (файл — DATA_DIR/avatars/{id}.jpg|png)
+    ALTER TABLE users ADD COLUMN avatar_src TEXT;
+    ALTER TABLE users ADD COLUMN avatar_at TEXT;
+
+    -- заявки API → сборщик: скачать аватар через туннель (url NULL — удалить файл)
+    CREATE TABLE avatar_queue (
+        user_id     INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+        url         TEXT,
+        asked_at    TEXT NOT NULL,
+        tries       INTEGER NOT NULL DEFAULT 0,
+        next_at     TEXT NOT NULL
+    );
+    CREATE INDEX avatar_queue_next ON avatar_queue(next_at);
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

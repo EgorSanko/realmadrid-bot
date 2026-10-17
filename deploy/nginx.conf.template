@@ -1,5 +1,5 @@
 # Мадридиста (rm-v2). Сгенерировано deploy/deploy.sh из deploy/nginx.conf.template — руками не править.
-# Плейсхолдеры в двойных фигурных скобках: DOMAIN, LISTEN, REDIRECT, WEBROOT, API_PORT, IMGROOT.
+# Плейсхолдеры в двойных фигурных скобках: DOMAIN, LISTEN, REDIRECT, WEBROOT, API_PORT, IMGROOT, DATAROOT.
 # Зона кэша rmv2img объявлена в /etc/nginx/conf.d/rmv2-img-cache.conf (deploy/nginx-img-cache.conf).
 {{REDIRECT}}
 server {
@@ -259,8 +259,28 @@ server {
         add_header X-Content-Type-Options nosniff always;
     }
 
+    # аватары пользователей: файлы кладёт сборщик (скачивает с t.me через туннель) в {{DATAROOT}}/avatars;
+    # nginx на хосте читает их напрямую (папка 0755, файлы 0644). PNG лежит как {id}.png — отдаём его
+    # с верным типом. Нет файла — силуэт. Ссылка в API несёт ?v=<mtime>, поэтому кэш у клиента длинный.
+    location ~ "^/img/avatar/(?<rmv2id>[1-9]\d{0,15})\.jpg$" {
+        root {{DATAROOT}};
+        disable_symlinks on;
+        try_files /avatars/$rmv2id.jpg /avatars/$rmv2id.png @rmv2_avatar_none;
+        access_log off;
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
     location /img/ {
         return 404;
+    }
+
+    location @rmv2_avatar_none {
+        root {{IMGROOT}};
+        try_files /silhouette.svg =404;
+        add_header Cache-Control "public, max-age=300" always;
+        add_header X-Img-Fallback "silhouette" always;
+        add_header X-Content-Type-Options nosniff always;
     }
 
     # заглушки: отдаём 200, кэш у клиента сутки (вдруг у источника появится настоящая картинка)
