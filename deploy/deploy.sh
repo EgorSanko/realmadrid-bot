@@ -132,6 +132,16 @@ else
     listen [::]:80;"
   REDIRECT=""
 fi
+# HSTS — только когда сайт уже на https (иначе браузер запомнит https для домена без сертификата).
+# Без includeSubDomains и preload: поддомены не наши, preload — отдельное решение владельца.
+if [ "$HTTPS" = "1" ]; then
+  HSTS='        add_header Strict-Transport-Security "max-age=31536000" always;'
+else
+  HSTS=''
+fi
+# CSP: хэши инлайн-скриптов собранной страницы (заставка) — после npm run build, из того же dist
+CSP_SCRIPT_HASHES="$(node "$ROOT/deploy/csp-hashes.mjs" "$ROOT/frontend/dist/index.html")"
+log "CSP script-src: $CSP_SCRIPT_HASHES"
 
 CONF="$(cat "$ROOT/deploy/nginx.conf.template")"
 CONF="${CONF//\{\{LISTEN\}\}/$LISTEN}"
@@ -142,6 +152,8 @@ CONF="${CONF//\{\{WEBROOT\}\}/$WEBROOT}"
 CONF="${CONF//\{\{API_PORT\}\}/$API_PORT}"
 CONF="${CONF//\{\{IMGROOT\}\}/$IMGROOT}"
 CONF="${CONF//\{\{DATAROOT\}\}/$DATAROOT}"
+CONF="${CONF//\{\{HSTS\}\}/$HSTS}"
+CONF="${CONF//\{\{CSP_SCRIPT_HASHES\}\}/$CSP_SCRIPT_HASHES}"
 IMGC="$(cat "$ROOT/deploy/nginx-img-cache.conf")"
 
 AV="/etc/nginx/sites-available/$SITE_NAME"
@@ -179,6 +191,9 @@ for i in 1 2 3 4 5 6 7 8 9 10; do
   sleep 2
 done
 echo "GET $URL/       → $(curl -s -o /dev/null -w '%{http_code}' --resolve "$RESOLVE" "$URL/")"
+echo "GET $URL/matches → $(curl -s -o /dev/null -w '%{http_code}' --resolve "$RESOLVE" "$URL/matches") (ждём 200)"
+echo "GET $URL/no-such-page → $(curl -s -o /dev/null -w '%{http_code}' --resolve "$RESOLVE" "$URL/no-such-page") (ждём 404)"
+curl -sI --resolve "$RESOLVE" "$URL/" | grep -iE '^(content-security-policy|permissions-policy|strict-transport-security):' | cut -c1-120 || true
 echo "GET $URL/api/health → $code $(curl -s --resolve "$RESOLVE" "$URL/api/health")"
 [ "$code" = "200" ] || { echo "health-check не прошёл" >&2; exit 1; }
 log "Готово: $URL"
