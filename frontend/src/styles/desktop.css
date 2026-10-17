@@ -443,3 +443,9 @@ html.desk :focus-visible {
   outline-offset: 3px;
   border-radius: 10px;
 }
+
+/* контейнеры страниц (новость, видео, игрок) получают фокус программно — рамка вокруг всей страницы не нужна */
+html.desk .nr:focus-visible,
+html.desk .pc:focus-visible {
+  outline: none;
+}

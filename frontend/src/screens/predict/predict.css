@@ -137,4 +137,10 @@
 .hp-line__text { font-size: 15px; }
 .hp-line__text b { font-family: var(--display); font-variant-numeric: tabular-nums; }
 .hp-gold { color: var(--gold); font-weight: 700; }
+/* ---------- сайт на компьютере (html.desk): ввод слева, рейтинг справа ---------- */
+html.desk .pd-desk .pd-tiles, html.desk .pd-desk .pd-skel, html.desk .pd-desk .pd-state { margin-left: 0; margin-right: 0; margin-top: 0; }
+html.desk .pd-desk .pd-tile__value { font-size: 28px; }
+html.desk .pd-board__rows a:hover, html.desk .pd-hist__row:hover { background: rgba(255, 255, 255, .025); }
+html.desk .pd-input:hover { border-color: var(--gold-edge); }
+html.desk .ui-stepper__btn:hover { background: var(--surface-2); }
 .hp-link { padding: 0; border: 0; background: none; color: var(--gold-light); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }

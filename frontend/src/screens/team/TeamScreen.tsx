@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePlayerLinks } from '../../lib/playerNav';
+import { useDesktop } from '../../lib/shell';
 import { Badge, Card, ErrorState, Flag, PlayerPhoto, PlayerTap, SectionHeader, Skeleton, TeamCrest, type PlayerLinkProps } from '../../ui';
 import { formatTime } from '../../ui/format';
 import { errorText, useApiResource } from '../../lib/apiResource';
@@ -72,6 +73,7 @@ function TeamSkeleton() {
 }
 
 function TeamBody({ t }: { t: TeamResponse }) {
+  const desktop = useDesktop();
   const has = (k: string) => t.available.includes(k);
   const injuries = t.injuries ?? [];
   // дисквалификации и травмы из лазарета — для бейджа в составе (кроме тех, кто уже тренируется)
@@ -83,6 +85,29 @@ function TeamBody({ t }: { t: TeamResponse }) {
     }
     return m;
   }, [injuries]);
+
+  // сайт на компьютере: состав — сетка карточек с фото; лидеры и лазарет — сбоку
+  if (desktop) {
+    return (
+      <>
+        {t.stale && (
+          <p className="tm-stale" role="status">
+            Данные могли устареть · обновлено в {formatTime(t.updated_at)} МСК
+          </p>
+        )}
+        <div className="dk-split tm-desk">
+          <div className="dk-col">
+            {has('squad') && t.squad && <SquadGrid t={t} outById={outById} />}
+            {has('transfers') && t.transfers && <Transfers transfers={t.transfers} />}
+          </div>
+          <aside className="dk-col" aria-label="Лидеры и лазарет">
+            {has('leaders') && t.leaders && <Leaders leaders={t.leaders} />}
+            {has('injuries') && injuries.length > 0 && <Infirmary injuries={injuries} />}
+          </aside>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -263,6 +288,74 @@ function PlayerRow({ p, line, out, links }: { p: SquadPlayer; line: LineKey; out
         {p.injured ? <Badge tone="injury" /> : suspended ? <Badge tone="injury">дискв.</Badge> : null}
       </PlayerTap>
     </li>
+  );
+}
+
+/* ---------- состав сеткой (сайт на компьютере) ---------- */
+
+function SquadGrid({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }) {
+  const links = usePlayerLinks();
+  const coach = t.coach;
+  const coachIso = flagIso(coach?.country?.flag);
+  return (
+    <section className="tm-grid" aria-label="Состав">
+      {coach && (
+        <div className="tm-gline">
+          <h2 className="tm-gline__title">Главный тренер</h2>
+          <div className="tm-cards">
+            <div className="tm-card tm-card--coach">
+              <span className="tm-card__photo">{coach.id != null && <PlayerPhoto id={coach.id} name={coach.name} size={112} />}</span>
+              <span className="tm-card__name">{coach.name}</span>
+              <span className="tm-card__sub">
+                {coachIso && <Flag iso2={coachIso} name={coach.country?.name ?? ''} width={16} className="tm-flag" />}
+                главный тренер
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+      {LINES.map(({ key, title }) => {
+        const players = t.squad?.[key] ?? [];
+        if (!players.length) return null;
+        return (
+          <div key={key} className="tm-gline">
+            <h2 className="tm-gline__title">
+              {title} <span className="tm-gline__n">{players.length}</span>
+            </h2>
+            <ul className="tm-cards">
+              {players.map((p) => {
+                const out = outById.get(p.id);
+                const suspended = out?.type === 'suspension' && !p.injured;
+                const iso = flagIso(p.country?.flag);
+                const age = ageText(p.age);
+                return (
+                  <li key={p.id}>
+                    <PlayerTap player={p} {...links} className="tm-card">
+                      {p.number != null && (
+                        <span className="tm-card__num" aria-label={`номер ${p.number}`}>
+                          {p.number}
+                        </span>
+                      )}
+                      {(p.injured || suspended) && (
+                        <span className="tm-card__badge">{p.injured ? <Badge tone="injury" /> : <Badge tone="injury">дискв.</Badge>}</span>
+                      )}
+                      <span className="tm-card__photo">
+                        <PlayerPhoto id={p.id} name={p.name} size={112} />
+                      </span>
+                      <span className="tm-card__name">{p.name}</span>
+                      <span className="tm-card__sub">
+                        {iso && <Flag iso2={iso} name={p.country?.name ?? ''} width={16} className="tm-flag" />}
+                        {[positionRu(p.position, key), age].filter(Boolean).join(' · ')}
+                      </span>
+                    </PlayerTap>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
+    </section>
   );
 }
 

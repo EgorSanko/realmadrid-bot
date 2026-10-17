@@ -4,6 +4,7 @@ import { useApiResource } from '../../lib/apiResource';
 import { ExternalLink } from '../../lib/ExternalLink';
 import { isVideoId, useOverlayBack, type MediaNavState } from '../../lib/mediaNav';
 import { backgroundOf } from '../../lib/playerNav';
+import { isDesktop, useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { EmptyState, Skeleton } from '../../ui';
 import { VideoTile } from './MediaParts';
@@ -32,6 +33,7 @@ export default function VideoScreen() {
   const goBack = useOverlayBack('/media?tab=video');
   const nativeBack = useTelegramBackButton(goBack);
   const ref = useRef<HTMLDivElement>(null);
+  const page = useDesktop();
   const overlay = backgroundOf(location) != null;
   const videos = useApiResource<VideosResponse>('/api/videos?limit=40');
   const found = findVideo(videos.data, id);
@@ -41,7 +43,8 @@ export default function VideoScreen() {
 
   useEffect(() => {
     const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // сайт на компьютере: это обычная страница, прокручивается сама страница
+    if (!isDesktop()) document.body.style.overflow = 'hidden';
     ref.current?.focus({ preventScroll: true });
     return () => {
       document.body.style.overflow = prev;
@@ -72,8 +75,8 @@ export default function VideoScreen() {
     <div
       ref={ref}
       className={overlay ? 'nr nr--overlay' : 'nr'}
-      role="dialog"
-      aria-modal="true"
+      role={page ? undefined : 'dialog'}
+      aria-modal={page ? undefined : true}
       aria-label={title ? `Видео: ${title}` : 'Видео'}
       tabIndex={-1}
     >

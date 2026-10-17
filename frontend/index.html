@@ -85,6 +85,7 @@
     <script>(function(){var s=document.getElementById('splash');if(!s)return;
 var seen=false;try{seen=sessionStorage.getItem('rmSplash')==='1';sessionStorage.setItem('rmSplash','1')}catch(e){}
 if(seen){s.remove();return}
+if(!/tgWebApp/.test(location.hash+location.search)&&window.matchMedia&&matchMedia('(min-width: 1024px)').matches){s.remove();return}
 var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,minT=rm?600:2900,t0=Date.now(),done=false;
 function hide(){if(done)return;done=true;s.classList.add('sp-out');setTimeout(function(){s.remove()},500)}
 function tick(){var el=document.getElementById('root'),ready=el&&el.childElementCount>0,dt=Date.now()-t0;

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { backgroundOf, type PlayerNavState } from '../../lib/playerNav';
 import { useSpaLink } from '../../lib/spaLink';
+import { isDesktop, useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import {
   Card,
@@ -62,6 +63,7 @@ export default function PlayerScreen() {
   const { state, reload } = usePlayer(id);
   const p = state.kind === 'ok' ? state.player : null;
   const ref = useRef<HTMLDivElement>(null);
+  const page = useDesktop();
 
   // прямой заход (под карточкой ничего нет) — «назад» ведёт в раздел, а не из приложения
   const goBack = useCallback(() => {
@@ -74,7 +76,8 @@ export default function PlayerScreen() {
   // фон не прокручивается под карточкой; фокус — в карточку; Esc закрывает
   useEffect(() => {
     const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // сайт на компьютере: это обычная страница, прокручивается сама страница
+    if (!isDesktop()) document.body.style.overflow = 'hidden';
     ref.current?.focus({ preventScroll: true });
     return () => {
       document.body.style.overflow = prev;
@@ -103,7 +106,7 @@ export default function PlayerScreen() {
   const numericId = /^\d+$/.test(id) ? Number(id) : undefined;
 
   return (
-    <div ref={ref} className="pc" role="dialog" aria-modal="true" aria-label={name ? `Карточка игрока: ${name}` : 'Карточка игрока'} tabIndex={-1}>
+    <div ref={ref} className="pc" role={page ? undefined : 'dialog'} aria-modal={page ? undefined : true} aria-label={name ? `Карточка игрока: ${name}` : 'Карточка игрока'} tabIndex={-1}>
       <div className="pc-in">
         <header className="pc-top">
           {nativeBack ? (
@@ -173,6 +176,32 @@ function PlayerBody({ p }: { p: ApiPlayer }) {
   const [tab, setTab] = useState<TabId | null>(tabs[0]?.id ?? null);
   const current = tabs.find((t) => t.id === tab)?.id ?? tabs[0]?.id ?? null;
   const upd = updatedText(p.updated_at);
+  const desktop = useDesktop();
+
+  // сайт на компьютере: биография слева, статистика рядом справа
+  if (desktop) {
+    return (
+      <div className="pc-desk">
+        <div className="pc-desk__bio">
+          <Hero p={p} />
+          {has('status') && p.status && <StatusCard p={p} />}
+          <Facts p={p} />
+        </div>
+        <div className="pc-desk__stats">
+          {has('season') && p.season && <KeyRow p={p} />}
+          {tabs.length > 1 && <Tabs items={tabs} value={current ?? tabs[0].id} onChange={setTab} ariaLabel="Разделы карточки" />}
+          {current === 'season' && <SeasonCard p={p} />}
+          {current === 'matches' && <RecentCard p={p} />}
+          {current === 'career' && <CareerCard p={p} />}
+          <p className="pc-foot">
+            {p.stale ? 'Данные могли устареть · ' : ''}
+            {p.source === 'sofascore' ? 'SofaScore' : 'FotMob'}
+            {upd ? ` · обновлено в ${upd} МСК` : ''}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

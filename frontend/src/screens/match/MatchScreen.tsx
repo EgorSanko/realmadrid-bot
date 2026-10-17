@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { ApiMatch } from '../../api/match';
+import { useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { Badge, Countdown, EmptyState, ErrorState, LeagueLogo, ScoreHeader, Skeleton, Tabs, TeamCrest } from '../../ui';
 import { LineupsTab } from './LineupsTab';
@@ -36,7 +37,8 @@ export default function MatchScreen() {
   const { id = '' } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const tab = tabFromPath(location.pathname);
+  const desktop = useDesktop();
+  const tab = desktop ? 'overview' : tabFromPath(location.pathname);
 
   // прямой заход по ссылке (за нами нет страниц приложения) — «назад» ведёт в календарь, а не из приложения.
   // idx в history.state ведёт react-router: push +1, replace — без изменений; переживает перезагрузку.
@@ -98,7 +100,33 @@ export default function MatchScreen() {
       )}
       {state.kind === 'error' && <ErrorState className="mt-state" onRetry={reload} />}
 
-      {match && head && (
+      {match && head && desktop && (
+        // сайт на компьютере: шапка матча на всю ширину, ниже — обзор слева, составы и статистика справа (без вкладок)
+        <>
+          <Header match={match} onKickoff={reload} />
+          {match.pending ? (
+            <PendingBody />
+          ) : (
+            <div className="dk-split dk-split--wide-side mt-desk">
+              <div className="dk-col mt-desk__col" aria-label="Обзор">
+                <OverviewTab match={match} phase={head.phase} />
+              </div>
+              <div className="dk-col mt-desk__col">
+                <section className="mt-desk__sec" aria-label="Составы">
+                  <h2 className="dk-h2">Составы</h2>
+                  <LineupsTab match={match} phase={head.phase} />
+                </section>
+                <section className="mt-desk__sec" aria-label="Статистика">
+                  <h2 className="dk-h2">Статистика</h2>
+                  <StatsTab match={match} phase={head.phase} />
+                </section>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {match && head && !desktop && (
         <>
           {tab === 'overview' && <Header match={match} onKickoff={reload} />}
           <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Разделы матча" />
