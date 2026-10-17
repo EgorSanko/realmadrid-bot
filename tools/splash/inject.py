@@ -16,7 +16,8 @@ css = (HERE / "splash.css").read_text(encoding="utf-8")
 css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
 css = re.sub(r"\s*\n\s*", "", css)
 
-# Заставка показывается один раз за сессию: на телефоне, в Telegram Mini App и в приложении из RuStore.
+# Заставка показывается при каждом заходе, но не чаще раза в 10 минут (localStorage rmSplashAt — время
+# последнего открытия: обновление страницы и быстрый возврат её не показывают): на телефоне, в Telegram Mini App и в приложении из RuStore.
 # Когда эмблема собралась (BUILD мс) и React нарисовал страницу, на главной эмблема перелетает на место
 # img.brand__crest в шапке (FLIP: transform translate+scale), фон растворяется; в конце заставка убирается,
 # а картинка шапки, скрытая на время полёта, показывается в том же кадре — подмены не видно.
@@ -29,7 +30,7 @@ css = re.sub(r"\s*\n\s*", "", css)
 # Геометрия: эмблема в svg занимает 0..32 × 0..43 во viewBox -1 -1 34 45; в PNG шапки — её непрозрачная
 # область (меряем по альфе на canvas; не вышло — запасные доли FB для /img/team/8633.png 192×192).
 SCRIPT = """(function(){var s=document.getElementById('splash');if(!s)return;
-var seen=false;try{seen=sessionStorage.getItem('rmSplash')==='1';sessionStorage.setItem('rmSplash','1')}catch(e){}
+var seen=false;try{var now=Date.now(),last=+localStorage.getItem('rmSplashAt')||0;seen=now-last<6e5&&now>=last;localStorage.setItem('rmSplashAt',String(now))}catch(e){}
 if(seen){s.remove();return}
 var mm=function(q){return window.matchMedia&&matchMedia(q).matches};
 if(!/tgWebApp/.test(location.hash+location.search)&&!/MadridistaApp\\/\\d/.test(navigator.userAgent)&&mm('(min-width: 1024px)')){s.remove();return}

@@ -113,7 +113,7 @@
   <g mask="url(#sp-shape)"><rect class="sp-shine" x="-12" y="-1" width="7" height="45" fill="url(#sp-shine-g)"/></g>
 </svg><div class="sp-word">МАДРИДИСТА</div><div class="sp-line"></div></div>
     <script>(function(){var s=document.getElementById('splash');if(!s)return;
-var seen=false;try{seen=sessionStorage.getItem('rmSplash')==='1';sessionStorage.setItem('rmSplash','1')}catch(e){}
+var seen=false;try{var now=Date.now(),last=+localStorage.getItem('rmSplashAt')||0;seen=now-last<6e5&&now>=last;localStorage.setItem('rmSplashAt',String(now))}catch(e){}
 if(seen){s.remove();return}
 var mm=function(q){return window.matchMedia&&matchMedia(q).matches};
 if(!/tgWebApp/.test(location.hash+location.search)&&!/MadridistaApp\/\d/.test(navigator.userAgent)&&mm('(min-width: 1024px)')){s.remove();return}
