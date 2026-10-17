@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import type Hls from 'hls.js';
 import type { ErrorData } from 'hls.js';
 import { viewport } from '@tma.js/sdk-react';
@@ -306,10 +306,16 @@ export function Player({ src, title }: Props) {
   }, [fs]);
 
   // ---------- кнопки ----------
+  // мышь над панелью кнопок — кнопки не прячем (объявлено здесь: нужно showControls)
+  const overBar = useRef(false);
+  const barRef = useRef<HTMLDivElement>(null);
   const showControls = useCallback(() => {
     setControlsOn(true);
     window.clearTimeout(hideTimer.current);
-    hideTimer.current = window.setTimeout(() => setControlsOn(false), HIDE_CONTROLS_MS);
+    if (overBar.current) return;
+    hideTimer.current = window.setTimeout(() => {
+      if (!overBar.current) setControlsOn(false);
+    }, HIDE_CONTROLS_MS);
   }, []);
 
   useEffect(() => {
@@ -335,13 +341,55 @@ export function Player({ src, title }: Props) {
     if (v.paused && phase !== 'error' && phase !== 'ended') v.play().catch(() => {});
   };
 
+  // Мышь (ПК): движение показывает кнопки и курсор, клик — пауза/продолжить (как в YouTube),
+  // двойной клик — во весь экран. Касание (телефон): тап показывает/прячет кнопки.
   const onSurfaceTap = (e: ReactPointerEvent) => {
     if ((e.target as HTMLElement).closest('button')) return;
+    if (e.pointerType === 'mouse') {
+      if (e.button !== 0) return;
+      if (phase === 'playing' || phase === 'paused') togglePlay();
+      showControls();
+      return;
+    }
     if (phase !== 'playing') return;
     if (controlsOn) {
       window.clearTimeout(hideTimer.current);
       setControlsOn(false);
     } else showControls();
+  };
+  const onSurfaceMove = (e: ReactPointerEvent) => {
+    if (e.pointerType !== 'mouse') return;
+    // над полосой кнопок (по координатам: сама полоса прозрачна для мыши между кнопками)
+    const r = barRef.current?.getBoundingClientRect();
+    overBar.current = !!r && e.clientY >= r.top - 8 && e.clientY <= r.bottom && e.clientX >= r.left && e.clientX <= r.right;
+    if (!controlsOn) setControlsOn(true);
+    window.clearTimeout(hideTimer.current);
+    // пока мышь над панелью кнопок — не прячем
+    if (phase === 'playing' && !overBar.current) {
+      hideTimer.current = window.setTimeout(() => setControlsOn(false), HIDE_CONTROLS_MS);
+    }
+  };
+  const onSurfaceLeave = (e: ReactPointerEvent) => {
+    if (e.pointerType !== 'mouse' || phase !== 'playing') return;
+    overBar.current = false;
+    window.clearTimeout(hideTimer.current);
+    hideTimer.current = window.setTimeout(() => setControlsOn(false), 800);
+  };
+  // клавиши, когда плеер в фокусе (обработчик на самом плеере, не глобальный)
+  const onKey = (e: ReactKeyboardEvent) => {
+    if ((e.target as HTMLElement).closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+    const k = e.key.toLowerCase();
+    if (k === ' ' || k === 'k' || k === 'л') {
+      e.preventDefault();
+      togglePlay();
+    } else if (k === 'f' || k === 'а') {
+      e.preventDefault();
+      toggleFullscreen();
+    } else if (k === 'm' || k === 'ь') {
+      e.preventDefault();
+      toggleMute();
+    } else return;
+    showControls();
   };
 
   const retry = () => setAttempt((n) => n + 1);
@@ -354,6 +402,10 @@ export function Player({ src, title }: Props) {
       className={`player${fs !== 'off' ? ' player--fs' : ''}${fs === 'css' ? ' player--css-fs' : ''}${fs !== 'off' && rotate ? ' player--rotate' : ''}${controlsOn ? '' : ' player--idle'}`}
       data-phase={phase}
       onPointerUp={onSurfaceTap}
+      onPointerMove={onSurfaceMove}
+      onPointerLeave={onSurfaceLeave}
+      onKeyDown={onKey}
+      tabIndex={0}
       role="region"
       aria-label={title ? `Трансляция: ${title}` : 'Трансляция'}
     >
@@ -406,7 +458,7 @@ export function Player({ src, title }: Props) {
         </div>
       )}
 
-      <div className="player__bar">
+      <div className="player__bar" ref={barRef}>
         <button type="button" onClick={togglePlay} aria-label={playing || busy ? 'Пауза' : 'Смотреть'} disabled={phase === 'error' || phase === 'ended'}>
           {playing || busy ? (
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

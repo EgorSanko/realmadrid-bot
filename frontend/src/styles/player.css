@@ -249,3 +249,11 @@
     padding-right: max(8px, env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ПК: курсор-стрелка над видео (прячется только вместе с кнопками, после 3 с без движения),
+   рука — над кнопками; фокус с клавиатуры виден */
+.player { cursor: pointer; }
+.player__bar button { cursor: pointer; }
+.player.player--idle { cursor: none; }
+.player:focus { outline: none; }
+.player:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
