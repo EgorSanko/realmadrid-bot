@@ -35,6 +35,20 @@
   overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .pd-scorers::-webkit-scrollbar { display: none; }
+.pd-scorers-wrap { position: relative; }
+.pd-scorers__arrow { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .pd-scorers__arrow {
+    position: absolute; top: 50%; z-index: 2; transform: translateY(-50%); margin-top: 3px;
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .45); transition: border-color .15s, color .15s;
+  }
+  .pd-scorers__arrow:hover { border-color: var(--gold); color: var(--gold); }
+  .pd-scorers__arrow--prev { left: -6px; }
+  .pd-scorers__arrow--next { right: -6px; }
+  .pd-scorers__arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+}
 .pd-scorer {
   flex: none; width: 76px; display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 8px 4px 7px; border-radius: 14px; border: 1px solid var(--line); background: transparent;

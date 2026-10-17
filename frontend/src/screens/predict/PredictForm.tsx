@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { LoginButton } from '../../components/LoginButton';
 import { AuthFetchError, authFetch, inMiniApp, useAuth } from '../../lib/auth';
@@ -70,8 +70,51 @@ function ScorerPicker({
   onChange: (id: string | null) => void;
   disabled: boolean;
 }) {
+  // на ПК лента не листается: полосы прокрутки нет, колесо крутит страницу. Колесо над лентой
+  // листает её вбок (свой слушатель: в React wheel пассивный), плюс стрелки на устройствах с мышью.
+  const ref = useRef<HTMLDivElement>(null);
+  const [edge, setEdge] = useState({ start: true, end: true });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const sync = () =>
+      setEdge({ start: el.scrollLeft <= 1, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 });
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // тачпад листает вбок сам
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) return;
+      const dy = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+      if ((dy < 0 && el.scrollLeft <= 0) || (dy > 0 && el.scrollLeft >= max - 1)) return; // на краю — отдаём странице
+      e.preventDefault();
+      el.scrollLeft += dy;
+    };
+    sync();
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('scroll', sync);
+      window.removeEventListener('resize', sync);
+    };
+  }, [squad.length]);
+  const page = (dir: 1 | -1) => {
+    const el = ref.current;
+    if (el) el.scrollBy({ left: dir * Math.max(160, el.clientWidth - 120), behavior: 'smooth' });
+  };
   return (
-    <div className="pd-scorers" role="radiogroup" aria-label="Автор первого гола Реала">
+    <div className="pd-scorers-wrap">
+      {!edge.start && (
+        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--prev" aria-label="Назад" onClick={() => page(-1)}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+        </button>
+      )}
+      {!edge.end && (
+        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--next" aria-label="Дальше" onClick={() => page(1)}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+        </button>
+      )}
+    <div className="pd-scorers" ref={ref} role="radiogroup" aria-label="Автор первого гола Реала">
       <button
         type="button"
         role="radio"
@@ -107,6 +150,7 @@ function ScorerPicker({
           </button>
         );
       })}
+    </div>
     </div>
   );
 }
