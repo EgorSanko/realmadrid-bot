@@ -245,6 +245,7 @@ html.desk .gm .topbar { padding-bottom: 14px; }
 html.desk .gm-intro, html.desk .gm-levels, html.desk .gm-q, html.desk .gm-result, html.desk .pk-board,
 html.desk .pk-wrap, html.desk .pk-round, html.desk .pk-hint, html.desk .gm-error { margin-left: 0; margin-right: 0; }
 html.desk .gm .ui-card { margin-left: 0; margin-right: 0; }
+html.desk .pk-wrap { max-width: 600px; margin: 10px auto 0; }
 html.desk .gm-levels { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 html.desk .gm-q__text { font-size: 21px; }
 html.desk .gm-answers { grid-template-columns: 1fr 1fr; }
