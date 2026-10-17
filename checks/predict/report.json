@@ -1,0 +1,1188 @@
+{
+  "390": {
+    "reset": {
+      "recent": [
+        {
+          "id": "6106274",
+          "settle": "settled",
+          "score": {
+            "home": 3,
+            "away": 4
+          }
+        },
+        {
+          "id": "5868089",
+          "settle": "settled",
+          "score": {
+            "home": 1,
+            "away": 0
+          }
+        },
+        {
+          "id": "5868072",
+          "settle": "settled",
+          "score": {
+            "home": 2,
+            "away": 1
+          }
+        }
+      ],
+      "next": "5868098"
+    },
+    "g": {
+      "buttons": [
+        "Войти через Telegram"
+      ],
+      "home": "Твой прогноз Подробнее приём до Вс, 18 окт, 22:00 МСК − 0 + : − 0 + Войдите через Telegram, чтобы сохранить прогноз. Войти через Telegram",
+      "telegramRequested": false,
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/matches → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "e_before": {
+      "season": [
+        {
+          "text": "1 Хорхе 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Пётр 8",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Мария 5",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "5 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Серхио 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Рауль 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Дмитрий К. 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "16 Алексей М. · ты 0",
+          "me": true,
+          "sep": true,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        }
+      ],
+      "season_msg": null,
+      "month": [
+        {
+          "text": "1 Хорхе 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Пётр 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "5 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Серхио 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Мария 2",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "9 Сергей 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Ольга Л. 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "16 Алексей М. · ты 0",
+          "me": true,
+          "sep": true,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        }
+      ],
+      "month_msg": null,
+      "leagues": [],
+      "leagues_msg": "Вы пока не в лиге — создайте свою ниже и позовите друзей.",
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=month&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "a": {
+      "saved": {
+        "button": "Прогноз сохранён"
+      },
+      "photo": {
+        "src": "/img/player/701154.png",
+        "ok": true
+      },
+      "scorers": 22,
+      "photosLoaded": 21,
+      "home": "Твой прогноз Подробнее приём до Вс, 18 окт, 22:00 МСК Твой прогноз 2:1 · изменить",
+      "profile": [
+        "18 окт 2:1 Можно изменить до начала",
+        "14 окт 0:0 Итог 3:4 +0",
+        "10 окт 0:0 Итог 1:0 +0",
+        "20 сен 0:2 Итог 2:1 +0"
+      ],
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "b": {
+      "before": "Твой прогноз 2:1 · изменить",
+      "after": "Твой прогноз 3:1 · изменить",
+      "vals": [
+        "3",
+        "1"
+      ],
+      "picked": "Kylian Mbappé",
+      "button": "Прогноз сохранён",
+      "button2": "Изменить прогноз",
+      "server": {
+        "home": 3,
+        "away": 1,
+        "first_scorer_id": "701154",
+        "created_at": "2026-10-17T05:04:45.110161Z",
+        "updated_at": "2026-10-17T05:04:54.425174Z",
+        "revisions": 4
+      },
+      "api": [
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/me → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "c": {
+      "closed": {
+        "status": 409,
+        "body": {
+          "error": "closed",
+          "message": "Приём закрыт: матч уже начался"
+        },
+        "msg": "Приём закрыт: матч уже начался",
+        "card": "Приём закрыт LIVE 0:0 Твой прогноз 3:1 · Kylian Mbappé · пока +0"
+      },
+      "home": "Твой прогноз Подробнее матч идёт Твой прогноз 3:1 · пока +4",
+      "live": "Приём закрыт LIVE 1:0 Твой прогноз 3:1 · Kylian Mbappé · пока +4",
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 409",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [
+        "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      ],
+      "hscroll": 0
+    },
+    "d": {
+      "settled": [
+        {
+          "match_id": "5868098",
+          "result": "settled",
+          "predictions": 1,
+          "changed": 1,
+          "periods": [
+            "M2026-10",
+            "S2026"
+          ]
+        }
+      ],
+      "again": [],
+      "hist": [
+        "17 окт 3:1 итог 3:1 точный счёт +5 · бомбардир +2 +7",
+        "14 окт 0:0 итог 3:4 счёт мимо +0",
+        "10 окт 0:0 итог 1:0 счёт мимо +0"
+      ],
+      "tiles": [
+        "Очки 7",
+        "Место 4",
+        "Точных 1"
+      ],
+      "nextMatch": "Real Madrid RB Leipzig",
+      "me": "4 Алексей М. · ты 7",
+      "api": [
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "e_after": {
+      "season": [
+        {
+          "text": "1 Хорхе 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Пётр 8",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "5 Мария 5",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "6 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Серхио 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Рауль 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "season_msg": null,
+      "month": [
+        {
+          "text": "1 Хорхе 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "4 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "5 Пётр 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Серхио 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Мария 2",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "10 Сергей 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "month_msg": null,
+      "leagues": [],
+      "leagues_msg": "Вы пока не в лиге — создайте свою ниже и позовите друзей.",
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leaderboard?period=month&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "f": {
+      "link": "https://t.me/Real_Madrid_football_bot?startapp=league_BBN4463KS7",
+      "tgShare": [
+        [
+          "web_app_open_tg_link",
+          "{\"path_full\":\"/share/url?url=https%3A%2F%2Ft.me%2FReal_Madrid_football_bot%3Fstartapp%3Dleague_BBN4463KS7&text=%D0%9F%D1%80%D0%B8%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D1%8F%D0%B9%D1%81%D1%8F%20%D0%BA%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%BB%D0%B8%D0%B3%D0%B5%20%D0%BF%D1%80%D0%BE%D0%B3%D0%BD%D0%BE%D0%B7%D0%BE%D0%B2%20%C2%AB%D0%9F%D0%B5%D0%BD%D1%8C%D1%8F%20390%C2%BB%20%D0%B2%20%D0%9C%D0%B0%D0%B4%D1%80%D0%B8%D0%B4%D0%B8%D1%81%D1%82%D0%B5\"}"
+        ]
+      ],
+      "joins": [
+        {
+          "status": 200,
+          "joined": true,
+          "name": "Пенья 390"
+        }
+      ],
+      "flash": "Вы вступили в лигу «Пенья 390»",
+      "friendRows": [
+        {
+          "text": "1 Алексей М. 7",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "2 Иван Д. · ты 0",
+          "me": true,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "ownerRows": [
+        {
+          "text": "1 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "2 Иван Д. 0",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "friend": {
+        "external": {},
+        "errors": [],
+        "expectedErrors": [],
+        "hscroll": 0
+      },
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/me → 200",
+        "POST /api/predict/leagues → 201",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=season&league=1&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    }
+  },
+  "1366": {
+    "reset": {
+      "recent": [
+        {
+          "id": "6106274",
+          "settle": "settled",
+          "score": {
+            "home": 3,
+            "away": 4
+          }
+        },
+        {
+          "id": "5868089",
+          "settle": "settled",
+          "score": {
+            "home": 1,
+            "away": 0
+          }
+        },
+        {
+          "id": "5868072",
+          "settle": "settled",
+          "score": {
+            "home": 2,
+            "away": 1
+          }
+        }
+      ],
+      "next": "5868098"
+    },
+    "g": {
+      "buttons": [
+        "Войти через Telegram"
+      ],
+      "home": "Твой прогноз Подробнее приём до Вс, 18 окт, 22:00 МСК − 0 + : − 0 + Войдите через Telegram, чтобы сохранить прогноз. Войти через Telegram",
+      "telegramRequested": false,
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/matches → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "e_before": {
+      "season": [
+        {
+          "text": "1 Хорхе 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Пётр 8",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Мария 5",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "5 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Серхио 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Рауль 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Дмитрий К. 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "16 Алексей М. · ты 0",
+          "me": true,
+          "sep": true,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        }
+      ],
+      "season_msg": null,
+      "month": [
+        {
+          "text": "1 Хорхе 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Пётр 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "5 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Серхио 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Мария 2",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "9 Сергей 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Ольга Л. 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "16 Алексей М. · ты 0",
+          "me": true,
+          "sep": true,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        }
+      ],
+      "month_msg": null,
+      "leagues": [],
+      "leagues_msg": "Вы пока не в лиге — создайте свою ниже и позовите друзей.",
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=month&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "a": {
+      "saved": {
+        "button": "Прогноз сохранён"
+      },
+      "photo": {
+        "src": "/img/player/701154.png",
+        "ok": true
+      },
+      "scorers": 22,
+      "photosLoaded": 21,
+      "home": "Твой прогноз Подробнее приём до Вс, 18 окт, 22:00 МСК Твой прогноз 2:1 · изменить",
+      "profile": [
+        "18 окт 2:1 Можно изменить до начала",
+        "14 окт 0:0 Итог 3:4 +0",
+        "10 окт 0:0 Итог 1:0 +0",
+        "20 сен 0:2 Итог 2:1 +0"
+      ],
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "b": {
+      "before": "Твой прогноз 2:1 · изменить",
+      "after": "Твой прогноз 3:1 · изменить",
+      "vals": [
+        "3",
+        "1"
+      ],
+      "picked": "Kylian Mbappé",
+      "button": "Прогноз сохранён",
+      "button2": "Изменить прогноз",
+      "server": {
+        "home": 3,
+        "away": 1,
+        "first_scorer_id": "701154",
+        "created_at": "2026-10-17T05:07:41.918471Z",
+        "updated_at": "2026-10-17T05:07:51.033277Z",
+        "revisions": 4
+      },
+      "api": [
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "PUT /api/predict/matches/5868098 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/me → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "c": {
+      "closed": {
+        "status": 409,
+        "body": {
+          "error": "closed",
+          "message": "Приём закрыт: матч уже начался"
+        },
+        "msg": "Приём закрыт: матч уже начался",
+        "card": "Приём закрыт LIVE 0:0 Твой прогноз 3:1 · Kylian Mbappé · пока +0"
+      },
+      "home": "Твой прогноз Подробнее матч идёт Твой прогноз 3:1 · пока +4",
+      "live": "Приём закрыт LIVE 1:0 Твой прогноз 3:1 · Kylian Mbappé · пока +4",
+      "api": [
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200",
+        "PUT /api/predict/matches/5868098 → 409",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [
+        "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      ],
+      "hscroll": 0
+    },
+    "d": {
+      "settled": [
+        {
+          "match_id": "5868098",
+          "result": "settled",
+          "predictions": 1,
+          "changed": 1,
+          "periods": [
+            "M2026-10",
+            "S2026"
+          ]
+        }
+      ],
+      "again": [],
+      "hist": [
+        "17 окт 3:1 итог 3:1 точный счёт +5 · бомбардир +2 +7",
+        "14 окт 0:0 итог 3:4 счёт мимо +0",
+        "10 окт 0:0 итог 1:0 счёт мимо +0"
+      ],
+      "tiles": [
+        "Очки 7",
+        "Место 4",
+        "Точных 1"
+      ],
+      "nextMatch": "Real Madrid RB Leipzig",
+      "me": "4 Алексей М. · ты 7",
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/matches → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "e_after": {
+      "season": [
+        {
+          "text": "1 Хорхе 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 15",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Пётр 8",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "4 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "5 Мария 5",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "6 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Серхио 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Рауль 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "10 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "season_msg": null,
+      "month": [
+        {
+          "text": "1 Хорхе 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "2 Гути 10",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "3 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "4 Лука 5",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "5 Пётр 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "6 Анна 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "7 Серхио 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "8 Марсело 3",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        },
+        {
+          "text": "9 Мария 2",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/1001.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "10 Сергей 2",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "month_msg": null,
+      "leagues": [],
+      "leagues_msg": "Вы пока не в лиге — создайте свою ниже и позовите друзей.",
+      "api": [
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=month&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    },
+    "f": {
+      "link": "https://t.me/Real_Madrid_football_bot?startapp=league_75KVE8VN5U",
+      "tgShare": [
+        [
+          "web_app_open_tg_link",
+          "{\"path_full\":\"/share/url?url=https%3A%2F%2Ft.me%2FReal_Madrid_football_bot%3Fstartapp%3Dleague_75KVE8VN5U&text=%D0%9F%D1%80%D0%B8%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D1%8F%D0%B9%D1%81%D1%8F%20%D0%BA%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%BB%D0%B8%D0%B3%D0%B5%20%D0%BF%D1%80%D0%BE%D0%B3%D0%BD%D0%BE%D0%B7%D0%BE%D0%B2%20%C2%AB%D0%9F%D0%B5%D0%BD%D1%8C%D1%8F%201366%C2%BB%20%D0%B2%20%D0%9C%D0%B0%D0%B4%D1%80%D0%B8%D0%B4%D0%B8%D1%81%D1%82%D0%B5\"}"
+        ]
+      ],
+      "joins": [
+        {
+          "status": 200,
+          "joined": true,
+          "name": "Пенья 1366"
+        }
+      ],
+      "flash": "Вы вступили в лигу «Пенья 1366»",
+      "friendRows": [
+        {
+          "text": "1 Алексей М. 7",
+          "me": false,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "2 Иван Д. · ты 0",
+          "me": true,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "ownerRows": [
+        {
+          "text": "1 Алексей М. · ты 7",
+          "me": true,
+          "sep": false,
+          "avatar": "/img/avatar/4242.jpg",
+          "imgOk": true
+        },
+        {
+          "text": "2 Иван Д. 0",
+          "me": false,
+          "sep": false,
+          "avatar": "silhouette",
+          "imgOk": null
+        }
+      ],
+      "friend": {
+        "external": {},
+        "errors": [],
+        "expectedErrors": [],
+        "hscroll": 0
+      },
+      "api": [
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/me → 200",
+        "POST /api/predict/leagues → 201",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/leaderboard?period=season&limit=10 → 200",
+        "GET /api/predict/me → 200",
+        "GET /api/predict/leagues → 200",
+        "GET /api/predict/matches → 200",
+        "GET /api/predict/leaderboard?period=season&league=1&limit=10 → 200"
+      ],
+      "external": {},
+      "errors": [],
+      "expectedErrors": [],
+      "hscroll": 0
+    }
+  }
+}

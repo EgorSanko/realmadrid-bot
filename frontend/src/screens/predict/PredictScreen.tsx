@@ -26,6 +26,9 @@ import './predict.css';
 
 type BoardTab = 'season' | 'month' | 'leagues';
 
+/** сколько строк рейтинга показываем; меня ниже топа — отдельной строкой */
+const TOP = 10;
+
 function loadError<T>(s: Load<T>): string | null {
   if (s.kind !== 'error') return null;
   return predictError(s.status, s.code, s.message).message;
@@ -78,7 +81,8 @@ export default function PredictScreen() {
           <p className="pd-muted">Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.</p>
           {auth.status === 'loading' ? null : inMiniApp() ? (
             <p className="pd-muted">Входим через Telegram…</p>
-          ) : (
+          ) : matches.state.kind === 'ok' && matches.state.data.next?.accepting ? null : (
+            // есть открытый матч — кнопка входа в его карточке, рядом со «Сохранить»; иначе — здесь
             <LoginButton />
           )}
         </section>
@@ -152,11 +156,11 @@ function Board({
   const lid = leagueId != null && list.some((l) => l.id === leagueId) ? leagueId : list[0]?.id ?? null;
   const path =
     tab === 'season'
-      ? '/api/predict/leaderboard?period=season'
+      ? `/api/predict/leaderboard?period=season&limit=${TOP}`
       : tab === 'month'
-        ? '/api/predict/leaderboard?period=month'
+        ? `/api/predict/leaderboard?period=month&limit=${TOP}`
         : lid != null
-          ? `/api/predict/leaderboard?period=season&league=${lid}`
+          ? `/api/predict/leaderboard?period=season&league=${lid}&limit=${TOP}`
           : null;
   const [lb, reload] = useAuthedGet<Leaderboard>(path);
   const view = useMemo(() => (lb.kind === 'ok' ? boardView(lb.data, myName, myAvatar) : null), [lb, myName, myAvatar]);

@@ -204,17 +204,19 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
               {s.busy ? 'Сохраняем…' : !dirty ? 'Прогноз сохранён' : p ? 'Изменить прогноз' : 'Сохранить прогноз'}
             </Button>
           )}
-          {s.msg && (
-            <p className={`pd-msg pd-msg--${s.msg.tone}`} role={s.msg.tone === 'err' ? 'alert' : 'status'}>
-              {s.msg.text}
-            </p>
-          )}
           {s.needLogin && !inMiniApp() && <LoginButton compact />}
           <div className="pd-deadline">
             <span>Приём до начала матча</span>
             <Countdown to={match.closes_at} onEnd={onClosed} className="pd-cd" endedLabel="Приём закрыт" />
           </div>
         </>
+      )}
+      {/* после 409 карточка уже «Приём закрыт», но сообщение об отказе оставляем видимым;
+          об успехе говорит сама кнопка («Прогноз сохранён») */}
+      {s.msg?.tone === 'err' && (
+        <p className={`pd-msg pd-msg--${s.msg.tone}`} role={s.msg.tone === 'err' ? 'alert' : 'status'}>
+          {s.msg.text}
+        </p>
       )}
     </section>
   );
