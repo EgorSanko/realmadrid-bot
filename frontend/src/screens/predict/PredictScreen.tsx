@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { LoginButton } from '../../components/LoginButton';
+import { useDesktop } from '../../lib/shell';
 import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, useAuth } from '../../lib/auth';
 import { RULE_LINES, boardView, historyItem, predictError, summaryTiles } from '../../lib/predict';
 import type { Leaderboard, MeHistoryEntry } from '../../lib/predict';
@@ -44,11 +45,106 @@ export default function PredictScreen() {
   const [leagues, reloadLeagues] = useAuthedGet<{ leagues: League[] }>(authed ? '/api/predict/leagues' : null, [leaguesVer]);
 
   useEffect(() => {
-    document.title = 'Прогнозы — Мадридиста';
+    document.title = 'Прогнозы на матчи «Реала» — Мадридиста';
   }, []);
 
   const meData = authed && me.kind === 'ok' ? me.data : null;
   const season = meData?.season.label;
+  const desktop = useDesktop();
+
+  // сайт на компьютере: ввод прогноза и свои итоги слева, рейтинг и лиги справа
+  if (desktop) {
+    return (
+      <main className="pd pd--desk">
+        <header className="topbar pd-top">
+          <h1 className="topbar__title">Прогнозы</h1>
+          {season && <span className="pd-top__aside">сезон {season}</span>}
+        </header>
+        <div className="dk-split pd-desk">
+          <div className="dk-col">
+      {/* Мои итоги / вход */}
+      {authed ? (
+        me.kind === 'ok' ? (
+          <section className="pd-tiles" aria-label="Мои итоги">
+            {summaryTiles(me.data.season).map((t) => (
+              <div key={t.label} className="pd-tile">
+                <span className="pd-tile__label">{t.label}</span>
+                <span className={`pd-tile__value${t.gold ? ' is-gold' : ''}`}>{t.value}</span>
+              </div>
+            ))}
+          </section>
+        ) : me.kind === 'error' ? null : (
+          <div className="pd-tiles" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} height={82} radius={18} />
+            ))}
+          </div>
+        )
+      ) : (
+        <section className="ui-card pd-anon" aria-label="Вход">
+          <p className="pd-anon__title">Угадывай счёт матчей Реала</p>
+          <p className="pd-muted">Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.</p>
+          {auth.status === 'loading' ? null : inMiniApp() ? (
+            <p className="pd-muted">Входим через Telegram…</p>
+          ) : matches.state.kind === 'ok' && matches.state.data.next?.accepting ? null : (
+            // есть открытый матч — кнопка входа в его карточке, рядом со «Сохранить»; иначе — здесь
+            <LoginButton />
+          )}
+        </section>
+      )}
+
+      {/* Ближайший открытый матч */}
+      {matches.state.kind === 'loading' ? (
+        <Skeleton height={420} radius={22} className="pd-skel" />
+      ) : matches.state.kind === 'error' ? (
+        <ErrorState className="pd-state" text={loadError(matches.state) ?? undefined} onRetry={matches.reload} />
+      ) : matches.state.data.next ? (
+        <PredictForm
+          match={matches.state.data.next}
+          onSaved={(p) => {
+            matches.setMyPrediction(p);
+            setMeVer((v) => v + 1);
+          }}
+          onClosed={matches.reload}
+        />
+      ) : (
+        <EmptyState className="pd-state" title="Ближайших матчей нет" text="Прогноз можно будет сделать, как только появится расписание" />
+      )}
+
+      {authed && <MyPredictions me={me} onRetry={reloadMe} />}
+
+      {/* Правила */}
+      <section className="ui-card pd-rules" aria-label="Как начисляются очки">
+        <h2 className="pd-h2">Очки</h2>
+        {RULE_LINES.map((r) => (
+          <div key={r.label} className="pd-rule">
+            <span>{r.label}</span>
+            <b className={r.gold ? 'is-gold' : undefined}>+{r.points}</b>
+          </div>
+        ))}
+        <p className="pd-rules__note">
+          За счёт засчитывается лучшее из трёх; бомбардир — сверху. Счёт — после основного и дополнительного времени, без серии пенальти.
+          Автогол соперника автором первого гола не считается.
+        </p>
+      </section>
+
+          </div>
+          <aside className="dk-col" aria-label="Рейтинг и лиги">
+      <Board authed={authed} leagues={leagues} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
+
+      <Invite
+        authed={authed}
+        leagues={leagues}
+        onRetry={reloadLeagues}
+        onCreated={() => {
+          setLeaguesVer((v) => v + 1);
+        }}
+      />
+          </aside>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="pd">

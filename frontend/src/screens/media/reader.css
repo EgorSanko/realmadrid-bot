@@ -108,3 +108,33 @@
 .vp-hint--slow { padding: 12px 14px; border-radius: 14px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--text); }
 .nr-vmore { margin-top: 26px; }
 .nr-vmore .mx-grid { padding-top: 8px; }
+
+/* ---------- сайт на компьютере (html.desk): страница между шапкой и подвалом ---------- */
+html.desk .nr { position: static; inset: auto; z-index: auto; overflow: visible; background: transparent; animation: none; }
+html.desk .nr-in { max-width: 1100px; min-height: 0; padding: 0; background: none; }
+html.desk .nr-top { max-width: 680px; min-height: 0; padding: 0 0 14px; }
+html.desk .nr-top__back:hover { border-color: var(--gold-edge); color: var(--gold-light); }
+html.desk .nr-state { margin: 14px 0 0; }
+
+/* новость: колонка текста 680 px, справа — «Ещё новости» */
+html.desk .nr-art { display: grid; grid-template-columns: minmax(0, 680px) minmax(0, 1fr); column-gap: 48px; align-items: start; }
+html.desk .nr-art > * { grid-column: 1; margin-left: 0; margin-right: 0; }
+html.desk .nr-art > .nr-pad, html.desk .nr-art > .nr-body { padding-left: 0; padding-right: 0; }
+html.desk .nr-art > .nr-more {
+  grid-column: 2; grid-row: 1 / span 40; position: sticky; top: calc(var(--sh-h) + 20px);
+  margin: 0; padding: 18px 20px; border-radius: 22px; background: var(--card-grad); border: 1px solid var(--line);
+}
+html.desk .nr-title { font-size: 30px; line-height: 1.25; }
+html.desk .nr-body, html.desk .nr-lead { font-size: 18px; line-height: 1.6; }
+html.desk .nr-hero img { border-radius: 22px; }
+html.desk .nr-body a:hover { color: var(--gold); }
+html.desk .nr-share { max-width: 260px; }
+
+/* видео: шире, «Ещё видео» — по 3 в ряд */
+html.desk .nr-in--video { max-width: 1000px; }
+html.desk .nr-in--video .nr-top { max-width: none; }
+html.desk .vp { margin: 0; }
+html.desk .vp--short { width: min(100%, 420px, calc((100vh - 220px) * 9 / 16)); }
+html.desk .vp-hint { margin: 10px 0 0; }
+html.desk .nr-in--video .nr-pad { padding: 0; }
+html.desk .nr-vmore .mx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 18px; padding: 8px 0 0; }

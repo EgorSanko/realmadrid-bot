@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /dev/
+Disallow: /profile
+
+Sitemap: https://realmadridfan.ru/sitemap.xml

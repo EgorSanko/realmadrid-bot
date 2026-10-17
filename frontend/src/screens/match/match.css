@@ -125,5 +125,25 @@
 .mt-periods { margin-top: 14px; }
 .mt-stats { margin-top: 8px; }
 
+/* ---------- сайт на компьютере (html.desk): шапка на всю ширину, ниже две колонки, без вкладок ---------- */
+html.desk .mt-top { min-height: 0; padding: 0 0 8px; }
+html.desk .mt-top__title { font-size: 18px; }
+html.desk .mt-top__back:hover { border-color: var(--gold-edge); color: var(--gold-light); }
+html.desk .mt .ui-score-head {
+  margin: 8px 0 0; padding: 26px 32px 24px; border-radius: 26px;
+  background: var(--hero-glow), linear-gradient(180deg, #12151E, #0C0E15); border: 1px solid rgba(212, 175, 55, .2);
+}
+html.desk .mt .ui-score-head__score { font-size: 60px; }
+html.desk .mt .ui-score-head .ui-crest { width: 96px !important; height: 96px !important; }
+html.desk .mt-cd { margin: 18px 0 0; }
+html.desk .mt-state, html.desk .mt-pending, html.desk .mt-loading .ui-skeleton:first-child, html.desk .mt-loading__list { margin-left: 0; margin-right: 0; }
+html.desk .mt-desk { margin-top: 28px; }
+html.desk .mt-desk__sec { display: flex; flex-direction: column; gap: 14px; }
+html.desk .mt-desk__sec > .dk-h2 { margin: 0; }
+html.desk .mt-desk__sec > *, html.desk .mt-desk__col > * { margin-left: 0; margin-right: 0; margin-top: 0; }
+html.desk .mt-desk .mt-stars { margin: 0; }
+html.desk .mt-desk .mt-video > .ui-card { margin: 0; }
+html.desk .mt-desk .mt-video .ui-video__screen { height: auto !important; aspect-ratio: 16 / 9; }
+
 /* длинная фамилия у бровки (Alexander-Arnold) не должна обрезаться краем поля */
 .mt .ui-pl__nm { max-width: 80px; overflow: hidden; text-overflow: ellipsis; }

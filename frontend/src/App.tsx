@@ -1,8 +1,12 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
+import { SiteFooter } from './components/SiteFooter';
+import { SiteHeader } from './components/SiteHeader';
+import { RouteMeta } from './components/RouteMeta';
 import { StartParamHandler } from './components/StartParamHandler';
 import { backgroundOf } from './lib/playerNav';
+import { useDesktop } from './lib/shell';
 import { SectionScreen } from './screens/SectionScreen';
 import { SECTIONS } from './sections';
 import HomeScreen from './screens/HomeScreen';
@@ -51,15 +55,19 @@ const videoPlayer = (
 
 function AppRoutes() {
   const location = useLocation();
+  const desktop = useDesktop();
   // карточка игрока, открытая из приложения, лежит поверх экрана, с которого её открыли:
   // он остаётся смонтированным (прокрутка, вкладка, опрос), «назад» возвращает ровно туда.
   // Прямой заход по ссылке — фона нет, карточка рисуется одна.
-  const bg = backgroundOf(location);
+  // Сайт на компьютере: игрок, новость и видео — обычные страницы между шапкой и подвалом, без слоя.
+  const bg = desktop ? undefined : backgroundOf(location);
   const shown = bg ?? location;
   return (
     <>
       <ScrollToTop pathname={shown.pathname} />
       <StartParamHandler />
+      <RouteMeta />
+      {desktop && <SiteHeader />}
       <div className="app">
         <Routes location={shown}>
           <Route path="/" element={<HomeScreen />} />
@@ -131,7 +139,7 @@ function AppRoutes() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-      <BottomNav />
+      {desktop ? <SiteFooter /> : <BottomNav />}
       {bg && (
         <Routes>
           <Route path="/player/:id" element={player} />

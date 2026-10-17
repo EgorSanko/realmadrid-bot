@@ -52,6 +52,36 @@
 .tm-leader__tap { display: block; color: inherit; text-decoration: none; }
 .tm-tr__fee { flex: none; font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
 .tm-tr__fee--loan { color: var(--gold); font-weight: 500; }
+/* ---------- сайт на компьютере (html.desk): состав сеткой карточек ---------- */
+html.desk .tm-stale { margin: 0 0 14px; }
+html.desk .tm-desk .tm-leaders { margin: 0; }
+html.desk .tm-grid { display: flex; flex-direction: column; gap: 26px; }
+html.desk .tm-gline__title { margin: 0 0 12px; font-family: var(--display); font-weight: 700; font-size: 18px; }
+html.desk .tm-gline__n { margin-left: 6px; font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--muted); }
+html.desk .tm-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+html.desk .tm-cards > li { min-width: 0; }
+html.desk .tm-card {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%;
+  padding: 20px 12px 16px; border-radius: 20px; background: var(--hero-glow), var(--card-grad); border: 1px solid var(--line);
+  color: var(--text); text-align: center; text-decoration: none;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+html.desk a.tm-card { cursor: pointer; }
+html.desk a.tm-card:hover { border-color: var(--gold-edge); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0, 0, 0, .35); }
+html.desk a.tm-card:hover .tm-card__name { color: var(--gold-light); }
+html.desk .tm-card__photo { display: block; margin-bottom: 8px; }
+html.desk .tm-card__photo > .ui-photo { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--line); }
+html.desk .tm-card__num {
+  position: absolute; left: 12px; top: 10px; font-family: var(--display); font-weight: 700; font-size: 20px;
+  color: var(--gold); font-variant-numeric: tabular-nums;
+}
+html.desk .tm-card__badge { position: absolute; right: 10px; top: 10px; }
+html.desk .tm-card__name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: 15px; transition: color .15s ease; }
+html.desk .tm-card__sub { display: flex; align-items: center; justify-content: center; gap: 6px; max-width: 100%; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+html.desk .tm-card--coach { max-width: none; }
+html.desk .tm-desk .tm-leader__val { font-size: 24px; }
+html.desk .tm-desk a.tm-inj:hover .tm-name, html.desk .tm-desk a.tm-tr:hover .tm-name { color: var(--gold-light); }
+
 .tm-more {
   display: block; width: 100%; margin-top: 6px; padding: 10px 0; min-height: 40px;
   border: 0; border-radius: 12px; background: var(--surface-2); color: var(--text);

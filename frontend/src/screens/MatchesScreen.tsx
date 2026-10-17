@@ -1,24 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { ApiFixtures, ApiTable, ApiTables } from '../lib/api';
+import type { ApiFixtures, ApiTables } from '../lib/api';
 import {
   COMP_TABS,
   LALIGA_ID,
   UCL_ID,
-  compactRows,
   errorText,
-  roundsAside,
   splitFixtures,
-  standingRows,
   staleNote,
   tableFor,
-  usRow,
-  zonesFor,
   type CompTab,
 } from '../lib/mapMatches';
+import { useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { usePoll } from '../lib/usePoll';
-import { EmptyState, ErrorState, SectionHeader, Skeleton, StandingsTable, Tabs } from '../ui';
+import { EmptyState, ErrorState, SectionHeader, Skeleton, Tabs } from '../ui';
 import { MatchRow } from '../ui/matchExtra';
+import { LeagueTable, MoreButton } from './LeagueTable';
 import './screens.css';
 
 const UPCOMING_SHOWN = 8;
@@ -35,31 +32,6 @@ const VIEW_TABS: Array<{ id: View; label: string }> = [
 const fixturesPoll = (d: ApiFixtures | null) => (d?.matches?.some((m) => m.status?.live) ? 15_000 : 60_000);
 const tablesPoll = () => 5 * 60_000;
 
-function MoreButton({ open, onToggle, more, less }: { open: boolean; onToggle: () => void; more: string; less: string }) {
-  return (
-    <button type="button" className="screen-more" aria-expanded={open} onClick={onToggle}>
-      {open ? less : more}
-    </button>
-  );
-}
-
-function LeagueTable({ table, title }: { table: ApiTable; title: string }) {
-  const [full, setFull] = useState(false);
-  const all = useMemo(() => standingRows(table), [table]);
-  const us = usRow(table);
-  const { rows, collapsed } = compactRows(all, us?.pos ?? null);
-  const shown = full || !collapsed ? all : rows;
-  return (
-    <section className="ui-card" aria-label={`Таблица: ${title}`}>
-      <SectionHeader title={title} aside={roundsAside(table)} />
-      <StandingsTable rows={shown} highlightTeamId={us?.team.id ?? undefined} zones={zonesFor(table, shown)} />
-      {collapsed && (
-        <MoreButton open={full} onToggle={() => setFull((v) => !v)} more="Вся таблица" less="Свернуть таблицу" />
-      )}
-    </section>
-  );
-}
-
 export default function MatchesScreen() {
   const [tab, setTab] = useState<CompTab>('all');
   const [view, setView] = useState<View>('calendar');
@@ -68,9 +40,10 @@ export default function MatchesScreen() {
   const fx = usePoll<ApiFixtures>('/api/fixtures', fixturesPoll);
   const tb = usePoll<ApiTables>('/api/tables', tablesPoll);
   const link = useSpaLink();
+  const desktop = useDesktop();
 
   useEffect(() => {
-    document.title = 'Матчи — Мадридиста';
+    document.title = 'Матчи «Реала»: календарь, результаты, таблица — Мадридиста';
   }, []);
 
   const lists = useMemo(() => (fx.data ? splitFixtures(fx.data.matches, tab) : null), [fx.data, tab]);
@@ -86,6 +59,7 @@ export default function MatchesScreen() {
   };
 
   let fixturesBlock;
+  let resultsBlock;
   if (!fx.data && fx.loading) {
     fixturesBlock = (
       <section className="ui-card" aria-label={view === 'results' ? 'Результаты' : 'Ближайшие матчи'}>
@@ -144,6 +118,8 @@ export default function MatchesScreen() {
         </section>
     );
     fixturesBlock = view === 'results' ? resultsCard : upcomingCard;
+    resultsBlock = resultsCard;
+    if (desktop) fixturesBlock = upcomingCard;
   }
 
   const showLaliga = tab !== 'ucl';
@@ -167,6 +143,28 @@ export default function MatchesScreen() {
         {showLaliga && laliga && <LeagueTable key="ll" table={laliga} title="Ла Лига" />}
         {showUcl && ucl && <LeagueTable key="ucl" table={ucl} title="Лига чемпионов" />}
       </>
+    );
+  }
+
+  // сайт на компьютере: ближайшие и результаты слева, таблицы справа — всё сразу, без вкладок раздела
+  if (desktop) {
+    return (
+      <main className="matches matches--desk">
+        <header className="topbar">
+          <h1 className="topbar__title">Матчи</h1>
+          <span className="topbar__aside">{aside}</span>
+        </header>
+        <div className="dk-split dk-split--matches">
+          <div className="dk-col">
+            <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel="Фильтр турниров" variant="pill" className="matches__comp" />
+            {fixturesBlock}
+            {resultsBlock}
+          </div>
+          <aside className="dk-col" aria-label="Турнирные таблицы">
+            {tablesBlock}
+          </aside>
+        </div>
+      </main>
     );
   }
 

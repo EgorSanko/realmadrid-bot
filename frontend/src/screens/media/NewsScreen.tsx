@@ -4,6 +4,7 @@ import { ExternalLink, openExternal } from '../../lib/ExternalLink';
 import { newsHref, plainClick, useMediaNav, useOverlayBack, type MediaNavState } from '../../lib/mediaNav';
 import { backgroundOf } from '../../lib/playerNav';
 import { shareLink } from '../../lib/share';
+import { isDesktop, useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { Button, EmptyState, ErrorState, NewsItem, Skeleton } from '../../ui';
 import { articleMeta, newsTime, type ArticleData, type NewsBrief } from './mediaData';
@@ -32,12 +33,14 @@ export default function NewsScreen() {
   const goBack = useOverlayBack('/media?tab=news');
   const nativeBack = useTelegramBackButton(goBack);
   const ref = useRef<HTMLDivElement>(null);
+  const page = useDesktop();
   const overlay = backgroundOf(location) != null;
 
   // фон не прокручивается под слоем; фокус — в слой; Esc закрывает
   useEffect(() => {
     const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // сайт на компьютере: это обычная страница, прокручивается сама страница
+    if (!isDesktop()) document.body.style.overflow = 'hidden';
     ref.current?.focus({ preventScroll: true });
     return () => {
       document.body.style.overflow = prev;
@@ -68,8 +71,8 @@ export default function NewsScreen() {
     <div
       ref={ref}
       className={overlay ? 'nr nr--overlay' : 'nr'}
-      role="dialog"
-      aria-modal="true"
+      role={page ? undefined : 'dialog'}
+      aria-modal={page ? undefined : true}
       aria-label={title ? `Новость: ${title}` : 'Новость'}
       tabIndex={-1}
     >

@@ -76,6 +76,7 @@ tar -czf - -C "$ROOT/deploy/img" . \
 log "nginx: /etc/nginx/sites-available/$SITE_NAME"
 if $SSH "test -f '/etc/letsencrypt/live/$DOMAIN/fullchain.pem'"; then
   HTTPS=1
+  SCHEME=https
   LISTEN="    listen 443 ssl http2;
     listen [::]:443 ssl http2;
     ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
@@ -87,10 +88,12 @@ if $SSH "test -f '/etc/letsencrypt/live/$DOMAIN/fullchain.pem'"; then
     listen [::]:80;
     server_name $DOMAIN www.$DOMAIN;
     location /.well-known/acme-challenge/ { root /var/www/html; }
-    location / { return 301 https://\$host\$request_uri; }
+    # сразу на https и без www — одним редиректом
+    location / { return 301 https://$DOMAIN\$request_uri; }
 }"
 else
   HTTPS=0
+  SCHEME=http
   LISTEN="    listen 80;
     listen [::]:80;"
   REDIRECT=""
@@ -99,6 +102,7 @@ fi
 CONF="$(cat "$ROOT/deploy/nginx.conf.template")"
 CONF="${CONF//\{\{LISTEN\}\}/$LISTEN}"
 CONF="${CONF//\{\{REDIRECT\}\}/$REDIRECT}"
+CONF="${CONF//\{\{SCHEME\}\}/$SCHEME}"
 CONF="${CONF//\{\{DOMAIN\}\}/$DOMAIN}"
 CONF="${CONF//\{\{WEBROOT\}\}/$WEBROOT}"
 CONF="${CONF//\{\{API_PORT\}\}/$API_PORT}"

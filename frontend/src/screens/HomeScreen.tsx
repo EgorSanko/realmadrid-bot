@@ -14,11 +14,13 @@ import {
   splitFixtures,
   staleNote,
 } from '../lib/mapMatches';
+import { useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
 import { EmptyState, ErrorState, FormStrip, LeagueLogo, MatchCard, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
+import { HomeDesk } from './home/HomeDesk';
 import { LatestNews } from './media/LatestNews';
 import './screens.css';
 
@@ -39,9 +41,10 @@ export default function HomeScreen() {
   const home = usePoll<ApiHome>('/api/home', (d) => homePollMs(d));
   const link = useSpaLink();
   const now = useNow();
+  const desktop = useDesktop();
 
   useEffect(() => {
-    document.title = 'Мадридиста';
+    document.title = 'Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости';
   }, []);
 
   const d = home.data;
@@ -69,25 +72,68 @@ export default function HomeScreen() {
   const note = d ? staleNote(d, home.receivedAt ? (now - home.receivedAt) / 1000 : 0) : null;
   const err = errorText(home.error);
 
+  const heroBlock =
+    !d && home.loading ? (
+      <Skeleton shape="match" className="hero-wrap" />
+    ) : !d ? (
+      <ErrorState title={err.title} text={err.text} onRetry={home.reload} />
+    ) : view?.hero ? (
+      <HeroMatchCard
+        {...view.hero}
+        {...link(view.hero.href)}
+        onKickoff={home.reload}
+        footer={note && <p className="screen-note">{note}</p>}
+      />
+    ) : (
+      <EmptyState title="Ближайших матчей нет" text="Расписание появится, как только его опубликуют" />
+    );
+
+  const lastBlock =
+    !d && home.loading ? (
+      <div className="home-skel-last" aria-hidden="true">
+        <Skeleton height={86} radius={20} />
+      </div>
+    ) : view?.last ? (
+      <MatchCard
+        status="finished"
+        competition={view.last.competition}
+        kickoff={view.last.kickoff}
+        home={view.last.home}
+        away={view.last.away}
+        score={view.last.score}
+        caption="Прошлый матч"
+        actionLabel="Обзор"
+        crests
+        {...link(view.last.href)}
+      />
+    ) : view?.nextRow ? (
+      <section className="ui-card home-next" aria-label="Следующий матч">
+        <div className="home-tile__cap">Следующий матч</div>
+        <CalendarRow {...view.nextRow} highlighted={false} {...link(view.nextRow.href)} />
+      </section>
+    ) : null;
+
+  // сайт на компьютере: две колонки и лента на всю ширину (мини-апп и телефон — как раньше, ниже)
+  if (desktop) {
+    return (
+      <HomeDesk
+        hero={heroBlock}
+        last={lastBlock}
+        stream={stream}
+        loading={!d && home.loading}
+        form={view?.form ?? []}
+        formOpp={view?.formOpp ?? []}
+        heroId={view?.hero?.id ?? null}
+      />
+    );
+  }
+
   return (
     <main className="home">
       <ScreenHeader title="Главная" brand live={!!stream?.live} />
 
       {/* 1. Ближайший матч / идёт / итог */}
-      {!d && home.loading ? (
-        <Skeleton shape="match" className="hero-wrap" />
-      ) : !d ? (
-        <ErrorState title={err.title} text={err.text} onRetry={home.reload} />
-      ) : view?.hero ? (
-        <HeroMatchCard
-          {...view.hero}
-          {...link(view.hero.href)}
-          onKickoff={home.reload}
-          footer={note && <p className="screen-note">{note}</p>}
-        />
-      ) : (
-        <EmptyState title="Ближайших матчей нет" text="Расписание появится, как только его опубликуют" />
-      )}
+      {heroBlock}
 
       {/* 2. Трансляция (этап 3) — без изменений */}
       <StreamBlock stream={stream} />
@@ -131,29 +177,7 @@ export default function HomeScreen() {
       )}
 
       {/* 5. Прошлый матч (или следующий, если сверху итог только что сыгранного) */}
-      {!d && home.loading ? (
-        <div className="home-skel-last" aria-hidden="true">
-          <Skeleton height={86} radius={20} />
-        </div>
-      ) : view?.last ? (
-        <MatchCard
-          status="finished"
-          competition={view.last.competition}
-          kickoff={view.last.kickoff}
-          home={view.last.home}
-          away={view.last.away}
-          score={view.last.score}
-          caption="Прошлый матч"
-          actionLabel="Обзор"
-          crests
-          {...link(view.last.href)}
-        />
-      ) : view?.nextRow ? (
-        <section className="ui-card home-next" aria-label="Следующий матч">
-          <div className="home-tile__cap">Следующий матч</div>
-          <CalendarRow {...view.nextRow} highlighted={false} {...link(view.nextRow.href)} />
-        </section>
-      ) : null}
+      {lastBlock}
 
       {/* 6. новости — блок раздела «Медиа»; нет данных — блок не показывается */}
       <LatestNews limit={3} />

@@ -129,3 +129,28 @@ a.pc-rm:active { opacity: .78; }
 @media (max-width: 360px) {
   .pc-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ---------- сайт на компьютере (html.desk): обычная страница между шапкой и подвалом ---------- */
+html.desk .pc { position: static; inset: auto; z-index: auto; overflow: visible; background: transparent; animation: none; }
+html.desk .pc-in { max-width: 1120px; min-height: 0; padding: 0; background: none; }
+html.desk .pc-top { grid-template-columns: 44px minmax(0, 1fr) 44px; min-height: 0; padding: 0 0 18px; }
+html.desk .pc-top__back:hover { border-color: var(--gold-edge); color: var(--gold-light); }
+html.desk .pc-desk { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; align-items: start; }
+html.desk .pc-desk__bio { position: sticky; top: calc(var(--sh-h) + 20px); display: flex; flex-direction: column; gap: 14px; }
+html.desk .pc-desk__stats { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+html.desk .pc-desk > div > * { margin-left: 0; margin-right: 0; margin-top: 0; }
+html.desk .pc-desk .pc-hero { flex-direction: column; text-align: center; padding: 28px 22px 24px; }
+html.desk .pc-desk .pc-hero__photo { width: 148px; height: 148px; }
+html.desk .pc-desk .pc-hero__photo > .ui-photo { width: 148px !important; height: 148px !important; }
+html.desk .pc-desk .pc-hero__photo .ui-img { width: 148px !important; height: 148px !important; }
+html.desk .pc-desk .pc-hero__name { font-size: 24px; }
+html.desk .pc-desk .pc-hero__pos, html.desk .pc-desk .pc-hero__row { justify-content: center; }
+html.desk .pc-desk .pc-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html.desk .pc-desk .pc-key__v { font-size: 30px; }
+html.desk .pc-desk .pc-key__tile { padding: 18px 8px 14px; }
+html.desk .pc-desk .ui-tabs--segmented { max-width: 520px; }
+html.desk .pc-desk .pc-season, html.desk .pc-desk .pc-recent, html.desk .pc-desk .pc-career { padding: 18px 22px; }
+html.desk .pc-desk .pc-srow { grid-template-columns: minmax(0, 1fr) 56px 64px 56px 56px 64px; font-size: 14px; }
+html.desk a.pc-rm:hover { background: rgba(255, 255, 255, .025); }
+html.desk .pc-desk .pc-foot { text-align: left; }
+html.desk .pc-state { margin: 14px 0 0; }

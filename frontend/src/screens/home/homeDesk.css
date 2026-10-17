@@ -1,0 +1,58 @@
+/* Главная сайта на компьютере (HomeDesk). Только html.desk — в мини-аппе и на телефоне не действует. */
+
+/* большая карточка матча */
+html.desk .home--desk .hero-wrap { margin: 0; }
+html.desk .home--desk .hero-mc { padding: 28px 32px 30px; border-radius: 26px; }
+html.desk .home--desk .ui-mc__top { font-size: 14px; }
+html.desk .home--desk .ui-mc__teams { gap: 24px; margin-top: 26px; }
+html.desk .home--desk .ui-mc__teams .ui-crest {
+  width: 104px !important;
+  height: 104px !important;
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.45));
+}
+html.desk .home--desk .ui-mc__name { font-size: 20px; }
+html.desk .home--desk .ui-mc__vs { font-size: 22px; }
+html.desk .home--desk .ui-mc__score { font-size: 56px; }
+html.desk .home--desk .ui-mc__cd { margin-top: 30px; }
+html.desk .home--desk .ui-cd { gap: 18px; }
+html.desk .home--desk .ui-cd__unit { min-width: 96px; }
+html.desk .home--desk .ui-cd__num { font-size: 48px; }
+html.desk .home--desk .ui-cd__lbl { font-size: 13px; }
+html.desk .home--desk .ui-cd__sep { font-size: 40px; }
+html.desk .home--desk .ui-mc__venue { font-size: 14px; }
+
+/* эфир: плеер 16:9 на всю ширину колонки */
+html.desk .home--desk .stream { margin: 0; }
+html.desk .home--desk .stream .player { border-radius: 22px; border: 1px solid var(--line); }
+html.desk .home--desk .stream__title { margin: 10px 2px 0; font-size: 14px; }
+
+/* эфира нет — компактная строка, а не пустой экран 16:9 */
+html.desk .home--desk .stream-empty {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  column-gap: 16px;
+  row-gap: 2px;
+  align-items: center;
+  justify-items: start;
+  height: auto;
+  margin: 0;
+  padding: 18px 22px;
+  text-align: left;
+}
+html.desk .home--desk .stream-empty__icon { grid-row: span 2; }
+html.desk .home--desk .stream-empty__text { max-width: none; }
+
+/* правая колонка */
+html.desk .home--desk .dk-table-mini .ui-table { font-size: 13px; }
+html.desk .home--desk .hd-form__strip { margin-top: 14px; justify-content: space-between; }
+html.desk .home--desk .hd-next .ui-fx:last-child { border-bottom: none; padding-bottom: 0; }
+
+/* лента на всю ширину */
+html.desk .home--desk .hd-head { margin-bottom: 16px; }
+html.desk .home--desk .hd-head .ui-section-head__title { font-family: var(--display); font-size: 22px; }
+
+html.desk .hd-videos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+html.desk .hd-videos--hl { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+html.desk .hd-videos .ui-video { margin: 0; }
+html.desk .hd-videos .ui-video__screen { height: auto !important; aspect-ratio: 16 / 9; }
+html.desk .hd-videos--hl .hd-videos__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

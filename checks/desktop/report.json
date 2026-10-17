@@ -1,0 +1,1281 @@
+{
+  "when": "2026-10-17T09:09:40.956Z",
+  "ids": {
+    "match": 6106274,
+    "player": 846033,
+    "news": "0706620f30a9",
+    "video": "EoNQQxVIW-Q"
+  },
+  "desk": {
+    "1440/home": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости",
+      "description": "Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.",
+      "ogTitle": "Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/",
+      "activeNav": "Главная"
+    },
+    "1440/matches": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Матчи «Реала»: календарь, результаты, таблица — Мадридиста",
+      "description": "Календарь и результаты матчей «Реала» в Ла Лиге и Лиге чемпионов, турнирные таблицы с текущим местом команды.",
+      "ogTitle": "Матчи «Реала»: календарь, результаты, таблица — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/matches",
+      "activeNav": "Матчи"
+    },
+    "1440/match": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Roma 3 : 4 Real Madrid — Мадридиста",
+      "description": "Матч «Реала»: счёт и хронология, стартовые составы на поле, статистика, лучшие игроки и обзор.",
+      "ogTitle": "Roma 3 : 4 Real Madrid — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/match/6106274",
+      "activeNav": "Матчи"
+    },
+    "1440/team": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Состав «Реала», лазарет и трансферы — Мадридиста",
+      "description": "Состав «Реала» сезона: игроки по линиям, лидеры по голам, передачам и оценкам, лазарет и трансферы.",
+      "ogTitle": "Состав «Реала», лазарет и трансферы — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/team",
+      "activeNav": "Команда"
+    },
+    "1440/media": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1440/media-news": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1440/media-video": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1440/news": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "«Я не хочу никаких новых игроков». Моуринью ответил на вопрос о трансферах «Реала» зимой — Мадридиста",
+      "description": "Новость о «Реале» — текст целиком внутри приложения, со ссылкой на источник.",
+      "ogTitle": "«Я не хочу никаких новых игроков». Моуринью ответил на вопрос о трансферах «Реала» зимой — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/news/0706620f30a9",
+      "activeNav": "Медиа"
+    },
+    "1440/video": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста",
+      "description": "Видео «Реала» внутри приложения: обзоры матчей, голы и ролики официального канала клуба.",
+      "ogTitle": "Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/video/EoNQQxVIW-Q",
+      "activeNav": "Медиа"
+    },
+    "1440/player": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Vinícius Júnior — Мадридиста",
+      "description": "Карточка игрока «Реала»: статистика сезона, последние матчи, карьера и травмы.",
+      "ogTitle": "Vinícius Júnior — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/player/846033",
+      "activeNav": "Команда"
+    },
+    "1440/predict": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Прогнозы на матчи «Реала» — Мадридиста",
+      "description": "Угадывай счёт матчей «Реала» и первого бомбардира, набирай очки, соревнуйся в рейтинге и лигах с друзьями.",
+      "ogTitle": "Прогнозы на матчи «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/predict",
+      "activeNav": "Прогнозы"
+    },
+    "1440/profile": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Профиль — Мадридиста",
+      "description": "Профиль болельщика: очки за прогнозы, история прогнозов и лиги с друзьями.",
+      "ogTitle": "Профиль — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/profile",
+      "activeNav": null
+    },
+    "1440/hover": {
+      "cursor": "pointer",
+      "border": "rgba(212, 175, 55, 0.3)"
+    },
+    "1440/focus": {
+      "tag": "A",
+      "cls": "sh__link on",
+      "text": "Главная",
+      "outline": "solid 2px rgb(244, 213, 122)"
+    },
+    "1440/loginPanel": {
+      "open": true,
+      "text": "Прогнозы, рейтинг и лиги с друзьями — после входа через Telegram. Пароль не нужен.\n\nTelegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход произойдёт автома"
+    },
+    "1440/telegramOrgOnLoginClick": 1,
+    "1280/home": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости",
+      "description": "Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.",
+      "ogTitle": "Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/",
+      "activeNav": "Главная"
+    },
+    "1280/matches": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Матчи «Реала»: календарь, результаты, таблица — Мадридиста",
+      "description": "Календарь и результаты матчей «Реала» в Ла Лиге и Лиге чемпионов, турнирные таблицы с текущим местом команды.",
+      "ogTitle": "Матчи «Реала»: календарь, результаты, таблица — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/matches",
+      "activeNav": "Матчи"
+    },
+    "1280/match": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Roma 3 : 4 Real Madrid — Мадридиста",
+      "description": "Матч «Реала»: счёт и хронология, стартовые составы на поле, статистика, лучшие игроки и обзор.",
+      "ogTitle": "Roma 3 : 4 Real Madrid — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/match/6106274",
+      "activeNav": "Матчи"
+    },
+    "1280/team": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Состав «Реала», лазарет и трансферы — Мадридиста",
+      "description": "Состав «Реала» сезона: игроки по линиям, лидеры по голам, передачам и оценкам, лазарет и трансферы.",
+      "ogTitle": "Состав «Реала», лазарет и трансферы — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/team",
+      "activeNav": "Команда"
+    },
+    "1280/media": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1280/media-news": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1280/media-video": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Новости и видео «Реала» — Мадридиста",
+      "description": "Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.",
+      "ogTitle": "Новости и видео «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/media",
+      "activeNav": "Медиа"
+    },
+    "1280/news": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "«Я не хочу никаких новых игроков». Моуринью ответил на вопрос о трансферах «Реала» зимой — Мадридиста",
+      "description": "Новость о «Реале» — текст целиком внутри приложения, со ссылкой на источник.",
+      "ogTitle": "«Я не хочу никаких новых игроков». Моуринью ответил на вопрос о трансферах «Реала» зимой — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/news/0706620f30a9",
+      "activeNav": "Медиа"
+    },
+    "1280/video": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста",
+      "description": "Видео «Реала» внутри приложения: обзоры матчей, голы и ролики официального канала клуба.",
+      "ogTitle": "Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/video/EoNQQxVIW-Q",
+      "activeNav": "Медиа"
+    },
+    "1280/player": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Vinícius Júnior — Мадридиста",
+      "description": "Карточка игрока «Реала»: статистика сезона, последние матчи, карьера и травмы.",
+      "ogTitle": "Vinícius Júnior — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/player/846033",
+      "activeNav": "Команда"
+    },
+    "1280/predict": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Прогнозы на матчи «Реала» — Мадридиста",
+      "description": "Угадывай счёт матчей «Реала» и первого бомбардира, набирай очки, соревнуйся в рейтинге и лигах с друзьями.",
+      "ogTitle": "Прогнозы на матчи «Реала» — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/predict",
+      "activeNav": "Прогнозы"
+    },
+    "1280/profile": {
+      "hscroll": 0,
+      "classes": "site desk",
+      "header": true,
+      "footer": true,
+      "bottomNav": false,
+      "appWidth": 1280,
+      "centered": true,
+      "overflowCards": 0,
+      "title": "Профиль — Мадридиста",
+      "description": "Профиль болельщика: очки за прогнозы, история прогнозов и лиги с друзьями.",
+      "ogTitle": "Профиль — Мадридиста",
+      "ogImage": "https://realmadridfan.ru/og.png",
+      "twitter": "summary_large_image",
+      "canonical": "https://realmadridfan.ru/profile",
+      "activeNav": null
+    },
+    "1280/hover": {
+      "cursor": "pointer",
+      "border": "rgba(212, 175, 55, 0.3)"
+    },
+    "1280/focus": {
+      "tag": "A",
+      "cls": "sh__link on",
+      "text": "Главная",
+      "outline": "solid 2px rgb(244, 213, 122)"
+    },
+    "1280/telegramOrgOnLoginClick": 0,
+    "splashOnDesktopAt300ms": false
+  },
+  "widths": {
+    "1024/home": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/matches": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/match": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/team": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/media": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/media-news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/media-video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/player": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/predict": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1024/profile": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1024,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/home": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/matches": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/match": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/team": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/media": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/media-news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/media-video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/player": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/predict": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1280/profile": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/home": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/matches": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/match": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/team": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/media": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/media-news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/media-video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/player": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/predict": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1440/profile": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/home": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/matches": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/match": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/team": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/media": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/media-news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/media-video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/news": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/video": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/player": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/predict": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    },
+    "1920/profile": {
+      "hscroll": 0,
+      "centered": true,
+      "appWidth": 1280,
+      "overflowCards": 0,
+      "desk": true
+    }
+  },
+  "mobile": {
+    "home": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости"
+    },
+    "matches": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Матчи «Реала»: календарь, результаты, таблица — Мадридиста"
+    },
+    "match": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Roma 3 : 4 Real Madrid — Мадридиста"
+    },
+    "team": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Состав «Реала», лазарет и трансферы — Мадридиста"
+    },
+    "media": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Новости и видео «Реала» — Мадридиста"
+    },
+    "media-news": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Новости и видео «Реала» — Мадридиста"
+    },
+    "media-video": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Новости и видео «Реала» — Мадридиста"
+    },
+    "news": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "«Я не хочу никаких новых игроков». Моуринью ответил на вопрос о трансферах «Реала» зимой — Мадридиста"
+    },
+    "video": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Getting READY for SEVILLA with some BRILLIANT goals! — Мадридиста"
+    },
+    "player": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Vinícius Júnior — Мадридиста"
+    },
+    "predict": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Прогнозы на матчи «Реала» — Мадридиста"
+    },
+    "profile": {
+      "hscroll": 0,
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "site",
+      "title": "Профиль — Мадридиста"
+    }
+  },
+  "tma": {
+    "390/home": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          3024
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/matches": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          2360
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/match": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          4218
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/team": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          6630
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/media": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          3156
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/news": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          1688
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/video": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          1688
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/player": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          1688
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/predict": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          3014
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "390/profile": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          780,
+          1688
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "1440/home": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          1440,
+          1425
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "1440/matches": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          1440,
+          1180
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "1440/match": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          1440,
+          2092
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "1440/team": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          1440,
+          3299
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "1440/media": {
+      "header": false,
+      "footer": false,
+      "bottomNav": true,
+      "classes": "tma",
+      "hscroll": 0,
+      "sameStructure": true,
+      "pixels": {
+        "sameSize": true,
+        "size": [
+          1440,
+          1499
+        ],
+        "diffPixels": 0,
+        "diffShare": 0
+      }
+    },
+    "splashShownAt800ms": true
+  },
+  "static": {
+    "/og.png": {
+      "status": 200,
+      "type": "image/png",
+      "fromDist": true,
+      "bytes": 364490
+    },
+    "/favicon.ico": {
+      "error": "TypeError: Failed to fetch"
+    },
+    "/favicon.svg": {
+      "status": 200,
+      "type": "image/svg+xml",
+      "fromDist": true,
+      "bytes": 36553
+    },
+    "/favicon-32.png": {
+      "status": 200,
+      "type": "image/png",
+      "fromDist": true,
+      "bytes": 2177
+    },
+    "/apple-touch-icon.png": {
+      "status": 200,
+      "type": "image/png",
+      "fromDist": true,
+      "bytes": 15482
+    },
+    "/icon-192.png": {
+      "status": 200,
+      "type": "image/png",
+      "fromDist": true,
+      "bytes": 20134
+    },
+    "/icon-512.png": {
+      "status": 200,
+      "type": "image/png",
+      "fromDist": true,
+      "bytes": 69449
+    },
+    "/manifest.webmanifest": {
+      "status": 200,
+      "type": "application/manifest+json",
+      "fromDist": true,
+      "bytes": 736
+    },
+    "/robots.txt": {
+      "status": 200,
+      "type": "text/plain",
+      "fromDist": true,
+      "bytes": 138
+    },
+    "/sitemap.xml": {
+      "status": 200,
+      "type": "application/xml",
+      "fromDist": true,
+      "bytes": 656
+    },
+    "/favicon.ico?check=1": {
+      "status": 200,
+      "type": "image/x-icon",
+      "fromDist": true,
+      "bytes": 3028,
+      "icoMagic": "00000100"
+    },
+    "head": [
+      "<meta name=\"description\" content=\"Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.\">",
+      "<link rel=\"canonical\" href=\"https://realmadridfan.ru/\">",
+      "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"16x16 32x32\">",
+      "<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\">",
+      "<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\">",
+      "<link rel=\"manifest\" href=\"/manifest.webmanifest\">",
+      "<meta property=\"og:type\" content=\"website\">",
+      "<meta property=\"og:site_name\" content=\"Мадридиста\">",
+      "<meta property=\"og:locale\" content=\"ru_RU\">",
+      "<meta property=\"og:url\" content=\"https://realmadridfan.ru/\">",
+      "<meta property=\"og:title\" content=\"Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости\">",
+      "<meta property=\"og:description\" content=\"Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.\">",
+      "<meta property=\"og:image\" content=\"https://realmadridfan.ru/og.png\">",
+      "<meta property=\"og:image:width\" content=\"1200\">",
+      "<meta property=\"og:image:height\" content=\"630\">",
+      "<meta property=\"og:image:alt\" content=\"Эмблема Real Madrid и надпись «Мадридиста — фан-приложение Real Madrid»\">",
+      "<meta name=\"twitter:card\" content=\"summary_large_image\">",
+      "<meta name=\"twitter:title\" content=\"Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости\">",
+      "<meta name=\"twitter:description\" content=\"Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.\">",
+      "<meta name=\"twitter:image\" content=\"https://realmadridfan.ru/og.png\">"
+    ],
+    "ogImageSize": [
+      1200,
+      630
+    ],
+    "manifest": {
+      "name": "Мадридиста — фан-приложение Real Madrid",
+      "short_name": "Мадридиста",
+      "description": "Матчи, трансляции, новости и прогнозы для болельщиков «Реала».",
+      "lang": "ru",
+      "start_url": "/",
+      "scope": "/",
+      "display": "standalone",
+      "background_color": "#06070B",
+      "theme_color": "#06070B",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "/icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        },
+        {
+          "src": "/icon-maskable-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  },
+  "user": {
+    "user": "Профиль: Алексей Морозов",
+    "href": "/profile",
+    "login": false
+  },
+  "totals": {
+    "consoleErrors": 1,
+    "errors": [
+      "desk1440: Failed to load resource: net::ERR_BLOCKED_BY_CLIENT.Inspector"
+    ],
+    "externalHosts": {},
+    "youtubeIframeOnVideoPage": {
+      "iframe:www.youtube-nocookie.com": 8
+    }
+  }
+}

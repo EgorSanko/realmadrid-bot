@@ -4,6 +4,12 @@
   padding-bottom: 24px;
 }
 
+/* сайт на компьютере: колонка по центру, до 720 px */
+html.desk .pf {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .pf-top {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
