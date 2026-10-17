@@ -8,7 +8,7 @@
   POST /api/games/quiz/{sid}/next              выдать вопрос (тут стартует серверный таймер)
   POST /api/games/quiz/{sid}/answer {choice}   ответ: 0..3 или null (время вышло)
   POST /api/games/penalty/start   {level}      новая серия пенальти
-  POST /api/games/penalty/{sid}/shot {zone}    удар в зону 1..6
+  POST /api/games/penalty/{sid}/shot {zone}    удар в зону 1..6 → outcome: goal / save / post / bar
   GET  /api/games/me                           мои рекорды (нужен вход)
   GET  /api/games/leaderboard?game=quiz|penalty  лучшие за неделю
 """
