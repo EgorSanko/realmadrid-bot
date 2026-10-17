@@ -16,6 +16,9 @@ const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
 const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
 const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
 const PlayerScreen = lazy(() => import('./screens/player/PlayerScreen'));
+// чтение новости и просмотр видео внутри приложения — свои ленивые чанки (iframe YouTube — только там)
+const NewsScreen = lazy(() => import('./screens/media/NewsScreen'));
+const VideoScreen = lazy(() => import('./screens/media/VideoScreen'));
 // профиль и вход — свой ленивый чанк
 const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
 // прогнозы — свой ленивый чанк (общая часть с блоком на главной — отдельный чанк)
@@ -31,6 +34,18 @@ function ScrollToTop({ pathname }: { pathname: string }) {
 const player = (
   <Suspense fallback={null}>
     <PlayerScreen />
+  </Suspense>
+);
+
+const newsReader = (
+  <Suspense fallback={null}>
+    <NewsScreen />
+  </Suspense>
+);
+
+const videoPlayer = (
+  <Suspense fallback={null}>
+    <VideoScreen />
   </Suspense>
 );
 
@@ -102,6 +117,8 @@ function AppRoutes() {
             }
           />
           <Route path="/player/:id" element={player} />
+          <Route path="/news/:id" element={newsReader} />
+          <Route path="/video/:id" element={videoPlayer} />
           {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк */}
           <Route
             path="/dev/ui"
@@ -118,6 +135,8 @@ function AppRoutes() {
       {bg && (
         <Routes>
           <Route path="/player/:id" element={player} />
+          <Route path="/news/:id" element={newsReader} />
+          <Route path="/video/:id" element={videoPlayer} />
           <Route path="*" element={null} />
         </Routes>
       )}

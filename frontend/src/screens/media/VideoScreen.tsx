@@ -1,0 +1,159 @@
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
+import { useApiResource } from '../../lib/apiResource';
+import { ExternalLink } from '../../lib/ExternalLink';
+import { isVideoId, useOverlayBack, type MediaNavState } from '../../lib/mediaNav';
+import { backgroundOf } from '../../lib/playerNav';
+import { useTelegramBackButton } from '../../lib/tmaNav';
+import { EmptyState, Skeleton } from '../../ui';
+import { VideoTile } from './MediaParts';
+import { dayMonthRu, findVideo, moreVideos, ytEmbedUrl, ytWatchUrl, type VideosResponse } from './mediaData';
+import './media.css';
+import './reader.css';
+
+const BACK_ICON = (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+    <path d="M15 5l-7 7 7 7" />
+  </svg>
+);
+
+const SLOW_MS = 10_000; // YouTube в России замедлен: не загрузился за 10 с — подсказку делаем заметнее
+
+/**
+ * Видео внутри приложения: /video/:id — слой поверх экрана, с которого открыли (как новость).
+ * Iframe YouTube (youtube-nocookie) создаётся только здесь, когда человек открыл ролик; на экранах-списках —
+ * только наши превью /img/yt. Полноэкранный режим — штатный у плеера YouTube.
+ */
+export default function VideoScreen() {
+  const { id = '' } = useParams();
+  const location = useLocation();
+  const preview = (location.state as MediaNavState | null)?.video;
+  const pre = preview && preview.id === id ? preview : null;
+  const goBack = useOverlayBack('/media?tab=video');
+  const nativeBack = useTelegramBackButton(goBack);
+  const ref = useRef<HTMLDivElement>(null);
+  const overlay = backgroundOf(location) != null;
+  const videos = useApiResource<VideosResponse>('/api/videos?limit=40');
+  const found = findVideo(videos.data, id);
+  const short = found?.short ?? pre?.short ?? false;
+  const title = found?.title ?? pre?.title ?? null;
+  const valid = isVideoId(id);
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    ref.current?.focus({ preventScroll: true });
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') goBack();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [goBack]);
+  useEffect(() => {
+    ref.current?.scrollTo(0, 0);
+  }, [id]);
+  useEffect(() => {
+    const prev = document.title;
+    document.title = title ? `${title} — Мадридиста` : 'Видео — Мадридиста';
+    return () => {
+      document.title = prev;
+    };
+  }, [title]);
+
+  const more = moreVideos(videos.data, id, short);
+  const date = dayMonthRu(found?.published ?? pre?.published ?? null);
+
+  return (
+    <div
+      ref={ref}
+      className={overlay ? 'nr nr--overlay' : 'nr'}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title ? `Видео: ${title}` : 'Видео'}
+      tabIndex={-1}
+    >
+      <div className="nr-in nr-in--video">
+        <header className="nr-top">
+          {nativeBack ? (
+            <span className="nr-top__gap" aria-hidden="true" />
+          ) : (
+            <button type="button" className="nr-top__back" aria-label="Назад" onClick={goBack}>
+              {BACK_ICON}
+            </button>
+          )}
+          <span className="nr-top__title">{short ? 'Shorts' : 'Видео'}</span>
+          <span className="nr-top__gap" aria-hidden="true" />
+        </header>
+
+        {!valid ? (
+          <EmptyState className="nr-state" title="Видео не найдено" text="Неверная ссылка на ролик" action={{ label: 'Все видео', onClick: goBack }} />
+        ) : (
+          <>
+            <Player key={id} id={id} short={short} title={title ?? 'Видео Real Madrid'} />
+            <div className="nr-pad">
+              {title ? <h1 className="nr-title nr-title--video">{title}</h1> : <Skeleton width="80%" height={20} />}
+              <p className="nr-meta">{[found?.subtitle ?? (short ? 'Shorts · Real Madrid' : 'Real Madrid · YouTube'), date].filter(Boolean).join(' · ')}</p>
+            </div>
+            {more.length > 0 && (
+              <section className="mx-videos nr-vmore" aria-label="Ещё видео">
+                <h2 className="nr-more__title nr-pad">Ещё видео</h2>
+                <div className="mx-grid" role="list">
+                  {more.map((v) => (
+                    <div key={v.id} role="listitem">
+                      <VideoTile v={v} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Player({ id, short, title }: { id: string; short: boolean; title: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setSlow(true), SLOW_MS);
+    return () => window.clearTimeout(t);
+  }, []);
+  const src = ytEmbedUrl(id);
+  const watch = ytWatchUrl(id, short);
+  return (
+    <>
+      <div className={short ? 'vp vp--short' : 'vp'}>
+        {!loaded && (
+          <div className="vp-poster" aria-hidden="true">
+            <img src={`/img/yt/${id}.jpg`} alt="" decoding="async" />
+            <span className="vp-spinner" />
+          </div>
+        )}
+        {src && (
+          <iframe
+            className="vp-frame"
+            src={src}
+            title={title}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            onLoad={() => setLoaded(true)}
+          />
+        )}
+      </div>
+      <p className={slow && !loaded ? 'vp-hint vp-hint--slow' : 'vp-hint'} role={slow && !loaded ? 'alert' : undefined}>
+        {slow && !loaded ? 'YouTube грузится слишком долго — в России он работает с перебоями. ' : 'Не грузится? '}
+        <ExternalLink href={watch} className="vp-hint__link">
+          Открыть на YouTube
+        </ExternalLink>
+      </p>
+    </>
+  );
+}

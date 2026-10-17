@@ -2,6 +2,7 @@
 
 export interface NewsItemData {
   id: string;
+  aid: string; // короткий id для /news/:aid
   title: string;
   summary: string;
   source: string; // «Спорт-Экспресс»
@@ -109,4 +110,109 @@ export function videoSubtitle(v: Pick<VideoData, 'short' | 'channel'>): string {
 /** Подпись обзора: «Лига чемпионов · 14 октября». */
 export function highlightSubtitle(h: Pick<HighlightData, 'tournament' | 'kickoff'>): string {
   return [tournamentRu(h.tournament), dayMonthRu(h.kickoff)].filter(Boolean).join(' · ');
+}
+
+/* ---------- чтение новости и просмотр видео внутри приложения ---------- */
+
+/** «Ещё новости» в ответе /api/news/{aid} */
+export interface NewsBrief {
+  aid: string;
+  title: string;
+  source: string;
+  published: string | null;
+  image: string | null;
+}
+
+/** /api/news/{aid}: full — есть текст; pending — сборщик ещё качает; иначе — лид и ссылка на источник. */
+export interface ArticleData {
+  aid: string;
+  id: string;
+  title: string;
+  source: string; // «Спорт-Экспресс»
+  site: string;
+  url: string; // оригинал у источника
+  published: string | null;
+  image: string | null;
+  image_caption: string | null;
+  summary: string;
+  lead: string | null;
+  html: string | null; // безопасный HTML (белый список на сервере)
+  author: string | null;
+  origin: string | null; // первоисточник, на который ссылается сайт («AS»)
+  words: number | null;
+  full: boolean;
+  pending: boolean;
+  reason?: 'no_text' | 'unavailable' | 'busy';
+  available: string[];
+  more: NewsBrief[];
+}
+
+/** Время чтения: ~180 слов в минуту, не меньше минуты. */
+export function readingTime(words: number | null | undefined): string | null {
+  if (!words || words < 1) return null;
+  return `${Math.max(1, Math.round(words / 180))} мин чтения`;
+}
+
+/** Подпись под заголовком: «Спорт-Экспресс · 3 ч назад · 2 мин чтения». */
+export function articleMeta(a: Pick<ArticleData, 'source' | 'published' | 'words'>, now: Date = new Date()): string {
+  return [a.source, newsTime(a.published, now), readingTime(a.words)].filter(Boolean).join(' · ');
+}
+
+const YT_ID = /^[A-Za-z0-9_-]{11}$/;
+
+/** Встроенный плеер — только youtube-nocookie и только для правильного id. */
+export function ytEmbedUrl(id: string): string | null {
+  if (!YT_ID.test(id)) return null;
+  return `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0&modestbranding=1`;
+}
+
+export function ytWatchUrl(id: string, short = false): string {
+  return short ? `https://www.youtube.com/shorts/${id}` : `https://www.youtube.com/watch?v=${id}`;
+}
+
+/** id ролика YouTube из ссылки (watch, youtu.be, shorts, embed) — для обзора с экрана матча. */
+export function youtubeIdOf(url: string | null | undefined): string | null {
+  if (!url) return null;
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return null;
+  }
+  const host = u.hostname.replace(/^(www\.|m\.)/, '');
+  let id: string | null = null;
+  if (host === 'youtu.be') id = u.pathname.split('/')[1] ?? null;
+  else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+    if (u.pathname === '/watch') id = u.searchParams.get('v');
+    else {
+      const m = u.pathname.match(/^\/(?:shorts|embed|live|v)\/([^/?#]+)/);
+      id = m ? m[1] : null;
+    }
+  }
+  return id && YT_ID.test(id) ? id : null;
+}
+
+/** Ролик для экрана /video/:id: из ленты канала или из обзоров матчей. */
+export interface VideoView {
+  id: string;
+  title: string;
+  published: string | null;
+  short: boolean;
+  subtitle: string;
+}
+
+export function findVideo(data: VideosResponse | null | undefined, id: string): VideoView | null {
+  if (!data) return null;
+  const v = data.items.find((x) => x.id === id);
+  if (v) return { id, title: v.title, published: v.published, short: v.short, subtitle: videoSubtitle(v) };
+  const h = data.highlights.find((x) => x.video_id === id);
+  if (h) return { id, title: `Обзор матча: ${h.title}`, published: h.kickoff, short: false, subtitle: highlightSubtitle(h) };
+  return null;
+}
+
+/** «Ещё видео»: того же формата (шорты к шортам), без текущего. */
+export function moreVideos(data: VideosResponse | null | undefined, id: string, short: boolean, n = 6): VideoData[] {
+  const items = (data?.items ?? []).filter((v) => v.id !== id);
+  const same = items.filter((v) => v.short === short);
+  return [...same, ...items.filter((v) => v.short !== short)].slice(0, n);
 }

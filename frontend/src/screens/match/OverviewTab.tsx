@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, type MouseEvent } from 're
 import type { ApiMatch } from '../../api/match';
 import { usePlayerLinks } from '../../lib/playerNav';
 import { openExternal } from '../../lib/tmaNav';
+import { plainClick, useMediaNav, videoHref } from '../../lib/mediaNav';
+import { youtubeIdOf } from '../media/mediaData';
 import {
   Card,
   EmptyState,
@@ -163,21 +165,29 @@ function StarCard({ caption, star }: { caption: string; star: StarView }) {
 
 function Highlight({ match, hl }: { match: ApiMatch; hl: NonNullable<ReturnType<typeof highlightView>> }) {
   const ref = useRef<HTMLDivElement>(null);
-  // VideoCard рисует обычную <a>; в браузере — новая вкладка, в Telegram — openLink
+  const { openVideo } = useMediaNav();
+  // ролик YouTube — встроенный плеер внутри приложения (/video/:id); другой провайдер — внешняя ссылка
+  const ytId = youtubeIdOf(hl.href);
   useEffect(() => {
     const a = ref.current?.querySelector('a');
-    if (a) {
+    if (a && !ytId) {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     }
-  }, [hl.href]);
-  const onClick = (e: MouseEvent) => {
+  }, [hl.href, ytId]);
+  const onClick = (e: MouseEvent<HTMLElement>) => {
+    if (ytId) {
+      if (!plainClick(e)) return;
+      e.preventDefault();
+      openVideo({ id: ytId, title: hl.title, short: false, published: match.kickoff ?? null });
+      return;
+    }
     if (openExternal(hl.href)) e.preventDefault();
   };
   const sub = [tournamentName(match), match.kickoff ? formatDayShort(match.kickoff) : null].filter(Boolean).join(' · ');
   return (
     <div ref={ref} onClickCapture={onClick} className="mt-video">
-      <VideoCard title={hl.title} subtitle={sub} href={hl.href} thumbnailUrl={hl.thumb} provider={hl.provider} height={180} />
+      <VideoCard title={hl.title} subtitle={sub} href={ytId ? videoHref(ytId) : hl.href} thumbnailUrl={hl.thumb} provider={hl.provider} height={180} />
     </div>
   );
 }
