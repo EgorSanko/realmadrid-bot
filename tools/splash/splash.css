@@ -1,50 +1,57 @@
-/* Заставка: эмблема собирается из слоёв, потом блик и название. Всего ~2.6 с, затем уход. */
+/* Заставка: эмблема собирается за ~2.1 с (обод → диск → вензель с лентой → корона → жемчуг → блик),
+   потом скрипт уносит её на место эмблемы в шапке (FLIP), фон растворяется.
+   Базовые стили — готовое состояние, анимации идут «from» с fill both: без анимаций (reduced motion)
+   эмблема просто целая. Анимируются только transform и opacity (+ штрих маски обода). */
 #splash{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  background:radial-gradient(120% 80% at 50% 38%,#0F1218 0%,#06070B 62%);transition:opacity .45s ease,visibility .45s;
-  animation:sp-bail .45s ease 9s forwards}
+  transition:opacity .45s ease,visibility .45s;animation:sp-bail .45s ease 9s forwards;-webkit-tap-highlight-color:transparent}
+/* фон — отдельным слоем: при полёте растворяется он, а эмблема остаётся */
+#splash .sp-bg{position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 80% at 50% 38%,#0F1218 0%,#06070B 62%)}
 #splash.sp-out{opacity:0;visibility:hidden}
 /* страховка: скрипт заставки не выполнился (CSP, ошибка) — через 9 с она уходит сама и не держит экран */
 @keyframes sp-bail{to{opacity:0;visibility:hidden;pointer-events:none}}
-#splash .sp-crest{width:min(46vw,190px);height:auto;overflow:visible;filter:drop-shadow(0 10px 28px rgba(212,175,55,.18))}
+#splash .sp-crest{width:min(46vw,190px);height:auto;overflow:visible;transform-origin:0 0;
+  filter:drop-shadow(0 10px 28px rgba(212,175,55,.18))}
 
-/* 1. белый диск раскрывается из центра */
-.sp-disc{transform-box:fill-box;transform-origin:center;animation:sp-disc .55s cubic-bezier(.2,.8,.2,1) both}
-@keyframes sp-disc{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+/* 1. обод (синий кант + золотое кольцо + синий кант) прорисовывается по кругу от верха, мягко дотягивая
+   в конце; одна маска на все три кольца. Когда штрих замкнулся, маску накрывает сплошной прямоугольник —
+   на стыке начала и конца штриха не остаётся волоска сглаживания. */
+.sp-ring-c{stroke-dasharray:93.5 0;animation:sp-ring .9s cubic-bezier(.45,.05,.2,1) .05s both}
+@keyframes sp-ring{from{stroke-dasharray:0 93.5}}
+.sp-ring-seal{animation:sp-seal .96s step-end both}
+@keyframes sp-seal{from{opacity:0}to{opacity:1}}
 
-/* 2. золото (кольцо и MCF) прорисовывается по кругу */
-.sp-sweep-c{stroke-dasharray:0 102;animation:sp-sweep .9s cubic-bezier(.55,.1,.25,1) .25s forwards}
-@keyframes sp-sweep{to{stroke-dasharray:102 0}}
+/* 2. белый диск проявляется изнутри обода, пока тот рисуется */
+.sp-disc{transform-box:fill-box;transform-origin:center;animation:sp-disc .75s cubic-bezier(.22,1,.36,1) .15s both}
+@keyframes sp-disc{from{transform:scale(.86);opacity:0}}
 
-/* 3. синяя лента ложится по диагонали */
-.sp-sash-r{transform-box:view-box;animation:sp-sash .6s cubic-bezier(.3,.7,.2,1) .8s both}
-@keyframes sp-sash{from{transform:rotate(42deg) translateX(-112px)}to{transform:rotate(42deg) translateX(0)}}
-.sp-sash-r{transform-origin:16px 27.56px;transform:rotate(42deg)}
+/* 3. вензель MCF вместе с лентой проявляется по диагонали ленты мягкой кромкой (одна маска на всё) */
+.sp-wipe-r{transform:translateX(29px);animation:sp-wipe .75s cubic-bezier(.4,0,.2,1) .6s both}
+@keyframes sp-wipe{from{transform:translateX(-17px)}}
 
-/* 4. корона опускается сверху с лёгкой отдачей */
-.sp-crown{transform-box:fill-box;transform-origin:50% 100%;animation:sp-crown .6s cubic-bezier(.34,1.56,.64,1) 1.2s both}
-@keyframes sp-crown{from{transform:translateY(-9px) scale(.85);opacity:0}to{transform:none;opacity:1}}
+/* 4. корона опускается на обод, без отскока */
+.sp-crown{transform-box:fill-box;transform-origin:50% 100%;animation:sp-crown .7s cubic-bezier(.22,1,.36,1) 1s both}
+@keyframes sp-crown{from{transform:translateY(-3.5px) scale(.94);opacity:0}45%{opacity:1}}
 
 /* 5. жемчуг загорается по одной бусине слева направо */
-.sp-pearl{transform-box:fill-box;transform-origin:center;animation:sp-pearl .32s cubic-bezier(.34,1.8,.64,1) both;
-  animation-delay:calc(1.55s + var(--d) * 18ms)}
-@keyframes sp-pearl{from{transform:scale(0);opacity:0}to{transform:none;opacity:1}}
+.sp-pearl{transform-box:fill-box;transform-origin:center;animation:sp-pearl .34s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay:calc(1.15s + var(--d) * 9ms)}
+@keyframes sp-pearl{from{transform:scale(0);opacity:0}}
 
 /* 6. блик проходит по золоту */
-.sp-shine{animation:sp-shine .7s ease-in-out 2.2s both}
-@keyframes sp-shine{from{transform:translateX(0)}to{transform:translateX(46px)}}
+.sp-shine{transform:translateX(46px);animation:sp-shine .7s cubic-bezier(.45,0,.25,1) 1.6s both}
+@keyframes sp-shine{from{transform:translateX(0)}}
 
 /* название */
 #splash .sp-word{font-family:'Unbounded',system-ui,sans-serif;font-weight:700;font-size:15px;letter-spacing:.32em;color:#EEF1F7;
-  padding-left:.32em;animation:sp-word .5s ease 2.1s both}
-#splash .sp-word b{color:#D4AF37;font-weight:700}
+  padding-left:.32em;animation:sp-word .55s cubic-bezier(.22,1,.36,1) 1.55s both}
 #splash .sp-line{width:56px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#D4AF37,transparent);
-  animation:sp-line .7s ease 2.25s both}
-@keyframes sp-word{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes sp-line{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:none}}
+  animation:sp-line .6s cubic-bezier(.22,1,.36,1) 1.7s both}
+@keyframes sp-word{from{opacity:0;transform:translateY(8px)}}
+@keyframes sp-line{from{opacity:0;transform:scaleX(0)}}
 
-/* без анимаций по просьбе системы — сразу готовая эмблема */
+/* без анимаций по просьбе системы — сразу готовая эмблема и короткое растворение */
 @media (prefers-reduced-motion:reduce){
   #splash *{animation:none!important}
-  .sp-sweep-c{stroke-dasharray:102 0}
+  #splash{transition-duration:.25s}
   .sp-shine{display:none}
 }

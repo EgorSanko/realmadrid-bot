@@ -15,6 +15,8 @@ const hashes = [];
 for (const m of html.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/gi)) {
   const attrs = m[1] || '';
   if (/\ssrc\s*=/i.test(attrs)) continue; // внешние файлы разрешает 'self'
-  hashes.push(`'sha256-${createHash('sha256').update(m[2], 'utf8').digest('base64')}'`);
+  // парсер HTML превращает CRLF/CR в LF до подсчёта хэша — так же и здесь (файл, собранный на Windows)
+  const body = m[2].replace(/\r\n?/g, '\n');
+  hashes.push(`'sha256-${createHash('sha256').update(body, 'utf8').digest('base64')}'`);
 }
 process.stdout.write(hashes.join(' '));
