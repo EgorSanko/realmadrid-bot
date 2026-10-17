@@ -44,7 +44,7 @@ export default function PredictScreen() {
   const [leagues, reloadLeagues] = useAuthedGet<{ leagues: League[] }>(authed ? '/api/predict/leagues' : null, [leaguesVer]);
 
   useEffect(() => {
-    document.title = 'Прогнозы — Мадридиста';
+    document.title = 'Прогнозы на матчи «Реала» — Мадридиста';
   }, []);
 
   const meData = authed && me.kind === 'ok' ? me.data : null;

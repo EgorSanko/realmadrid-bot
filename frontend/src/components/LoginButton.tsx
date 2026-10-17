@@ -21,13 +21,19 @@ const TG_ICON = (
  * не загрузился за 8 с — сообщение и запасной путь «Открыть в Telegram» (там вход автоматический).
  * В мини-аппе кнопка не нужна — там вход происходит сам.
  */
-export function LoginButton({ hint, compact }: { hint?: string; compact?: boolean }) {
+export function LoginButton({ hint, compact, autoStart }: { hint?: string; compact?: boolean; autoStart?: boolean }) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [error, setError] = useState<string | null>(null);
   const slot = useRef<HTMLDivElement>(null);
   const cancel = useRef<(() => void) | null>(null);
 
   useEffect(() => () => cancel.current?.(), []);
+
+  // в шапке сайта кнопка уже нажата (открыла панель входа) — сразу грузим виджет
+  const startRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (autoStart && !inMiniApp()) startRef.current();
+  }, [autoStart]);
 
   if (inMiniApp()) return null;
 
@@ -57,6 +63,8 @@ export function LoginButton({ hint, compact }: { hint?: string; compact?: boolea
       setPhase('failed');
     }
   };
+
+  startRef.current = () => void start();
 
   const openInTelegram = (e: MouseEvent<HTMLAnchorElement>) => {
     if (openExternal(BOT_PROFILE_LINK)) e.preventDefault();

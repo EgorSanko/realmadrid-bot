@@ -1,0 +1,445 @@
+/* Сайт на компьютере (html.desk — только браузер шире 1024 px, никогда не мини-апп; см. lib/shell.ts).
+   Каркас: шапка · контейнер до 1280 px · подвал. Раскладки экранов — в их css под тем же html.desk. */
+
+html.desk {
+  --desk-max: 1280px;
+  --desk-pad: 32px;
+  --desk-gap: 24px;
+  --sh-h: 68px;
+  scroll-padding-top: calc(var(--sh-h) + 12px);
+}
+
+html.desk body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 520px at 18% -120px, rgba(212, 175, 55, 0.07), transparent 70%),
+    radial-gradient(900px 480px at 100% 0, rgba(40, 60, 120, 0.10), transparent 70%),
+    var(--bg) no-repeat;
+}
+
+html.desk #root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+html.desk .app {
+  flex: 1;
+  width: 100%;
+  max-width: var(--desk-max);
+  min-height: 0;
+  margin: 0 auto;
+  padding: 28px var(--desk-pad) 64px;
+}
+
+/* ---------- шапка ---------- */
+
+.sh {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(6, 7, 11, 0.72);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sh__in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  max-width: var(--desk-max);
+  height: var(--sh-h);
+  margin: 0 auto;
+  padding: 0 var(--desk-pad);
+}
+
+.sh__brand {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px 6px 0;
+  border-radius: 12px;
+  color: var(--text);
+}
+
+.sh__crest {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.28));
+}
+
+.sh__word {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+}
+
+.sh__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sh__link {
+  padding: 9px 16px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.sh__link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sh__link.on {
+  color: var(--gold-light);
+  background: var(--gold-tint);
+}
+
+.sh__right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.sh__live {
+  text-decoration: none;
+}
+
+.sh__live:hover {
+  background: rgba(255, 90, 78, 0.22);
+}
+
+.sh__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 220px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.15s ease;
+}
+
+.sh__user:hover {
+  border-color: var(--gold-edge);
+}
+
+.sh__uname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sh__user-skel {
+  display: block;
+  width: 168px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.sh-login {
+  position: relative;
+}
+
+.sh-login__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--gold-grad);
+  color: var(--gold-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.22);
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sh-login__btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.32);
+}
+
+.sh-login__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 340px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--card-grad);
+  border: 1px solid var(--gold-edge);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+.sh-login__text {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- подвал ---------- */
+
+.sf {
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(11, 13, 20, 0.6), var(--bg-2));
+}
+
+.sf__in {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 32px;
+  max-width: var(--desk-max);
+  margin: 0 auto;
+  padding: 32px var(--desk-pad) 20px;
+}
+
+.sf__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sf__crest {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.sf__word {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+.sf__sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sf__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 6px;
+}
+
+.sf__link {
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.sf__link:hover {
+  color: var(--gold-light);
+}
+
+.sf__tg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--gold-edge);
+  color: var(--gold-light);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.sf__tg:hover {
+  background: var(--gold-tint);
+}
+
+.sf__legal {
+  max-width: var(--desk-max);
+  margin: 0 auto;
+  padding: 0 var(--desk-pad) 28px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+/* ---------- раскладки ---------- */
+
+/* две колонки: широкая слева, узкая справа */
+html.desk .dk-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--desk-gap);
+  align-items: start;
+}
+
+html.desk .dk-split--wide-side {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+html.desk .dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+html.desk .dk-sticky {
+  position: sticky;
+  top: calc(var(--sh-h) + 20px);
+}
+
+html.desk .dk-full {
+  margin-top: 36px;
+}
+
+/* в колонках и сетках отступы мобильной ленты (14px 16px 0) не нужны — расстояние задаёт gap */
+html.desk .dk-col > *,
+html.desk .dk-full > *,
+html.desk .dk-cards > * {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+html.desk .dk-col > * {
+  margin-top: 0;
+}
+
+/* заголовки разделов страниц */
+html.desk .topbar {
+  min-height: 0;
+  padding: 0 0 20px;
+  align-items: baseline;
+}
+
+html.desk .topbar__title {
+  font-size: 30px;
+}
+
+html.desk .dk-h2 {
+  margin: 0 0 14px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* вкладки: компактный сегмент слева, а не на всю ширину */
+html.desk .ui-tabs--segmented {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* ---------- ховеры и фокус: мышь и клавиатура ---------- */
+
+html.desk a.ui-card,
+html.desk a.hero-mc,
+html.desk a.ui-mc-past,
+html.desk a.home-tile,
+html.desk .mx-link,
+html.desk .mrow,
+html.desk .cal-row,
+html.desk .ui-ptap,
+html.desk .ui-tabs__tab,
+html.desk .ui-btn,
+html.desk .ui-section-head__action {
+  cursor: pointer;
+}
+
+html.desk a.ui-card,
+html.desk a.hero-mc,
+html.desk a.ui-mc-past,
+html.desk a.home-tile {
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+html.desk a.ui-card:hover,
+html.desk a.hero-mc:hover,
+html.desk a.ui-mc-past:hover,
+html.desk a.home-tile:hover {
+  border-color: var(--gold-edge);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+html.desk a.ui-mc-past:hover,
+html.desk a.home-tile:hover {
+  transform: translateY(-1px);
+}
+
+/* строки списков: лёгкая подсветка */
+html.desk a.mrow,
+html.desk a.cal-row,
+html.desk a.ui-ptap,
+html.desk .mx-link {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+html.desk a.mrow:hover,
+html.desk a.cal-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: -10px 0 0 rgba(255, 255, 255, 0.025), 10px 0 0 rgba(255, 255, 255, 0.025);
+}
+
+html.desk .mx-link:hover .ui-news__title,
+html.desk .mx-link:hover .ui-vtile__title,
+html.desk .mx-link:hover .ui-video__title {
+  color: var(--gold-light);
+}
+
+html.desk .mx-link .ui-news__img,
+html.desk .mx-link .ui-vtile__screen img,
+html.desk .mx-link .ui-video__img {
+  transition: transform 0.35s ease;
+}
+
+html.desk .mx-link:hover .ui-news__img,
+html.desk .mx-link:hover .ui-vtile__screen img,
+html.desk .mx-link:hover .ui-video__img {
+  transform: scale(1.04);
+}
+
+html.desk .ui-tabs__tab:not(.is-on):hover {
+  color: var(--text);
+}
+
+html.desk .ui-section-head__action:hover,
+html.desk .screen-more:hover {
+  color: var(--gold-light);
+}
+
+html.desk :focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+  border-radius: 10px;
+}

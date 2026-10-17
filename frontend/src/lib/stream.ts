@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface StreamState {
   live: boolean;
@@ -20,59 +20,82 @@ export async function fetchStream(signal?: AbortSignal): Promise<StreamState> {
   return (await r.json()) as StreamState;
 }
 
-/**
- * Состояние эфира для главной: опрос раз в 20 с и сразу при возврате на вкладку.
- * Пока вкладка скрыта — не опрашиваем. Ошибка сети не сбрасывает последнее известное состояние.
+/*
+ * Состояние эфира: опрос раз в 20 с и сразу при возврате на вкладку. Пока вкладка скрыта — не опрашиваем.
+ * Ошибка сети не сбрасывает последнее известное состояние.
+ * Один опрос на всё приложение: главная и шапка сайта («В ЭФИРЕ») читают одно и то же состояние.
+ * Опрос идёт, пока смонтирован хотя бы один подписчик.
  */
+let shared: StreamState | null = null;
+let lastKey = '';
+const subs = new Set<(s: StreamState | null) => void>();
+let stopPoll: (() => void) | null = null;
+
+function startPoll(): () => void {
+  let ctrl: AbortController | null = null;
+  let timer = 0;
+  const publish = (s: StreamState) => {
+    shared = s;
+    subs.forEach((f) => f(s));
+  };
+
+  const load = async () => {
+    ctrl?.abort();
+    ctrl = new AbortController();
+    try {
+      const s = await fetchStream(ctrl.signal);
+      const key = `${s.live}|${s.url}|${s.title}`;
+      if (key !== lastKey) {
+        lastKey = key;
+        publish(s);
+      }
+    } catch (e) {
+      if ((e as Error).name === 'AbortError') return;
+      // нет сети / сервер недоступен: оставляем, что было (а при первом запуске — «нет эфира»)
+      if (!lastKey) {
+        lastKey = 'offline';
+        publish({ live: false, url: null, title: null, started_at: null });
+      }
+    }
+  };
+
+  const schedule = () => {
+    window.clearInterval(timer);
+    timer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') void load();
+    }, POLL_MS);
+  };
+
+  const onVisible = () => {
+    if (document.visibilityState === 'visible') {
+      void load();
+      schedule();
+    }
+  };
+
+  void load();
+  schedule();
+  document.addEventListener('visibilitychange', onVisible);
+  return () => {
+    window.clearInterval(timer);
+    ctrl?.abort();
+    document.removeEventListener('visibilitychange', onVisible);
+  };
+}
+
 export function useStream(): StreamState | null {
-  const [state, setState] = useState<StreamState | null>(null);
-  const last = useRef('');
+  const [state, setState] = useState<StreamState | null>(shared);
 
   useEffect(() => {
-    let ctrl: AbortController | null = null;
-    let timer = 0;
-
-    const load = async () => {
-      ctrl?.abort();
-      ctrl = new AbortController();
-      try {
-        const s = await fetchStream(ctrl.signal);
-        const key = `${s.live}|${s.url}|${s.title}`;
-        if (key !== last.current) {
-          last.current = key;
-          setState(s);
-        }
-      } catch (e) {
-        if ((e as Error).name === 'AbortError') return;
-        // нет сети / сервер недоступен: оставляем, что было (а при первом запуске — «нет эфира»)
-        if (!last.current) {
-          last.current = 'offline';
-          setState({ live: false, url: null, title: null, started_at: null });
-        }
-      }
-    };
-
-    const schedule = () => {
-      window.clearInterval(timer);
-      timer = window.setInterval(() => {
-        if (document.visibilityState === 'visible') void load();
-      }, POLL_MS);
-    };
-
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') {
-        void load();
-        schedule();
-      }
-    };
-
-    void load();
-    schedule();
-    document.addEventListener('visibilitychange', onVisible);
+    subs.add(setState);
+    setState(shared);
+    if (!stopPoll) stopPoll = startPoll();
     return () => {
-      window.clearInterval(timer);
-      ctrl?.abort();
-      document.removeEventListener('visibilitychange', onVisible);
+      subs.delete(setState);
+      if (subs.size === 0 && stopPoll) {
+        stopPoll();
+        stopPoll = null;
+      }
     };
   }, []);
 

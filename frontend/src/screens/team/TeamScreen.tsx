@@ -24,7 +24,7 @@ import './team.css';
 /** Этап 8: «Команда» по design/screens/a-team.html. Данные — /api/team (снимок сборщика). */
 export default function TeamScreen() {
   useEffect(() => {
-    document.title = 'Команда — Мадридиста';
+    document.title = 'Состав «Реала», лазарет и трансферы — Мадридиста';
   }, []);
   const { data, error, loading, reload } = useApiResource<TeamResponse>('/api/team');
 
