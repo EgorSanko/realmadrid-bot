@@ -307,6 +307,8 @@ def test_sofascore_match_lineups_map_players(tmp_db, monkeypatch):
     monkeypatch.setattr(c.ss, "_fetch", ss_fetch)
     store.map_set(conn, "match", "sofascore", "16938872", "6106274")
     run(c.refresh_match("6106274"))  # FotMob — контекст номеров
+    # завершённый матч: полный снимок FotMob резерв не заменил бы — убираем его, контекст номеров остаётся
+    conn.execute("DELETE FROM snapshots WHERE key='match:6106274'")
     monkeypatch.setattr(config, "disabled_sources", lambda: {"fotmob"})
     m = run(c.refresh_match("6106274"))
     assert m["source"] == "sofascore"
