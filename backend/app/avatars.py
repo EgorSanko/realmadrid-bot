@@ -7,6 +7,9 @@ photo_url у Telegram лежит на t.me (и CDN Telegram) — внешний 
   2. сборщик (network_mode: host, видит SOCKS-туннель 127.0.0.1:1080) скачивает её — `process()`:
      только https и хосты Telegram, только image/jpeg или image/png, не больше 1 МБ,
      сигнатура файла должна совпасть с типом; пишет атомарно DATA_DIR/avatars/{id}.jpg|png (0644);
+  Вход по коду (app/bot.py): ссылки на t.me нет — бот ставит заявку `tg-file:<file_unique_id>/<file_id>`,
+     сборщик при скачивании превращает её в ссылку api.telegram.org через getFile (`resolve`).
+     Сравнение «тот же аватар» — по file_unique_id (file_id у Telegram со временем меняется).
   3. nginx отдаёт /img/avatar/{id}.jpg прямо из /opt/rm-v2/data/avatars (нет файла — силуэт);
      API в ответах даёт ссылку с ?v=<mtime>, чтобы новый аватар не застревал в кэше.
 """
@@ -14,6 +17,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import sqlite3
 import tempfile
 from datetime import datetime, timedelta, timezone
@@ -32,6 +36,9 @@ REQUEUE_AFTER = timedelta(minutes=10)  # повторная заявка на т
 RETRY_AFTER = (timedelta(minutes=5), timedelta(minutes=30), timedelta(hours=3))
 MAX_REDIRECTS = 3
 QUEUE_CAP = 500
+TG_FILE = "tg-file:"
+TG_FILE_RE = re.compile(r"^tg-file:([A-Za-z0-9_-]{1,64})/([A-Za-z0-9_-]{1,256})$")
+TOKEN_SCRUB = re.compile(r"bot\d+:[A-Za-z0-9_-]+")
 
 
 def _now() -> datetime:
@@ -73,9 +80,19 @@ def url_for(user_id: int) -> Optional[str]:
     return f"/img/avatar/{int(user_id)}.jpg?v={v}"
 
 
+def same_source(a: Optional[str], b: Optional[str]) -> bool:
+    """Тот же аватар? Для tg-file — по file_unique_id."""
+    def key(u: Optional[str]) -> Optional[str]:
+        m = TG_FILE_RE.match(u) if isinstance(u, str) else None
+        return TG_FILE + m.group(1) if m else u
+    return key(a) == key(b)
+
+
 def allowed_url(url: Any) -> bool:
     if not isinstance(url, str) or len(url) > 1000:
         return False
+    if url.startswith(TG_FILE):
+        return bool(TG_FILE_RE.match(url))
     try:
         parts = urlsplit(url)
     except ValueError:
@@ -100,10 +117,10 @@ def want(conn: sqlite3.Connection, user_id: int, photo_url: Optional[str], now: 
     if url is None:
         if not have and src is None:
             return False  # нечего ни качать, ни удалять
-    elif have and src == url and at and now - _from_iso(at) < REFRESH_AFTER:
+    elif have and same_source(src, url) and at and now - _from_iso(at) < REFRESH_AFTER:
         return False
     q = conn.execute("SELECT url, asked_at FROM avatar_queue WHERE user_id=?", (user_id,)).fetchone()
-    if q is not None and q[0] == url and now - _from_iso(q[1]) < REQUEUE_AFTER:
+    if q is not None and same_source(q[0], url) and now - _from_iso(q[1]) < REQUEUE_AFTER:
         return False
     if q is None and conn.execute("SELECT COUNT(*) FROM avatar_queue").fetchone()[0] >= QUEUE_CAP:
         return False
@@ -126,8 +143,17 @@ class AvatarError(Exception):
 Fetch = Callable[[str], Awaitable[tuple[int, dict[str, str], Optional[bytes]]]]
 
 
-async def download(url: str, fetch: Fetch) -> tuple[bytes, str]:
+# resolve(file_id) → https-ссылка на файл Telegram (getFile у бота)
+Resolve = Callable[[str], Awaitable[str]]
+
+
+async def download(url: str, fetch: Fetch, resolve: Optional[Resolve] = None) -> tuple[bytes, str]:
     """Скачать аватар: (байты, расширение). Редиректы — только на хосты Telegram."""
+    m = TG_FILE_RE.match(url)
+    if m:
+        if resolve is None:
+            raise AvatarError("tg-file: бот не настроен")
+        url = await resolve(m.group(2))
     for _ in range(MAX_REDIRECTS + 1):
         if not allowed_url(url):
             raise AvatarError(f"хост не разрешён: {urlsplit(url).hostname}")
@@ -190,7 +216,7 @@ def remove(user_id: int, keep: Optional[str] = None) -> None:
 
 
 async def process(conn: sqlite3.Connection, fetch: Fetch, limit: int = 2,
-                  now: Optional[datetime] = None) -> list[tuple[int, str]]:
+                  now: Optional[datetime] = None, resolve: Optional[Resolve] = None) -> list[tuple[int, str]]:
     """Обработать до `limit` заявок, чей срок подошёл. Возвращает [(user_id, итог)]."""
     now = now or _now()
     rows = conn.execute("SELECT user_id, url, tries, asked_at FROM avatar_queue WHERE next_at <= ? "
@@ -203,9 +229,10 @@ async def process(conn: sqlite3.Connection, fetch: Fetch, limit: int = 2,
             out.append((uid, "removed"))
             continue
         try:
-            body, ext = await download(url, fetch)
+            body, ext = await download(url, fetch, resolve)
         except Exception as e:  # сеть, туннель, неверный ответ — повтор с паузой, потом бросаем
-            msg = f"{type(e).__name__}: {e}"[:200]
+            # ссылка на файл бота содержит токен — в лог он попасть не должен
+            msg = TOKEN_SCRUB.sub("bot<token>", f"{type(e).__name__}: {e}")[:200]
             if tries >= len(RETRY_AFTER):  # 1 попытка + len(RETRY_AFTER) повторов
                 conn.execute("DELETE FROM avatar_queue WHERE user_id=? AND asked_at=?", (uid, asked_at))
                 out.append((uid, f"failed: {msg}"))

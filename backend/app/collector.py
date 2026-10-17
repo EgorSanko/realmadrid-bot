@@ -31,7 +31,7 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, cleanup, config, store
+from . import avatars, bot, cleanup, config, store
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
@@ -79,6 +79,9 @@ class Collector:
         self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
         self._avatar_close = None
         self._avatar_task: asyncio.Task | None = None
+        # бот: long polling getUpdates — своя asyncio-задача, лайв-такт не ждёт (app/bot.py)
+        self.bot = bot.TelegramBot()
+        self._bot_task: asyncio.Task | None = None
         # начисление очков прогнозов: раз в SETTLE_INTERVAL и сразу, как увидели новый/исправленный итог
         self.last_settle = 0.0
         self.settle_due = False
@@ -88,10 +91,16 @@ class Collector:
     async def close(self):
         for s in (*self.sources.values(), *self.media.values()):
             await s.close()
-        if self._avatar_task is not None and not self._avatar_task.done():
-            self._avatar_task.cancel()
+        for task in (self._avatar_task, self._bot_task):
+            if task is not None and not task.done():
+                task.cancel()
+                try:
+                    await task
+                except (asyncio.CancelledError, Exception):
+                    pass
         if self._avatar_close is not None:
             await self._avatar_close()
+        await self.bot.close()
 
     # ================= аватары пользователей (заявки API при входе) =================
     async def tick_avatars(self, now: float, limit: int = 2) -> list:
@@ -118,7 +127,8 @@ class Collector:
                 return []
             if self._avatar_fetch is None:
                 self._avatar_fetch, self._avatar_close = avatars.curl_fetch(config.TG_PROXY, config.SOFA_TIMEOUT)
-            done = await avatars.process(conn, self._avatar_fetch, limit=limit)
+            done = await avatars.process(conn, self._avatar_fetch, limit=limit,
+                                         resolve=self.bot.resolve_file if self.bot.configured() else None)
         finally:
             conn.close()
         return done
@@ -1012,6 +1022,7 @@ class Collector:
         with self.conn:
             for name, s in (*self.sources.items(), *self.media.items()):
                 store.put_source_state(self.conn, name, s.snapshot())
+            store.put_source_state(self.conn, self.bot.name, self.bot.snapshot())
             store.put_source_state(self.conn, "_collector", {
                 "pid": os.getpid(), "cycles": self.cycles, "last_team": self.last_team,
                 "last_mapping": self.last_mapping, "last_news": self.last_news, "last_videos": self.last_videos,
@@ -1023,6 +1034,8 @@ class Collector:
     async def run(self, stop: asyncio.Event):
         log.info("collector: старт; DB=%s; debug live=%s", config.DB_PATH, config.DEBUG_LIVE_MATCHES)
         next_state = 0.0
+        if self.bot.configured():
+            self._bot_task = asyncio.create_task(self.bot.run(stop))
         while not stop.is_set():
             now = time.time()
             try:
@@ -1076,6 +1089,11 @@ class Collector:
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
+                # бот: задача упала (не должна) — перезапускаем
+                if self._bot_task is not None and self._bot_task.done() and not stop.is_set():
+                    if not self._bot_task.cancelled() and self._bot_task.exception() is not None:
+                        log.error("bot: задача упала: %r — перезапуск", self._bot_task.exception())
+                    self._bot_task = asyncio.create_task(self.bot.run(stop))
                 if now >= next_state:
                     self.write_state()
                     next_state = now + 5
