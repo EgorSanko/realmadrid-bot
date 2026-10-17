@@ -125,8 +125,10 @@ test('fotmob: состав Реала на поле — оси verticalLayout', 
   assert.equal(guler.rating, 8.3);
   const endrick = lu.subs.find((s) => s.name === 'Endrick')!;
   assert.match(endrick.detail, /гол · голевая передача/);
-  assert.equal(lu.coach, 'José Mourinho');
+  // тренер — с id FotMob (фото), запасные — с id (фото), если источник дал фото
+  assert.deepEqual(lu.coach, { id: 78719, name: 'José Mourinho' });
   assert.equal(lu.bench.length, 7);
+  assert.ok(lu.bench.every((b) => b.id != null && b.name));
 });
 
 test('fotmob: статистика по периодам, xG, точные передачи', () => {
@@ -202,6 +204,33 @@ test('5868098: личные встречи и форма (Реал первым)
   const f = formView(UPCOMING)!;
   assert.equal(f[0].team.name, 'Real Madrid');
   assert.deepEqual(f[0].results, ['W', 'W', 'L', 'W', 'W']);
+  // в старом снимке соперников нет — эмблем под буквами не будет
+  assert.ok(f[0].opponents.every((o) => o === undefined));
+});
+
+test('новые поля API: соперники в форме, флаги стадиона и судьи', () => {
+  const m: ApiMatch = structuredClone(FOTMOB);
+  m.form = {
+    home: [
+      { result: 'W', score: '2 - 1', kickoff: '2026-09-05T18:45:00Z', opponent: { id: 8524, name: 'Atalanta' } },
+      { result: 'L', score: '0 - 1', kickoff: '2026-09-12T18:45:00Z', opponent: null },
+    ],
+    away: [{ result: 'D', score: '1 - 1', kickoff: '2026-09-06T18:45:00Z', opponent: { id: 8302, name: 'Sevilla' } }],
+  };
+  m.venue = { name: 'Stadio Olimpico', city: 'Roma', country: 'Italy', flag: '/img/flag/it.svg' };
+  m.referee_country = { code: 'FRA', name: 'France', flag: '/img/flag/fr.svg' };
+  const f = formView(m)!;
+  const roma = f.find((x) => x.side === 'home')!;
+  assert.deepEqual(roma.results, ['W', 'L']);
+  assert.deepEqual(roma.opponents, [{ id: 8524, name: 'Atalanta' }, undefined]);
+  assert.deepEqual(aboutRows(m), [
+    ['Стадион', 'Stadio Olimpico, Roma', 'it'],
+    aboutRows(FOTMOB)[1], // «Зрители» — без флага, как было
+    ['Судья', 'François Letexier', 'fr'],
+  ]);
+  // флаг без кода страны (не /img/flag/xx.svg) — не показываем
+  m.venue.flag = 'https://example.com/it.svg';
+  assert.deepEqual(aboutRows(m)[0], ['Стадион', 'Stadio Olimpico, Roma']);
 });
 
 /* ---------- SofaScore-форма ---------- */

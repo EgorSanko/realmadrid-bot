@@ -160,6 +160,8 @@ export interface ApiFormItem {
   result: 'W' | 'D' | 'L' | null;
   score: string | null;
   kickoff: string | null;
+  /** соперник (id FotMob → эмблема); у ESPN и в старых снимках — нет */
+  opponent?: { id: number | null; name: string | null } | null;
 }
 
 export interface ApiMatch {
@@ -167,8 +169,10 @@ export interface ApiMatch {
   kickoff: string | null;
   status: ApiStatus;
   tournament: { id: number | null; name: string | null; round: string | null; logo: string | null };
-  venue: { name: string | null; city: string | null } | null;
+  /** country/flag — флаг страны стадиона (/img/flag/{iso2}.svg), если источник её дал */
+  venue: { name: string | null; city: string | null; country?: string | null; flag?: string | null } | null;
   referee: string | null;
+  referee_country?: { code: string | null; name: string | null; flag: string | null } | null;
   attendance: number | null;
   home: ApiTeam;
   away: ApiTeam;
@@ -237,6 +241,7 @@ export function normalizeMatch(m: ApiMatch): ApiMatch {
     h2h: m.h2h ?? null,
     form: m.form ?? null,
     referee: m.referee ?? null,
+    referee_country: m.referee_country ?? null,
     attendance: m.attendance ?? null,
   };
 }

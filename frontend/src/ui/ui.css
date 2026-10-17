@@ -44,6 +44,10 @@
 .ui-tabs--pill::-webkit-scrollbar { display: none; }
 .ui-tabs--pill .ui-tabs__tab { flex: none; height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-weight: 600; font-size: 13px; white-space: nowrap; }
 .ui-tabs--pill .ui-tabs__tab.is-on { border-color: var(--gold); background: var(--surface-2); color: var(--text); }
+.ui-tabs__tab--icon { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.ui-tabs--pill .ui-tabs__tab--icon { padding: 0 12px 0 8px; }
+.ui-tabs__tab--icon > .ui-img { flex: none; }
+.ui-tabs__lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---------- Chip / Badge ---------- */
 .ui-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 8px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--gold-light); font-weight: 600; font-size: 12px; white-space: nowrap; }
@@ -193,8 +197,13 @@
 .ui-table th.ui-table__pts { padding: 0 8px 8px; text-align: right; }
 .ui-table td { padding: 0; }
 .ui-table td.ui-table__pos { padding: 10px 8px; border-left: 3px solid transparent; font-weight: 700; }
-.ui-table td.ui-table__team { padding: 10px 0; font-weight: 500; }
-.ui-table td.ui-table__num { text-align: center; color: var(--muted); }
+/* колонка команды забирает остаток ширины; max-width: 0 — чтобы длинное имя ушло в многоточие, а не раздвинуло таблицу */
+.ui-table td.ui-table__team { width: 100%; max-width: 0; padding: 7px 4px 7px 0; font-weight: 500; }
+.ui-table__tm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ui-table__tm > .ui-img, .ui-table__tm > .ui-crest-gap { flex: none; }
+.ui-table__nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-table th:not(.ui-table__team) { white-space: nowrap; }
+.ui-table td.ui-table__num { padding: 0 6px; text-align: center; color: var(--muted); white-space: nowrap; }
 .ui-table td.ui-table__pts { padding-right: 8px; text-align: right; font-weight: 700; }
 .ui-table tr.is-me { background: var(--surface-2); }
 .ui-table tr.is-me .ui-table__team { font-weight: 700; }
@@ -218,10 +227,11 @@
 /* ---------- Timeline ---------- */
 .ui-tl { position: relative; margin: 6px 0 0; padding: 0; list-style: none; font-size: 16px; }
 .ui-tl::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--line); }
-.ui-tl__row { display: grid; grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr); align-items: center; min-height: 52px; }
+/* узкие поля у оси (6 px) — чтобы фамилия с фото и счётом помещалась целиком на 390 px; многоточие — только для очень длинных */
+.ui-tl__row { display: grid; grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr); align-items: center; min-height: 52px; }
 .ui-tl__min { z-index: 1; justify-self: center; min-width: 38px; padding: 4px 0; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
-.ui-tl__l { padding-right: 12px; text-align: right; }
-.ui-tl__r { padding-left: 12px; }
+.ui-tl__l { padding-right: 6px; text-align: right; }
+.ui-tl__r { padding-left: 6px; }
 .ui-tl__name { font-size: 14px; font-weight: 600; }
 .ui-tl__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
 /* строки с фото: флекс, чтобы фото и имя стояли рядом, а длинное имя резалось многоточием */
@@ -230,8 +240,8 @@
 .ui-tl__l .ui-tl__line { justify-content: flex-end; }
 .ui-tl__line > .ui-pin { flex: 0 1 auto; }
 .ui-tl__line > .ui-ev, .ui-tl__line > .ui-tl__score { flex: none; }
-.ui-tl__line .ui-tl__score { margin: 0 0 0 2px; }
-.ui-tl__line .ui-tl__score--l { margin: 0 2px 0 0; }
+.ui-tl__line .ui-tl__score { margin: 0; }
+.ui-tl__line .ui-tl__score--l { margin: 0; }
 /* вторая строка (пас / ушёл · травма) переносится, а не режет имя */
 .ui-tl__sub.ui-tl__line { flex-wrap: wrap; row-gap: 2px; margin-top: 3px; }
 .ui-tl__sub.ui-tl__line > .ui-pin { flex: 0 0 auto; }

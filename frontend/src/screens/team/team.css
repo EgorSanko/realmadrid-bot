@@ -36,6 +36,8 @@
   color: var(--muted); font-variant-numeric: tabular-nums;
 }
 .tm-player__main { flex: 1; min-width: 0; }
+.tm-coach { border-bottom: none; }
+.tm-player > .ui-photo { flex: none; }
 
 /* трансферы */
 .tm-tr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }

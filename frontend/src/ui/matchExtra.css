@@ -17,6 +17,10 @@ a.hero-mc:active { border-color: var(--ring); }
 .cal-row__chip { flex: none; }
 .cal-row .ui-fx__date .ui-badge--live { padding: 3px 7px; font-size: 11px; }
 .cal-row__minute { margin-top: 4px; color: var(--gold); font-weight: 700; }
+.cal-row__team { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cal-row__team + .cal-row__team { margin-top: 4px; }
+.cal-row__team > .ui-img, .cal-row__team > .ui-crest-gap { flex: none; }
+.cal-row__nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* MatchRow — строки «Матчей»: эмблемы команд, логотип турнира, компактные подписи */
 .mrow { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); color: var(--text); -webkit-tap-highlight-color: transparent; }

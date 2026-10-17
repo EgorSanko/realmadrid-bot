@@ -410,14 +410,27 @@ export function potmView(m: ApiMatch): StarView | null {
 
 /* ---------- о матче ---------- */
 
-export function aboutRows(m: ApiMatch): Array<[string, string]> {
-  const rows: Array<[string, string]> = [];
+/** '/img/flag/it.svg' → 'it' (и 'gb-eng'); иначе null — флага не будет. */
+export function flagIso(flag: string | null | undefined): string | null {
+  const r = /\/img\/flag\/([a-z]{2}(?:-[a-z]{3})?)\.svg$/.exec(flag ?? '');
+  return r ? r[1] : null;
+}
+
+/** Строки «О матче»: [подпись, значение, iso2 флага?] — флаг, если источник дал страну. */
+export type AboutRow = [string, string] | [string, string, string];
+
+export function aboutRows(m: ApiMatch): AboutRow[] {
+  const rows: AboutRow[] = [];
+  const row = (k: string, v: string, flag?: string | null): AboutRow => {
+    const iso = flagIso(flag);
+    return iso ? [k, v, iso] : [k, v];
+  };
   if (m.venue?.name) {
     const city = m.venue.city && !m.venue.name.includes(m.venue.city) ? `, ${m.venue.city}` : '';
-    rows.push(['Стадион', `${m.venue.name}${city}`]);
+    rows.push(row('Стадион', `${m.venue.name}${city}`, m.venue.flag));
   }
   if (m.attendance) rows.push(['Зрители', groupThousands(m.attendance)]);
-  if (m.referee) rows.push(['Судья', m.referee]);
+  if (m.referee) rows.push(row('Судья', m.referee, m.referee_country?.flag));
   return rows;
 }
 
@@ -498,11 +511,23 @@ export function h2hView(m: ApiMatch, limit = 5): H2HView | null {
   };
 }
 
-export function formView(m: ApiMatch): Array<{ side: Side; team: TeamRef; results: Outcome[] }> | null {
+export function formView(
+  m: ApiMatch,
+): Array<{ side: Side; team: TeamRef; results: Outcome[]; opponents: Array<TeamRef | undefined> }> | null {
   if (!m.form || !has(m, 'form')) return null;
   const rows = (['home', 'away'] as Side[]).map((side) => {
-    const list = [...(m.form?.[side] ?? [])].sort((a, b) => (a.kickoff ?? '').localeCompare(b.kickoff ?? ''));
-    return { side, team: teamRef(m, side), results: list.map((f) => f.result).filter((r): r is Outcome => r === 'W' || r === 'D' || r === 'L') };
+    const list = [...(m.form?.[side] ?? [])]
+      .sort((a, b) => (a.kickoff ?? '').localeCompare(b.kickoff ?? ''))
+      .filter((f) => f.result === 'W' || f.result === 'D' || f.result === 'L');
+    return {
+      side,
+      team: teamRef(m, side),
+      results: list.map((f) => f.result as Outcome),
+      // соперник — эмблема под буквой (FotMob даёт id; у других источников нет)
+      opponents: list.map((f) =>
+        f.opponent ? { id: f.opponent.id ?? undefined, name: f.opponent.name ?? '' } : undefined,
+      ),
+    };
   });
   if (rows.every((r) => r.results.length === 0)) return null;
   // Реал первым
@@ -542,9 +567,11 @@ export interface LineupView {
   pitch: PitchPlayer[] | null;
   starters: StarterRow[];
   subs: SubView[];
-  bench: string[];
+  /** запасные, что не вышли: фото — если есть id */
+  bench: Array<{ key: string; id?: number; name: string }>;
   unavailable: Array<{ key: string; id?: number; name: string; reason: string }>;
-  coach?: string;
+  /** id FotMob у тренера — фото с /img/player/{id}.png */
+  coach?: { id?: number; name: string };
 }
 
 const MONTH_GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
@@ -658,14 +685,19 @@ export function lineupView(m: ApiMatch, side: Side): LineupView | null {
       rating: ratingOf(p),
     })),
     subs,
-    bench: lu.subs.filter((p) => p.sub_in == null).map((p) => p.name),
+    bench: lu.subs
+      .filter((p) => p.sub_in == null)
+      .map((p, i) => ({ key: `${p.id ?? p.name}-${i}`, id: photoId(p), name: p.name })),
     unavailable: (lu.unavailable ?? []).map((u, i) => ({
       key: `${u.id ?? u.name}-${i}`,
       id: photoId(u),
       name: u.name,
       reason: [absenceReason(u.type), returnText(u.expected_return)].filter(Boolean).join(', '),
     })),
-    coach: lu.coach?.name ?? undefined,
+    // тренера отдаёт только FotMob, id — FotMob: фото с /img/player/{id}.png (нет фото — сервер даст силуэт)
+    coach: lu.coach?.name
+      ? { id: lu.coach.id != null && Number(lu.coach.id) > 0 ? Number(lu.coach.id) : undefined, name: lu.coach.name }
+      : undefined,
   };
 }
 

@@ -78,6 +78,8 @@ export function SectionHeader({
 export interface TabItem<T extends string> {
   id: T;
   label: string;
+  /** картинка перед подписью (эмблема команды в pill) */
+  icon?: ReactNode;
 }
 
 export interface TabsProps<T extends string> {
@@ -122,10 +124,17 @@ export function Tabs<T extends string>({
             type="button"
             role="tab"
             aria-selected={on}
-            className={cx('ui-tabs__tab', on && 'is-on')}
+            className={cx('ui-tabs__tab', on && 'is-on', it.icon != null && 'ui-tabs__tab--icon')}
             onClick={() => onChange(it.id)}
           >
-            {it.label}
+            {it.icon != null ? (
+              <>
+                {it.icon}
+                <span className="ui-tabs__lbl">{it.label}</span>
+              </>
+            ) : (
+              it.label
+            )}
           </button>
         );
       })}

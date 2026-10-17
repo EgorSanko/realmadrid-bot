@@ -13,11 +13,12 @@ import {
   matchStatusOf,
   splitFixtures,
   staleNote,
+  teamRef,
 } from '../lib/mapMatches';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
-import { EmptyState, ErrorState, FormStrip, MatchCard, Skeleton, plural } from '../ui';
+import { EmptyState, ErrorState, FormStrip, LeagueLogo, MatchCard, Skeleton, TeamCrest, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
 import { LatestNews } from './media/LatestNews';
 import './screens.css';
@@ -60,12 +61,16 @@ export default function HomeScreen() {
       form: formResults(d),
       formOpp: formOpponents(d),
       league: leagueSummary(d),
+      leagueId: d.laliga?.league?.id ?? null,
+      // прогноз — на ближайший (или идущий) матч: его эмблемы в кнопке
+      predict: d.next ? [teamRef(d.next.home), teamRef(d.next.away)] : null,
     };
   }, [d, now]);
 
   const note = d ? staleNote(d, home.receivedAt ? (now - home.receivedAt) / 1000 : 0) : null;
   const err = errorText(home.error);
   const live = view?.hero?.status === 'live';
+  const predictCrests = !!view?.predict?.some((t) => t.id != null);
 
   return (
     <main className="home">
@@ -97,7 +102,19 @@ export default function HomeScreen() {
           <span className="home-predict__aside">{live ? 'матч уже идёт' : 'приём до начала матча'}</span>
         </span>
         <span className="home-predict__row">
-          <span className="home-predict__cta">Сделать прогноз на матч</span>
+          {/* с эмблемами матч уже виден — подпись короче, чтобы не переносилась на 390 px */}
+          <span className="home-predict__cta">{predictCrests ? 'Сделать прогноз' : 'Сделать прогноз на матч'}</span>
+          {view?.predict && predictCrests && (
+            <span className="home-predict__teams" role="img" aria-label={view.predict.map((t) => t.name).join(' — ')}>
+              {view.predict.map((t, i) =>
+                t.id != null ? (
+                  <TeamCrest key={i} id={t.id} name="" size={24} />
+                ) : (
+                  <span key={i} className="ui-crest-gap" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                ),
+              )}
+            </span>
+          )}
           <svg className="home-predict__chev" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M9 6l6 6-6 6" />
           </svg>
@@ -122,7 +139,10 @@ export default function HomeScreen() {
             )}
             {view.league && (
               <a className="home-tile" aria-label="Таблица Ла Лиги" {...link('/matches')}>
-                <div className="home-tile__cap">Ла Лига</div>
+                <div className="home-tile__cap home-tile__cap--logo">
+                  {view.leagueId != null && <LeagueLogo id={view.leagueId} name="" size={16} />}
+                  Ла Лига
+                </div>
                 <div className="home-tile__pos">
                   <span className="disp">{view.league.pos}</span>
                   <span>{view.league.line}</span>

@@ -6,6 +6,7 @@ import {
   Card,
   EmptyState,
   FixtureRow,
+  Flag,
   FormStrip,
   PlayerInline,
   RatingChip,
@@ -114,7 +115,7 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
                 {f.team.id != null && <TeamCrest id={f.team.id} name="" size={24} />}
                 <span>{f.team.name}</span>
               </span>
-              <FormStrip results={f.results} />
+              <FormStrip results={f.results} opponents={f.opponents} />
             </div>
           ))}
         </Card>
@@ -122,10 +123,13 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
 
       {about.length > 0 && (
         <Card ariaLabel="О матче" className="mt-about">
-          {about.map(([k, v]) => (
+          {about.map(([k, v, iso]) => (
             <div key={k} className="mt-about__row">
               <span className="mt-about__k">{k}</span>
-              <span>{v}</span>
+              <span className="mt-about__v">
+                {iso && <Flag iso2={iso} name="" width={20} />}
+                <span>{v}</span>
+              </span>
             </div>
           ))}
         </Card>

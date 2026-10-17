@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import type { ApiMatch } from '../../api/match';
-import { Card, EmptyState, MomentumChart, ShotMap, StatRow, Tabs } from '../../ui';
-import { momentumView, realSide, shortTeam, shotsView, statPeriods, statsView, type PeriodKey, type Phase } from './view';
+import { Card, EmptyState, MomentumChart, ShotMap, StatRow, Tabs, TeamCrest } from '../../ui';
+import { momentumView, realSide, shortTeam, shotsView, statPeriods, statsView, teamRef, type PeriodKey, type Phase } from './view';
 
 const PERIOD_LABEL: Record<PeriodKey, string> = { all: 'Матч', first_half: '1-й тайм', second_half: '2-й тайм' };
 
@@ -14,6 +14,8 @@ export function StatsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
   const rs = realSide(match);
   const shots = shotsView(match, rs);
   const accent = rs;
+  const home = teamRef(match, 'home');
+  const away = teamRef(match, 'away');
 
   const shotCard = shots && (
     <Card ariaLabel="Карта ударов">
@@ -46,9 +48,15 @@ export function StatsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
         <Fragment key={g.title}>
         <Card ariaLabel={g.title === 'Главное' ? 'Статистика' : g.title}>
           <div className="mt-row">
-            <span className="mt-muted mt-small mt-team">{shortTeam(match.home.name)}</span>
+            <span className="mt-muted mt-small mt-team mt-team--crest">
+              {home.id != null && <TeamCrest id={home.id} name="" size={20} />}
+              <span>{shortTeam(match.home.name)}</span>
+            </span>
             <h2 className="mt-h2">{g.title}</h2>
-            <span className="mt-muted mt-small mt-team mt-team--r">{shortTeam(match.away.name)}</span>
+            <span className="mt-muted mt-small mt-team mt-team--r mt-team--crest">
+              <span>{shortTeam(match.away.name)}</span>
+              {away.id != null && <TeamCrest id={away.id} name="" size={20} />}
+            </span>
           </div>
           {gi === 0 && periods.length > 1 && (
             <Tabs

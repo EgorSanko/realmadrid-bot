@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { ApiMatch, Side } from '../../api/match';
 import { usePlayerLinks } from '../../lib/playerNav';
-import { Card, EmptyState, EventIcon, Pitch, PlayerInline, PlayerPhoto, PlayerTap, RatingChip, Tabs } from '../../ui';
-import { lineupView, realSide, type Phase } from './view';
+import { Card, EmptyState, EventIcon, Pitch, PlayerInline, PlayerPhoto, PlayerTap, RatingChip, Tabs, TeamCrest } from '../../ui';
+import { lineupView, realSide, teamRef, type Phase } from './view';
 
 const LATER = 'Составы появятся примерно за час до матча';
 
@@ -35,12 +35,18 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
           <Tabs
             variant="pill"
             ariaLabel="Команда"
-            items={order.map((s) => ({ id: s, label: match[s].name ?? '' }))}
+            items={order.map((s) => {
+              const t = teamRef(match, s);
+              return { id: s, label: match[s].name ?? '', icon: t.id != null ? <TeamCrest id={t.id} name="" size={20} /> : undefined };
+            })}
             value={side}
             onChange={setSide}
           />
         ) : (
-          <span className="mt-lu-head__team">{view.team.name}</span>
+          <span className="mt-lu-head__team">
+            {view.team.id != null && <TeamCrest id={view.team.id} name="" size={20} />}
+            <span>{view.team.name}</span>
+          </span>
         )}
         {(view.formation || view.avgRating != null) && (
           <div className="mt-lu-head__meta">
@@ -94,7 +100,18 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
               </li>
             ))}
           </ul>
-          {view.bench.length > 0 && <p className="mt-bench">В запасе: {view.bench.join(', ')}</p>}
+          {view.bench.length > 0 && (
+            <div className="mt-bench">
+              <h3 className="mt-bench__cap">В запасе</h3>
+              <ul className="mt-bench__list">
+                {view.bench.map((b) => (
+                  <li key={b.key}>
+                    <PlayerInline player={b} size={24} {...links} className="mt-bench__who" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </Card>
       )}
 
@@ -114,7 +131,14 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
             </>
           )}
           {view.coach && (
-            <p className={view.unavailable.length ? 'mt-coach' : 'mt-coach mt-coach--solo'}>Главный тренер — {view.coach}</p>
+            <div className={view.unavailable.length ? 'mt-coach' : 'mt-coach mt-coach--solo'}>
+              {/* id тренера — FotMob: фото с нашего сервера; карточки тренера нет — без ссылки */}
+              {view.coach.id != null && <PlayerPhoto id={view.coach.id} name={view.coach.name} size={36} />}
+              <span className="mt-coach__body">
+                <span className="mt-coach__name">{view.coach.name}</span>
+                <span className="mt-coach__role">главный тренер</span>
+              </span>
+            </div>
           )}
         </Card>
       )}

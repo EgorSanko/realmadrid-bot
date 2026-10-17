@@ -198,7 +198,8 @@ function Squad({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }
   const links = usePlayerLinks();
   return (
     <Card ariaLabel="Состав">
-      <SectionHeader title="Состав" aside={t.coach ? `тренер — ${t.coach.name}` : undefined} />
+      <SectionHeader title="Состав" />
+      {t.coach && <CoachRow coach={t.coach} />}
       {LINES.map(({ key, title }) => {
         const players = t.squad?.[key] ?? [];
         if (!players.length) return null;
@@ -216,6 +217,27 @@ function Squad({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }
         );
       })}
     </Card>
+  );
+}
+
+/** Главный тренер: фото (id FotMob — /img/player/{id}.png) и флаг; карточки тренера нет — без ссылки. */
+function CoachRow({ coach }: { coach: NonNullable<TeamResponse['coach']> }) {
+  const iso = flagIso(coach.country?.flag);
+  return (
+    <section aria-label="Тренер">
+      <h3 className="tm-group">Тренер</h3>
+      <div className="tm-player tm-coach">
+        <span className="tm-player__num" aria-hidden="true" />
+        {coach.id != null && <PlayerPhoto id={coach.id} name={coach.name} size={40} />}
+        <div className="tm-player__main">
+          <div className="tm-name">{coach.name}</div>
+          <div className="tm-sub">
+            {iso && <Flag iso2={iso} name={coach.country?.name ?? ''} width={16} className="tm-flag" />}
+            главный тренер
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
