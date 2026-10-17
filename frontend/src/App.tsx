@@ -18,6 +18,8 @@ const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
 const PlayerScreen = lazy(() => import('./screens/player/PlayerScreen'));
 // профиль и вход — свой ленивый чанк
 const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
+// прогнозы — свой ленивый чанк (общая часть с блоком на главной — отдельный чанк)
+const PredictScreen = lazy(() => import('./screens/predict/PredictScreen'));
 
 function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
@@ -63,8 +65,16 @@ function AppRoutes() {
               </Suspense>
             }
           />
-          {/* оставшиеся разделы-заглушки (сейчас — «Прогнозы») */}
-          {SECTIONS.filter((s) => !['/', '/matches', '/team', '/media'].includes(s.path)).map((s) => (
+          <Route
+            path="/predict"
+            element={
+              <Suspense fallback={null}>
+                <PredictScreen />
+              </Suspense>
+            }
+          />
+          {/* оставшиеся разделы-заглушки (сейчас — нет) */}
+          {SECTIONS.filter((s) => !['/', '/matches', '/team', '/media', '/predict'].includes(s.path)).map((s) => (
             <Route key={s.path} path={s.path} element={<SectionScreen section={s} />} />
           ))}
           <Route

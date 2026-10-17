@@ -199,10 +199,14 @@ export interface LeaderboardRowProps {
   avatarUrl?: string;
   /** строка текущего пользователя — подсвечена */
   isMe?: boolean;
+  /** без аватара — нейтральный силуэт вместо первой буквы */
+  silhouette?: boolean;
+  /** серая подпись под именем («точных: 2») */
+  sub?: string;
   className?: string;
 }
 
-export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, className }: LeaderboardRowProps) {
+export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, className }: LeaderboardRowProps) {
   const [imgOk, setImgOk] = useState(true);
   const letter = (isMe ? 'Я' : name.trim()[0] ?? '?').toUpperCase();
   return (
@@ -211,11 +215,23 @@ export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, className 
       <span className="ui-lb__av" aria-hidden="true">
         {avatarUrl && imgOk ? (
           <img src={avatarUrl} alt="" width={36} height={36} loading="lazy" decoding="async" onError={() => setImgOk(false)} />
+        ) : silhouette ? (
+          <svg className="ui-lb__sil" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="15.5" r="7" />
+            <path d="M6 40c1.2-8.4 6.8-13 14-13s12.8 4.6 14 13z" />
+          </svg>
         ) : (
           letter
         )}
       </span>
-      <span className="ui-lb__name">{name}</span>
+      {sub ? (
+        <span className="ui-lb__name ui-lb__name--sub">
+          <span className="ui-lb__nm">{name}</span>
+          <span className="ui-lb__sub">{sub}</span>
+        </span>
+      ) : (
+        <span className="ui-lb__name">{name}</span>
+      )}
       <b className="ui-lb__pts">{points}</b>
     </div>
   );

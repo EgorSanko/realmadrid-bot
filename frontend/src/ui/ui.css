@@ -358,3 +358,8 @@
 .ui-lb__name { flex: 1; min-width: 0; font-weight: 500; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-lb.is-me .ui-lb__name { font-weight: 700; }
 .ui-lb__pts { font-size: 14px; }
+.ui-lb__sil { width: 100%; height: 100%; fill: #3A4664; }
+.ui-lb.is-me .ui-lb__sil { fill: rgba(26, 20, 8, 0.55); }
+.ui-lb__name--sub { display: flex; flex-direction: column; gap: 2px; }
+.ui-lb__nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-lb__sub { font-size: 12px; font-weight: 400; color: var(--muted); }

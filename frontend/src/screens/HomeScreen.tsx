@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { StreamBlock } from '../components/StreamBlock';
 import type { ApiHome } from '../lib/api';
@@ -13,15 +13,16 @@ import {
   matchStatusOf,
   splitFixtures,
   staleNote,
-  teamRef,
 } from '../lib/mapMatches';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
-import { EmptyState, ErrorState, FormStrip, LeagueLogo, MatchCard, Skeleton, TeamCrest, plural } from '../ui';
+import { EmptyState, ErrorState, FormStrip, LeagueLogo, MatchCard, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
 import { LatestNews } from './media/LatestNews';
 import './screens.css';
+
+const HomePredict = lazy(() => import('./predict/HomePredict'));
 
 /** Тик раз в минуту — для подписи «обновлено N мин назад» и смены «только что сыгран» → «ближайший». */
 function useNow(stepMs = 60_000): number {
@@ -62,15 +63,11 @@ export default function HomeScreen() {
       formOpp: formOpponents(d),
       league: leagueSummary(d),
       leagueId: d.laliga?.league?.id ?? null,
-      // прогноз — на ближайший (или идущий) матч: его эмблемы в кнопке
-      predict: d.next ? [teamRef(d.next.home), teamRef(d.next.away)] : null,
     };
   }, [d, now]);
 
   const note = d ? staleNote(d, home.receivedAt ? (now - home.receivedAt) / 1000 : 0) : null;
   const err = errorText(home.error);
-  const live = view?.hero?.status === 'live';
-  const predictCrests = !!view?.predict?.some((t) => t.id != null);
 
   return (
     <main className="home">
@@ -95,31 +92,10 @@ export default function HomeScreen() {
       {/* 2. Трансляция (этап 3) — без изменений */}
       <StreamBlock stream={stream} />
 
-      {/* 3. Прогноз: пока только вход в раздел, ввод — на следующем этапе */}
-      <a className="ui-card home-predict" {...link('/predict')}>
-        <span className="home-predict__head">
-          <span className="home-predict__title">Твой прогноз</span>
-          <span className="home-predict__aside">{live ? 'матч уже идёт' : 'приём до начала матча'}</span>
-        </span>
-        <span className="home-predict__row">
-          {/* с эмблемами матч уже виден — подпись короче, чтобы не переносилась на 390 px */}
-          <span className="home-predict__cta">{predictCrests ? 'Сделать прогноз' : 'Сделать прогноз на матч'}</span>
-          {view?.predict && predictCrests && (
-            <span className="home-predict__teams" role="img" aria-label={view.predict.map((t) => t.name).join(' — ')}>
-              {view.predict.map((t, i) =>
-                t.id != null ? (
-                  <TeamCrest key={i} id={t.id} name="" size={24} />
-                ) : (
-                  <span key={i} className="ui-crest-gap" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                ),
-              )}
-            </span>
-          )}
-          <svg className="home-predict__chev" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6l6 6-6 6" />
-          </svg>
-        </span>
-      </a>
+      {/* 3. Прогноз на ближайший матч: ввод счёта прямо здесь (ленивый чанк) */}
+      <Suspense fallback={<Skeleton height={148} radius={24} style={{ margin: '14px 16px 0', width: 'auto' }} />}>
+        <HomePredict />
+      </Suspense>
 
       {/* 4. Форма и место в Ла Лиге */}
       {!d && home.loading ? (
