@@ -11,6 +11,7 @@
       "first_rm_scorer_player_id": str | int | None, # автор первого гола Реала (None, если Реал не забил)
       "rm_squad": [{"id": ..., "name": str}, ...],    # из кого можно выбрать первого бомбардира
       # необязательно: "rm_is_home": bool — если нет, сторона Реала ищется по RM_TEAM_ID
+      # необязательно: "tournament": {"id", "name"}; в rm_squad — "position" (GK|DF|MF|FW), "number", "starter"
     }
 
 Перенос со сменой даты — это тот же матч (тот же id) с новым `kickoff_utc`
@@ -25,6 +26,10 @@ from typing import Any, Optional, Protocol, runtime_checkable
 STATUSES = ("scheduled", "live", "finished", "cancelled", "postponed")
 
 Match = dict[str, Any]
+
+
+class ProviderUnavailable(Exception):
+    """Данных о матчах сейчас нет (например, сборщик ещё не записал календарь) — API отвечает 503."""
 
 
 @runtime_checkable

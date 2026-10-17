@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { shareURL } from '@tma.js/sdk-react';
 import { LoginButton } from '../../components/LoginButton';
 import { UserAvatar } from '../../components/UserAvatar';
 import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, signOut, useAuth } from '../../lib/auth';
 import { historyRow, isSoftUnavailable, pointsTiles } from '../../lib/profile';
 import type { League, PredictMe } from '../../lib/profile';
+import { copyText, shareLink } from '../../lib/share';
 import { inviteLink } from '../../lib/startParam';
 import { useSpaLink } from '../../lib/spaLink';
 import { useTelegramBackButton } from '../../lib/tmaNav';
@@ -38,52 +38,6 @@ function useAuthed<T>(path: string, enabled: boolean): [Load<T>, () => void] {
     return () => ctl.abort();
   }, [path, enabled, attempt]);
   return [state, useCallback(() => setAttempt((a) => a + 1), [])];
-}
-
-async function copyText(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.setAttribute('readonly', '');
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    let ok = false;
-    try {
-      ok = document.execCommand('copy');
-    } catch {
-      ok = false;
-    }
-    ta.remove();
-    return ok;
-  }
-}
-
-/** Поделиться: в Telegram — shareURL из SDK; в браузере — системное меню; иначе копируем. */
-async function shareLink(url: string, text: string): Promise<'shared' | 'copied' | 'failed'> {
-  if (inMiniApp()) {
-    try {
-      if (shareURL.isAvailable()) {
-        shareURL(url, text);
-        return 'shared';
-      }
-    } catch (e) {
-      console.warn('[tma] shareURL недоступен', e);
-    }
-  }
-  if (typeof navigator.share === 'function') {
-    try {
-      await navigator.share({ url, text });
-      return 'shared';
-    } catch (e) {
-      if ((e as Error).name === 'AbortError') return 'shared';
-    }
-  }
-  return (await copyText(url)) ? 'copied' : 'failed';
 }
 
 export default function ProfileScreen() {

@@ -56,6 +56,7 @@ PLAYER_INTERVAL = _int("PLAYER_INTERVAL", 6 * 3600)
 PLAYER_FOREIGN_TTL = _int("PLAYER_FOREIGN_TTL", 24 * 3600)
 PLAYER_RATE_PER_MIN = _int("PLAYER_RATE_PER_MIN", 10)   # не больше N игроков в минуту (все источники вместе)
 AVATAR_INTERVAL = _int("AVATAR_INTERVAL", 5)            # как часто смотреть очередь аватаров
+SETTLE_INTERVAL = _int("SETTLE_INTERVAL", 600)          # фоновый проход начисления очков прогнозов: 10 мин
 PLAYER_FAIL_RETRY = _int("PLAYER_FAIL_RETRY", 600)      # не нашли / все упали — повтор не раньше чем через 10 мин
 WINDOW_BEFORE = 75 * 60        # окно матча открывается за 75 мин до начала
 WINDOW_AFTER_START = 150 * 60  # ~2,5 ч после старта, если «завершён» ещё не видели

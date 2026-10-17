@@ -20,7 +20,7 @@ from typing import Any, Callable, Iterator, Optional
 
 from .. import avatars
 from . import db, rules
-from .provider import Match, MatchProvider, parse_kickoff, rm_is_home
+from .provider import Match, MatchProvider, ProviderUnavailable, parse_kickoff, rm_is_home
 
 log = logging.getLogger("predictions")
 
@@ -174,7 +174,7 @@ class PredictionService:
     def _provider(self, fn: str, *args: Any) -> Any:
         try:
             return getattr(self.provider, fn)(*args)
-        except NotImplementedError:
+        except (NotImplementedError, ProviderUnavailable):
             raise PredictError(503, "matches_unavailable", "Данные о матчах пока не подключены") from None
 
     # --- пользователи ---
@@ -265,6 +265,7 @@ class PredictionService:
     def _match_view(self, m: Match) -> dict[str, Any]:
         n = self._norm(m)
         acc = self.accepting(n["status"], n["kickoff"])
+        tour = m.get("tournament") or None
         return {
             "id": n["id"], "kickoff_utc": iso_short(n["kickoff"]),
             "home": {"id": n["home_id"], "name": n["home_name"]},
@@ -273,7 +274,21 @@ class PredictionService:
             "status": n["status"],
             "score": None if n["score_home"] is None else {"home": n["score_home"], "away": n["score_away"]},
             "accepting": acc, "closes_at": iso_short(n["kickoff"]),
+            # автор первого гола Реала — пока матч идёт или после него (для «пока +N» на клиенте)
+            "first_rm_scorer_player_id": n["first_scorer"] if n["status"] in ("live", "finished") else None,
+            "tournament": {"id": tour.get("id"), "name": tour.get("name")} if isinstance(tour, dict) else None,
         }
+
+    @staticmethod
+    def _squad_view(squad: Any) -> list[dict[str, Any]]:
+        out = []
+        for x in squad or []:
+            v = {"id": str(x["id"]), "name": x.get("name", "")}
+            for k in ("position", "number", "starter"):
+                if x.get(k) is not None:
+                    v[k] = x[k]
+            out.append(v)
+        return out
 
     @staticmethod
     def _pred_view(p: Optional[sqlite3.Row]) -> Optional[dict[str, Any]]:
@@ -303,7 +318,7 @@ class PredictionService:
         if nxt:
             v = self._match_view(nxt)
             p = preds.get(v["id"])
-            v.update(rm_squad=[{"id": str(x["id"]), "name": x.get("name", "")} for x in nxt.get("rm_squad") or []],
+            v.update(rm_squad=self._squad_view(nxt.get("rm_squad")),
                      my_prediction=self._pred_view(p), my_points=self._points_view(p))
             out_next = v
         out_recent = []
@@ -454,7 +469,7 @@ class PredictionService:
                     mid = str(m["id"])
                     if mid not in ids and c.execute("SELECT 1 FROM matches WHERE id=?", (mid,)).fetchone():
                         ids.append(mid)
-            except NotImplementedError:
+            except (NotImplementedError, ProviderUnavailable):
                 pass
         out, periods = [], set()
         for mid in ids:
