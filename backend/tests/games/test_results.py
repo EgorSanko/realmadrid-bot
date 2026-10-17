@@ -116,3 +116,8 @@ def test_games_do_not_touch_predictions(client, mono, rng, svc):
     assert me["season"]["points"] == 0
     lb = client.get("/api/predict/leaderboard").json()
     assert lb["total"] == 0 and lb["top"] == []
+
+
+def test_zero_score_is_not_a_record(client, mono):
+    r = play_quiz(client, mono, tma(55), right=0)
+    assert r["saved"] and r["score"] == 0 and r["record"] is False and r["best"] == 0

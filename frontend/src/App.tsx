@@ -30,6 +30,9 @@ const VideoScreen = lazy(() => import('./screens/media/VideoScreen'));
 const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
 // прогнозы — свой ленивый чанк (общая часть с блоком на главной — отдельный чанк)
 const PredictScreen = lazy(() => import('./screens/predict/PredictScreen'));
+// игры раздела «Игры» — викторина и пенальти, каждая своим ленивым чанком
+const QuizScreen = lazy(() => import('./screens/games/QuizScreen'));
+const PenaltyScreen = lazy(() => import('./screens/games/PenaltyScreen'));
 
 function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
@@ -96,6 +99,23 @@ function AppRoutes() {
             element={
               <Suspense fallback={null}>
                 <PredictScreen />
+              </Suspense>
+            }
+          />
+          <Route path="/games" element={<Navigate to="/games/quiz" replace />} />
+          <Route
+            path="/games/quiz"
+            element={
+              <Suspense fallback={null}>
+                <QuizScreen />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/games/penalty"
+            element={
+              <Suspense fallback={null}>
+                <PenaltyScreen />
               </Suspense>
             }
           />

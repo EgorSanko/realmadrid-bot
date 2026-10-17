@@ -19,6 +19,7 @@ export function SiteHeader() {
     if (path === '/matches') return pathname.startsWith('/matches') || pathname.startsWith('/match/');
     if (path === '/media') return pathname.startsWith('/media') || pathname.startsWith('/news/') || pathname.startsWith('/video/');
     if (path === '/team') return pathname.startsWith('/team') || pathname.startsWith('/player/');
+    if (path === '/predict') return pathname.startsWith('/predict') || pathname.startsWith('/games');
     return pathname.startsWith(path);
   };
 

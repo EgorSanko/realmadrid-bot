@@ -354,7 +354,7 @@ class GameService:
                       "VALUES (?,?,?,?,?,?,?)",
                       (user_id, game, level, int(score), json.dumps(detail, ensure_ascii=False),
                        week_start(now).isoformat(), iso(now)))
-        res.update(saved=True, best=max(score, prev or 0), record=prev is None or score > prev)
+        res.update(saved=True, best=max(score, prev or 0), record=score > 0 and (prev is None or score > prev))
         return res
 
     def me(self, user_id: int) -> dict[str, Any]:
