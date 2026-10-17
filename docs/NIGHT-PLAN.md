@@ -46,6 +46,8 @@
   (restart=no, контейнеры и данные на месте — вернуть: `docker update --restart=unless-stopped rm-bot && docker start rm-bot`);
   в xyOps выключены «Check notifications», «Auto-settle bets», «LiveTV mirror health», «RM API healthcheck»;
   rm.lead-seek.ru и realmadrid.lead-seek.ru → 301 на https://realmadridfan.ru (старые конфиги: /root/nginx_bak_rm_2026-10-17/).
-- [ ] Вход по коду: сайт показывает код / кнопку «Открыть бота» (t.me/Real_Madrid_football_bot?start=login_КОД),
+- [x] (выложено 17.10 16:12) Вход по коду: сайт показывает код / кнопку «Открыть бота» (t.me/Real_Madrid_football_bot?start=login_КОД),
   бот принимает /start login_КОД (getUpdates через SOCKS, теперь бот свободен), сайт сам входит.
   Бот отвечает только тому, кто входит («Вход выполнен»), никаких рассылок. После игр — следующим агентом.
+- [x] (17.10 16:00) Плеер на ПК: мышь показывает кнопки и курсор, клик — пауза, двойной клик — экран, клавиши.
+- [ ] Пенальти: Куртуа на воротах (картинки из старого penalty.html), прыжки, сейв/гол, сетка — агент работает.
