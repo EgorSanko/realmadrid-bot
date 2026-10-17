@@ -56,7 +56,9 @@ async function open(browser, { viewport, mobile = false, tma = false, dist = DIS
   await context.route('**/*', async (route) => {
     const u = new URL(route.request().url());
     if (u.host !== HOST) {
-      log.external[u.host] = (log.external[u.host] || 0) + 1;
+      // плеер YouTube на странице /video — встроенный iframe (так было и до этой задачи); считаем отдельно
+      const key = /(^|\.)youtube(-nocookie)?\.com$/.test(u.host) && route.request().resourceType() === 'document' ? 'iframe:' + u.host : u.host;
+      log.external[key] = (log.external[key] || 0) + 1;
       return route.abort('blockedbyclient');
     }
     const p = u.pathname;
@@ -64,7 +66,6 @@ async function open(browser, { viewport, mobile = false, tma = false, dist = DIS
       const body = JSON.stringify(user ? { user: TEST_USER, is_admin: false, token: 'local-test' } : { user: null, is_admin: false });
       return route.fulfill({ status: 200, headers: { 'content-type': 'application/json' }, body });
     }
-    if (user && p.startsWith('/api/predict/')) return route.fulfill({ status: 503, headers: { 'content-type': 'application/json' }, body: '{"error":"unavailable"}' });
     if (p.startsWith('/api/') || p.startsWith('/img/')) return route.continue();
     const file = path.join(dist, decodeURIComponent(p));
     if (p !== '/' && fs.existsSync(file) && fs.statSync(file).isFile()) {
@@ -79,7 +80,8 @@ async function open(browser, { viewport, mobile = false, tma = false, dist = DIS
   page.on('pageerror', (e) => log.errors.push('pageerror: ' + e.message));
   page.on('requestfailed', (r) => {
     const f = (r.failure() || {}).errorText || '';
-    if (!/ERR_ABORTED|blockedbyclient/i.test(f)) log.failed.push(r.url() + ' ' + f);
+    // ERR_BLOCKED_BY_CLIENT — это наш перехват чужих хостов (их считаем отдельно, в external)
+    if (!/ERR_ABORTED|BLOCKED_BY_CLIENT/i.test(f)) log.failed.push(r.url() + ' ' + f);
   });
   return { context, page, log };
 }
@@ -183,10 +185,14 @@ async function ids(browser) {
   ];
   const allErrors = [];
   const allExternal = {};
+  const allIframes = {};
   const merge = (log, where) => {
     for (const e of log.errors) allErrors.push(`${where}: ${e}`);
     for (const f of log.failed) allErrors.push(`${where}: requestfailed ${f}`);
-    for (const [h, n] of Object.entries(log.external)) allExternal[h] = (allExternal[h] || 0) + n;
+    for (const [h, n] of Object.entries(log.external)) {
+      const bucket = h.startsWith('iframe:') ? allIframes : allExternal;
+      bucket[h] = (bucket[h] || 0) + n;
+    }
   };
 
   // ---------- 1. десктоп: скриншоты 1440×900 и 1280×800 ----------
@@ -234,7 +240,7 @@ async function ids(browser) {
       // telegram.org блокируется только по нажатию «Войти» — ожидаемо; в счёт внешних хостов при обычном просмотре не идёт
       const ext = { ...log.external };
       delete ext['telegram.org'];
-      merge({ ...log, external: ext, errors: log.errors.filter((e) => !/telegram\.org|ERR_BLOCKED_BY_CLIENT/.test(e)) }, `desk${w}`);
+      merge({ ...log, external: ext }, `desk${w}`);
       report.desk[`${w}/telegramOrgOnLoginClick`] = log.external['telegram.org'] || 0;
       await context.close();
     }
@@ -329,12 +335,27 @@ async function ids(browser) {
     await settle(page, 300);
     for (const p of ['/og.png', '/favicon.ico', '/favicon.svg', '/favicon-32.png', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/manifest.webmanifest', '/robots.txt', '/sitemap.xml']) {
       const r = await page.evaluate(async (u) => {
-        const res = await fetch(u, { cache: 'no-store' });
-        const b = await res.arrayBuffer();
-        return { status: res.status, type: res.headers.get('content-type'), fromDist: res.headers.get('x-from-dist') === '1', bytes: b.byteLength };
+        try {
+          const res = await fetch(u, { cache: 'no-store' });
+          const b = await res.arrayBuffer();
+          return { status: res.status, type: res.headers.get('content-type'), fromDist: res.headers.get('x-from-dist') === '1', bytes: b.byteLength };
+        } catch (e) {
+          return { error: String(e) };
+        }
       }, p);
       report.static[p] = r;
     }
+    // fetch('/favicon.ico') Chromium под перехватом Playwright обрывает (особый запрос значка);
+    // тот же файл с query — обычный запрос, перехват отдаёт его из dist
+    report.static['/favicon.ico?check=1'] = await page.evaluate(async () => {
+      try {
+        const res = await fetch('/favicon.ico?check=1', { cache: 'no-store' });
+        const b = new Uint8Array(await res.arrayBuffer());
+        return { status: res.status, type: res.headers.get('content-type'), fromDist: res.headers.get('x-from-dist') === '1', bytes: b.length, icoMagic: [...b.slice(0, 4)].map((x) => x.toString(16).padStart(2, '0')).join('') };
+      } catch (e) {
+        return { error: String(e) };
+      }
+    });
     report.static.head = await page.evaluate(() => [...document.head.querySelectorAll('link[rel*="icon"], link[rel="manifest"], link[rel="canonical"], meta[property^="og:"], meta[name^="twitter:"], meta[name="description"], meta[name="robots"]')].map((e) => e.outerHTML));
     report.static.ogImageSize = await page.evaluate(() => new Promise((ok) => { const i = new Image(); i.onload = () => ok([i.naturalWidth, i.naturalHeight]); i.onerror = () => ok(null); i.src = '/og.png'; }));
     report.static.manifest = await page.evaluate(async () => (await fetch('/manifest.webmanifest')).json());
@@ -344,7 +365,7 @@ async function ids(browser) {
   // ---------- 6. вошедший пользователь: аватар в шапке ----------
   if (only.has('user')) {
     const { context, page, log } = await open(browser, { viewport: { width: 1440, height: 900 }, user: true });
-    await page.goto(SITE + '/');
+    await page.goto(SITE + '/team'); // без прогнозов: тестовая сессия на сервере недействительна
     await settle(page);
     await page.screenshot({ path: path.join(OUT, 'desk-1440-header-user.png'), clip: { x: 0, y: 0, width: 1440, height: 90 } });
     report.user = await page.evaluate(() => ({ user: document.querySelector('.sh__user')?.getAttribute('aria-label'), href: document.querySelector('.sh__user')?.getAttribute('href'), login: !!document.querySelector('.sh-login__btn') }));
@@ -352,7 +373,7 @@ async function ids(browser) {
     await context.close();
   }
 
-  report.totals = { consoleErrors: allErrors.length, errors: allErrors.slice(0, 40), externalHosts: allExternal };
+  report.totals = { consoleErrors: allErrors.length, errors: allErrors.slice(0, 40), externalHosts: allExternal, youtubeIframeOnVideoPage: allIframes };
   fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report.totals, null, 2));
   await browser.close();
