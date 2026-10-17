@@ -140,7 +140,9 @@ def test_provider_not_connected(env):
 
     from app.main import app
     from app.predictions import api
-    api.configure(db_path=str(env / "p.db"))  # SnapshotProvider-заглушка
+    from app.predictions.snapshot_provider import SnapshotProvider
+    # снимков сборщика ещё нет (пустая rm.sqlite3) — «данные о матчах не подключены»
+    api.configure(provider=SnapshotProvider(db_path=str(env / "rm.sqlite3")), db_path=str(env / "p.db"))
     try:
         r = TestClient(app).get("/api/predict/matches")
         assert r.status_code == 503 and r.json()["error"] == "matches_unavailable"

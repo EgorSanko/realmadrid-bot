@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 from . import auth_api, config, store
 from .model import ts
 from .predictions import api as predict_api
+from .predictions.snapshot_provider import SnapshotProvider
 from .sources import media
 from .stream import router as stream_router
 
@@ -23,6 +24,10 @@ app = FastAPI(title="Мадридиста API", version=VERSION, docs_url=None, 
 app.include_router(stream_router)
 predict_api.install(app)  # /api/predict/* — этап 10
 auth_api.install(app)     # /api/auth/* — вход через Telegram и сессия
+
+# прогнозы читают матчи из снимков сборщика (rm.sqlite3); тесты и проверки подставляют свой сервис сами
+if predict_api._service is None:
+    predict_api.configure(provider=SnapshotProvider())
 
 # через сколько секунд снимок считается устаревшим (≈ 3 пропущенных цикла сборщика)
 STALE_AFTER = {"fixtures": 3 * config.TEAM_INTERVAL, "tables": 3 * config.TEAM_INTERVAL,
