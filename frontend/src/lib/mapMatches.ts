@@ -159,6 +159,15 @@ export function formResults(h: ApiHome): Outcome[] {
     .reverse();
 }
 
+/** Соперники к formResults — в том же порядке (для эмблем под буквами формы). */
+export function formOpponents(h: ApiHome): Array<TeamRef | undefined> {
+  return (h.form ?? [])
+    .filter((f) => f.result === 'W' || f.result === 'D' || f.result === 'L')
+    .slice(0, 5)
+    .reverse()
+    .map((f) => (f.opponent ? teamRef(f.opponent) : undefined));
+}
+
 export interface LeagueSummary {
   pos: number;
   /** «место · 18 очк.» */

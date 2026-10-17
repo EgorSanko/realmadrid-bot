@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
+import { backgroundOf } from './lib/playerNav';
 import { SectionScreen } from './screens/SectionScreen';
 import { SECTIONS } from './sections';
 import HomeScreen from './screens/HomeScreen';
@@ -9,25 +10,37 @@ import MatchesScreen from './screens/MatchesScreen';
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage = lazy(() => import('./dev/UiKitPage'));
-// экран матча, «Команда» и «Медиа» — свои ленивые чанки
+// экран матча, «Команда», «Медиа» и карточка игрока — свои ленивые чанки
 const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
 const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
 const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
+const PlayerScreen = lazy(() => import('./screens/player/PlayerScreen'));
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
+function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;
 }
 
-export function App() {
+const player = (
+  <Suspense fallback={null}>
+    <PlayerScreen />
+  </Suspense>
+);
+
+function AppRoutes() {
+  const location = useLocation();
+  // карточка игрока, открытая из приложения, лежит поверх экрана, с которого её открыли:
+  // он остаётся смонтированным (прокрутка, вкладка, опрос), «назад» возвращает ровно туда.
+  // Прямой заход по ссылке — фона нет, карточка рисуется одна.
+  const bg = backgroundOf(location);
+  const shown = bg ?? location;
   return (
-    <BrowserRouter>
-      <ScrollToTop />
+    <>
+      <ScrollToTop pathname={shown.pathname} />
       <div className="app">
-        <Routes>
+        <Routes location={shown}>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/matches" element={<MatchesScreen />} />
           <Route
@@ -66,6 +79,7 @@ export function App() {
               </Suspense>
             }
           />
+          <Route path="/player/:id" element={player} />
           {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк */}
           <Route
             path="/dev/ui"
@@ -79,6 +93,20 @@ export function App() {
         </Routes>
       </div>
       <BottomNav />
+      {bg && (
+        <Routes>
+          <Route path="/player/:id" element={player} />
+          <Route path="*" element={null} />
+        </Routes>
+      )}
+    </>
+  );
+}
+
+export function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

@@ -41,7 +41,13 @@
 .tm-tr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .tm-tr__main { flex: 1; min-width: 0; }
 .tm-tr__main .tm-sub { overflow: hidden; text-overflow: ellipsis; }
-.tm-tr__crest { width: 16px !important; height: 16px !important; flex: none; }
+.tm-tr__crest { flex: none; }
+.tm-tr__club { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* строки — ссылки на карточку игрока (без id — span с тем же классом); граница — между строками */
+.tm-list > li > .tm-inj, .tm-list > li > .tm-player, .tm-list > li > .tm-tr { color: inherit; text-decoration: none; border-radius: 0; }
+.tm-list > li:last-child > .tm-inj, .tm-list > li:last-child > .tm-player, .tm-list > li:last-child > .tm-tr { border-bottom: none; }
+.tm-leader__tap { display: block; color: inherit; text-decoration: none; }
 .tm-tr__fee { flex: none; font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
 .tm-tr__fee--loan { color: var(--gold); font-weight: 500; }
 .tm-more {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ApiMatch, Side } from '../../api/match';
-import { Card, EmptyState, EventIcon, Pitch, PlayerPhoto, RatingChip, Tabs } from '../../ui';
+import { usePlayerLinks } from '../../lib/playerNav';
+import { Card, EmptyState, EventIcon, Pitch, PlayerInline, PlayerPhoto, PlayerTap, RatingChip, Tabs } from '../../ui';
 import { lineupView, realSide, type Phase } from './view';
 
 const LATER = 'Составы появятся примерно за час до матча';
@@ -11,6 +12,7 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
   const before = phase === 'scheduled' || phase === 'postponed';
   const view = lineupView(match, side);
   const both = lineupView(match, side === 'home' ? 'away' : 'home') != null && view != null;
+  const links = usePlayerLinks();
 
   if (!view) {
     return <EmptyState className="mt-state" title={before ? LATER : 'Составов нет'} text={before ? undefined : 'Источник не прислал составы на этот матч'} />;
@@ -49,21 +51,23 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
       </div>
 
       {view.pitch ? (
-        <Pitch players={view.pitch} ariaLabel={`Стартовый состав: ${view.team.name}`} />
+        <Pitch players={view.pitch} ariaLabel={`Стартовый состав: ${view.team.name}`} {...links} />
       ) : (
         <Card ariaLabel="Стартовый состав">
           <h2 className="mt-h2">Стартовый состав</h2>
           <ul className="mt-list">
             {view.starters.map((p) => (
-              <li key={p.key} className="mt-li">
-                <PlayerPhoto id={p.id} name={p.name} size={36} />
-                <div className="mt-li__body">
-                  <div className="mt-li__name">
-                    {p.number != null && <span className="mt-li__num">{p.number}</span>}
-                    {p.name}
+              <li key={p.key}>
+                <PlayerTap player={p} {...links} className="mt-li">
+                  <PlayerPhoto id={p.id} name={p.name} size={36} />
+                  <div className="mt-li__body">
+                    <div className="mt-li__name">
+                      {p.number != null && <span className="mt-li__num">{p.number}</span>}
+                      {p.name}
+                    </div>
                   </div>
-                </div>
-                {p.rating != null && <RatingChip value={p.rating} />}
+                  {p.rating != null && <RatingChip value={p.rating} />}
+                </PlayerTap>
               </li>
             ))}
           </ul>
@@ -75,16 +79,18 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
           <h2 className="mt-h2">Замены</h2>
           <ul className="mt-list">
             {view.subs.map((p) => (
-              <li key={p.key} className="mt-li">
-                <PlayerPhoto id={p.id} name={p.name} size={36} />
-                <div className="mt-li__body">
-                  <div className="mt-li__name">
-                    {p.number != null && <span className="mt-li__num">{p.number}</span>}
-                    {p.name}
+              <li key={p.key}>
+                <PlayerTap player={p} {...links} className="mt-li">
+                  <PlayerPhoto id={p.id} name={p.name} size={36} />
+                  <div className="mt-li__body">
+                    <div className="mt-li__name">
+                      {p.number != null && <span className="mt-li__num">{p.number}</span>}
+                      {p.name}
+                    </div>
+                    <div className="mt-li__sub">{p.detail}</div>
                   </div>
-                  <div className="mt-li__sub">{p.detail}</div>
-                </div>
-                {p.rating != null ? <RatingChip value={p.rating} /> : p.scored && <EventIcon type="goal" />}
+                  {p.rating != null ? <RatingChip value={p.rating} /> : p.scored && <EventIcon type="goal" />}
+                </PlayerTap>
               </li>
             ))}
           </ul>
@@ -99,8 +105,9 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
               <h2 className="mt-h2">{finished ? 'Не играли' : 'Не сыграют'}</h2>
               <ul className="mt-out">
                 {view.unavailable.map((u) => (
-                  <li key={u.key}>
-                    <span>{u.name}</span> <span className="mt-muted">· {u.reason}</span>
+                  <li key={u.key} className="mt-out__row">
+                    <PlayerInline player={u} size={28} {...links} className="mt-out__who" />
+                    <span className="mt-muted mt-out__why">· {u.reason}</span>
                   </li>
                 ))}
               </ul>

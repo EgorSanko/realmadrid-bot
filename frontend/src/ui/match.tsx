@@ -11,7 +11,8 @@ import {
   toMs,
   type DateInput,
 } from './format';
-import { TeamCrest } from './images';
+import { LeagueLogo, TeamCrest } from './images';
+import { PlayerInline, type PlayerLinkProps } from './playerLink';
 
 export interface TeamRef {
   /** id для /img/team/{id}.png; нет — эмблема не показывается */
@@ -141,6 +142,8 @@ export interface MatchCardProps {
   caption?: string;
   /** finished: кнопка справа */
   actionLabel?: string;
+  /** finished: эмблемы команд и логотип турнира (у кого есть id) */
+  crests?: boolean;
   href?: string;
   onClick?: () => void;
   /** live: что-то под счётом (голы, ссылка) */
@@ -158,17 +161,33 @@ export function MatchCard(props: MatchCardProps) {
   const { status, competition, kickoff, home, away, score, className, style, href, onClick } = props;
 
   if (status === 'finished') {
+    const sc = <span className="ui-mc-past__score">{score ? `${score[0]} : ${score[1]}` : '– : –'}</span>;
     const body = (
       <>
         <div className="ui-mc-past__main">
           <div className="ui-mc-past__cap">
+            {props.crests && competition.id != null && <LeagueLogo id={competition.id} name="" size={16} />}
             {props.caption ?? formatDayShort(kickoff)} · {competition.name}
           </div>
-          <div className="ui-mc-past__line">
-            <span>{home.name}</span>
-            <span className="ui-mc-past__score">{score ? `${score[0]} : ${score[1]}` : '– : –'}</span>
-            <span>{away.name}</span>
-          </div>
+          {props.crests ? (
+            <div className="ui-mc-past__line ui-mc-past__line--crests">
+              <span className="ui-mc-past__tm">
+                {home.id != null && <TeamCrest id={home.id} name="" size={24} />}
+                <span>{home.name}</span>
+              </span>
+              {sc}
+              <span className="ui-mc-past__tm">
+                <span>{away.name}</span>
+                {away.id != null && <TeamCrest id={away.id} name="" size={24} />}
+              </span>
+            </div>
+          ) : (
+            <div className="ui-mc-past__line">
+              <span>{home.name}</span>
+              {sc}
+              <span>{away.name}</span>
+            </div>
+          )}
         </div>
         <span className="ui-mc-past__act">{props.actionLabel ?? 'Обзор'}</span>
       </>
@@ -319,17 +338,35 @@ export function OutcomeBadge({ result, size = 26 }: { result: Outcome; size?: nu
 export interface FormStripProps {
   /** от старого к новому */
   results: Outcome[];
+  /** соперники в том же порядке — эмблема под буквой (у кого есть id) */
+  opponents?: Array<TeamRef | undefined>;
   size?: number;
   className?: string;
 }
 
-/** Форма: квадраты В / Н / П. */
-export function FormStrip({ results, size = 26, className }: FormStripProps) {
+/** Форма: квадраты В / Н / П; с `opponents` — эмблема соперника под каждым. */
+export function FormStrip({ results, opponents, size = 26, className }: FormStripProps) {
+  const withCrests = opponents?.some((o) => o?.id != null);
+  const words = results.map((r, i) => {
+    const o = opponents?.[i];
+    return o?.name ? `${OUTCOME_WORD[r]} (${o.name})` : OUTCOME_WORD[r];
+  });
   return (
-    <div className={cx('ui-form', className)} role="img" aria-label={`Форма: ${results.map((r) => OUTCOME_WORD[r]).join(', ')}`}>
-      {results.map((r, i) => (
-        <OutcomeBadge key={i} result={r} size={size} />
-      ))}
+    <div className={cx('ui-form', className)} role="img" aria-label={`Форма: ${words.join(', ')}`}>
+      {results.map((r, i) => {
+        if (!withCrests) return <OutcomeBadge key={i} result={r} size={size} />;
+        const o = opponents?.[i];
+        return (
+          <span key={i} className="ui-form__col">
+            <OutcomeBadge result={r} size={size} />
+            {o?.id != null ? (
+              <TeamCrest id={o.id} name="" size={20} />
+            ) : (
+              <span className="ui-crest-gap" style={{ width: 20, height: 20 }} aria-hidden="true" />
+            )}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -359,6 +396,8 @@ export interface ResultFixture extends FixtureBase {
   score: [number, number];
   /** итог для нашей команды */
   result?: Outcome;
+  /** эмблемы 20 px рядом с названиями (у кого есть id) */
+  crests?: boolean;
 }
 
 export type FixtureRowProps = UpcomingFixture | ResultFixture;
@@ -369,12 +408,23 @@ export function FixtureRow(props: FixtureRowProps) {
   const label = `${home.name} — ${away.name}`;
   const Tag = href != null ? 'a' : 'div';
   if (props.kind === 'result') {
+    const sc = <b className="ui-fx__score">{`${props.score[0]} : ${props.score[1]}`}</b>;
     return (
       <Tag className={cx('ui-fx', className)} href={href} onClick={onClick} aria-label={href != null ? label : undefined}>
         <span className="ui-fx__date-sm">{formatDayShort(kickoff)}</span>
-        <div className="ui-fx__line">
-          {home.name} <b className="ui-fx__score">{`${props.score[0]} : ${props.score[1]}`}</b> {away.name}
-        </div>
+        {props.crests ? (
+          <div className="ui-fx__line ui-fx__line--crests">
+            {home.id != null && <TeamCrest id={home.id} name="" size={20} />}
+            <span className="ui-fx__tm">{home.name}</span>
+            {sc}
+            <span className="ui-fx__tm">{away.name}</span>
+            {away.id != null && <TeamCrest id={away.id} name="" size={20} />}
+          </div>
+        ) : (
+          <div className="ui-fx__line">
+            {home.name} {sc} {away.name}
+          </div>
+        )}
         {props.result && <OutcomeBadge result={props.result} size={24} />}
       </Tag>
     );
@@ -530,7 +580,11 @@ export interface TimelineEvent {
   type: MatchEventType;
   /** «Mbappé»; для замены — кто вышел */
   player: string;
-  /** «пас Diomande», «ушёл Vinícius» */
+  /** id FotMob игрока — фото рядом с именем и ссылка на карточку; нет — только текст */
+  playerId?: number;
+  /** второй игрок события: ассистент («пас») или кто ушёл при замене («ушёл») */
+  related?: { id?: number; name: string; prefix: string };
+  /** «пас Diomande», «ушёл Vinícius»; при related — остальное («травма», «пенальти») */
   detail?: string;
   /** счёт после гола */
   score?: [number, number];
@@ -544,8 +598,14 @@ export interface TimelineDivider {
 
 export type TimelineItem = TimelineEvent | TimelineDivider;
 
+export interface TimelineProps extends PlayerLinkProps {
+  items: TimelineItem[];
+  className?: string;
+}
+
 /** Хронология матча с осью по центру: хозяева слева, гости справа (a-match-events). */
-export function Timeline({ items, className }: { items: TimelineItem[]; className?: string }) {
+export function Timeline({ items, className, playerHref, onPlayerClick }: TimelineProps) {
+  const link = { playerHref, onPlayerClick };
   return (
     <ol className={cx('ui-tl', className)}>
       {items.map((it, i) => {
@@ -560,21 +620,35 @@ export function Timeline({ items, className }: { items: TimelineItem[]; classNam
           <span className={cx('ui-tl__score', !home && 'ui-tl__score--l')}>{`${it.score[0]}:${it.score[1]}`}</span>
         );
         const icon = <EventIcon type={it.type} />;
+        // фото — ближе к оси: у хозяев справа от имени, у гостей слева
+        const who = <PlayerInline player={{ id: it.playerId, name: it.player }} reverse={home} {...link} />;
+        const rel = it.related;
         const body = (
           <div className={home ? 'ui-tl__l' : 'ui-tl__r'}>
-            <div className="ui-tl__name">
+            <div className="ui-tl__name ui-tl__line">
               {home ? (
                 <>
-                  {icon} {it.player} {score}
+                  {icon}
+                  {who}
+                  {score}
                 </>
               ) : (
                 <>
                   {score}
-                  {it.player} {icon}
+                  {who}
+                  {icon}
                 </>
               )}
             </div>
-            {it.detail && <div className="ui-tl__sub">{it.detail}</div>}
+            {rel ? (
+              <div className="ui-tl__sub ui-tl__line">
+                <span className="ui-tl__pre">{rel.prefix}</span>
+                <PlayerInline player={{ id: rel.id, name: rel.name }} reverse={home} {...link} />
+                {it.detail && <span className="ui-tl__pre">· {it.detail}</span>}
+              </div>
+            ) : (
+              it.detail && <div className="ui-tl__sub">{it.detail}</div>
+            )}
           </div>
         );
         return (

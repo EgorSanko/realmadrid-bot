@@ -1,0 +1,611 @@
+{
+ "id": 895362,
+ "ids": {
+  "fotmob": 895362,
+  "sofascore": null
+ },
+ "name": "Rodrygo",
+ "short_name": null,
+ "photo": "/img/player/895362.png",
+ "number": 11,
+ "position": "LW",
+ "positions": [
+  "LW",
+  "RM",
+  "RW",
+  "LM",
+  "ST"
+ ],
+ "role": "FW",
+ "team": {
+  "id": 8633,
+  "name": "Real Madrid",
+  "logo": "/img/team/8633.png",
+  "on_loan": false
+ },
+ "country": {
+  "code": "BRA",
+  "name": "Brazil",
+  "flag": "/img/flag/br.svg",
+  "team_id": 8256
+ },
+ "birth": "2001-01-09",
+ "age": 25,
+ "height": 174,
+ "foot": "right",
+ "value_eur": 39970483,
+ "contract_until": "2028-06-30",
+ "status": {
+  "type": "injury",
+  "name": "Cruciate ligament injury",
+  "expected_return": "Late December 2026",
+  "updated": "2026-03-03"
+ },
+ "season": {
+  "name": "2025/2026",
+  "team": {
+   "id": 8633,
+   "name": "Real Madrid",
+   "logo": "/img/team/8633.png"
+  },
+  "totals": {
+   "matches": 30,
+   "minutes": null,
+   "goals": 3,
+   "assists": 5,
+   "yellow": null,
+   "red": null,
+   "rating": 6.91
+  },
+  "tournaments": [
+   {
+    "league": {
+     "id": 87,
+     "name": "LaLiga",
+     "logo": "/img/league/87.png"
+    },
+    "matches": 19,
+    "started": 6,
+    "minutes": 676,
+    "goals": 1,
+    "assists": 3,
+    "rating": 6.9,
+    "yellow": 3,
+    "red": 0,
+    "clean_sheets": null,
+    "conceded": null,
+    "saves": null
+   },
+   {
+    "league": {
+     "id": 138,
+     "name": "Copa del Rey",
+     "logo": "/img/league/138.png"
+    },
+    "matches": 1,
+    "started": null,
+    "minutes": 24,
+    "goals": 0,
+    "assists": 0,
+    "rating": 6.02,
+    "yellow": 0,
+    "red": 0,
+    "clean_sheets": null,
+    "conceded": null,
+    "saves": null
+   },
+   {
+    "league": {
+     "id": 139,
+     "name": "Supercopa de España",
+     "logo": "/img/league/139.png"
+    },
+    "matches": 2,
+    "started": null,
+    "minutes": 177,
+    "goals": 1,
+    "assists": 0,
+    "rating": null,
+    "yellow": 0,
+    "red": 0,
+    "clean_sheets": null,
+    "conceded": null,
+    "saves": null
+   },
+   {
+    "league": {
+     "id": 42,
+     "name": "Champions League",
+     "logo": "/img/league/42.png"
+    },
+    "matches": 5,
+    "started": null,
+    "minutes": null,
+    "goals": 1,
+    "assists": 1,
+    "rating": 7.15,
+    "yellow": null,
+    "red": null,
+    "clean_sheets": null,
+    "conceded": null,
+    "saves": null
+   },
+   {
+    "league": {
+     "id": 78,
+     "name": "FIFA Club World Cup",
+     "logo": "/img/league/78.png"
+    },
+    "matches": 3,
+    "started": null,
+    "minutes": null,
+    "goals": 0,
+    "assists": 1,
+    "rating": 6.7,
+    "yellow": null,
+    "red": null,
+    "clean_sheets": null,
+    "conceded": null,
+    "saves": null
+   }
+  ]
+ },
+ "recent": [
+  {
+   "match_id": 4837368,
+   "kickoff": "2026-03-02T20:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8305,
+    "name": "Getafe",
+    "logo": "/img/team/8305.png"
+   },
+   "home": true,
+   "score": [
+    0,
+    1
+   ],
+   "result": "L",
+   "conceded": 1,
+   "played": true,
+   "bench": false,
+   "minutes": 35,
+   "goals": 0,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 6.8,
+   "potm": false
+  },
+  {
+   "match_id": 4837329,
+   "kickoff": "2026-02-01T13:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8370,
+    "name": "Rayo Vallecano",
+    "logo": "/img/team/8370.png"
+   },
+   "home": true,
+   "score": [
+    2,
+    1
+   ],
+   "result": "W",
+   "conceded": 1,
+   "played": true,
+   "bench": false,
+   "minutes": 13,
+   "goals": 0,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 7.0,
+   "potm": false
+  },
+  {
+   "match_id": 4947119,
+   "kickoff": "2026-01-28T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "logo": "/img/league/42.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 9772,
+    "name": "Benfica",
+    "logo": "/img/team/9772.png"
+   },
+   "home": false,
+   "score": [
+    4,
+    2
+   ],
+   "result": "L",
+   "conceded": 4,
+   "played": true,
+   "bench": false,
+   "minutes": 35,
+   "goals": 0,
+   "assists": 0,
+   "yellow": 1,
+   "red": 1,
+   "rating": 5.8,
+   "potm": false
+  },
+  {
+   "match_id": 5039109,
+   "kickoff": "2026-01-11T19:00:00Z",
+   "tournament": {
+    "id": 139,
+    "name": "Supercopa de España",
+    "logo": "/img/league/139.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8634,
+    "name": "Barcelona",
+    "logo": "/img/team/8634.png"
+   },
+   "home": false,
+   "score": [
+    3,
+    2
+   ],
+   "result": "L",
+   "conceded": 3,
+   "played": true,
+   "bench": false,
+   "minutes": 90,
+   "goals": 0,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 6.1,
+   "potm": false
+  },
+  {
+   "match_id": 4889768,
+   "kickoff": "2026-01-08T19:00:00Z",
+   "tournament": {
+    "id": 139,
+    "name": "Supercopa de España",
+    "logo": "/img/league/139.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 9906,
+    "name": "Atlético Madrid",
+    "logo": "/img/team/9906.png"
+   },
+   "home": false,
+   "score": [
+    1,
+    2
+   ],
+   "result": "W",
+   "conceded": 1,
+   "played": true,
+   "bench": false,
+   "minutes": 87,
+   "goals": 1,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 7.9,
+   "potm": false
+  },
+  {
+   "match_id": 4837286,
+   "kickoff": "2026-01-04T15:15:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8603,
+    "name": "Real Betis",
+    "logo": "/img/team/8603.png"
+   },
+   "home": true,
+   "score": [
+    5,
+    1
+   ],
+   "result": "W",
+   "conceded": 1,
+   "played": true,
+   "bench": false,
+   "minutes": 77,
+   "goals": 0,
+   "assists": 2,
+   "yellow": 0,
+   "red": 0,
+   "rating": 8.6,
+   "potm": false
+  },
+  {
+   "match_id": 4837274,
+   "kickoff": "2025-12-20T20:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8302,
+    "name": "Sevilla",
+    "logo": "/img/team/8302.png"
+   },
+   "home": true,
+   "score": [
+    2,
+    0
+   ],
+   "result": "W",
+   "conceded": 0,
+   "played": true,
+   "bench": false,
+   "minutes": 90,
+   "goals": 0,
+   "assists": 1,
+   "yellow": 1,
+   "red": 0,
+   "rating": 9.0,
+   "potm": true
+  },
+  {
+   "match_id": 5091458,
+   "kickoff": "2025-12-17T20:00:00Z",
+   "tournament": {
+    "id": 138,
+    "name": "Copa del Rey",
+    "logo": "/img/league/138.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 357239,
+    "name": "CF Talavera de la Reina",
+    "logo": "/img/team/357239.png"
+   },
+   "home": false,
+   "score": [
+    2,
+    3
+   ],
+   "result": "W",
+   "conceded": 2,
+   "played": true,
+   "bench": false,
+   "minutes": 24,
+   "goals": 0,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 6.0,
+   "potm": false
+  },
+  {
+   "match_id": 4837260,
+   "kickoff": "2025-12-14T20:00:00Z",
+   "tournament": {
+    "id": 87,
+    "name": "LaLiga",
+    "logo": "/img/league/87.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 9866,
+    "name": "Deportivo Alavés",
+    "logo": "/img/team/9866.png"
+   },
+   "home": false,
+   "score": [
+    1,
+    2
+   ],
+   "result": "W",
+   "conceded": 1,
+   "played": true,
+   "bench": false,
+   "minutes": 83,
+   "goals": 1,
+   "assists": 0,
+   "yellow": 0,
+   "red": 0,
+   "rating": 8.1,
+   "potm": false
+  },
+  {
+   "match_id": 4947116,
+   "kickoff": "2025-12-10T20:00:00Z",
+   "tournament": {
+    "id": 42,
+    "name": "Champions League",
+    "logo": "/img/league/42.png"
+   },
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "opponent": {
+    "id": 8456,
+    "name": "Manchester City",
+    "logo": "/img/team/8456.png"
+   },
+   "home": true,
+   "score": [
+    1,
+    2
+   ],
+   "result": "L",
+   "conceded": 2,
+   "played": true,
+   "bench": false,
+   "minutes": 90,
+   "goals": 1,
+   "assists": 0,
+   "yellow": 1,
+   "red": 0,
+   "rating": 8.1,
+   "potm": false
+  }
+ ],
+ "career": [
+  {
+   "team": {
+    "id": 8633,
+    "name": "Real Madrid",
+    "logo": "/img/team/8633.png"
+   },
+   "start": "2019-07-01",
+   "end": null,
+   "active": true,
+   "loan": false,
+   "apps": 297,
+   "goals": 71,
+   "assists": 51
+  },
+  {
+   "team": {
+    "id": 8367,
+    "name": "Real Madrid Castilla",
+    "logo": "/img/team/8367.png"
+   },
+   "start": "2019-09-01",
+   "end": "2020-11-23",
+   "active": false,
+   "loan": false,
+   "apps": 3,
+   "goals": 2,
+   "assists": 0
+  },
+  {
+   "team": {
+    "id": 8514,
+    "name": "Santos",
+    "logo": "/img/team/8514.png"
+   },
+   "start": "2017-11-03",
+   "end": "2019-06-30",
+   "active": false,
+   "loan": false,
+   "apps": 80,
+   "goals": 17,
+   "assists": 8
+  }
+ ],
+ "national": [
+  {
+   "team": {
+    "id": 8256,
+    "name": "Brazil",
+    "logo": "/img/team/8256.png"
+   },
+   "start": "2019-10-25",
+   "end": "2026-03-16",
+   "active": false,
+   "loan": false,
+   "apps": 37,
+   "goals": 9,
+   "assists": 2
+  },
+  {
+   "team": {
+    "id": 654714,
+    "name": "Brazil U22",
+    "logo": "/img/team/654714.png"
+   },
+   "start": "2019-05-01",
+   "end": null,
+   "active": true,
+   "loan": false,
+   "apps": null,
+   "goals": null,
+   "assists": null
+  },
+  {
+   "team": {
+    "id": 5864,
+    "name": "Brazil U20",
+    "logo": "/img/team/5864.png"
+   },
+   "start": "2019-01-16",
+   "end": "2021-11-10",
+   "active": false,
+   "loan": false,
+   "apps": 8,
+   "goals": 2,
+   "assists": 0
+  }
+ ],
+ "source": "fotmob",
+ "available": [
+  "bio",
+  "photo",
+  "team",
+  "country",
+  "status",
+  "season",
+  "recent",
+  "career",
+  "national",
+  "value",
+  "contract"
+ ],
+ "updated_at": "2026-10-17T00:15:21Z",
+ "age_s": 26.4,
+ "stale": false,
+ "pending": false
+}

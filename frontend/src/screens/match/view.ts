@@ -306,11 +306,7 @@ export function timelineView(m: ApiMatch): TimelineView {
       case 'goal': {
         const g = goalSide.get(e);
         if (!g) return; // серия пенальти
-        const detail = [
-          e.own_goal ? 'автогол' : null,
-          e.penalty ? 'пенальти' : null,
-          e.assist?.name ? `пас ${shortName(e.assist.name)}` : null,
-        ].filter(Boolean).join(' · ');
+        const detail = [e.own_goal ? 'автогол' : null, e.penalty ? 'пенальти' : null].filter(Boolean).join(' · ');
         push(
           {
             minute,
@@ -318,6 +314,8 @@ export function timelineView(m: ApiMatch): TimelineView {
             side: g.side,
             type: e.own_goal ? 'own-goal' : 'goal',
             player: shortName(e.player?.name) || 'Гол',
+            playerId: photoId(e.player),
+            related: e.assist?.name ? { id: photoId(e.assist), name: shortName(e.assist.name), prefix: 'пас' } : undefined,
             detail: detail || undefined,
             score: g.score,
           },
@@ -333,6 +331,7 @@ export function timelineView(m: ApiMatch): TimelineView {
           side: e.side,
           type: e.card === 'red' ? 'red' : e.card === 'second_yellow' ? 'second-yellow' : 'yellow',
           player: shortName(e.player?.name) || 'Карточка',
+          playerId: photoId(e.player),
           detail: e.card === 'second_yellow' ? 'вторая жёлтая' : undefined,
         });
         return;
@@ -344,18 +343,26 @@ export function timelineView(m: ApiMatch): TimelineView {
           side: e.side,
           type: 'sub',
           player: shortName(e.player_in?.name) || 'Замена',
-          detail: [e.player_out?.name ? `ушёл ${shortName(e.player_out.name)}` : null, e.injury ? 'травма' : null]
-            .filter(Boolean)
-            .join(' · ') || undefined,
+          playerId: photoId(e.player_in),
+          related: e.player_out?.name ? { id: photoId(e.player_out), name: shortName(e.player_out.name), prefix: 'ушёл' } : undefined,
+          detail: e.injury ? 'травма' : undefined,
         });
         return;
       case 'var':
         if (!e.side) return;
-        push({ minute, addedTime, side: e.side, type: 'var', player: shortName(e.player?.name) || 'VAR', detail: varText(e) });
+        push({ minute, addedTime, side: e.side, type: 'var', player: shortName(e.player?.name) || 'VAR', playerId: photoId(e.player), detail: varText(e) });
         return;
       case 'penalty_missed':
         if (!e.side) return;
-        push({ minute, addedTime, side: e.side, type: 'penalty-missed', player: shortName(e.player?.name) || 'Пенальти', detail: 'не забил пенальти' });
+        push({
+          minute,
+          addedTime,
+          side: e.side,
+          type: 'penalty-missed',
+          player: shortName(e.player?.name) || 'Пенальти',
+          playerId: photoId(e.player),
+          detail: 'не забил пенальти',
+        });
         return;
       case 'period': {
         const label = (e.label ?? '').toUpperCase();
@@ -447,8 +454,8 @@ export function highlightView(m: ApiMatch): HighlightView | null {
 /* ---------- личные встречи и форма ---------- */
 
 export interface H2HView {
-  home: { name: string; wins: number };
-  away: { name: string; wins: number };
+  home: { id?: number; name: string; wins: number };
+  away: { id?: number; name: string; wins: number };
   draws: number;
   matches: Array<{ kickoff: string; home: TeamRef; away: TeamRef; score: [number, number]; result?: Outcome }>;
 }
@@ -484,8 +491,8 @@ export function h2hView(m: ApiMatch, limit = 5): H2HView | null {
   const s = h.summary ?? { home_wins: null, draws: null, away_wins: null };
   if (s.home_wins == null && s.draws == null && s.away_wins == null && matches.length === 0) return null;
   return {
-    home: { name: m.home.name ?? '', wins: s.home_wins ?? 0 },
-    away: { name: m.away.name ?? '', wins: s.away_wins ?? 0 },
+    home: { id: teamRef(m, 'home').id, name: m.home.name ?? '', wins: s.home_wins ?? 0 },
+    away: { id: teamRef(m, 'away').id, name: m.away.name ?? '', wins: s.away_wins ?? 0 },
     draws: s.draws ?? 0,
     matches,
   };
@@ -536,7 +543,7 @@ export interface LineupView {
   starters: StarterRow[];
   subs: SubView[];
   bench: string[];
-  unavailable: Array<{ key: string; name: string; reason: string }>;
+  unavailable: Array<{ key: string; id?: number; name: string; reason: string }>;
   coach?: string;
 }
 
@@ -654,6 +661,7 @@ export function lineupView(m: ApiMatch, side: Side): LineupView | null {
     bench: lu.subs.filter((p) => p.sub_in == null).map((p) => p.name),
     unavailable: (lu.unavailable ?? []).map((u, i) => ({
       key: `${u.id ?? u.name}-${i}`,
+      id: photoId(u),
       name: u.name,
       reason: [absenceReason(u.type), returnText(u.expected_return)].filter(Boolean).join(', '),
     })),
