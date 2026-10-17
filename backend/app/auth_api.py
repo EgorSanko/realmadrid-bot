@@ -59,6 +59,14 @@ def _me_body(svc: PredictionService, uid: int) -> dict[str, Any]:
     return {"user": svc.user_view(uid), "is_admin": uid in admin_ids()}
 
 
+def _seen(svc: PredictionService, uid: int) -> None:
+    """Отметка «был» (раз в сутки) — по ней удаляются аватары тех, кого давно нет. Не повод не пустить."""
+    try:
+        svc.touch_seen(uid)
+    except Exception:
+        log.exception("seen_at: %s", uid)
+
+
 @router.post("/telegram")
 async def login(request: Request, svc: PredictionService = Depends(get_service)):
     if not svc.login_limiter.hit(_client_ip(request)):
@@ -86,6 +94,7 @@ async def login(request: Request, svc: PredictionService = Depends(get_service))
         status = 503 if e.reason == "not_configured" else 401
         return _err(status, "unauthorized" if status == 401 else "not_configured", e.message)
     uid = svc.upsert_user(user)
+    _seen(svc, uid)
     photo = user.get("photo_url") if isinstance(user, dict) else getattr(user, "photo_url", None)
     try:
         svc.want_avatar(uid, photo)
@@ -114,6 +123,8 @@ def me(request: Request, authorization: Optional[str] = Header(default=None),
     body = _me_body(svc, uid)
     if body["user"] is None:  # сессия есть, а пользователя уже нет
         body["is_admin"] = False
+    else:
+        _seen(svc, uid)
     return _json(body)
 
 

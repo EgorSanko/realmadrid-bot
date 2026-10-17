@@ -206,6 +206,14 @@ class PredictionService:
             c.execute("UPDATE users SET session_epoch = session_epoch + 1, updated_at=? WHERE id=?",
                       (iso(self.now()), user_id))
 
+    def touch_seen(self, user_id: int) -> bool:
+        """Отметить визит: seen_at — не чаще раза в сутки (иначе каждый /me был бы записью в базу)."""
+        now = self.now()
+        with self.conn() as c:
+            cur = c.execute("UPDATE users SET seen_at=? WHERE id=? AND (seen_at IS NULL OR seen_at < ?)",
+                            (iso(now), user_id, iso(now - timedelta(days=1))))
+        return cur.rowcount > 0
+
     def want_avatar(self, user_id: int, photo_url: Optional[str]) -> bool:
         """Заявка сборщику скачать аватар (если файла нет / url сменился / файл старше недели)."""
         with self.conn() as c:

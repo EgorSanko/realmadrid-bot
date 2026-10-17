@@ -324,7 +324,7 @@ def news_item(aid: str) -> JSONResponse:
                 "site": base.get("site"), "url": base.get("url"), "published": base.get("published"),
                 "image": base.get("image"), "summary": base.get("summary") or "",
                 "more": _more_news(items, aid)}
-        if art:
+        if art and not art["data"].get("text_removed"):
             d = art["data"]
             known = {}
             for i in items:
@@ -340,6 +340,11 @@ def news_item(aid: str) -> JSONResponse:
             return _resp({**body, "full": True, "pending": False, "available": avail,
                           "updated_at": _iso(art["fetched_at"])}, 300)
         partial = {**{k: None for k in _ARTICLE_FIELDS}, "html": None, "full": False}
+        if art:  # текст удалён суточной очисткой (старше ARTICLE_TEXT_TTL_DAYS) — заново не качаем
+            avail = ["summary"] if body["summary"] else []
+            return _resp({**body, **partial, "author": art["data"].get("author"), "origin": art["data"].get("origin"),
+                          "pending": False, "reason": "expired", "available": avail,
+                          "updated_at": _iso(art["fetched_at"])}, 300)
         fail = store.get(conn, f"article_fail:{aid}")
         now = time.time()
         if fail and (fail["data"].get("tries", 0) >= config.ARTICLE_MAX_TRIES

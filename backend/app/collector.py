@@ -12,6 +12,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
   python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
   python -m app.collector once settle           # начислить очки прогнозов за сыгранные матчи
+  python -m app.collector once cleanup          # суточная очистка (старые тексты статей, аватары, чужие игроки)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -30,7 +31,7 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, config, store
+from . import avatars, cleanup, config, store
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
@@ -72,6 +73,7 @@ class Collector:
         self.last_news = 0.0
         self.last_videos = 0.0
         self.last_avatars = 0.0
+        self.last_cleanup = 0.0
         self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
         self._avatar_close = None
         self._avatar_task: asyncio.Task | None = None
@@ -118,6 +120,31 @@ class Collector:
         finally:
             conn.close()
         return done
+
+    # ================= суточная очистка =================
+
+    def tick_cleanup(self, now: float, force: bool = False) -> dict | None:
+        """Раз в CLEANUP_INTERVAL: тексты статей старше 90 дн., аватары тех, кого нет 180 дн.,
+        карточки чужих игроков старше 30 дн. (подробности — app/cleanup.py). Не в окне матча."""
+        if not force and now - self.last_cleanup < config.CLEANUP_INTERVAL:
+            return None
+        self.last_cleanup = now
+        try:
+            pconn = predictions_db.connect()
+        except Exception:
+            log.exception("cleanup: predictions.db недоступна — аватары пропускаю")
+            pconn = None
+        try:
+            res = cleanup.run(self.conn, pconn, now)
+        except Exception:
+            log.exception("cleanup: ошибка (продолжаю)")
+            return None
+        finally:
+            if pconn is not None:
+                pconn.close()
+        log.info("cleanup: %s", res)
+        self.cycles["cleanup"] = self.cycles.get("cleanup", 0) + 1
+        return res
 
     # ================= прогнозы: начисление очков =================
 
@@ -962,6 +989,7 @@ class Collector:
             store.put_source_state(self.conn, "_collector", {
                 "pid": os.getpid(), "cycles": self.cycles, "last_team": self.last_team,
                 "last_mapping": self.last_mapping, "last_news": self.last_news, "last_videos": self.last_videos,
+                "last_cleanup": self.last_cleanup,
                 "in_window": self.window(time.time()),
                 "disabled": sorted(config.disabled_sources()),
             })
@@ -1011,6 +1039,9 @@ class Collector:
                 await self.tick_articles(now)
                 # очки прогнозов: после «завершён», при исправлении итога и раз в 10 мин
                 await self.tick_settle(now)
+                # суточная очистка — вне окна матча (в окне откладывается до его конца)
+                if not win:
+                    self.tick_cleanup(now)
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
@@ -1238,6 +1269,8 @@ async def _cli(args) -> int:
             elif args.what == "settle":
                 res = await c.tick_settle(time.time(), force=True) or []
                 print(json.dumps([r for r in res if r["result"] != "unchanged"], ensure_ascii=False))
+            elif args.what == "cleanup":
+                print(json.dumps(c.tick_cleanup(time.time(), force=True), ensure_ascii=False))
             elif args.what == "avatars":
                 c.last_avatars = 0.0
                 print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
@@ -1283,7 +1316,8 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle",
+                                    "cleanup"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")
