@@ -10,6 +10,7 @@
 .mt-top__live { justify-self: end; }
 
 .mt-cd { margin: 18px 16px 0; }
+.mt-cal { margin: 12px 16px 0; width: auto; gap: 8px; }
 .mt-state { margin: 14px 16px 0; }
 .mt-loading__list { margin: 14px 16px 0; }
 .mt-loading .ui-skeleton:first-child { margin: 10px 16px 0; }

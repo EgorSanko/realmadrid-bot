@@ -10,6 +10,7 @@ import { StatsTab } from './StatsTab';
 import { useMatch } from './useMatch';
 import { useScrollAnchorFallback } from './useScrollAnchor';
 import { compactTitle, headerView, teamRef, tournamentLine } from './view';
+import { addMatchToCalendar, canAddToCalendar } from '../../lib/nativeBridge';
 import './match.css';
 
 type TabId = 'overview' | 'lineups' | 'stats';
@@ -183,7 +184,30 @@ function Header({ match, onKickoff }: { match: ApiMatch; onKickoff: () => void }
         scorers={h.scorers}
       />
       {h.countdown && match.kickoff && <Countdown to={match.kickoff} className="mt-cd" onEnd={onKickoff} />}
+      {h.countdown && match.kickoff && canAddToCalendar() && <CalendarButton match={match} />}
     </>
+  );
+}
+
+/** Только в приложении из RuStore: матч — в календарь телефона (системный экран «Новое событие»). */
+function CalendarButton({ match }: { match: ApiMatch }) {
+  const title = `${match.home.name ?? ''} — ${match.away.name ?? ''}`.trim();
+  const place = [match.venue?.name, match.venue?.city].filter(Boolean).join(', ') || null;
+  const what = [match.tournament?.name, match.tournament?.round].filter(Boolean).join(', ');
+  return (
+    <button
+      type="button"
+      className="ui-btn ui-btn--secondary ui-btn--block mt-cal"
+      onClick={() =>
+        addMatchToCalendar(title, match.kickoff!, place, `${what ? `${what}. ` : ''}Мадридиста: https://realmadridfan.ru/match/${match.id ?? ''}`)
+      }
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+        <rect x="3.5" y="5" width="17" height="15" rx="3" />
+        <path d="M3.5 10h17M8 3v4M16 3v4" />
+      </svg>
+      Добавить в календарь
+    </button>
   );
 }
 

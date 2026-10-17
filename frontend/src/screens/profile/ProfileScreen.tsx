@@ -102,7 +102,7 @@ export default function ProfileScreen() {
             {tma ? (
               <p className="pf-muted">Входим через Telegram…</p>
             ) : (
-              <LoginButton hint="Войдите через Telegram, чтобы видеть свои очки, прогнозы и лиги. Пароль не нужен." />
+              <LoginButton accessCode hint="Войдите через Telegram, чтобы видеть свои очки, прогнозы и лиги. Пароль не нужен." />
             )}
           </Card>
         </>

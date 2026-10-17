@@ -17,9 +17,20 @@ type Mode = 'idle' | 'code' | 'widget' | 'review';
  * `autoStart` — сразу показать код (панель входа в шапке ПК уже открыта нажатием).
  * В мини-аппе кнопка не нужна — там вход происходит сам по initData.
  * В приложении из RuStore виджета нет (в WebView он не работает: «Bot domain invalid»), зато есть
- * «У меня есть код доступа» — поле для постоянного кода проверки (модератор магазина не может войти через Telegram).
+ * «У меня есть код доступа» (в профиле) — поле для постоянного кода проверки (модератор магазина не может войти через Telegram).
  */
-export function LoginButton({ hint, compact, autoStart }: { hint?: string; compact?: boolean; autoStart?: boolean }) {
+export function LoginButton({
+  hint,
+  compact,
+  autoStart,
+  accessCode,
+}: {
+  hint?: string;
+  compact?: boolean;
+  autoStart?: boolean;
+  /** показать «У меня есть код доступа» (только в приложении, только в профиле) */
+  accessCode?: boolean;
+}) {
   const [mode, setMode] = useState<Mode>(autoStart ? 'code' : 'idle');
   const native = isNativeApp();
 
@@ -37,7 +48,7 @@ export function LoginButton({ hint, compact, autoStart }: { hint?: string; compa
       {mode === 'code' && <CodeLogin onAlt={native ? undefined : () => setMode('widget')} />}
       {mode === 'widget' && !native && <WidgetLogin onBack={() => setMode('code')} />}
       {mode === 'review' && <ReviewLogin onBack={() => setMode('idle')} />}
-      {native && mode !== 'review' && (
+      {native && accessCode && mode !== 'review' && (
         <button type="button" className="tg-login__alt" onClick={() => setMode('review')}>
           У меня есть код доступа
         </button>
