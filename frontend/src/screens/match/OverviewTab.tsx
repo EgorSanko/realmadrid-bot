@@ -1,16 +1,20 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, type MouseEvent } from 'react';
 import type { ApiMatch } from '../../api/match';
+import { usePlayerLinks } from '../../lib/playerNav';
 import { openExternal } from '../../lib/tmaNav';
 import {
   Card,
   EmptyState,
   FixtureRow,
   FormStrip,
+  PlayerInline,
   RatingChip,
   SectionHeader,
+  TeamCrest,
   Timeline,
   VideoCard,
   formatDayShort,
+  type PlayerLinkProps,
 } from '../../ui';
 import {
   aboutRows,
@@ -39,6 +43,7 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
   const h2h = before ? h2hView(match) : null;
   const form = before ? formView(match) : null;
   const live = phase === 'live' || phase === 'halftime';
+  const links = usePlayerLinks();
 
   const nothing = !hl && !best && !potm && !tl?.items.length && !about.length && !h2h && !form && !live;
 
@@ -56,7 +61,7 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
       {tl && tl.items.length > 0 ? (
         <Card ariaLabel="Хронология">
           <h2 className="mt-h2 mt-h2--tl">Хронология</h2>
-          <LiveTimeline view={tl} />
+          <LiveTimeline view={tl} links={links} />
         </Card>
       ) : (
         live && (
@@ -73,7 +78,10 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
           <div className="mt-h2h">
             <div className="mt-h2h__col">
               <b>{h2h.home.wins}</b>
-              <span>{h2h.home.name}</span>
+              <span className="mt-h2h__team">
+                {h2h.home.id != null && <TeamCrest id={h2h.home.id} name="" size={20} />}
+                <span>{h2h.home.name}</span>
+              </span>
             </div>
             <div className="mt-h2h__col">
               <b>{h2h.draws}</b>
@@ -81,13 +89,16 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
             </div>
             <div className="mt-h2h__col">
               <b>{h2h.away.wins}</b>
-              <span>{h2h.away.name}</span>
+              <span className="mt-h2h__team">
+                {h2h.away.id != null && <TeamCrest id={h2h.away.id} name="" size={20} />}
+                <span>{h2h.away.name}</span>
+              </span>
             </div>
           </div>
           {h2h.matches.length > 0 && (
             <div className="mt-h2h__list">
               {h2h.matches.map((x) => (
-                <FixtureRow key={x.kickoff} kind="result" kickoff={x.kickoff} home={x.home} away={x.away} score={x.score} result={x.result} />
+                <FixtureRow key={x.kickoff} kind="result" crests kickoff={x.kickoff} home={x.home} away={x.away} score={x.score} result={x.result} />
               ))}
             </div>
           )}
@@ -99,7 +110,10 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
           <SectionHeader title="Форма" aside="последние матчи" />
           {form.map((f) => (
             <div key={f.side} className="mt-form">
-              <span className="mt-form__team">{f.team.name}</span>
+              <span className="mt-form__team">
+                {f.team.id != null && <TeamCrest id={f.team.id} name="" size={24} />}
+                <span>{f.team.name}</span>
+              </span>
               <FormStrip results={f.results} />
             </div>
           ))}
@@ -129,12 +143,15 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
 }
 
 function StarCard({ caption, star }: { caption: string; star: StarView }) {
+  const links = usePlayerLinks();
   return (
     <div className="ui-card ui-card--flush mt-star">
-      <div className="mt-star__cap">{caption}</div>
-      <div className="mt-star__row">
-        <span className="mt-star__name">{star.name}</span>
+      <div className="mt-star__row mt-star__row--cap">
+        <span className="mt-star__cap">{caption}</span>
         <RatingChip value={star.rating} />
+      </div>
+      <div className="mt-star__row">
+        <PlayerInline player={{ id: star.id, name: star.name }} size={32} className="mt-star__name" {...links} />
       </div>
     </div>
   );
@@ -162,7 +179,7 @@ function Highlight({ match, hl }: { match: ApiMatch; hl: NonNullable<ReturnType<
 }
 
 /** Хронология + короткая подсветка нового гола (только для голов, пришедших после первой загрузки). */
-function LiveTimeline({ view }: { view: ReturnType<typeof timelineView> }) {
+function LiveTimeline({ view, links }: { view: ReturnType<typeof timelineView>; links: PlayerLinkProps }) {
   const ref = useRef<HTMLDivElement>(null);
   const seen = useRef<Set<string> | null>(null);
 
@@ -187,7 +204,7 @@ function LiveTimeline({ view }: { view: ReturnType<typeof timelineView> }) {
 
   return (
     <div ref={ref} className="mt-tl">
-      <Timeline items={view.items} />
+      <Timeline items={view.items} {...links} />
     </div>
   );
 }

@@ -66,7 +66,10 @@ test('fotmob: хронология — голы с пасами, карточк�
   const first = goals[0];
   assert.ok(first.kind !== 'divider');
   assert.equal(first.player, 'de Roon');
-  assert.equal(first.detail, 'пас Soulé');
+  // ассистент — отдельно: фото и ссылка на карточку
+  assert.deepEqual(first.related, { id: 1280082, name: 'Soulé', prefix: 'пас' });
+  assert.equal(first.detail, undefined);
+  assert.equal(first.playerId, 198559);
   assert.deepEqual(first.score, [1, 0]);
   const div = items.filter((i) => i.kind === 'divider');
   assert.deepEqual(div, [{ kind: 'divider', label: 'Перерыв · 1:1' }]); // конец матча — в шапке, не в ленте
@@ -75,7 +78,10 @@ test('fotmob: хронология — голы с пасами, карточк�
   const pis = subs[0];
   assert.ok(pis.kind !== 'divider');
   assert.equal(pis.player, 'Pisilli');
-  assert.equal(pis.detail, 'ушёл Koné · травма');
+  assert.equal(pis.related?.prefix, 'ушёл');
+  assert.equal(pis.related?.name, 'Koné');
+  assert.equal(pis.related?.id, 1016132);
+  assert.equal(pis.detail, 'травма');
   assert.equal(items.filter((i) => i.kind !== 'divider' && i.type === 'yellow').length, 4);
   assert.equal(goalKeys.filter(Boolean).length, 7);
   // голы Реала — справа (Реал в гостях)

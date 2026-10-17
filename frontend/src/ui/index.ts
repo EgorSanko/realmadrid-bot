@@ -7,6 +7,7 @@ export * from './images';
 export * from './match';
 export * from './stats';
 export * from './media';
+export * from './playerLink';
 export {
   formatKickoff,
   formatTime,

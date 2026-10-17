@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { cx, plural } from './format';
 import { PlayerPhoto } from './images';
+import { PlayerTap, type PlayerLinkProps } from './playerLink';
 
 /* ---------- RatingChip ---------- */
 
@@ -36,7 +37,7 @@ export interface PitchPlayer {
   y: number;
 }
 
-export interface PitchProps {
+export interface PitchProps extends PlayerLinkProps {
   players: PitchPlayer[];
   /**
    * FotMob считает x с другой стороны, чем рисуем мы (вратарь снизу,
@@ -51,7 +52,7 @@ const PITCH_W = 358;
 const PITCH_H = 470;
 
 /** Поле с расстановкой (a-match-lineup): фото, оценка, номер, фамилия. */
-export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый состав на поле', className }: PitchProps) {
+export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый состав на поле', className, playerHref, onPlayerClick }: PitchProps) {
   return (
     <section className={cx('ui-pitch', className)} aria-label={ariaLabel}>
       <svg className="ui-pitch__lines" viewBox={`0 0 ${PITCH_W} ${PITCH_H}`} aria-hidden="true" preserveAspectRatio="none">
@@ -70,8 +71,8 @@ export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый
           const left = (mirrorX ? 1 - p.x : p.x) * 100;
           const top = (1 - p.y) * 100;
           const style: CSSProperties = { left: `${left}%`, top: `${top}%` };
-          return (
-            <li key={p.id ?? `${p.name}-${i}`} className="ui-pl" style={style}>
+          const body = (
+            <>
               <span className="ui-pl__shirt">
                 <PlayerPhoto id={p.id} name={p.name} size={40} />
                 {p.rating != null && <RatingChip value={p.rating} size="sm" className="ui-pl__rating" />}
@@ -82,6 +83,17 @@ export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый
                 )}
               </span>
               <span className="ui-pl__nm">{p.name}</span>
+            </>
+          );
+          return (
+            <li key={p.id ?? `${p.name}-${i}`} className="ui-pl" style={style}>
+              {p.id != null && playerHref ? (
+                <PlayerTap player={p} playerHref={playerHref} onPlayerClick={onPlayerClick} className="ui-pl__tap">
+                  {body}
+                </PlayerTap>
+              ) : (
+                body
+              )}
             </li>
           );
         })}

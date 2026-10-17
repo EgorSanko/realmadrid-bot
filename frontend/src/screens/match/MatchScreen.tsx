@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { ApiMatch } from '../../api/match';
 import { useTelegramBackButton } from '../../lib/tmaNav';
-import { Badge, Countdown, EmptyState, ErrorState, ScoreHeader, Skeleton, Tabs } from '../../ui';
+import { Badge, Countdown, EmptyState, ErrorState, LeagueLogo, ScoreHeader, Skeleton, Tabs, TeamCrest } from '../../ui';
 import { LineupsTab } from './LineupsTab';
 import { OverviewTab } from './OverviewTab';
 import { StatsTab } from './StatsTab';
@@ -73,7 +73,14 @@ export default function MatchScreen() {
             {BACK_ICON}
           </button>
         )}
-        <h1 className="mt-top__title">{title}</h1>
+        {match && tab !== 'overview' ? (
+          <TeamsTitle match={match} />
+        ) : (
+          <h1 className={match?.tournament.id != null ? 'mt-top__title mt-top__title--teams' : 'mt-top__title'}>
+            {match?.tournament.id != null && <LeagueLogo id={match.tournament.id} name="" size={20} />}
+            <span className="mt-top__tm">{title}</span>
+          </h1>
+        )}
         {head?.live ? <Badge tone="live" className="mt-top__live" /> : <span className="mt-top__gap" aria-hidden="true" />}
       </header>
 
@@ -107,6 +114,29 @@ export default function MatchScreen() {
         </>
       )}
     </main>
+  );
+}
+
+/** «[эмб] Roma 3 : 4 Real Madrid [эмб]» — заголовок вкладок без большой шапки; текст — тот же compactTitle. */
+function TeamsTitle({ match }: { match: ApiMatch }) {
+  const h = teamRef(match, 'home');
+  const a = teamRef(match, 'away');
+  const full = compactTitle(match);
+  const mid = full.slice((match.home.name ?? '').length, full.length - (match.away.name ?? '').length).trim();
+  return (
+    <h1 className="mt-top__title mt-top__title--teams" aria-label={full}>
+      {h.id != null && <TeamCrest id={h.id} name="" size={20} />}
+      <span className="mt-top__tm" aria-hidden="true">
+        {h.name}
+      </span>
+      <span className="mt-top__sc" aria-hidden="true">
+        {mid}
+      </span>
+      <span className="mt-top__tm" aria-hidden="true">
+        {a.name}
+      </span>
+      {a.id != null && <TeamCrest id={a.id} name="" size={20} />}
+    </h1>
   );
 }
 

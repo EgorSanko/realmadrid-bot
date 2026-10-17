@@ -100,6 +100,18 @@
 .ui-photo > .ui-img { width: 100% !important; height: 100% !important; object-fit: cover; object-position: 50% 0; }
 .ui-photo__sil { position: absolute; inset: 0; width: 100%; height: 100%; fill: #3A4664; }
 
+/* ---------- нажимаемый игрок ---------- */
+.ui-ptap { color: inherit; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 10px; }
+.ui-ptap:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (hover: hover) { .ui-ptap:hover .ui-pin__name, a.ui-ptap.ui-pl__tap:hover .ui-pl__nm { color: var(--gold-light); } }
+.ui-ptap:active { opacity: .78; }
+/* фото + имя в одну строку; имя режется многоточием, фото фиксированного размера */
+.ui-pin { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; vertical-align: middle; }
+.ui-pin__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-pin__photo { flex: none; }
+/* эмблема в строке текста */
+.ui-crest-inline { display: inline-block; vertical-align: middle; }
+
 /* ---------- MatchCard ---------- */
 .ui-mc { display: block; margin: 14px 16px 0; padding: 20px; border-radius: 24px; background: var(--hero-glow), linear-gradient(180deg, #12151E, #0C0E15); border: 1px solid rgba(212, 175, 55, 0.2); color: var(--text); font-size: 16px; }
 .ui-mc--live { padding: 18px; border-radius: 22px; }
@@ -123,6 +135,11 @@
 .ui-mc-past__cap { font-size: 12px; color: var(--muted); }
 .ui-mc-past__line { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; font-weight: 600; font-size: 15px; }
 .ui-mc-past__score { font-family: var(--display); font-weight: 700; font-size: 18px; white-space: nowrap; }
+.ui-mc-past__cap .ui-league { display: inline-block; vertical-align: -3px; margin-right: 5px; }
+.ui-mc-past__line--crests { gap: 6px 8px; }
+/* эмблема + название не сжимаются: не влезло — строка переносится, как и без эмблем */
+.ui-mc-past__tm { display: flex; align-items: center; gap: 6px; flex: none; max-width: 100%; }
+.ui-mc-past__tm > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-mc-past__act { flex: none; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); color: var(--gold); font-size: 13px; font-weight: 600; }
 
 /* ---------- Countdown ---------- */
@@ -147,6 +164,8 @@
 .ui-form__item--W { background: var(--gold); color: var(--gold-ink); }
 .ui-form__item--L { background: var(--ui-loss-bg); color: var(--ui-loss-ink); }
 .ui-form__item--D { background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--ui-loss-bg); }
+/* форма с эмблемами соперников: буква сверху, эмблема под ней (место держится и без эмблемы) */
+.ui-form__col { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: none; }
 
 /* ---------- FixtureRow ---------- */
 .ui-fx { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--text); }
@@ -161,6 +180,10 @@
 .ui-fx__date-sm { width: 46px; flex: none; font-size: 12px; color: var(--muted); }
 .ui-fx__line { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; }
 .ui-fx__score { margin: 0 6px; font-family: var(--display); font-weight: 700; font-size: 13px; white-space: nowrap; }
+/* строка результата с эмблемами: «[эмб] Roma 3 : 4 Real Madrid [эмб]» */
+.ui-fx__line--crests { display: flex; align-items: center; gap: 6px; }
+.ui-fx__line--crests .ui-fx__tm { min-width: 0; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-fx__line--crests .ui-fx__score { margin: 0 2px; flex: none; }
 
 /* ---------- StandingsTable ---------- */
 .ui-table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13px; color: var(--text); }
@@ -201,6 +224,19 @@
 .ui-tl__r { padding-left: 12px; }
 .ui-tl__name { font-size: 14px; font-weight: 600; }
 .ui-tl__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
+/* строки с фото: флекс, чтобы фото и имя стояли рядом, а длинное имя резалось многоточием */
+.ui-tl__line { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.ui-tl__line .ui-pin { gap: 4px; }
+.ui-tl__l .ui-tl__line { justify-content: flex-end; }
+.ui-tl__line > .ui-pin { flex: 0 1 auto; }
+.ui-tl__line > .ui-ev, .ui-tl__line > .ui-tl__score { flex: none; }
+.ui-tl__line .ui-tl__score { margin: 0 0 0 2px; }
+.ui-tl__line .ui-tl__score--l { margin: 0 2px 0 0; }
+/* вторая строка (пас / ушёл · травма) переносится, а не режет имя */
+.ui-tl__sub.ui-tl__line { flex-wrap: wrap; row-gap: 2px; margin-top: 3px; }
+.ui-tl__sub.ui-tl__line > .ui-pin { flex: 0 0 auto; }
+.ui-tl__sub .ui-pin { font-weight: 500; }
+.ui-tl__pre { flex: none; }
 .ui-tl__score { margin-left: 6px; font-family: var(--display); font-weight: 700; font-size: 12px; color: var(--gold); }
 .ui-tl__score--l { margin: 0 6px 0 0; }
 .ui-tl__half { display: flex; justify-content: center; margin: 6px 0; }
@@ -223,6 +259,8 @@
 .ui-pl__rating { position: absolute; right: -18px; top: -8px; }
 .ui-pl__num { position: absolute; left: -7px; bottom: -3px; min-width: 17px; height: 17px; padding: 0 3px; border-radius: 9px; background: var(--bg); border: 1px solid var(--ui-pitch-line); color: #E3E8F2; font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; font-variant-numeric: tabular-nums; }
 .ui-pl__nm { font-size: 12px; font-weight: 600; white-space: nowrap; text-shadow: 0 1px 2px #000; }
+/* нажимаемый игрок на поле: та же колонка, что и .ui-pl — вёрстка не меняется */
+.ui-pl__tap { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 100%; }
 
 /* ---------- StatRow ---------- */
 .ui-st { padding: 11px 0; border-bottom: 1px solid var(--line); }

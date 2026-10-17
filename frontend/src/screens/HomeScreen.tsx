@@ -4,6 +4,7 @@ import { StreamBlock } from '../components/StreamBlock';
 import type { ApiHome } from '../lib/api';
 import {
   errorText,
+  formOpponents,
   formResults,
   heroOf,
   homePollMs,
@@ -52,7 +53,14 @@ export default function HomeScreen() {
       heroIsLast && d.next && matchStatusOf(d.next.status) === 'upcoming'
         ? splitFixtures([d.next], 'all').upcoming[0]
         : null;
-    return { hero, last: heroIsLast ? null : last, nextRow, form: formResults(d), league: leagueSummary(d) };
+    return {
+      hero,
+      last: heroIsLast ? null : last,
+      nextRow,
+      form: formResults(d),
+      formOpp: formOpponents(d),
+      league: leagueSummary(d),
+    };
   }, [d, now]);
 
   const note = d ? staleNote(d, home.receivedAt ? (now - home.receivedAt) / 1000 : 0) : null;
@@ -109,7 +117,7 @@ export default function HomeScreen() {
             {view.form.length > 0 && (
               <section className="home-tile" aria-label="Форма">
                 <div className="home-tile__cap">Форма, {view.form.length} {plural(view.form.length, ['матч', 'матча', 'матчей'])}</div>
-                <FormStrip results={view.form} size={24} className="home-tile__form" />
+                <FormStrip results={view.form} opponents={view.formOpp} size={24} className="home-tile__form" />
               </section>
             )}
             {view.league && (
@@ -141,6 +149,7 @@ export default function HomeScreen() {
           score={view.last.score}
           caption="Прошлый матч"
           actionLabel="Обзор"
+          crests
           {...link(view.last.href)}
         />
       ) : view?.nextRow ? (

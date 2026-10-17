@@ -61,7 +61,7 @@ export function SafeImg({ src, alt, width, height, className, style, fallback }:
   );
 }
 
-export type CrestSize = 24 | 36 | 52 | 56 | 68;
+export type CrestSize = 16 | 20 | 24 | 28 | 36 | 52 | 56 | 68;
 
 export interface TeamCrestProps {
   /** id команды (FotMob) */

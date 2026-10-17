@@ -7,6 +7,8 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once team|mapping     # один цикл команды / сопоставления id
   python -m app.collector once news|videos      # один цикл новостей (RSS) / видео (YouTube)
   python -m app.collector once match <id>       # один цикл матча (цепочка источников)
+  python -m app.collector once player <id>      # карточка игрока (FotMob → SofaScore)
+  python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -22,10 +24,11 @@ import os
 import signal
 import sys
 import time
+from collections import deque
 from datetime import datetime, timedelta, timezone
 
 from . import config, store
-from .model import name_key, same_team, ts
+from .model import iso_utc, name_key, same_person, same_team, ts
 from .sources import espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
@@ -52,7 +55,9 @@ class Collector:
         self.ls_by_date: dict[str, dict] = {}
         # медиа — свои HTTP-клиенты (breaker и счётчики у каждого сайта), в цепочку матча не входят
         self.media = media.make_sources()
-        self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0}
+        self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0,
+                       "player": 0, "player_failed": 0}
+        self.player_req: deque = deque()          # время запросов карточек игроков (лимит в минуту)
         self.last_team = 0.0
         self.last_mapping = 0.0
         self.last_news = 0.0
@@ -295,9 +300,31 @@ class Collector:
                 res["espn"] = self._map_list(fixtures, "espn", items)
             except SourceError as e:
                 log.warning("mapping: espn: %s", e)
+        if self.ss.available():
+            try:
+                res["players"] = self._map_squad_players(await self.ss.players())
+            except SourceError as e:
+                log.warning("mapping: sofascore players: %s", e)
         self._attach_ids(snap["data"])  # те же объекты, что и fixtures
         store.put(self.conn, "fixtures", snap["source"], snap["data"], fetched_at=snap["fetched_at"])
         return res
+
+    def _map_squad_players(self, raw: dict) -> int:
+        """Игроки Реала: SofaScore team/2829/players ↔ состав FotMob по имени; если у обоих есть дата
+        рождения — она обязана совпасть. Неоднозначно (два кандидата) — не сопоставляем."""
+        t = store.get(self.conn, "team")
+        squad = [p for line in ((t or {}).get("data", {}).get("squad") or {}).values() for p in line if p.get("id")]
+        n = 0
+        with self.conn:
+            for it in raw.get("players") or []:
+                sp = it.get("player") or {}
+                birth = iso_utc_date(sp.get("dateOfBirthTimestamp"))
+                cands = [p for p in squad if same_person(p.get("name"), sp.get("name"))
+                         and (not birth or not p.get("birth") or p["birth"][:10] == birth)]
+                if len(cands) == 1 and sp.get("id"):
+                    store.map_set(self.conn, "player", "sofascore", sp["id"], cands[0]["id"], "squad")
+                    n += 1
+        return n
 
     def _map_list(self, fixtures, source, items) -> int:
         n = 0
@@ -409,6 +436,141 @@ class Collector:
         self.miss.pop(("livescore", str(fid)), None)
         return str(eid)
 
+    # ================= игроки =================
+
+    def _squad_player_ids(self) -> list[str]:
+        t = store.get(self.conn, "team")
+        if not t:
+            return []
+        return [str(p["id"]) for line in (t["data"].get("squad") or {}).values() for p in line if p.get("id")]
+
+    def player_ttl(self, pid, data: dict | None) -> int:
+        """Свои — раз в 6 ч (обновляются заранее), чужие — кэш 24 ч."""
+        own = str(pid) in self._squad_player_ids() or ((data or {}).get("team") or {}).get("id") == config.TEAM_ID
+        return config.PLAYER_INTERVAL if own else config.PLAYER_FOREIGN_TTL
+
+    def _player_budget(self, now: float, cost: int = 1) -> bool:
+        """Не больше PLAYER_RATE_PER_MIN запросов карточек в минуту (FotMob и SofaScore вместе)."""
+        while self.player_req and self.player_req[0] < now - 60:
+            self.player_req.popleft()
+        return len(self.player_req) + cost <= config.PLAYER_RATE_PER_MIN
+
+    def _spend(self, n: int = 1):
+        now = time.time()
+        self.player_req.extend([now] * n)
+
+    async def refresh_player(self, pid) -> dict | None:
+        """FotMob → SofaScore (если знаем id игрока у SofaScore). Не вышло — снимок не трогаем,
+        пишем `player_fail:<id>`, чтобы API ответил честной ошибкой вместо вечного «загружаем»."""
+        pid = str(pid)
+        self.cycles["player"] += 1
+        errors, not_found = {}, False
+        for name in ("fotmob", "sofascore"):
+            src = self.sources[name]
+            if not src.available():
+                errors[name] = "disabled" if src.disabled() else "breaker open"
+                continue
+            try:
+                p = await getattr(self, f"_player_{name}")(pid)
+            except NotFound as e:
+                errors[name] = f"not found: {e}"[:200]
+                if name == "fotmob":
+                    not_found = True
+                    break  # у FotMob нет такого id — резерв искать нечего
+                continue
+            except SourceError as e:
+                errors[name] = str(e)[:200]
+                continue
+            except Exception as e:  # ошибка нормализатора не роняет такт
+                log.exception("player %s: %s: нормализатор упал", pid, name)
+                errors[name] = f"normalize: {type(e).__name__}: {e}"[:200]
+                continue
+            if not p:
+                errors[name] = "no id mapping"
+                continue
+            p["fallback_errors"] = errors or None
+            self._merge_team_status(pid, p)
+            with self.conn:
+                store.put(self.conn, f"player:{pid}", name, p)
+                self.conn.execute("DELETE FROM snapshots WHERE key=?", (f"player_fail:{pid}",))
+            return p
+        self.cycles["player_failed"] += 1
+        store.put(self.conn, f"player_fail:{pid}", "collector", {"errors": errors, "not_found": not_found})
+        log.warning("player %s: нет данных: %s", pid, errors)
+        return None
+
+    async def _player_fotmob(self, pid):
+        self._spend(1)
+        return fotmob.normalize_player(await self.fm.player(pid))
+
+    async def _player_sofascore(self, pid):
+        sid = store.from_fotmob(self.conn, "player", "sofascore", pid)
+        if not sid:
+            return None
+        self._spend(2)
+        raw = await self.ss.player(sid)
+        try:
+            last = await self.ss.player_events(sid)
+        except NotFound:
+            last = None
+        ctx = {"fotmob_id": int(pid), "teams": store.map_all(self.conn, "team", "sofascore"),
+               "matches": store.map_all(self.conn, "match", "sofascore")}
+        return sofascore.normalize_player(raw, last, ctx)
+
+    def _merge_team_status(self, pid: str, p: dict):
+        """У FotMob в playerData нет дисквалификаций — берём статус из лазарета снимка команды."""
+        if p.get("status"):
+            return
+        t = store.get(self.conn, "team")
+        inj = next((i for i in ((t or {}).get("data", {}).get("injuries") or []) if str(i.get("id")) == pid), None)
+        if inj:
+            p["status"] = {"type": inj.get("type") or "injury", "name": None,
+                           "expected_return": inj.get("expected_return"), "updated": None}
+            if "status" not in p["available"]:
+                p["available"].append("status")
+
+    def _recent_fail(self, pid: str, now: float) -> bool:
+        """Отказ — по записи player_fail в базе (её же читает API), а не по памяти процесса:
+        иначе после ручной чистки или перезапуска API и сборщик разошлись бы."""
+        row = self.conn.execute("SELECT fetched_at FROM snapshots WHERE key=?", (f"player_fail:{pid}",)).fetchone()
+        return bool(row) and now - row[0] < config.PLAYER_FAIL_RETRY
+
+    def players_due(self, now: float) -> list[str]:
+        """Игроки состава, у которых снимок старше 6 ч (или его нет), кроме недавно не давшихся."""
+        out = []
+        for pid in self._squad_player_ids():
+            if self._recent_fail(pid, now):
+                continue
+            row = self.conn.execute("SELECT fetched_at FROM snapshots WHERE key=?", (f"player:{pid}",)).fetchone()
+            if not row or now - row[0] >= config.PLAYER_INTERVAL:
+                out.append(pid)
+        return out
+
+    async def tick_players(self, now: float, squad: bool = True, per_tick: int = 2) -> list[str]:
+        """Один такт: сначала заявки API (человек ждёт), потом плановое обновление состава.
+        Лимит в минуту общий; за такт — не больше per_tick игроков, чтобы не задерживать лайв."""
+        done = []
+        for pid in store.peek_player_demand(self.conn, 10):
+            if len(done) >= per_tick or not self._player_budget(now):
+                return done
+            store.drop_player_demand(self.conn, pid)
+            snap = store.get(self.conn, f"player:{pid}")
+            if snap and now - snap["fetched_at"] < self.player_ttl(pid, snap["data"]):
+                continue  # уже свежий (успели подтянуть по другой заявке)
+            if self._recent_fail(pid, now):
+                continue  # недавно не вышло — API уже отдаёт ошибку из player_fail
+            p = await self.refresh_player(pid)
+            done.append(pid)
+            log.info("player demand %s → %s", pid, p and p["source"])
+        if squad:
+            for pid in self.players_due(now):
+                if len(done) >= per_tick or not self._player_budget(now):
+                    break
+                p = await self.refresh_player(pid)
+                done.append(pid)
+                log.info("player %s → %s", pid, p and p["source"])
+        return done
+
     # ================= матч =================
 
     async def refresh_match(self, fid, live: bool = False) -> dict | None:
@@ -475,7 +637,16 @@ class Collector:
                 b[part] = await self.ss.part(sid, part)
         if st == "finished" and (full or "best" not in b):
             b["best"] = await self.ss.part(sid, "best-players/summary")
-        return sofascore.normalize_match(b, self._ctx("sofascore", fid))
+        m = sofascore.normalize_match(b, self._ctx("sofascore", fid))
+        # заодно запоминаем id игроков обеих команд: SofaScore ↔ FotMob (по номеру и стороне из составов
+        # FotMob этого же матча) — это резерв для карточек чужих игроков
+        with self.conn:
+            for side in ("home", "away"):
+                lu = (m.get("lineups") or {}).get(side) or {}
+                for p in (lu.get("starters") or []) + (lu.get("subs") or []):
+                    if p.get("id") and p.get("source_id"):
+                        store.map_set(self.conn, "player", "sofascore", p["source_id"], p["id"], "lineup")
+        return m
 
     async def _match_espn(self, fid, full):
         eid = store.from_fotmob(self.conn, "match", "espn", fid)
@@ -598,6 +769,8 @@ class Collector:
                     if not store.get(self.conn, f"match:{fid}"):
                         m = await self.refresh_match(fid)
                         log.info("demand %s → %s", fid, m and m["source"])
+                # карточки игроков: заявки — всегда, плановое обновление состава — вне окна матча
+                await self.tick_players(now, squad=not win)
                 if now >= next_state:
                     self.write_state()
                     next_state = now + 5
@@ -610,6 +783,10 @@ class Collector:
             except asyncio.TimeoutError:
                 pass
         self.write_state()
+
+
+def iso_utc_date(t) -> str | None:
+    return iso_utc(t)[:10] if t is not None else None
 
 
 def _sofa_match(e: dict, info: dict) -> bool:
@@ -685,6 +862,22 @@ async def _cli(args) -> int:
                 c.write_state()
             elif args.what == "match":
                 print(_summary(await c.refresh_match(args.id)))
+            elif args.what == "player":
+                p = await c.refresh_player(args.id)
+                print(json.dumps({k: p.get(k) for k in ("id", "name", "source", "available")} if p else None,
+                                 ensure_ascii=False))
+                c.write_state()
+            elif args.what == "players":
+                done = []
+                while True:
+                    got = await c.tick_players(time.time(), per_tick=100)
+                    done += got
+                    if not c.players_due(time.time()):
+                        break
+                    if not got:  # упёрлись в лимит минуты — ждём
+                        await asyncio.sleep(5)
+                print(json.dumps({"players": len(done)}, ensure_ascii=False))
+                c.write_state()
         elif args.cmd == "live":
             for i in range(args.cycles):
                 t0 = time.time()
@@ -716,7 +909,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")

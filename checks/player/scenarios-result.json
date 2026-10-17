@@ -1,0 +1,172 @@
+{
+ "report": [
+  {
+   "name": "1: URL /player/701154",
+   "ok": true,
+   "info": "https://realmadridfan.ru/player/701154"
+  },
+  {
+   "name": "1: имя Kylian Mbappé",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1: фон «Команда» остался под карточкой",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1: фото, эмблема клуба, флаг — с /img/",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1-mbappe: вкладка «Сезон» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1-mbappe: вкладка «Последние матчи» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1-mbappe: вкладка «Карьера» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "1: три вкладки",
+   "ok": true,
+   "info": "3"
+  },
+  {
+   "name": "6: «назад» → /team, прокрутка та же",
+   "ok": true,
+   "info": "1588 → 1588"
+  },
+  {
+   "name": "3: блок травмы показан",
+   "ok": true,
+   "info": "травмаразрыв крестообразной связкиВозвращение: конец декабря"
+  },
+  {
+   "name": "6: системный «назад» браузера тоже закрывает карточку",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "3: лидер сезона открывает карточку",
+   "ok": true,
+   "info": "https://realmadridfan.ru/player/701154"
+  },
+  {
+   "name": "2: Dybala на поле — ссылка",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2: сначала «Загружаем данные игрока…»",
+   "ok": true,
+   "info": "Загружаем данные игрока…"
+  },
+  {
+   "name": "2: потом данные (повтор запроса)",
+   "ok": true,
+   "info": "запросов: 2"
+  },
+  {
+   "name": "2-dybala: вкладка «Сезон» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2-dybala: вкладка «Последние матчи» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2-dybala: вкладка «Карьера» без горизонтальной прокрутки",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6: «назад» → составы, выбрана всё ещё Roma",
+   "ok": true,
+   "info": "Roma"
+  },
+  {
+   "name": "2: замены нажимаются",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "2: «Не играли» — фото + ссылки",
+   "ok": true,
+   "info": "5"
+  },
+  {
+   "name": "4: автор гола → карточка Mbappé",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "4: ассистент тоже нажимается",
+   "ok": true,
+   "info": "Koné — карточка игрока"
+  },
+  {
+   "name": "4: «Лучший у Реала» и «Игрок матча» — ссылки",
+   "ok": true,
+   "info": "2"
+  },
+  {
+   "name": "4: «Лучший у Реала» открывает карточку",
+   "ok": true,
+   "info": "https://realmadridfan.ru/player/1735453"
+  },
+  {
+   "name": "карточка → матч по нажатию строки",
+   "ok": true,
+   "info": "/match/6106274 → https://realmadridfan.ru/match/6106274"
+  },
+  {
+   "name": "5: прямой заход /player/701154",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "5: горизонтальной прокрутки нет",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "6: «назад» при прямом заходе → /team (не из приложения)",
+   "ok": true,
+   "info": "https://realmadridfan.ru/team"
+  },
+  {
+   "name": "7: неизвестный id → «Игрок не найден»",
+   "ok": true,
+   "info": "Игрок не найден"
+  },
+  {
+   "name": "внешних хостов — 0",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "name": "ошибок консоли — 0 (кроме ожидаемого 404 несуществующего игрока)",
+   "ok": true,
+   "info": "[\"p2: Failed to load resource: the server responded with a status of 404 (Not Found)\"]"
+  }
+ ],
+ "failed": [
+  "https://realmadridfan.ru/img/player/701154.png net::ERR_ABORTED",
+  "https://realmadridfan.ru/img/team/8633.png net::ERR_ABORTED",
+  "https://realmadridfan.ru/img/flag/fr.svg net::ERR_ABORTED",
+  "https://realmadridfan.ru/img/league/87.png net::ERR_ABORTED",
+  "https://realmadridfan.ru/img/league/42.png net::ERR_ABORTED"
+ ],
+ "playerCalls": 11
+}

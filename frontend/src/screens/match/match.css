@@ -37,6 +37,8 @@
 .mt-star { padding: 14px; }
 .mt-star__cap { font-size: 12px; color: var(--muted); }
 .mt-star__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+.mt-star__row--cap { margin-top: 0; }
+.mt-star__cap { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mt-star__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; }
 
 /* новый гол в лайве — короткая подсветка строки */
@@ -79,6 +81,21 @@
 .mt-li__name { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mt-li__num { display: inline-block; min-width: 22px; margin-right: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .mt-li__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
+/* строка игрока — ссылка на карточку (или span без id); граница — между строками списка */
+.mt-list > li > .mt-li { color: inherit; text-decoration: none; border-radius: 0; }
+.mt-list > li:not(:last-child) > .mt-li { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+/* «Не играли»: фото + имя, причина — строкой ниже (имя не режется ради причины) */
+.mt-out__row { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 4px 0; line-height: 1.35; }
+.mt-out__who { max-width: 100%; font-weight: 500; }
+.mt-out__why { max-width: 100%; padding-left: 34px; font-size: 12px; }
+.mt-h2h__team { display: flex !important; align-items: center; justify-content: center; gap: 5px; }
+.mt-h2h__team > span { margin-top: 0 !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-form__team { display: flex; align-items: center; gap: 8px; }
+.mt-form__team > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-top__title--teams { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
+.mt-top__title--teams .mt-top__tm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-top__title--teams .mt-top__sc { flex: none; white-space: nowrap; }
+.mt-top__title--teams .ui-img { flex: none; }
 .mt-bench { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .mt-out { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.7; }
 .mt-coach { margin: 10px 0 0; font-size: 12px; color: var(--muted); }

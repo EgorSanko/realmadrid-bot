@@ -1,14 +1,16 @@
 """FotMob — основной источник и канонические id.
 
 Один запрос teams?id=8633 даёт календарь, таблицы (Ла Лига, ЛЧ), состав, травмы,
-лидеров и трансферы. matchDetails — всё по матчу одним ответом.
+лидеров и трансферы. matchDetails — всё по матчу одним ответом. playerData — карточка игрока.
 """
 import re
+from datetime import datetime, timezone
 
 from .. import config
-from ..model import (empty_match, event, finish_match, img_flag, img_league, img_player, img_team,
-                     iso_utc, lineup_player, person, result_for, stat_list, status)
-from .base import HttpxSource
+from ..model import (ROLE_BY_POS, age_on, empty_match, empty_player, event, finish_match, finish_player,
+                     img_flag, img_league, img_player, img_team, iso_utc, lineup_player, num, person,
+                     result_for, stat_list, status)
+from .base import HttpxSource, NotFound
 
 BASE = "https://www.fotmob.com/api/data"
 
@@ -24,6 +26,13 @@ class FotMob(HttpxSource):
 
     async def matches_on(self, yyyymmdd: str) -> dict:
         return await self.get(f"{BASE}/matches", {"date": yyyymmdd}, kind="matches_by_date")
+
+    async def player(self, player_id) -> dict:
+        raw = await self.get(f"{BASE}/playerData", {"id": player_id}, kind="player")
+        # на несуществующий id FotMob отвечает 200 без игрока — это «нет такого», а не поломка
+        if not isinstance(raw, dict) or not raw.get("id") or not raw.get("name"):
+            raise NotFound(f"playerData {player_id}: пустой ответ")
+        return raw
 
 
 # ---------- статусы ----------
@@ -409,3 +418,215 @@ def normalize_team(raw: dict) -> dict:
         "source": "fotmob",
         "available": ["squad", "player_photos", "injuries", "leaders", "transfers", "coach"],
     }
+
+
+# ---------- игрок ----------
+
+RECENT_LIMIT = 10
+_FOOT = {"right": "right", "left": "left", "both": "both"}
+
+
+def _date(v) -> str | None:
+    """'2029-06-30T00:00:00.000Z' / {'utcTime': ...} → '2029-06-30'."""
+    if isinstance(v, dict):
+        v = v.get("utcTime") or v.get("dateValue")
+    return str(v)[:10] if v and re.match(r"\d{4}-\d{2}-\d{2}", str(v)) else None
+
+
+def _season_window(name: str | None) -> tuple[str, str] | None:
+    """'2026/2027' → июль 2026 — июнь 2027; '2025' (КЧМ, ЧМ) → весь 2025 год."""
+    m = re.fullmatch(r"(\d{4})/(\d{4})", str(name or "").strip())
+    if m:
+        return f"{m.group(1)}-07-01", f"{m.group(2)}-06-30T23:59:59Z"
+    m = re.fullmatch(r"(\d{4})", str(name or "").strip())
+    if m:
+        return f"{m.group(1)}-01-01", f"{m.group(1)}-12-31T23:59:59Z"
+    return None
+
+
+def _rating(v) -> float | None:
+    if isinstance(v, dict):
+        v = v.get("rating") if "rating" in v else v.get("num")
+    x = num(v)
+    return round(float(x), 2) if x else None
+
+
+def _team_ref(tid, name) -> dict | None:
+    if not name and not tid:
+        return None
+    return {"id": _int(tid), "name": name, "logo": img_team(tid)}
+
+
+def _recent_row(m: dict) -> dict:
+    home = bool(m.get("isHomeTeam"))
+    hs, as_ = m.get("homeScore"), m.get("awayScore")
+    ours, theirs = (hs, as_) if home else (as_, hs)
+    res = None
+    if ours is not None and theirs is not None:
+        res = "W" if ours > theirs else "L" if ours < theirs else "D"
+    lid = m.get("leagueId")
+    return {
+        "match_id": _int(m.get("id")),
+        "kickoff": iso_utc((m.get("matchDate") or {}).get("utcTime")),
+        "tournament": {"id": lid, "name": m.get("leagueName"), "logo": img_league(lid)},
+        "team": _team_ref(m.get("teamId"), m.get("teamName")),
+        "opponent": _team_ref(m.get("opponentTeamId"), m.get("opponentTeamName")),
+        "home": home,
+        "score": [hs, as_],
+        "result": res,
+        "conceded": theirs,
+        "played": bool(m.get("playedInMatch")),
+        "bench": bool(m.get("onBench")),
+        "minutes": m.get("minutesPlayed"),
+        "goals": m.get("goals") or 0, "assists": m.get("assists") or 0,
+        "yellow": m.get("yellowCards") or 0, "red": m.get("redCards") or 0,
+        "rating": _rating(m.get("ratingProps")),
+        "potm": bool(m.get("playerOfTheMatch")),
+    }
+
+
+def _main_league_stats(raw: dict) -> dict:
+    ml = raw.get("mainLeague") or {}
+    out = {s.get("localizedTitleId"): s.get("value") for s in ml.get("stats") or []}
+    deep = {}
+    for g in ((raw.get("firstSeasonStats") or {}).get("statsSection") or {}).get("items") or []:
+        for s in g.get("items") or []:
+            deep.setdefault(s.get("localizedTitleId"), s.get("statValue"))
+    return {"league_id": ml.get("leagueId"), "season": ml.get("season"), "stats": out, "deep": deep}
+
+
+def _season(raw: dict, recent_all: list[dict], keeper: bool) -> dict | None:
+    """Сезон клуба по турнирам. Матчи, голы, передачи и оценку даёт карьера FotMob (по каждому турниру);
+    минуты и карточки — сумма по последним матчам, если они покрывают турнир целиком;
+    основную лигу перекрывает блок mainLeague (там всё точно, у вратаря — сухие матчи)."""
+    senior = (((raw.get("careerHistory") or {}).get("careerItems") or {}).get("senior") or {})
+    entries = senior.get("seasonEntries") or []
+    if not entries:
+        return None
+    e = entries[0]
+    team_id = _int(e.get("teamId"))
+    ml = _main_league_stats(raw)
+    rows = []
+    for t in e.get("tournamentStats") or []:
+        if t.get("isFriendly"):
+            continue
+        lid = _int(t.get("leagueId"))
+        apps = _int(t.get("appearances")) or 0
+        row = {"league": {"id": lid, "name": t.get("leagueName"), "logo": img_league(lid)},
+               "matches": apps, "started": None, "minutes": None,
+               "goals": _int(t.get("goals")) or 0, "assists": _int(t.get("assists")) or 0,
+               "rating": _rating(t.get("rating")), "yellow": None, "red": None,
+               "clean_sheets": None, "conceded": None, "saves": None}
+        win = _season_window(t.get("seasonName") or e.get("seasonName"))
+        played = [m for m in recent_all if m["played"] and m["tournament"]["id"] == lid
+                  and (m["team"] or {}).get("id") == team_id and win and m["kickoff"]
+                  and win[0] <= m["kickoff"] <= win[1]]
+        if apps and len(played) == apps:  # последние матчи покрывают турнир — суммы честные
+            row["minutes"] = sum(m["minutes"] or 0 for m in played)
+            row["yellow"] = sum(m["yellow"] for m in played)
+            row["red"] = sum(m["red"] for m in played)
+            if keeper:
+                row["clean_sheets"] = sum(1 for m in played if m["conceded"] == 0)
+                row["conceded"] = sum(m["conceded"] or 0 for m in played)
+        if lid == ml["league_id"] and ml["season"] == e.get("seasonName"):
+            s, deep = ml["stats"], ml["deep"]
+            for ours, theirs in (("matches", "matches_uppercase"), ("started", "started"),
+                                 ("minutes", "minutes_played"), ("goals", "goals"), ("assists", "assists"),
+                                 ("yellow", "yellow_cards"), ("red", "red_cards"),
+                                 ("clean_sheets", "clean_sheet_title"), ("conceded", "goals_conceded")):
+                if isinstance(s.get(theirs), (int, float)):
+                    row[ours] = s[theirs]
+            if isinstance(s.get("rating"), (int, float)) and s["rating"]:
+                row["rating"] = round(float(s["rating"]), 2)
+            if keeper and num(deep.get("saves")) is not None:
+                row["saves"] = num(deep.get("saves"))
+        rows.append(row)
+    if not rows:
+        return None
+
+    def total(k):
+        vals = [r[k] for r in rows]
+        return sum(vals) if all(v is not None for v in vals) else None
+
+    totals = {k: total(k) for k in ("matches", "minutes", "goals", "assists", "yellow", "red")}
+    totals["rating"] = _rating(e.get("rating"))
+    if keeper:
+        totals["clean_sheets"] = total("clean_sheets")
+        totals["conceded"] = total("conceded")
+        totals["saves"] = next((r["saves"] for r in rows if r["saves"] is not None), None) if len(rows) == 1 else None
+    return {"name": e.get("seasonName"), "team": _team_ref(team_id, e.get("team")), "totals": totals,
+            "tournaments": rows}
+
+
+def _career(entries: list) -> list:
+    out = []
+    for e in entries or []:
+        apps = _int(e.get("appearances"))
+        if apps is None and not e.get("active"):
+            continue  # «возвращение из аренды» на пару дней — без матчей, не показываем
+        tt = (e.get("transferType") or {})
+        out.append({
+            "team": _team_ref(e.get("teamId"), e.get("team")),
+            "start": _date(e.get("startDate")), "end": _date(e.get("endDate")),
+            "active": bool(e.get("active")),
+            "loan": (tt.get("localizationKey") or tt.get("text") or "").replace(" ", "_").lower() == "on_loan",
+            "apps": apps, "goals": _int(e.get("goals")), "assists": _int(e.get("assists")),
+        })
+    return out
+
+
+def normalize_player(raw: dict, now: datetime | None = None) -> dict:
+    pid = raw.get("id")
+    p = empty_player(pid)
+    p["name"] = raw.get("name")
+    info = {(x.get("translationKey") or x.get("title")): x for x in raw.get("playerInformation") or []}
+
+    def val(key, field="numberValue"):
+        return ((info.get(key) or {}).get("value") or {}).get(field)
+
+    p["number"] = _int(val("shirt"))
+    p["height"] = _int(val("height_sentencecase"))
+    foot = (val("preferred_foot", "key") or "").lower()
+    p["foot"] = _FOOT.get(foot)
+    p["value_eur"] = _int(val("transfer_value"))
+    p["contract_until"] = _date(raw.get("contractEnd")) or _date(val("contract_end", "dateValue"))
+    p["birth"] = _date(raw.get("birthDate"))
+    p["age"] = age_on(p["birth"], now) or _int(val("age_sentencecase"))
+
+    c = info.get("country_sentencecase") or {}
+    code = c.get("countryCode") or ((c.get("icon") or {}).get("id"))
+    if code or (c.get("value") or {}).get("fallback"):
+        p["country"] = {"code": code, "name": (c.get("value") or {}).get("fallback"), "flag": img_flag(code),
+                        "team_id": _int(c.get("nationalTeamId"))}
+
+    pt = raw.get("primaryTeam") or {}
+    if pt.get("teamId") or pt.get("teamName"):
+        p["team"] = {**_team_ref(pt.get("teamId"), pt.get("teamName")), "on_loan": bool(pt.get("onLoan"))}
+
+    pos = (raw.get("positionDescription") or {}).get("positions") or []
+    pos = sorted(pos, key=lambda x: (not x.get("isMainPosition"), -(x.get("occurences") or 0)))
+    codes = [((x.get("strPosShort") or {}).get("label") or "").upper() for x in pos]
+    p["positions"] = [c for c in dict.fromkeys(codes) if c]
+    p["position"] = p["positions"][0] if p["positions"] else None
+    p["role"] = ROLE_BY_POS.get(p["position"] or "")
+    if raw.get("isCoach"):
+        p["role"] = "COACH"
+
+    inj = raw.get("injuryInformation") or None
+    if isinstance(inj, dict) and (inj.get("name") or inj.get("expectedReturn")):
+        er = inj.get("expectedReturn") or {}
+        p["status"] = {"type": "suspension" if "suspen" in (inj.get("key") or inj.get("name") or "").lower()
+                       else "injury",
+                       "name": inj.get("name"),
+                       "expected_return": er.get("expectedReturnFallback") if isinstance(er, dict) else er,
+                       "updated": _date(inj.get("lastUpdated"))}
+
+    recent_all = sorted((_recent_row(m) for m in raw.get("recentMatches") or []),
+                        key=lambda r: r["kickoff"] or "", reverse=True)
+    p["recent"] = [r for r in recent_all if r["played"]][:RECENT_LIMIT]
+    p["season"] = _season(raw, recent_all, keeper=p["role"] == "GK")
+
+    ci = (raw.get("careerHistory") or {}).get("careerItems") or {}
+    p["career"] = _career((ci.get("senior") or {}).get("teamEntries"))
+    p["national"] = _career((ci.get("national team") or {}).get("teamEntries"))
+    return finish_player(p, "fotmob")

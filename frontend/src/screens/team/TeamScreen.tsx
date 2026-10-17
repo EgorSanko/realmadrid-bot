@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Badge, Card, ErrorState, Flag, PlayerPhoto, SectionHeader, Skeleton, TeamCrest } from '../../ui';
+import { usePlayerLinks } from '../../lib/playerNav';
+import { Badge, Card, ErrorState, Flag, PlayerPhoto, PlayerTap, SectionHeader, Skeleton, TeamCrest, type PlayerLinkProps } from '../../ui';
 import { formatTime } from '../../ui/format';
 import { errorText, useApiResource } from '../../lib/apiResource';
 import {
@@ -101,6 +102,7 @@ function TeamBody({ t }: { t: TeamResponse }) {
 /* ---------- лидеры сезона ---------- */
 
 function Leaders({ leaders }: { leaders: NonNullable<TeamResponse['leaders']> }) {
+  const links = usePlayerLinks();
   const cards: { key: 'goals' | 'assists' | 'rating'; label: string }[] = [
     { key: 'goals', label: 'Голы' },
     { key: 'assists', label: 'Передачи' },
@@ -114,14 +116,16 @@ function Leaders({ leaders }: { leaders: NonNullable<TeamResponse['leaders']> })
     <section className="tm-leaders" aria-label="Лидеры сезона">
       {items.map(({ key, label, top }) => (
         <Card key={key} inset={false} as="div" className="tm-leader">
-          <div className="tm-leader__head">
-            <span className="tm-leader__label">{label}</span>
-            <PlayerPhoto id={top!.id} name={top!.name} size={30} />
-          </div>
-          <div className={key === 'rating' ? 'tm-leader__val disp gold' : 'tm-leader__val disp'}>
-            {key === 'rating' ? top!.value.toFixed(1) : top!.value}
-          </div>
-          <div className="tm-leader__name">{top!.name}</div>
+          <PlayerTap player={top!} {...links} className="tm-leader__tap" label={`${label}: ${top!.name} — карточка игрока`}>
+            <div className="tm-leader__head">
+              <span className="tm-leader__label">{label}</span>
+              <PlayerPhoto id={top!.id} name={top!.name} size={30} />
+            </div>
+            <div className={key === 'rating' ? 'tm-leader__val disp gold' : 'tm-leader__val disp'}>
+              {key === 'rating' ? top!.value.toFixed(1) : top!.value}
+            </div>
+            <div className="tm-leader__name">{top!.name}</div>
+          </PlayerTap>
         </Card>
       ))}
     </section>
@@ -131,6 +135,7 @@ function Leaders({ leaders }: { leaders: NonNullable<TeamResponse['leaders']> })
 /* ---------- лазарет ---------- */
 
 function Infirmary({ injuries }: { injuries: Injury[] }) {
+  const links = usePlayerLinks();
   const rows = injuries.map((i) => ({ ...i, ret: returnInfo(i.expected_return) }));
   const out = rows
     .filter((r) => !r.ret.back)
@@ -144,23 +149,25 @@ function Infirmary({ injuries }: { injuries: Injury[] }) {
       />
       <ul className="tm-list">
         {out.map((r) => (
-          <li key={r.id} className="tm-inj">
-            <PlayerPhoto id={r.id} name={r.name} size={36} />
-            <div className="tm-inj__main">
-              <div className="tm-name">{r.name}</div>
-              <div className="tm-sub">{r.type === 'suspension' ? 'дисквалификация' : 'травма'}</div>
-            </div>
-            <span className="tm-inj__ret">
-              {r.ret.past ? (
-                <>
-                  ожидался:
-                  <br />
-                  {r.ret.text}
-                </>
-              ) : (
-                r.ret.text
-              )}
-            </span>
+          <li key={r.id}>
+            <PlayerTap player={r} {...links} className="tm-inj">
+              <PlayerPhoto id={r.id} name={r.name} size={36} />
+              <div className="tm-inj__main">
+                <div className="tm-name">{r.name}</div>
+                <div className="tm-sub">{r.type === 'suspension' ? 'дисквалификация' : 'травма'}</div>
+              </div>
+              <span className="tm-inj__ret">
+                {r.ret.past ? (
+                  <>
+                    ожидался:
+                    <br />
+                    {r.ret.text}
+                  </>
+                ) : (
+                  r.ret.text
+                )}
+              </span>
+            </PlayerTap>
           </li>
         ))}
       </ul>
@@ -169,11 +176,13 @@ function Infirmary({ injuries }: { injuries: Injury[] }) {
           <div className="tm-group tm-group--back">Вернулись в общую группу · {back.length}</div>
           <ul className="tm-list">
             {back.map((r) => (
-              <li key={r.id} className="tm-inj">
-                <PlayerPhoto id={r.id} name={r.name} size={36} />
-                <div className="tm-inj__main">
-                  <div className="tm-name">{r.name}</div>
-                </div>
+              <li key={r.id}>
+                <PlayerTap player={r} {...links} className="tm-inj">
+                  <PlayerPhoto id={r.id} name={r.name} size={36} />
+                  <div className="tm-inj__main">
+                    <div className="tm-name">{r.name}</div>
+                  </div>
+                </PlayerTap>
               </li>
             ))}
           </ul>
@@ -186,6 +195,7 @@ function Infirmary({ injuries }: { injuries: Injury[] }) {
 /* ---------- состав ---------- */
 
 function Squad({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }) {
+  const links = usePlayerLinks();
   return (
     <Card ariaLabel="Состав">
       <SectionHeader title="Состав" aside={t.coach ? `тренер — ${t.coach.name}` : undefined} />
@@ -199,7 +209,7 @@ function Squad({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }
             </h3>
             <ul className="tm-list">
               {players.map((p) => (
-                <PlayerRow key={p.id} p={p} line={key} out={outById.get(p.id)} />
+                <PlayerRow key={p.id} p={p} line={key} out={outById.get(p.id)} links={links} />
               ))}
             </ul>
           </section>
@@ -209,25 +219,27 @@ function Squad({ t, outById }: { t: TeamResponse; outById: Map<number, Injury> }
   );
 }
 
-function PlayerRow({ p, line, out }: { p: SquadPlayer; line: LineKey; out?: Injury }) {
+function PlayerRow({ p, line, out, links }: { p: SquadPlayer; line: LineKey; out?: Injury; links: PlayerLinkProps }) {
   const pos = positionRu(p.position, line);
   const age = ageText(p.age);
   const iso = flagIso(p.country?.flag);
   const suspended = out?.type === 'suspension' && !p.injured;
   return (
-    <li className="tm-player">
-      <span className="tm-player__num" aria-label={p.number != null ? `номер ${p.number}` : undefined}>
-        {p.number ?? ''}
-      </span>
-      <PlayerPhoto id={p.id} name={p.name} size={40} />
-      <div className="tm-player__main">
-        <div className="tm-name">{p.name}</div>
-        <div className="tm-sub">
-          {iso && <Flag iso2={iso} name={p.country?.name ?? ''} width={16} className="tm-flag" />}
-          {[pos, age].filter(Boolean).join(' · ')}
+    <li>
+      <PlayerTap player={p} {...links} className="tm-player">
+        <span className="tm-player__num" aria-label={p.number != null ? `номер ${p.number}` : undefined}>
+          {p.number ?? ''}
+        </span>
+        <PlayerPhoto id={p.id} name={p.name} size={40} />
+        <div className="tm-player__main">
+          <div className="tm-name">{p.name}</div>
+          <div className="tm-sub">
+            {iso && <Flag iso2={iso} name={p.country?.name ?? ''} width={16} className="tm-flag" />}
+            {[pos, age].filter(Boolean).join(' · ')}
+          </div>
         </div>
-      </div>
-      {p.injured ? <Badge tone="injury" /> : suspended ? <Badge tone="injury">дискв.</Badge> : null}
+        {p.injured ? <Badge tone="injury" /> : suspended ? <Badge tone="injury">дискв.</Badge> : null}
+      </PlayerTap>
     </li>
   );
 }
@@ -254,6 +266,7 @@ function Transfers({ transfers }: { transfers: NonNullable<TeamResponse['transfe
 
 function TransferGroup({ title, dir, list }: { title: string; dir: 'in' | 'out'; list: Transfer[] }) {
   const [all, setAll] = useState(false);
+  const links = usePlayerLinks();
   const shown = all ? list : list.slice(0, SHOW_TRANSFERS);
   return (
     <section aria-label={title}>
@@ -265,18 +278,20 @@ function TransferGroup({ title, dir, list }: { title: string; dir: 'in' | 'out';
           const club = dir === 'in' ? tr.from : tr.to;
           const fee = feeText(tr);
           return (
-            <li key={`${tr.player.id}-${i}`} className="tm-tr">
-              <PlayerPhoto id={tr.player.id} name={tr.player.name} size={36} />
-              <div className="tm-tr__main">
-                <div className="tm-name">{tr.player.name}</div>
-                <div className="tm-sub">
-                  {club.id != null && club.logo ? (
-                    <TeamCrest id={club.id} name={club.name} size={24} className="tm-tr__crest" />
-                  ) : null}
-                  {/free agent/i.test(club.name) ? 'свободный агент' : `${dir === 'in' ? 'из' : 'в'} ${club.name}`}
+            <li key={`${tr.player.id}-${i}`}>
+              <PlayerTap player={tr.player} {...links} className="tm-tr">
+                <PlayerPhoto id={tr.player.id} name={tr.player.name} size={36} />
+                <div className="tm-tr__main">
+                  <div className="tm-name">{tr.player.name}</div>
+                  <div className="tm-sub">
+                    {club.id != null && club.logo ? <TeamCrest id={club.id} name="" size={20} className="tm-tr__crest" /> : null}
+                    <span className="tm-tr__club">
+                      {/free agent/i.test(club.name) ? 'свободный агент' : `${dir === 'in' ? 'из' : 'в'} ${club.name}`}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <span className={fee === 'аренда' ? 'tm-tr__fee tm-tr__fee--loan' : 'tm-tr__fee'}>{fee ?? '—'}</span>
+                <span className={fee === 'аренда' ? 'tm-tr__fee tm-tr__fee--loan' : 'tm-tr__fee'}>{fee ?? '—'}</span>
+              </PlayerTap>
             </li>
           );
         })}
