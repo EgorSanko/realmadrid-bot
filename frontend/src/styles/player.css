@@ -257,3 +257,64 @@
 .player.player--idle { cursor: none; }
 .player:focus { outline: none; }
 .player:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+/* громкость: кнопка звука + ползунок (на iPhone/iPad ползунка нет — громкость там кнопками телефона).
+   ПК — ползунок выезжает при наведении на кнопку звука (как в YouTube); телефон — виден всегда. */
+.player__vol {
+  display: flex;
+  align-items: center;
+}
+.player__vol-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 76px;
+  height: 44px;
+  margin: 0 6px 0 0;
+  background: transparent;
+  cursor: pointer;
+  --p: 100%;
+}
+.player__vol-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold) var(--p), rgba(255, 255, 255, 0.3) var(--p));
+}
+.player__vol-range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold) var(--p), rgba(255, 255, 255, 0.3) var(--p));
+}
+.player__vol-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.player__vol-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+}
+.player__vol-range:focus { outline: none; }
+.player__vol-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .player__vol-range {
+    width: 0;
+    margin: 0;
+    opacity: 0;
+    transition: width 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
+  }
+  .player__vol:hover .player__vol-range,
+  .player__vol:focus-within .player__vol-range,
+  .player--fs .player__vol-range {
+    width: 84px;
+    margin: 0 8px 0 2px;
+    opacity: 1;
+  }
+}

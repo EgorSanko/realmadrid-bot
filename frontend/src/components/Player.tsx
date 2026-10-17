@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import type Hls from 'hls.js';
 import type { ErrorData } from 'hls.js';
@@ -43,6 +44,41 @@ const isPhone = () =>
 type LockableOrientation = ScreenOrientation & { lock?: (o: string) => Promise<void>; unlock?: () => void };
 const orientation = () => (screen.orientation as LockableOrientation | undefined) ?? undefined;
 
+/** Громкость меняется программно? На iPhone/iPad volume только для чтения — там громкость кнопками телефона. */
+const canSetVolume = (() => {
+  let r: boolean | null = null;
+  return () => {
+    if (r == null) {
+      try {
+        const t = document.createElement('video');
+        t.volume = 0.5;
+        r = Math.abs(t.volume - 0.5) < 0.01;
+      } catch {
+        r = false;
+      }
+    }
+    return r;
+  };
+})();
+
+const VOL_KEY = 'rmVolume';
+function savedVolume(): number {
+  try {
+    const n = Number(localStorage.getItem(VOL_KEY));
+    if (Number.isFinite(n) && n > 0 && n <= 1) return n;
+  } catch {
+    /* хранилище недоступно */
+  }
+  return 1;
+}
+function saveVolume(n: number) {
+  try {
+    localStorage.setItem(VOL_KEY, String(n));
+  } catch {
+    /* хранилище недоступно */
+  }
+}
+
 interface Props {
   src: string;
   /** подпись для скринридера */
@@ -61,6 +97,8 @@ export function Player({ src, title }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [phase, setPhase] = useState<Phase>('loading');
   const [muted, setMuted] = useState(true);
+  const [volume, setVolume] = useState(savedVolume);
+  const volumeOk = canSetVolume();
   const [attempt, setAttempt] = useState(0);
   const [controlsOn, setControlsOn] = useState(true);
   const [fs, setFs] = useState<'off' | 'native' | 'css'>('off');
@@ -160,6 +198,7 @@ export function Player({ src, title }: Props) {
 
     video.muted = true;
     setMuted(true);
+    if (canSetVolume()) video.volume = savedVolume();
 
     if (prefersNativeHls(video)) {
       video.addEventListener('error', onNativeError);
@@ -188,7 +227,10 @@ export function Player({ src, title }: Props) {
       pause: () => setPhase((p) => (p === 'playing' || p === 'loading' ? (v.ended ? 'ended' : 'paused') : p)),
       waiting: () => setPhase((p) => (p === 'playing' ? 'loading' : p)),
       ended: () => setPhase('ended'),
-      volumechange: () => setMuted(v.muted),
+      volumechange: () => {
+        setMuted(v.muted);
+        setVolume(v.volume);
+      },
     };
     for (const [k, f] of Object.entries(on)) v.addEventListener(k, f);
     return () => {
@@ -337,14 +379,46 @@ export function Player({ src, title }: Props) {
   const toggleMute = () => {
     const v = videoRef.current!;
     v.muted = !v.muted;
-    if (!v.muted && v.volume === 0) v.volume = 1;
+    if (!v.muted && v.volume === 0) v.volume = savedVolume(); // после ползунка в ноль — прежняя громкость
     if (v.paused && phase !== 'error' && phase !== 'ended') v.play().catch(() => {});
   };
+
+  // громкость берём у самого видео: состояние React между быстрыми нажатиями ещё не обновилось
+  const currentVolume = () => {
+    const v = videoRef.current!;
+    return v.muted ? 0 : v.volume;
+  };
+  /** ползунок и стрелки ↑/↓: 0 — то же, что выключить звук; громкость запоминается между заходами */
+  const changeVolume = (n: number) => {
+    const v = videoRef.current!;
+    const x = Math.min(1, Math.max(0, Math.round(n * 100) / 100));
+    v.volume = x;
+    v.muted = x === 0;
+    if (x > 0) saveVolume(x);
+    if (x > 0 && v.paused && phase !== 'error' && phase !== 'ended') v.play().catch(() => {});
+  };
+
+  // колесо мыши над кнопкой звука/ползунком — громкость (свой слушатель: в React wheel пассивный,
+  // страницу под плеером тогда не остановить)
+  const volRef = useRef<HTMLDivElement>(null);
+  const wheelRef = useRef<(dy: number) => void>(() => {});
+  wheelRef.current = (dy) => changeVolume(currentVolume() + (dy < 0 ? 0.05 : -0.05));
+  useEffect(() => {
+    const el = volRef.current;
+    if (!el || !volumeOk) return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault();
+      wheelRef.current(e.deltaY);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [volumeOk]);
 
   // Мышь (ПК): движение показывает кнопки и курсор, клик — пауза/продолжить (как в YouTube),
   // двойной клик — во весь экран. Касание (телефон): тап показывает/прячет кнопки.
   const onSurfaceTap = (e: ReactPointerEvent) => {
-    if ((e.target as HTMLElement).closest('button')) return;
+    if ((e.target as HTMLElement).closest('button, input')) return;
     if (e.pointerType === 'mouse') {
       if (e.button !== 0) return;
       if (phase === 'playing' || phase === 'paused') togglePlay();
@@ -379,6 +453,14 @@ export function Player({ src, title }: Props) {
   const onKey = (e: ReactKeyboardEvent) => {
     if ((e.target as HTMLElement).closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
     const k = e.key.toLowerCase();
+    if ((k === 'arrowup' || k === 'arrowdown') && volumeOk) {
+      e.preventDefault();
+      changeVolume(currentVolume() + (k === 'arrowup' ? 0.1 : -0.1));
+      showControls();
+      return;
+    }
+    // стрелки влево/вправо над ползунком — его собственные
+    if ((e.target as HTMLElement).tagName === 'INPUT' && k.startsWith('arrow')) return;
     if (k === ' ' || k === 'k' || k === 'л') {
       e.preventDefault();
       togglePlay();
@@ -414,7 +496,7 @@ export function Player({ src, title }: Props) {
       <div
         className="player__stage"
         onDoubleClick={(e) => {
-          if (!(e.target as HTMLElement).closest('button')) toggleFullscreen();
+          if (!(e.target as HTMLElement).closest('button, input')) toggleFullscreen();
         }}
       >
       <svg className="player__pitch" viewBox="0 0 390 219" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
@@ -471,9 +553,25 @@ export function Player({ src, title }: Props) {
             </svg>
           )}
         </button>
-        <button type="button" onClick={toggleMute} aria-label={muted ? 'Включить звук' : 'Выключить звук'} aria-pressed={!muted}>
-          <SoundIcon muted={muted} />
-        </button>
+        <div className="player__vol" ref={volRef}>
+          <button type="button" onClick={toggleMute} aria-label={muted ? 'Включить звук' : 'Выключить звук'} aria-pressed={!muted}>
+            <SoundIcon muted={muted || volume === 0} level={volume} />
+          </button>
+          {volumeOk && (
+            <input
+              type="range"
+              className="player__vol-range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={muted ? 0 : volume}
+              style={{ '--p': `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
+              onChange={(e) => changeVolume(Number(e.target.value))}
+              aria-label="Громкость"
+              aria-valuetext={`${Math.round((muted ? 0 : volume) * 100)}%`}
+            />
+          )}
+        </div>
         <span className="player__spacer" />
         <button type="button" onClick={toggleFullscreen} aria-label={fs !== 'off' ? 'Свернуть' : 'На весь экран'}>
           {fs !== 'off' ? (
@@ -492,11 +590,17 @@ export function Player({ src, title }: Props) {
   );
 }
 
-function SoundIcon({ muted }: { muted: boolean }) {
+function SoundIcon({ muted, level = 1 }: { muted: boolean; level?: number }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
       <path d="M4 9v6h4l5 4V5L8 9z" />
-      {muted ? <path d="M16.5 9.5l5 5M21.5 9.5l-5 5" /> : <path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11" />}
+      {muted ? (
+        <path d="M16.5 9.5l5 5M21.5 9.5l-5 5" />
+      ) : level < 0.5 ? (
+        <path d="M16 9a4 4 0 010 6" />
+      ) : (
+        <path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11" />
+      )}
     </svg>
   );
 }
