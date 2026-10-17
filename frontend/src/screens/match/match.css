@@ -96,10 +96,30 @@
 .mt-top__title--teams .mt-top__tm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mt-top__title--teams .mt-top__sc { flex: none; white-space: nowrap; }
 .mt-top__title--teams .ui-img { flex: none; }
-.mt-bench { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+/* «В запасе»: фото + имя, в две колонки; длинное имя — многоточие */
+.mt-bench { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.mt-bench__cap { margin: 0; font-size: 12px; font-weight: 500; color: var(--muted); }
+.mt-bench__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; margin: 8px 0 0; padding: 0; list-style: none; }
+.mt-bench__list > li { min-width: 0; }
+.mt-bench__who { max-width: 100%; font-size: 13px; font-weight: 500; }
 .mt-out { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.7; }
-.mt-coach { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
-.mt-coach--solo { margin: 0; }
+.mt-coach { display: flex; align-items: center; gap: 10px; min-width: 0; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.mt-coach--solo { margin: 0; padding-top: 0; border-top: 0; }
+.mt-coach > .ui-photo { flex: none; }
+.mt-coach__body { display: flex; flex-direction: column; min-width: 0; }
+.mt-coach__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; }
+.mt-coach__role { font-size: 12px; color: var(--muted); }
+
+/* «О матче»: флаг страны стадиона и судьи перед значением */
+.mt-about__v { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mt-about__v > .ui-img { flex: none; border-radius: 2px; }
+/* статистика: эмблемы над колонками */
+.mt-team--crest { display: flex; align-items: center; gap: 6px; }
+.mt-team--crest.mt-team--r { justify-content: flex-end; }
+.mt-team--crest > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-team--crest > .ui-img { flex: none; }
+.mt-lu-head__team { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mt-lu-head__team > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* статистика */
 .mt-periods { margin-top: 14px; }

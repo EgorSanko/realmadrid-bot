@@ -1,0 +1,106 @@
+{
+ "venue": {
+  "name": "Estadio Bernabéu",
+  "city": "Madrid",
+  "country": "Spain",
+  "flag": "/img/flag/es.svg"
+ },
+ "referee": null,
+ "referee_country": null,
+ "form": {
+  "home": [
+   {
+    "result": "W",
+    "score": "4 - 1",
+    "kickoff": "2026-09-12T19:00:00Z",
+    "opponent": {
+     "id": 8370,
+     "name": "Rayo Vallecano"
+    }
+   },
+   {
+    "result": "W",
+    "score": "2 - 3",
+    "kickoff": "2026-09-15T19:30:00Z",
+    "opponent": {
+     "id": 10268,
+     "name": "Elche"
+    }
+   },
+   {
+    "result": "L",
+    "score": "2 - 1",
+    "kickoff": "2026-09-20T14:15:00Z",
+    "opponent": {
+     "id": 9906,
+     "name": "Atlético Madrid"
+    }
+   },
+   {
+    "result": "W",
+    "score": "1 - 0",
+    "kickoff": "2026-10-10T19:00:00Z",
+    "opponent": {
+     "id": 10205,
+     "name": "Villarreal"
+    }
+   },
+   {
+    "result": "W",
+    "score": "3 - 4",
+    "kickoff": "2026-10-14T19:00:00Z",
+    "opponent": {
+     "id": 8686,
+     "name": "Roma"
+    }
+   }
+  ],
+  "away": [
+   {
+    "result": "W",
+    "score": "1 - 0",
+    "kickoff": "2026-09-11T19:00:00Z",
+    "opponent": {
+     "id": 10267,
+     "name": "Valencia"
+    }
+   },
+   {
+    "result": "W",
+    "score": "0 - 1",
+    "kickoff": "2026-09-16T17:00:00Z",
+    "opponent": {
+     "id": 9783,
+     "name": "Deportivo A Coruña"
+    }
+   },
+   {
+    "result": "L",
+    "score": "1 - 3",
+    "kickoff": "2026-09-19T19:00:00Z",
+    "opponent": {
+     "id": 8634,
+     "name": "Barcelona"
+    }
+   },
+   {
+    "result": "L",
+    "score": "1 - 3",
+    "kickoff": "2026-10-02T18:30:00Z",
+    "opponent": {
+     "id": 10252,
+     "name": "Aston Villa"
+    }
+   },
+   {
+    "result": "D",
+    "score": "3 - 3",
+    "kickoff": "2026-10-12T19:00:00Z",
+    "opponent": {
+     "id": 8581,
+     "name": "Levante"
+    }
+   }
+  ]
+ }
+}

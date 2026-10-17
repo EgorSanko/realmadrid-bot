@@ -200,3 +200,36 @@ def test_flags_cover_all_codes():
     missing = {c for c in codes if not iso2(c)}
     assert not missing, missing
     assert iso2("POR") == "pt" and iso2("ENG") == "gb-eng" and iso2("SCO") == "gb-sct" and iso2("WAL") == "gb-wls"
+
+
+def test_images_for_venue_referee_and_form(matches):
+    """Картинки, которые источник уже отдаёт: флаг страны стадиона и судьи, id соперников в форме."""
+    fm = matches["fotmob"]
+    assert fm["venue"] == {"name": "Stadio Olimpico", "city": "Roma", "country": "Italy", "flag": "/img/flag/it.svg"}
+    assert fm["referee"] == "François Letexier"
+    assert fm["referee_country"] == {"code": "FRA", "name": "France", "flag": "/img/flag/fr.svg"}
+    # форма: соперник — та команда, что не isOurTeam; id FotMob → /img/team/{id}.png
+    first = fm["form"]["home"][0]
+    assert first["opponent"] == {"id": 8524, "name": "Atalanta"}
+    assert all(f["opponent"] and f["opponent"]["id"] for side in ("home", "away") for f in fm["form"][side])
+    assert all(f["opponent"]["id"] != 8686 for f in fm["form"]["home"])  # не сама Рома
+    assert all(f["opponent"]["id"] != 8633 for f in fm["form"]["away"])  # не сам Реал
+
+    sf = matches["sofascore"]
+    assert sf["venue"]["flag"] == "/img/flag/it.svg"
+    assert sf["referee_country"]["flag"] == "/img/flag/fr.svg"
+    es = matches["espn"]
+    assert es["venue"]["country"] == "Italy" and es["venue"]["flag"] == "/img/flag/it.svg"
+    assert all(f["opponent"] is None for f in es["form"]["home"])  # id ESPN — не FotMob, эмблемы не будет
+    ls = matches["livescore"]
+    assert ls["venue"] is None or ls["venue"]["flag"] is None
+    assert ls["referee_country"] is None
+
+
+def test_country_by_name_unknown_gives_no_flag():
+    from app.model import country_ref, venue
+    assert venue("Somewhere", "X", "Atlantis") == {"name": "Somewhere", "city": "X", "country": "Atlantis", "flag": None}
+    assert venue(None, "X", "Spain") is None
+    assert country_ref(None, None) is None
+    assert country_ref("ESP", None)["flag"] == "/img/flag/es.svg"
+    assert country_ref(None, "England")["flag"] == "/img/flag/gb-eng.svg"

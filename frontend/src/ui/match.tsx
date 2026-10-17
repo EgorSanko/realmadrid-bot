@@ -503,7 +503,16 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, cl
                 <td className="ui-table__pos" style={{ borderLeftColor: z ? z.color : 'transparent' }}>
                   {r.pos}
                 </td>
-                <td className="ui-table__team">{r.team.name}</td>
+                <td className="ui-table__team">
+                  <span className="ui-table__tm">
+                    {r.team.id != null ? (
+                      <TeamCrest id={r.team.id} name="" size={24} />
+                    ) : (
+                      <span className="ui-crest-gap" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                    )}
+                    <span className="ui-table__nm">{r.team.name}</span>
+                  </span>
+                </td>
                 <td className="ui-table__num">{r.played}</td>
                 <td className="ui-table__num">{`${r.goalsFor}-${r.goalsAgainst}`}</td>
                 <td className="ui-table__pts">{r.points}</td>

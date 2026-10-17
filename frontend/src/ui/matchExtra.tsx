@@ -160,8 +160,16 @@ export function CalendarRow({ kickoff, home, away, competition: c, note, live, h
         )}
       </div>
       <div className="ui-fx__teams">
-        <div className="ui-fx__team">{home.name}</div>
-        <div className="ui-fx__team">{away.name}</div>
+        {[home, away].map((t, i) => (
+          <div key={i} className="ui-fx__team cal-row__team">
+            {t.id != null ? (
+              <TeamCrest id={t.id} name="" size={20} />
+            ) : (
+              <span className="ui-crest-gap" style={{ width: 20, height: 20 }} aria-hidden="true" />
+            )}
+            <span className="cal-row__nm">{t.name}</span>
+          </div>
+        ))}
         {note && <div className="ui-fx__note">{note}</div>}
       </div>
       <Chip label={c.short ?? c.name} tone={c.tone} size="sm" leagueId={c.withLogo ? c.id : undefined} className="cal-row__chip" />

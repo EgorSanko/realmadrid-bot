@@ -7,7 +7,7 @@ import re
 from datetime import datetime, timezone
 
 from .. import config
-from ..model import (ROLE_BY_POS, age_on, empty_match, empty_player, event, finish_match, finish_player,
+from ..model import (country_ref, venue as venue_ref, ROLE_BY_POS, age_on, empty_match, empty_player, event, finish_match, finish_player,
                      img_flag, img_league, img_player, img_team, iso_utc, lineup_player, num, person,
                      result_for, stat_list, status)
 from .base import HttpxSource, NotFound
@@ -196,9 +196,11 @@ def normalize_match(raw: dict) -> dict:
     m["tournament"] = {"id": lid, "name": g.get("leagueName"), "round": g.get("leagueRoundName") or None,
                        "logo": img_league(lid)}
     stadium = info.get("Stadium") or {}
-    if stadium.get("name"):
-        m["venue"] = {"name": stadium.get("name"), "city": stadium.get("city")}
-    m["referee"] = (info.get("Referee") or {}).get("text") or None
+    m["venue"] = venue_ref(stadium.get("name"), stadium.get("city"), stadium.get("country"))
+    ref = info.get("Referee") or {}
+    m["referee"] = ref.get("text") or None
+    if m["referee"]:
+        m["referee_country"] = country_ref(ref.get("countryCode"), ref.get("country"))
     m["attendance"] = info.get("Attendance")
     for i, key in enumerate(("home", "away")):
         t = teams[i]
@@ -266,9 +268,19 @@ def normalize_match(raw: dict) -> dict:
     tf = mf.get("teamForm") or []
     if len(tf) == 2:
         m["form"] = {k: [{"result": f.get("resultString"), "score": f.get("score"),
-                          "kickoff": iso_utc((f.get("date") or {}).get("utcTime"))} for f in side]
+                          "kickoff": iso_utc((f.get("date") or {}).get("utcTime")),
+                          "opponent": _form_opponent(f)} for f in side]
                      for k, side in zip(("home", "away"), tf)}
     return finish_match(m, "fotmob")
+
+
+def _form_opponent(f: dict) -> dict | None:
+    """Соперник в строке формы: та из команд home/away, что не isOurTeam (id FotMob → эмблема)."""
+    for k in ("home", "away"):
+        t = f.get(k) or {}
+        if t and not t.get("isOurTeam") and (t.get("id") or t.get("name")):
+            return {"id": _int(t.get("id")), "name": t.get("name")}
+    return None
 
 
 def _int(v):
@@ -408,7 +420,7 @@ def normalize_team(raw: dict) -> dict:
     return {
         "team": {"id": config.TEAM_ID, "name": (raw.get("details") or {}).get("name") or "Real Madrid",
                  "logo": img_team(config.TEAM_ID)},
-        "venue": {"name": venue.get("name"), "city": venue.get("city")} if venue.get("name") else None,
+        "venue": venue_ref(venue.get("name"), venue.get("city"), venue.get("country")),
         "coach": coach,
         "squad": squad,
         "injuries": list(injuries.values()),

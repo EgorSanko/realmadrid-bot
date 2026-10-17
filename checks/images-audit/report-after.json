@@ -1,0 +1,306 @@
+{
+ "label": "after",
+ "dist": "../../../frontend/dist",
+ "localApi": "../local-api",
+ "screens": {
+  "home": {
+   "url": "/",
+   "images": 17,
+   "byKind": {
+    "team": 12,
+    "league": 3,
+    "news": 2
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": [
+    "home-predict",
+    "home-laliga-tile",
+    "home-form",
+    "home-last-match"
+   ]
+  },
+  "home-just-finished": {
+   "url": "/",
+   "images": 16,
+   "byKind": {
+    "team": 12,
+    "league": 2,
+    "news": 2
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": [
+    "home-next-calendar-row"
+   ]
+  },
+  "matches-tables": {
+   "url": "/matches",
+   "images": 18,
+   "byKind": {
+    "team": 18
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": [
+    "matches-table-laliga",
+    "matches-table-ucl"
+   ]
+  },
+  "matches-calendar": {
+   "url": "/matches",
+   "images": 24,
+   "byKind": {
+    "team": 16,
+    "league": 8
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  },
+  "match-finished-overview": {
+   "url": "/match/6106274",
+   "images": 46,
+   "byKind": {
+    "league": 1,
+    "team": 2,
+    "yt": 1,
+    "player": 40,
+    "flag": 2
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [
+    "/api/match/6106274"
+   ],
+   "shots": [
+    "match-timeline",
+    "match-about"
+   ]
+  },
+  "match-finished-lineups": {
+   "url": "/match/6106274/lineups",
+   "images": 28,
+   "byKind": {
+    "team": 4,
+    "player": 24
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [
+    "Trent Alexander-Arnold"
+   ],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [
+    "/api/match/6106274"
+   ],
+   "shots": [
+    "match-lineups-head",
+    "match-lineups-subs-bench",
+    "match-lineups-coach"
+   ]
+  },
+  "match-finished-stats": {
+   "url": "/match/6106274/stats",
+   "images": 12,
+   "byKind": {
+    "team": 12
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [
+    "/api/match/6106274"
+   ],
+   "shots": [
+    "match-stats-head"
+   ]
+  },
+  "match-upcoming-overview": {
+   "url": "/match/5868098",
+   "images": 28,
+   "byKind": {
+    "league": 1,
+    "team": 26,
+    "flag": 1
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [
+    "/api/match/5868098"
+   ],
+   "shots": [
+    "match-upcoming-form",
+    "match-upcoming-about",
+    "match-upcoming-h2h"
+   ]
+  },
+  "match-upcoming-lineups": {
+   "url": "/match/5868098/lineups",
+   "images": 21,
+   "byKind": {
+    "team": 4,
+    "player": 17
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [
+    "/api/match/5868098"
+   ],
+   "shots": [
+    "match-upcoming-coach"
+   ]
+  },
+  "team": {
+   "url": "/team",
+   "images": 82,
+   "byKind": {
+    "player": 45,
+    "flag": 27,
+    "team": 10
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": [
+    "team-squad-coach",
+    "team-transfers"
+   ]
+  },
+  "player-mbappe": {
+   "url": "/player/701154",
+   "images": 5,
+   "byKind": {
+    "player": 1,
+    "team": 1,
+    "flag": 1,
+    "league": 2
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  },
+  "player-mbappe-career": {
+   "url": "/player/701154",
+   "images": 10,
+   "byKind": {
+    "player": 1,
+    "team": 8,
+    "flag": 1
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  },
+  "media": {
+   "url": "/media",
+   "images": 15,
+   "byKind": {
+    "yt": 11,
+    "news": 4
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  },
+  "media-video": {
+   "url": "/media?tab=video",
+   "images": 16,
+   "byKind": {
+    "yt": 16
+   },
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  },
+  "admin": {
+   "url": "/admin",
+   "images": 0,
+   "byKind": {},
+   "broken": [],
+   "hiddenFailed": 0,
+   "hscroll": 0,
+   "truncated": [],
+   "external": [],
+   "consoleErrors": [],
+   "failedRequests": [],
+   "merged": [],
+   "shots": []
+  }
+ }
+}

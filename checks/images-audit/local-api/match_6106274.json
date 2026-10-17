@@ -1,0 +1,110 @@
+{
+ "venue": {
+  "name": "Stadio Olimpico",
+  "city": "Roma",
+  "country": "Italy",
+  "flag": "/img/flag/it.svg"
+ },
+ "referee": "François Letexier",
+ "referee_country": {
+  "code": "FRA",
+  "name": "France",
+  "flag": "/img/flag/fr.svg"
+ },
+ "form": {
+  "home": [
+   {
+    "result": "W",
+    "score": "2 - 1",
+    "kickoff": "2026-09-05T18:45:00Z",
+    "opponent": {
+     "id": 8524,
+     "name": "Atalanta"
+    }
+   },
+   {
+    "result": "D",
+    "score": "1 - 1",
+    "kickoff": "2026-09-10T16:45:00Z",
+    "opponent": {
+     "id": 8695,
+     "name": "Fenerbahçe"
+    }
+   },
+   {
+    "result": "W",
+    "score": "0 - 2",
+    "kickoff": "2026-09-14T16:30:00Z",
+    "opponent": {
+     "id": 9804,
+     "name": "Torino"
+    }
+   },
+   {
+    "result": "D",
+    "score": "2 - 2",
+    "kickoff": "2026-09-19T16:00:00Z",
+    "opponent": {
+     "id": 8636,
+     "name": "Inter"
+    }
+   },
+   {
+    "result": "D",
+    "score": "0 - 0",
+    "kickoff": "2026-10-11T10:30:00Z",
+    "opponent": {
+     "id": 10171,
+     "name": "Como"
+    }
+   }
+  ],
+  "away": [
+   {
+    "result": "W",
+    "score": "2 - 1",
+    "kickoff": "2026-09-08T19:00:00Z",
+    "opponent": {
+     "id": 8636,
+     "name": "Inter"
+    }
+   },
+   {
+    "result": "W",
+    "score": "4 - 1",
+    "kickoff": "2026-09-12T19:00:00Z",
+    "opponent": {
+     "id": 8370,
+     "name": "Rayo Vallecano"
+    }
+   },
+   {
+    "result": "W",
+    "score": "2 - 3",
+    "kickoff": "2026-09-15T19:30:00Z",
+    "opponent": {
+     "id": 10268,
+     "name": "Elche"
+    }
+   },
+   {
+    "result": "L",
+    "score": "2 - 1",
+    "kickoff": "2026-09-20T14:15:00Z",
+    "opponent": {
+     "id": 9906,
+     "name": "Atlético Madrid"
+    }
+   },
+   {
+    "result": "W",
+    "score": "1 - 0",
+    "kickoff": "2026-10-10T19:00:00Z",
+    "opponent": {
+     "id": 10205,
+     "name": "Villarreal"
+    }
+   }
+  ]
+ }
+}
