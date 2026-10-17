@@ -17,9 +17,18 @@ class ScriptedRng(random.Random):
         super().__init__(seed)
         self.keepers: list[int] = []
         self.rival: list[bool] = []
+        self.woodwork: list[bool] = []   # удар в угол мимо вратаря: True — в каркас
+        self.bar: list[bool] = []        # каркас верхнего угла: True — перекладина, False — штанга
 
     def randint(self, a, b):
         return self.keepers.pop(0) if self.keepers else super().randint(a, b)
+
+    def getrandbits(self, k):
+        if k == 10 and self.woodwork:
+            return 0 if self.woodwork.pop(0) else 1023
+        if k == 1 and self.bar:
+            return 0 if self.bar.pop(0) else 1
+        return super().getrandbits(k)
 
     def random(self):
         if self.rival:

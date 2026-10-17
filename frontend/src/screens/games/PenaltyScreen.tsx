@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GamesTabs } from '../../components/GamesTabs';
+import type { ApiHome } from '../../lib/api';
+import { useApiResource } from '../../lib/apiResource';
 import { BOT_USERNAME, inMiniApp, useAuth } from '../../lib/auth';
 import { PENALTY_LEVELS, bestFor, levelTitle, moveZone, penaltyHeadline, shareText, shotMarks } from '../../lib/games';
 import type { GameResult, PenaltyLevel, PenaltyShot, PenaltyStart } from '../../lib/games';
+import { REAL_ID, outcomeText, rivalFrom, shotOutcome } from '../../lib/penalty';
+import type { PenaltyOutcome } from '../../lib/penalty';
 import { shareLink } from '../../lib/share';
+import ballSrc from '../../assets/games/ball.webp';
+import diveSrc from '../../assets/games/courtois-dive.webp';
+import idleSrc from '../../assets/games/courtois-idle.webp';
 import { TeamCrest } from '../../ui';
 import { ErrorNote, GamesHeader, LevelPicker, WeeklyBoard } from './common';
 import { gamesFetch, haptic, useGamesMe, useLocalBest } from './kit';
@@ -26,9 +33,20 @@ type Phase =
   | { kind: 'play'; s: Series }
   | { kind: 'result'; s: Series; result: GameResult; localRecord: boolean };
 
-type Flash = { text: string; sub: string; tone: 'goal' | 'save' } | null;
+type Flash = { title: string; sub: string; rival: string; outcome: PenaltyOutcome } | null;
+type Rival = { id: number; name: string } | null;
 
-const HOLD_MS = 1000;
+/** после удара: надпись и счёт видны ещё столько, потом — следующий удар */
+const HOLD_MS = 700;
+
+/** картинки Куртуа и мяча — заранее, пока выбирают уровень (только на экране пенальти) */
+function preloadSprites() {
+  for (const src of [idleSrc, diveSrc, ballSrc]) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+  }
+}
 
 export default function PenaltyScreen() {
   const auth = useAuth();
@@ -42,9 +60,12 @@ export default function PenaltyScreen() {
   const me = useGamesMe(ver);
   const scene = useRef<SceneHandle>(null);
   const lock = useRef(false);
+  const home = useApiResource<ApiHome>('/api/home');
+  const rival = rivalFrom(home.data);
 
   useEffect(() => {
     document.title = 'Пенальти — игра «Мадридиста»';
+    preloadSprites();
   }, []);
 
   const start = useCallback(async (level: PenaltyLevel) => {
@@ -72,11 +93,23 @@ export default function PenaltyScreen() {
       setAim(zone);
       const s = phase.s;
       haptic.impact('medium');
+      scene.current?.prepare();
       try {
         const r = await gamesFetch<PenaltyShot>(`/penalty/${s.session}/shot`, { zone });
-        await scene.current?.play({ zone: r.zone, keeper: r.keeper, goal: r.goal });
-        if (r.goal) haptic.notify('success');
-        else haptic.impact('heavy');
+        const outcome = shotOutcome(r);
+        const text = outcomeText(outcome);
+        await scene.current?.play({
+          zone: r.zone,
+          keeper: r.keeper,
+          outcome,
+          onImpact: () => {
+            // сейв — тяжёлый удар, гол — «успех», каркас — жёсткий щелчок
+            if (outcome === 'goal') haptic.notify('success');
+            else if (outcome === 'save') haptic.impact('heavy');
+            else haptic.impact('rigid');
+            setFlash({ title: text.title, sub: text.sub, rival: r.rival_goal ? 'Соперник забил' : 'Соперник не забил', outcome });
+          },
+        });
         const next: Series = {
           ...s,
           me: [...s.me, r.goal],
@@ -85,11 +118,6 @@ export default function PenaltyScreen() {
           rivalGoals: r.rival,
           sudden: r.sudden_next || r.phase === 'sudden',
         };
-        setFlash({
-          text: r.goal ? 'ГОЛ!' : 'СЕЙВ!',
-          sub: r.rival_goal ? 'Соперник забил' : 'Соперник не забил',
-          tone: r.goal ? 'goal' : 'save',
-        });
         setPhase({ kind: 'play', s: next });
         await new Promise((res) => window.setTimeout(res, HOLD_MS));
         setFlash(null);
@@ -164,6 +192,7 @@ export default function PenaltyScreen() {
           authed={auth.status === 'user'}
           onAgain={() => void start(s.level)}
           onLevels={() => setPhase({ kind: 'pick' })}
+          rival={rival}
         />
         <WeeklyBoard game="penalty" ver={ver} />
       </main>
@@ -174,16 +203,17 @@ export default function PenaltyScreen() {
     <main className="gm gm--play gm--pk">
       <GamesHeader aside={`пенальти · ${levelTitle('penalty', s.level)}`} />
       <GamesTabs />
-      <Scoreboard s={s} />
+      <Scoreboard s={s} rival={rival} />
       <p className={`pk-round${s.sudden ? ' is-sudden' : ''}`} aria-live="polite">
         {s.sudden ? `Серия до промаха · удар ${round}` : `Удар ${Math.min(round, 5)} из 5`}
       </p>
       <div className="pk-wrap">
         <PenaltyScene ref={scene} aim={aim} disabled={busy} onShoot={(z) => void shoot(z)} onAim={setAim} />
         {flash && (
-          <div className={`pk-flash pk-flash--${flash.tone}`} role="status">
-            <b>{flash.text}</b>
-            <span>{flash.sub}</span>
+          <div className={`pk-flash pk-flash--${flash.outcome === 'post' || flash.outcome === 'bar' ? 'wood' : flash.outcome}`} role="status">
+            <b>{flash.title}</b>
+            <em>{flash.sub}</em>
+            <span>{flash.rival}</span>
           </div>
         )}
       </div>
@@ -198,24 +228,41 @@ export default function PenaltyScreen() {
   );
 }
 
-function Dots({ marks, label }: { marks: ReturnType<typeof shotMarks>; label: string }) {
+function Dots({ marks, label, live }: { marks: ReturnType<typeof shotMarks>; label: string; live?: boolean }) {
+  const next = marks.indexOf('pending');
+  const last = next < 0 ? marks.length - 1 : next - 1;
   return (
-    <span className="pk-dots" aria-label={label}>
+    <span className="pk-dots" role="img" aria-label={label}>
       {marks.map((m, i) => (
-        <i key={i} className={`pk-dot pk-dot--${m}`} />
+        <i
+          key={i}
+          className={`pk-dot pk-dot--${m}${live && i === next ? ' pk-dot--next' : ''}${live && i === last && m !== 'pending' ? ' pk-dot--new' : ''}`}
+        >
+          {m === 'goal' && (
+            <svg viewBox="0 0 10 10" aria-hidden="true">
+              <path d="M2 5.3 4.2 7.4 8.2 2.8" />
+            </svg>
+          )}
+          {m === 'miss' && (
+            <svg viewBox="0 0 10 10" aria-hidden="true">
+              <path d="M2.8 2.8 7.2 7.2M7.2 2.8 2.8 7.2" />
+            </svg>
+          )}
+        </i>
       ))}
     </span>
   );
 }
 
-function Scoreboard({ s }: { s: Series }) {
+function Scoreboard({ s, rival, live = true }: { s: Series; rival: Rival; live?: boolean }) {
   const n = Math.max(5, s.me.length);
+  const rivalName = rival?.name ?? 'Соперник';
   return (
     <section className="pk-board" aria-label={`Счёт серии ${s.goals}:${s.rivalGoals}`}>
       <div className="pk-board__side">
-        <TeamCrest id={8633} name="Реал Мадрид" size={28} />
+        <TeamCrest id={REAL_ID} name="Реал Мадрид" size={28} />
         <span className="pk-board__name">Реал</span>
-        <Dots marks={shotMarks(s.me, n)} label={`Наши удары: забито ${s.goals}`} />
+        <Dots marks={shotMarks(s.me, n)} label={`Наши удары: забито ${s.goals}`} live={live} />
       </div>
       <div className="pk-board__score">
         <b>{s.goals}</b>
@@ -223,15 +270,19 @@ function Scoreboard({ s }: { s: Series }) {
         <b>{s.rivalGoals}</b>
       </div>
       <div className="pk-board__side pk-board__side--rival">
-        <span className="pk-board__rival" aria-hidden="true">
-          {/* нейтральный силуэт игрока — не эмблема */}
-          <svg viewBox="0 0 40 40">
-            <circle cx="20" cy="15.5" r="7" />
-            <path d="M6 40c1.2-8.4 6.8-13 14-13s12.8 4.6 14 13z" />
-          </svg>
-        </span>
-        <span className="pk-board__name">Соперник</span>
-        <Dots marks={shotMarks(s.rival, n)} label={`Удары соперника: забито ${s.rivalGoals}`} />
+        {rival ? (
+          <TeamCrest id={rival.id} name={rival.name} size={28} className="pk-board__crest" />
+        ) : (
+          <span className="pk-board__rival" aria-hidden="true">
+            {/* нейтральный силуэт игрока — пока нет данных о сопернике */}
+            <svg viewBox="0 0 40 40">
+              <circle cx="20" cy="15.5" r="7" />
+              <path d="M6 40c1.2-8.4 6.8-13 14-13s12.8 4.6 14 13z" />
+            </svg>
+          </span>
+        )}
+        <span className="pk-board__name">{rivalName}</span>
+        <Dots marks={shotMarks(s.rival, n)} label={`Удары соперника (${rivalName}): забито ${s.rivalGoals}`} live={live} />
       </div>
     </section>
   );
@@ -245,6 +296,7 @@ function PenaltyResult({
   authed,
   onAgain,
   onLevels,
+  rival,
 }: {
   series: Series;
   result: GameResult;
@@ -253,6 +305,7 @@ function PenaltyResult({
   authed: boolean;
   onAgain: () => void;
   onLevels: () => void;
+  rival: Rival;
 }) {
   const [shareMsg, setShareMsg] = useState<string | null>(null);
   const again = useRef<HTMLButtonElement>(null);
@@ -272,7 +325,7 @@ function PenaltyResult({
         <span>:</span>
         {result.rival ?? series.rivalGoals}
       </p>
-      <Scoreboard s={series} />
+      <Scoreboard s={series} rival={rival} live={false} />
       <div className="gm-result__stats">
         <div>
           <b>{result.score}</b>

@@ -1,0 +1,309 @@
+{
+ "started": "2026-10-17T13:36:01.565Z",
+ "viewports": {
+  "390": {
+   "frames": [
+    "c-crouch",
+    "d-flight-dive3",
+    "e-save-gloves-z3",
+    "e-save-landing-z3",
+    "f-dive-z4",
+    "g-goal-net-z1",
+    "g-goal-ball-drops-z1",
+    "f-dive-z1",
+    "h-post-z6",
+    "f-dive-z6",
+    "i-swipe-flight-z5",
+    "f-dive-z2",
+    "f-dive-z5",
+    "e-save-gloves-z1",
+    "h-bar-z3"
+   ],
+   "series": {
+    "A": "Новый рекорд Пенальти · Лёгкий Победа! 3 : 2 Реал 3 : 2 Sevilla 600 очков 5 ударов 600 рекорд уровня Без входа результат сохранён только на этом устройстве. Ещё раз Поделиться Другой уровень",
+    "B": "Пенальти · Лёгкий Поражение 3 : 5 Реал 3 : 5 Sevilla 300 очков 5 ударов 600 рекорд уровня Без входа результат сохранён только на этом устройстве. Ещё раз Поделиться Другой уровень"
+   },
+   "homeAssets": [],
+   "penaltyAssets": [
+    "/assets/PenaltyScreen-D6IHGSS4.js",
+    "/assets/courtois-idle-BkWLJKWu.webp",
+    "/assets/courtois-dive-D5loUMb6.webp",
+    "/assets/ball-D-gsoCgV.webp"
+   ],
+   "fit": {
+    "inner": 844,
+    "scroll": 844,
+    "footBottom": 624,
+    "navTop": 768,
+    "stage": {
+     "w": 358,
+     "h": 286,
+     "x": 16
+    }
+   },
+   "log": {
+    "external": {},
+    "errors": [],
+    "failed": [],
+    "assets": [
+     "/assets/index-C0gX2lzO.js",
+     "/assets/jsx-runtime-DyZJNswf.js",
+     "/assets/ui-B5QXkHlB.js",
+     "/assets/tmaNav-BuOE1Eyb.js",
+     "/assets/playerNav-DWd7D5Cu.js",
+     "/assets/ui-DtNUHZXi.css",
+     "/assets/index-CyApqdx4.css",
+     "/assets/unbounded-cyrillic-700-normal-BnWDpkfm.woff2",
+     "/assets/PenaltyScreen-D6IHGSS4.js",
+     "/assets/GamesTabs-BUMRWMmB.js",
+     "/assets/GamesTabs-D95ZCUi9.css",
+     "/assets/games-Ctv1t1t8.js",
+     "/assets/games-o9mitwT-.css",
+     "/assets/share-DRJOFPI0.js",
+     "/assets/onest-cyrillic-400-normal-BTdD9fLi.woff2",
+     "/assets/onest-cyrillic-600-normal-BZYKVyuq.woff2",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp",
+     "/assets/onest-latin-400-normal-9AYXx_QC.woff2",
+     "/assets/onest-cyrillic-700-normal-3rOSeAdn.woff2",
+     "/assets/unbounded-latin-700-normal-CaoNriVp.woff2",
+     "/assets/onest-latin-700-normal-DMkYZIUB.woff2",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp",
+     "/assets/onest-latin-600-normal-DM19Lk_j.woff2",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp"
+    ]
+   },
+   "fps": [
+    {
+     "frames": 70,
+     "ms": 1150,
+     "fps": 60.9,
+     "worst_ms": 16.8,
+     "outcome": "save"
+    },
+    {
+     "frames": 72,
+     "ms": 1188,
+     "fps": 60.6,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    },
+    {
+     "frames": 64,
+     "ms": 1053,
+     "fps": 60.8,
+     "worst_ms": 16.8,
+     "outcome": "post"
+    },
+    {
+     "frames": 71,
+     "ms": 1182,
+     "fps": 60.1,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    },
+    {
+     "frames": 71,
+     "ms": 1182,
+     "fps": 60.1,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    }
+   ],
+   "fpsLog": {
+    "external": {},
+    "errors": []
+   },
+   "videoLog": {
+    "external": {},
+    "errors": []
+   },
+   "video": "shots-390.webm",
+   "reducedConfettiOn": false,
+   "reduced": [
+    {
+     "frames": 34,
+     "ms": 596,
+     "fps": 57,
+     "worst_ms": 50.1,
+     "outcome": "goal"
+    }
+   ],
+   "reducedLog": {
+    "external": {},
+    "errors": []
+   }
+  },
+  "1440": {
+   "frames": [
+    "c-crouch",
+    "d-flight-dive3",
+    "e-save-gloves-z3",
+    "e-save-landing-z3",
+    "f-dive-z4",
+    "g-goal-net-z1",
+    "g-goal-ball-drops-z1",
+    "f-dive-z1",
+    "h-post-z6",
+    "f-dive-z6",
+    "i-swipe-flight-z5",
+    "f-dive-z2",
+    "f-dive-z5",
+    "e-save-gloves-z1",
+    "h-bar-z3"
+   ],
+   "series": {
+    "A": "Новый рекорд Пенальти · Лёгкий Победа! 3 : 2 Реал 3 : 2 Sevilla 600 очков 5 ударов 600 рекорд уровня Без входа результат сохранён только на этом устройстве. Ещё раз Поделиться Другой уровень",
+    "B": "Пенальти · Лёгкий Поражение 3 : 5 Реал 3 : 5 Sevilla 300 очков 5 ударов 600 рекорд уровня Без входа результат сохранён только на этом устройстве. Ещё раз Поделиться Другой уровень"
+   },
+   "homeAssets": [],
+   "penaltyAssets": [
+    "/assets/PenaltyScreen-D6IHGSS4.js",
+    "/assets/courtois-idle-BkWLJKWu.webp",
+    "/assets/courtois-dive-D5loUMb6.webp",
+    "/assets/ball-D-gsoCgV.webp"
+   ],
+   "fit": {
+    "inner": 900,
+    "scroll": 1105,
+    "footBottom": 894,
+    "navTop": null,
+    "stage": {
+     "w": 600,
+     "h": 480,
+     "x": 420
+    }
+   },
+   "log": {
+    "external": {},
+    "errors": [],
+    "failed": [],
+    "assets": [
+     "/assets/index-C0gX2lzO.js",
+     "/assets/jsx-runtime-DyZJNswf.js",
+     "/assets/ui-B5QXkHlB.js",
+     "/assets/tmaNav-BuOE1Eyb.js",
+     "/assets/playerNav-DWd7D5Cu.js",
+     "/assets/ui-DtNUHZXi.css",
+     "/assets/index-CyApqdx4.css",
+     "/assets/PenaltyScreen-D6IHGSS4.js",
+     "/assets/GamesTabs-BUMRWMmB.js",
+     "/assets/GamesTabs-D95ZCUi9.css",
+     "/assets/games-Ctv1t1t8.js",
+     "/assets/games-o9mitwT-.css",
+     "/assets/share-DRJOFPI0.js",
+     "/assets/unbounded-cyrillic-700-normal-BnWDpkfm.woff2",
+     "/assets/onest-latin-400-normal-9AYXx_QC.woff2",
+     "/assets/onest-cyrillic-600-normal-BZYKVyuq.woff2",
+     "/assets/onest-cyrillic-400-normal-BTdD9fLi.woff2",
+     "/assets/onest-latin-600-normal-DM19Lk_j.woff2",
+     "/assets/onest-cyrillic-700-normal-3rOSeAdn.woff2",
+     "/assets/onest-latin-700-normal-DMkYZIUB.woff2",
+     "/assets/unbounded-latin-700-normal-CaoNriVp.woff2",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp",
+     "/assets/courtois-idle-BkWLJKWu.webp",
+     "/assets/courtois-dive-D5loUMb6.webp",
+     "/assets/ball-D-gsoCgV.webp"
+    ]
+   },
+   "fps": [
+    {
+     "frames": 70,
+     "ms": 1153,
+     "fps": 60.7,
+     "worst_ms": 16.8,
+     "outcome": "save"
+    },
+    {
+     "frames": 71,
+     "ms": 1182,
+     "fps": 60.1,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    },
+    {
+     "frames": 65,
+     "ms": 1066,
+     "fps": 61,
+     "worst_ms": 16.8,
+     "outcome": "post"
+    },
+    {
+     "frames": 72,
+     "ms": 1189,
+     "fps": 60.5,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    },
+    {
+     "frames": 72,
+     "ms": 1185,
+     "fps": 60.8,
+     "worst_ms": 16.8,
+     "outcome": "goal"
+    }
+   ],
+   "fpsLog": {
+    "external": {},
+    "errors": []
+   },
+   "videoLog": {
+    "external": {},
+    "errors": []
+   },
+   "video": "shots-1440.webm",
+   "reducedConfettiOn": false,
+   "reduced": [
+    {
+     "frames": 35,
+     "ms": 596,
+     "fps": 58.8,
+     "worst_ms": 33.3,
+     "outcome": "goal"
+    }
+   ],
+   "reducedLog": {
+    "external": {},
+    "errors": []
+   }
+  }
+ },
+ "haptics": {
+  "shots": [
+   {
+    "zone": 3,
+    "events": [
+     "{\"type\":\"impact\",\"impact_style\":\"medium\"}",
+     "{\"type\":\"impact\",\"impact_style\":\"heavy\"}"
+    ]
+   },
+   {
+    "zone": 1,
+    "events": [
+     "{\"type\":\"impact\",\"impact_style\":\"medium\"}",
+     "{\"type\":\"notification\",\"notification_type\":\"success\"}"
+    ]
+   },
+   {
+    "zone": 4,
+    "events": [
+     "{\"type\":\"impact\",\"impact_style\":\"medium\"}",
+     "{\"type\":\"impact\",\"impact_style\":\"rigid\"}"
+    ]
+   }
+  ],
+  "external": {},
+  "errors": []
+ },
+ "finished": "2026-10-17T13:39:36.920Z"
+}

@@ -8,6 +8,8 @@
 Пенальти. Серия из PENALTY_REGULAR ударов против соперника; ничья после пяти — удары до первого
 расхождения («до промаха»). Вратарь прыгает как в старой игре (penalty.html): в случайную зону,
 выбранную равновероятно, сейв — только если угадал зону удара. Решение принимает сервер после удара.
+Удар в угол мимо вратаря изредка (PENALTY_WOODWORK) попадает в каркас: верхний угол — в перекладину
+или штангу, нижний — в штангу. Это промах; исход (outcome: goal | save | post | bar) решает сервер.
 Уровень задаёт точность соперника (его удары сервер тоже разыгрывает) и множитель очков.
 
 Итог сохраняется только для вошедших. Таблица game_results — отдельная от прогнозов:
@@ -55,6 +57,8 @@ PENALTY_REGULAR = 5
 PENALTY_MAX_SUDDEN = 30  # страховка от бесконечной серии
 PENALTY_MIN_INTERVAL = 0.5  # между ударами (анимация дольше) — чаще только скрипт
 PENALTY_GOAL, PENALTY_WIN = 100, 300
+PENALTY_CORNERS = (1, 3, 4, 6)
+PENALTY_WOODWORK = 0.06  # доля ударов в угол мимо вратаря, что попадают в штангу/перекладину
 
 GAMES = ("quiz", "penalty")
 SESSION_TTL = 30 * 60
@@ -301,6 +305,10 @@ class GameService:
         return {"session": s.id, "level": level, "shots": PENALTY_REGULAR, "zones": PENALTY_ZONES,
                 "saved": user_id is not None}
 
+    def _woodwork(self) -> bool:
+        # getrandbits, а не random()/randrange(): в тестах random() задаёт удар соперника
+        return self.rng.getrandbits(10) < PENALTY_WOODWORK * 1024
+
     def penalty_shot(self, sid: str, zone: Any, user_id: Optional[int], rate_key: Any) -> dict[str, Any]:
         if isinstance(zone, bool) or not isinstance(zone, int) or not 1 <= zone <= PENALTY_ZONES:
             raise GameError(400, "bad_zone", f"Зона удара — число от 1 до {PENALTY_ZONES}")
@@ -314,19 +322,23 @@ class GameService:
                 raise GameError(429, "too_fast", "Слишком быстро — дождитесь удара")
             s.last_shot = now
             keeper = self.rng.randint(1, PENALTY_ZONES)       # логика старой игры: случайная зона
-            goal = keeper != zone
+            outcome = "save" if keeper == zone else "goal"
+            if outcome == "goal" and zone in PENALTY_CORNERS and self._woodwork():
+                outcome = "bar" if zone <= 3 and self.rng.getrandbits(1) == 0 else "post"
+            goal = outcome == "goal"
             rival_goal = self.rng.random() < PENALTY_LEVELS[s.level]["rival"]
             s.goals += goal
             s.rival += rival_goal
             rnd = len(s.shots) + 1
-            s.shots.append({"zone": zone, "keeper": keeper, "goal": goal, "rival_goal": rival_goal})
+            s.shots.append({"zone": zone, "keeper": keeper, "goal": goal, "outcome": outcome,
+                            "rival_goal": rival_goal})
             if rnd >= PENALTY_REGULAR + PENALTY_MAX_SUDDEN:
                 s.done = True
             elif rnd >= PENALTY_REGULAR and s.goals != s.rival:
                 s.done = True
             out = {"round": rnd, "phase": "regular" if rnd <= PENALTY_REGULAR else "sudden",
-                   "zone": zone, "keeper": keeper, "goal": goal, "rival_goal": rival_goal,
-                   "goals": s.goals, "rival": s.rival, "done": s.done,
+                   "zone": zone, "keeper": keeper, "goal": goal, "outcome": outcome,
+                   "rival_goal": rival_goal, "goals": s.goals, "rival": s.rival, "done": s.done,
                    "sudden_next": not s.done and rnd >= PENALTY_REGULAR}
             finish = s.done and s.result is None
         if finish:
