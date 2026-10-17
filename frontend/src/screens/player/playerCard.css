@@ -106,7 +106,7 @@ a.pc-rm:active { opacity: .78; }
 .pc-rm__goal { width: 8px; height: 8px; box-shadow: 0 0 0 2px rgba(212, 175, 55, .18); }
 .pc-rm__score { font-family: var(--display); font-weight: 700; font-size: 14px; white-space: nowrap; }
 .pc-rm__score--W { color: var(--gold); }
-.pc-rm__score--L { color: var(--ui-loss-ink, #E5484D); }
+.pc-rm__score--L { color: #F0716B; }
 .pc-rm__score--D, .pc-rm__score--n { color: var(--muted); }
 .pc-rm__norate { width: 34px; }
 

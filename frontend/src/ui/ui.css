@@ -136,8 +136,9 @@
 .ui-mc-past__line { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; font-weight: 600; font-size: 15px; }
 .ui-mc-past__score { font-family: var(--display); font-weight: 700; font-size: 18px; white-space: nowrap; }
 .ui-mc-past__cap .ui-league { display: inline-block; vertical-align: -3px; margin-right: 5px; }
-.ui-mc-past__line--crests { flex-wrap: nowrap; gap: 8px; }
-.ui-mc-past__tm { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ui-mc-past__line--crests { gap: 6px 8px; }
+/* эмблема + название не сжимаются: не влезло — строка переносится, как и без эмблем */
+.ui-mc-past__tm { display: flex; align-items: center; gap: 6px; flex: none; max-width: 100%; }
 .ui-mc-past__tm > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-mc-past__act { flex: none; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); color: var(--gold); font-size: 13px; font-weight: 600; }
 
@@ -224,12 +225,16 @@
 .ui-tl__name { font-size: 14px; font-weight: 600; }
 .ui-tl__sub { margin-top: 2px; font-size: 12px; color: var(--muted); }
 /* строки с фото: флекс, чтобы фото и имя стояли рядом, а длинное имя резалось многоточием */
-.ui-tl__line { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ui-tl__line { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.ui-tl__line .ui-pin { gap: 4px; }
 .ui-tl__l .ui-tl__line { justify-content: flex-end; }
 .ui-tl__line > .ui-pin { flex: 0 1 auto; }
 .ui-tl__line > .ui-ev, .ui-tl__line > .ui-tl__score { flex: none; }
-.ui-tl__line .ui-tl__score { margin: 0; }
-.ui-tl__sub.ui-tl__line { margin-top: 3px; }
+.ui-tl__line .ui-tl__score { margin: 0 0 0 2px; }
+.ui-tl__line .ui-tl__score--l { margin: 0 2px 0 0; }
+/* вторая строка (пас / ушёл · травма) переносится, а не режет имя */
+.ui-tl__sub.ui-tl__line { flex-wrap: wrap; row-gap: 2px; margin-top: 3px; }
+.ui-tl__sub.ui-tl__line > .ui-pin { flex: 0 0 auto; }
 .ui-tl__sub .ui-pin { font-weight: 500; }
 .ui-tl__pre { flex: none; }
 .ui-tl__score { margin-left: 6px; font-family: var(--display); font-weight: 700; font-size: 12px; color: var(--gold); }

@@ -146,10 +146,12 @@ function StarCard({ caption, star }: { caption: string; star: StarView }) {
   const links = usePlayerLinks();
   return (
     <div className="ui-card ui-card--flush mt-star">
-      <div className="mt-star__cap">{caption}</div>
+      <div className="mt-star__row mt-star__row--cap">
+        <span className="mt-star__cap">{caption}</span>
+        <RatingChip value={star.rating} />
+      </div>
       <div className="mt-star__row">
         <PlayerInline player={{ id: star.id, name: star.name }} size={32} className="mt-star__name" {...links} />
-        <RatingChip value={star.rating} />
       </div>
     </div>
   );

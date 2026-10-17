@@ -107,7 +107,7 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
                 {view.unavailable.map((u) => (
                   <li key={u.key} className="mt-out__row">
                     <PlayerInline player={u} size={28} {...links} className="mt-out__who" />
-                    <span className="mt-muted mt-out__why">· {u.reason}</span>
+                    <span className="mt-muted mt-out__why">{u.reason}</span>
                   </li>
                 ))}
               </ul>

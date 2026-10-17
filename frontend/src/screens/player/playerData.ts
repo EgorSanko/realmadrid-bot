@@ -211,10 +211,12 @@ export function moneyText(v: number | null | undefined): string | null {
   return `€${Math.round(v / 1e3)} тыс.`;
 }
 
-/** '2029-06-30' → «июнь 2029» (в родительном: «до июня 2029») */
+const MONTHS_NOM = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+
+/** '2029-06-30' → «июнь 2029» (подпись плитки — «Контракт до») */
 export function contractText(s: string | null | undefined): string | null {
   const v = ymd(s);
-  return v ? `до ${MONTHS_GEN[v.m - 1]} ${v.y}` : null;
+  return v ? `${MONTHS_NOM[v.m - 1]} ${v.y}` : null;
 }
 
 const HOME_NATIONS: Record<string, string> = { 'gb-eng': 'Англия', 'gb-sct': 'Шотландия', 'gb-wls': 'Уэльс', 'gb-nir': 'Северная Ирландия' };
@@ -393,7 +395,7 @@ export function shortDate(iso: string | null | undefined): string {
 export function deedsText(m: Pick<RecentMatch, 'goals' | 'assists' | 'yellow' | 'red' | 'minutes'>): string {
   const parts: string[] = [];
   if (m.goals) parts.push(m.goals === 1 ? 'гол' : `${m.goals} ${plural(m.goals, ['гол', 'гола', 'голов'])}`);
-  if (m.assists) parts.push(m.assists === 1 ? 'передача' : `${m.assists} ${plural(m.assists, ['передача', 'передачи', 'передач'])}`);
+  if (m.assists) parts.push(m.assists === 1 ? 'пас' : `${m.assists} ${plural(m.assists, ['пас', 'паса', 'пасов'])}`);
   if (m.red) parts.push('удалён');
   else if (m.yellow) parts.push('жёлтая');
   const what = parts.join(', ');

@@ -51,7 +51,7 @@ test('деньги, контракт, страна', () => {
   assert.equal(moneyText(39970483), '€40 млн');
   assert.equal(moneyText(800000), '€800 тыс.');
   assert.equal(moneyText(null), null);
-  assert.equal(contractText('2029-06-30'), 'до июня 2029');
+  assert.equal(contractText('2029-06-30'), 'июнь 2029');
   assert.equal(countryRu('gb-eng', 'England'), 'Англия');
   assert.equal(countryRu('fr', 'France'), 'Франция');
   assert.equal(countryRu(null, 'Kosovo'), 'Kosovo');
@@ -82,7 +82,7 @@ test('Mbappé: последние матчи — ссылка, счёт свое
   assert.equal(roma.score, '4 : 3'); // Реал в гостях выиграл 4:3
   assert.equal(roma.result, 'W');
   assert.equal(roma.deeds, 'гол · 90′');
-  assert.equal(deedsText({ goals: 2, assists: 1, yellow: 1, red: 0, minutes: 73 }), '2 гола, передача, жёлтая · 73′');
+  assert.equal(deedsText({ goals: 2, assists: 1, yellow: 1, red: 0, minutes: 73 }), '2 гола, пас, жёлтая · 73′');
 });
 
 test('карьера: годы, аренда, матчи', () => {

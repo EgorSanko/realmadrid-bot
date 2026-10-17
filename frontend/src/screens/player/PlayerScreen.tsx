@@ -267,7 +267,7 @@ function Facts({ p }: { p: ApiPlayer }) {
   const val = p.available.includes('value') ? moneyText(p.value_eur) : null;
   if (val) items.push({ k: 'Стоимость', v: val });
   const ct = p.available.includes('contract') ? contractText(p.contract_until) : null;
-  if (ct) items.push({ k: 'Контракт', v: ct });
+  if (ct) items.push({ k: 'Контракт до', v: ct });
   if (!items.length) return null;
   return (
     <section className="pc-facts" aria-label="Данные игрока">

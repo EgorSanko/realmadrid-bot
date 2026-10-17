@@ -58,7 +58,6 @@ class Collector:
         self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0,
                        "player": 0, "player_failed": 0}
         self.player_req: deque = deque()          # время запросов карточек игроков (лимит в минуту)
-        self.player_fail_at: dict[str, float] = {}  # id → когда все источники не дали игрока
         self.last_team = 0.0
         self.last_mapping = 0.0
         self.last_news = 0.0
@@ -494,10 +493,8 @@ class Collector:
             with self.conn:
                 store.put(self.conn, f"player:{pid}", name, p)
                 self.conn.execute("DELETE FROM snapshots WHERE key=?", (f"player_fail:{pid}",))
-            self.player_fail_at.pop(pid, None)
             return p
         self.cycles["player_failed"] += 1
-        self.player_fail_at[pid] = time.time()
         store.put(self.conn, f"player_fail:{pid}", "collector", {"errors": errors, "not_found": not_found})
         log.warning("player %s: нет данных: %s", pid, errors)
         return None
@@ -532,11 +529,17 @@ class Collector:
             if "status" not in p["available"]:
                 p["available"].append("status")
 
+    def _recent_fail(self, pid: str, now: float) -> bool:
+        """Отказ — по записи player_fail в базе (её же читает API), а не по памяти процесса:
+        иначе после ручной чистки или перезапуска API и сборщик разошлись бы."""
+        row = self.conn.execute("SELECT fetched_at FROM snapshots WHERE key=?", (f"player_fail:{pid}",)).fetchone()
+        return bool(row) and now - row[0] < config.PLAYER_FAIL_RETRY
+
     def players_due(self, now: float) -> list[str]:
         """Игроки состава, у которых снимок старше 6 ч (или его нет), кроме недавно не давшихся."""
         out = []
         for pid in self._squad_player_ids():
-            if now - self.player_fail_at.get(pid, 0) < config.PLAYER_FAIL_RETRY:
+            if self._recent_fail(pid, now):
                 continue
             row = self.conn.execute("SELECT fetched_at FROM snapshots WHERE key=?", (f"player:{pid}",)).fetchone()
             if not row or now - row[0] >= config.PLAYER_INTERVAL:
@@ -554,7 +557,7 @@ class Collector:
             snap = store.get(self.conn, f"player:{pid}")
             if snap and now - snap["fetched_at"] < self.player_ttl(pid, snap["data"]):
                 continue  # уже свежий (успели подтянуть по другой заявке)
-            if now - self.player_fail_at.get(pid, 0) < config.PLAYER_FAIL_RETRY:
+            if self._recent_fail(pid, now):
                 continue  # недавно не вышло — API уже отдаёт ошибку из player_fail
             p = await self.refresh_player(pid)
             done.append(pid)
