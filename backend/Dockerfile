@@ -16,5 +16,9 @@ COPY app ./app
 RUN useradd --system --uid 10001 app && mkdir -p /data && chown app /data
 USER app
 
+# git sha сборки для /api/health (deploy.sh: GIT_SHA=… docker compose up --build); последним слоем — кэш выше не сбивается
+ARG GIT_SHA=unknown
+ENV BUILD_SHA=$GIT_SHA
+
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]

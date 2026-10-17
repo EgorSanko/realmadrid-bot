@@ -12,6 +12,8 @@ services:
   api:
     build:
       context: ./backend
+      args:
+        GIT_SHA: ${GIT_SHA:-unknown}   # deploy.sh подставляет git rev-parse --short HEAD
     image: rm-v2-api:latest
     container_name: rm-v2-api
     restart: unless-stopped
