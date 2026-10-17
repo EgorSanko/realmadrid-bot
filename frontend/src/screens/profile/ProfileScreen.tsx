@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { shareURL } from '@tma.js/sdk-react';
 import { LoginButton } from '../../components/LoginButton';
 import { UserAvatar } from '../../components/UserAvatar';
-import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, refreshMe, signOut, useAuth } from '../../lib/auth';
+import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, signOut, useAuth } from '../../lib/auth';
 import { historyRow, isSoftUnavailable, pointsTiles } from '../../lib/profile';
 import type { League, PredictMe } from '../../lib/profile';
 import { inviteLink } from '../../lib/startParam';
@@ -106,12 +106,6 @@ export default function ProfileScreen() {
   }, []);
 
   const authed = auth.status === 'user';
-  // аватар скачивается сборщиком после входа — через несколько секунд перечитываем
-  useEffect(() => {
-    if (!authed || auth.user?.avatar) return;
-    const t = window.setTimeout(() => void refreshMe(), 6000);
-    return () => window.clearTimeout(t);
-  }, [authed, auth.user?.avatar]);
 
   return (
     <main className="pf" aria-busy={auth.status === 'loading' || undefined}>
@@ -261,7 +255,11 @@ function Profile({ link }: { link: LinkFn }) {
                     <Crest t={r.away} />
                   </span>
                   <span className="pf-pred__note">{r.note}</span>
-                  <span className={`pf-pts pf-pts--${r.tone}`}>{r.points != null ? `+${r.points}` : '·'}</span>
+                  {r.points != null ? (
+                    <span className={`pf-pts pf-pts--${r.tone}`}>+{r.points}</span>
+                  ) : (
+                    <span className="pf-pts pf-pts--none" aria-hidden="true" />
+                  )}
                 </a>
               </li>
             ))}

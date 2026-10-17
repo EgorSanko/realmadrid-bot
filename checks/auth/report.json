@@ -1,0 +1,464 @@
+{
+  "390": {
+    "a": {
+      "silent": {
+        "tma": true,
+        "buttons": 0
+      },
+      "authCalls": [
+        "POST /api/auth/telegram",
+        "GET /api/auth/me"
+      ],
+      "avatarSrc": "/img/avatar/4242.jpg?v=1792210744",
+      "view": {
+        "name": "Алексей Морозов",
+        "username": "@madridista_alex",
+        "tiles": [
+          "Очки за сезон | 8 | 2026/27",
+          "За месяц | 8 | октябрь 2026",
+          "Место | 2 | в сезоне",
+          "Точных счетов | 1 | из 3"
+        ],
+        "preds": [
+          "18 окт 3:1 Можно изменить до начала",
+          "14 окт 2:3 Итог 3:4 +3",
+          "10 окт 1:0 Итог 1:0 +5",
+          "20 сен 1:2 Итог 2:1 +0"
+        ],
+        "crests": [
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8302.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8686.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/10205.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/9906.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          }
+        ],
+        "leagues": [
+          "Пенья Бернабеу"
+        ],
+        "invite": "https://t.me/Real_Madrid_football_bot?startapp=league_MXVNAT5ENR",
+        "admin": true,
+        "logout": false,
+        "backNative": true
+      },
+      "shareEvent": [
+        "web_app_open_tg_link",
+        "{\"path_full\":\"/share/url?url=https%3A%2F%2Ft.me%2FReal_Madrid_football_bot%3Fstartapp%3Dleague_MXVNAT5ENR&text=%D0%9F%D1%80%D0%B8%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D1%8F%D0%B9%D1%81%D1%8F%20%D0%BA%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%BB%D0%B8%D0%B3%D0%B5%20%D0%BF%D1%80%D0%BE%D0%B3%D0%BD%D0%BE%D0%B7%D0%BE%D0%B2%20%C2%AB%D0%9F%D0%B5%D0%BD%D1%8C%D1%8F%20%D0%91%D0%B5%D1%80%D0%BD%D0%B0%D0%B1%D0%B5%D1%83%C2%BB%20%D0%B2%20%D0%9C%D0%B0%D0%B4%D1%80%D0%B8%D0%B4%D0%B8%D1%81%D1%82%D0%B5\"}"
+      ],
+      "tgEventsSample": [
+        "iframe_ready",
+        "web_app_set_header_color",
+        "web_app_set_background_color",
+        "web_app_set_bottom_bar_color",
+        "web_app_setup_swipe_behavior",
+        "web_app_request_safe_area",
+        "web_app_request_content_safe_area",
+        "web_app_request_viewport",
+        "web_app_expand",
+        "web_app_ready",
+        "web_app_setup_back_button",
+        "web_app_open_tg_link"
+      ],
+      "adminOk": true,
+      "adminText": "Эфир выключен  Зрители видят «Трансляция появится здесь».",
+      "cookie": {
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/",
+        "days": 30
+      },
+      "hscroll": 0,
+      "external": {},
+      "errors": [],
+      "failed": [],
+      "telegramReq": []
+    },
+    "b": {
+      "beforeClickTelegram": 0,
+      "stillNoTelegram": 0,
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "widgetAttrs": {
+        "bot": "Real_Madrid_football_bot",
+        "onauth": "__rmTelegramAuth(user)",
+        "size": "large",
+        "requestAccess": null
+      },
+      "view": {
+        "name": "Ирина Соколова",
+        "username": "@irina_rm",
+        "tiles": [
+          "Очки за сезон | 0 | 2026/27",
+          "За месяц | 0 | октябрь 2026",
+          "Место | — | нет прогнозов",
+          "Точных счетов | 0 | из 0"
+        ],
+        "emptyPreds": "Прогнозов пока нет",
+        "cta": [
+          "Сделать прогноз → /predict",
+          "К прогнозам → /predict"
+        ],
+        "admin": false
+      },
+      "afterReload": "@irina_rm",
+      "headerAvatar": 1,
+      "cookie": {
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/"
+      },
+      "cookieAfterLogout": false,
+      "meAfter": {
+        "user": null,
+        "is_admin": false
+      },
+      "hscroll": 0,
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "failed": [
+        "https://realmadridfan.ru/assets/onest-latin-600-normal-DM19Lk_j.woff2 net::ERR_ABORTED",
+        "https://realmadridfan.ru/assets/onest-latin-400-normal-9AYXx_QC.woff2 net::ERR_ABORTED"
+      ]
+    },
+    "c_abort": {
+      "mode": "abort",
+      "waitedMs": {
+        "fromClickMs": 31,
+        "fromScriptRequestMs": 18
+      },
+      "fail": {
+        "text": "Telegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход произойдёт автоматически.",
+        "open": [
+          "Открыть в Telegram → https://t.me/Real_Madrid_football_bot?startapp=profile"
+        ]
+      },
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "errorsAboutTelegram": 1,
+      "hscroll": 0
+    },
+    "c_hang": {
+      "mode": "hang",
+      "waitedMs": {
+        "fromClickMs": 8027,
+        "fromScriptRequestMs": 8018
+      },
+      "fail": {
+        "text": "Telegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход произойдёт автоматически.",
+        "open": [
+          "Открыть в Telegram → https://t.me/Real_Madrid_football_bot?startapp=profile"
+        ]
+      },
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "errorsAboutTelegram": 0,
+      "hscroll": 0
+    },
+    "d": {
+      "startParam": "league_8NGWR6QRES",
+      "joins": [
+        {
+          "status": 200,
+          "joined": true,
+          "name": "Офис · Мадрид"
+        }
+      ],
+      "view": {
+        "flash": "Вы вступили в лигу «Офис · Мадрид»",
+        "leagues": [
+          "Офис · Мадрид | 3 участника |  | https://t.me/Real_Madrid_football_bot?startapp=league_8NGWR6QRES |  | Скопировать | Поделиться"
+        ]
+      },
+      "afterHome": "https://realmadridfan.ru/",
+      "external": {},
+      "errors": [],
+      "hscroll": 0
+    },
+    "d_match": {
+      "url": "https://realmadridfan.ru/match/5868098",
+      "external": {},
+      "errors": []
+    },
+    "e": {
+      "adminStatus": "Эфир выключен\n\nЗрители видят «Трансляция появится здесь».",
+      "tokenStored": null,
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "hscroll": 0
+    }
+  },
+  "1366": {
+    "a": {
+      "silent": {
+        "tma": true,
+        "buttons": 0
+      },
+      "authCalls": [
+        "POST /api/auth/telegram",
+        "GET /api/auth/me"
+      ],
+      "avatarSrc": "/img/avatar/4242.jpg?v=1792210799",
+      "view": {
+        "name": "Алексей Морозов",
+        "username": "@madridista_alex",
+        "tiles": [
+          "Очки за сезон | 8 | 2026/27",
+          "За месяц | 8 | октябрь 2026",
+          "Место | 2 | в сезоне",
+          "Точных счетов | 1 | из 3"
+        ],
+        "preds": [
+          "18 окт 3:1 Можно изменить до начала",
+          "14 окт 2:3 Итог 3:4 +3",
+          "10 окт 1:0 Итог 1:0 +5",
+          "20 сен 1:2 Итог 2:1 +0"
+        ],
+        "crests": [
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8302.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8686.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/10205.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/9906.png",
+            "ok": true
+          },
+          {
+            "src": "/img/team/8633.png",
+            "ok": true
+          }
+        ],
+        "leagues": [
+          "Пенья Бернабеу"
+        ],
+        "invite": "https://t.me/Real_Madrid_football_bot?startapp=league_MXVNAT5ENR",
+        "admin": true,
+        "logout": false,
+        "backNative": true
+      },
+      "shareEvent": [
+        "web_app_open_tg_link",
+        "{\"path_full\":\"/share/url?url=https%3A%2F%2Ft.me%2FReal_Madrid_football_bot%3Fstartapp%3Dleague_MXVNAT5ENR&text=%D0%9F%D1%80%D0%B8%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D1%8F%D0%B9%D1%81%D1%8F%20%D0%BA%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%BB%D0%B8%D0%B3%D0%B5%20%D0%BF%D1%80%D0%BE%D0%B3%D0%BD%D0%BE%D0%B7%D0%BE%D0%B2%20%C2%AB%D0%9F%D0%B5%D0%BD%D1%8C%D1%8F%20%D0%91%D0%B5%D1%80%D0%BD%D0%B0%D0%B1%D0%B5%D1%83%C2%BB%20%D0%B2%20%D0%9C%D0%B0%D0%B4%D1%80%D0%B8%D0%B4%D0%B8%D1%81%D1%82%D0%B5\"}"
+      ],
+      "tgEventsSample": [
+        "iframe_ready",
+        "web_app_set_header_color",
+        "web_app_set_background_color",
+        "web_app_set_bottom_bar_color",
+        "web_app_setup_swipe_behavior",
+        "web_app_request_safe_area",
+        "web_app_request_content_safe_area",
+        "web_app_request_viewport",
+        "web_app_expand",
+        "web_app_ready",
+        "web_app_setup_back_button",
+        "web_app_open_tg_link"
+      ],
+      "adminOk": true,
+      "adminText": "Эфир выключен  Зрители видят «Трансляция появится здесь».",
+      "cookie": {
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/",
+        "days": 30
+      },
+      "hscroll": 0,
+      "external": {},
+      "errors": [],
+      "failed": [],
+      "telegramReq": []
+    },
+    "b": {
+      "beforeClickTelegram": 0,
+      "stillNoTelegram": 0,
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "widgetAttrs": {
+        "bot": "Real_Madrid_football_bot",
+        "onauth": "__rmTelegramAuth(user)",
+        "size": "large",
+        "requestAccess": null
+      },
+      "view": {
+        "name": "Ирина Соколова",
+        "username": "@irina_rm",
+        "tiles": [
+          "Очки за сезон | 0 | 2026/27",
+          "За месяц | 0 | октябрь 2026",
+          "Место | — | нет прогнозов",
+          "Точных счетов | 0 | из 0"
+        ],
+        "emptyPreds": "Прогнозов пока нет",
+        "cta": [
+          "Сделать прогноз → /predict",
+          "К прогнозам → /predict"
+        ],
+        "admin": false
+      },
+      "afterReload": "@irina_rm",
+      "headerAvatar": 1,
+      "cookie": {
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/"
+      },
+      "cookieAfterLogout": false,
+      "meAfter": {
+        "user": null,
+        "is_admin": false
+      },
+      "hscroll": 0,
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "failed": [
+        "https://realmadridfan.ru/api/predict/me net::ERR_ABORTED",
+        "https://realmadridfan.ru/api/predict/leagues net::ERR_ABORTED"
+      ]
+    },
+    "c_abort": {
+      "mode": "abort",
+      "waitedMs": {
+        "fromClickMs": 26,
+        "fromScriptRequestMs": 9
+      },
+      "fail": {
+        "text": "Telegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход произойдёт автоматически.",
+        "open": [
+          "Открыть в Telegram → https://t.me/Real_Madrid_football_bot?startapp=profile"
+        ]
+      },
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "errorsAboutTelegram": 1,
+      "hscroll": 0
+    },
+    "c_hang": {
+      "mode": "hang",
+      "waitedMs": {
+        "fromClickMs": 8036,
+        "fromScriptRequestMs": 8010
+      },
+      "fail": {
+        "text": "Telegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход произойдёт автоматически.",
+        "open": [
+          "Открыть в Telegram → https://t.me/Real_Madrid_football_bot?startapp=profile"
+        ]
+      },
+      "telegramReq": [
+        "https://telegram.org/js/telegram-widget.js?22"
+      ],
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "errorsAboutTelegram": 0,
+      "hscroll": 0
+    },
+    "d": {
+      "startParam": "league_8NGWR6QRES",
+      "joins": [
+        {
+          "status": 200,
+          "joined": true,
+          "name": "Офис · Мадрид"
+        }
+      ],
+      "view": {
+        "flash": "Вы вступили в лигу «Офис · Мадрид»",
+        "leagues": [
+          "Офис · Мадрид | 4 участника |  | https://t.me/Real_Madrid_football_bot?startapp=league_8NGWR6QRES |  | Скопировать | Поделиться"
+        ]
+      },
+      "afterHome": "https://realmadridfan.ru/",
+      "external": {},
+      "errors": [],
+      "hscroll": 0
+    },
+    "d_match": {
+      "url": "https://realmadridfan.ru/match/5868098",
+      "external": {},
+      "errors": []
+    },
+    "e": {
+      "adminStatus": "Эфир выключен\n\nЗрители видят «Трансляция появится здесь».",
+      "tokenStored": null,
+      "external": {
+        "telegram.org": 1
+      },
+      "errors": [],
+      "hscroll": 0
+    }
+  }
+}

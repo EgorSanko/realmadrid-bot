@@ -24,7 +24,7 @@ test('ссылка-приглашение: с сервера или собран
 const ME: PredictMe = {
   user: { id: 7, name: 'Лука М.', username: 'lm10' },
   season: { key: 'S2026', label: '2026/27', rank: 3, points: 12, exact: 2, played: 4 },
-  month: { key: 'M2026-10', label: 'октябрь', rank: 1, points: 7, exact: 1, played: 2 },
+  month: { key: 'M2026-10', label: '2026-10', rank: 1, points: 7, exact: 1, played: 2 },
   points: 12,
   rank: 3,
   exact: 2,
@@ -42,6 +42,8 @@ test('«Мои очки»: сезон, месяц, место, точные сч
       ['Точных счетов', '2'],
     ],
   );
+  assert.equal(pointsTiles(ME)[1].sub, 'октябрь 2026');
+  assert.equal(pointsTiles(ME)[0].sub, '2026/27');
   // нет данных (адаптер матчей не подключён) — нули и прочерк, не ошибка
   const empty = pointsTiles(null);
   assert.deepEqual(empty.map((t) => t.value), ['0', '0', '—', '0']);

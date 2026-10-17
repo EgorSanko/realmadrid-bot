@@ -135,6 +135,8 @@ export async function authFetch<T>(
   return body as T;
 }
 
+let avatarRetries = 0;
+
 function apply(r: AuthResponse) {
   if (r.token) token = r.token;
   set({
@@ -143,6 +145,12 @@ function apply(r: AuthResponse) {
     isAdmin: !!r.user && !!r.is_admin,
     startParam: r.start_param ?? state.startParam,
   });
+  // при первом входе аватар ещё не скачан (сборщик качает его через туннель) — дважды перечитываем
+  if (r.user && !r.user.avatar && avatarRetries < 2) {
+    const delay = avatarRetries === 0 ? 5000 : 15000;
+    avatarRetries += 1;
+    window.setTimeout(() => void refreshMe(), delay);
+  }
 }
 
 /** Отправить данные входа (initData или Login Widget). */
@@ -194,6 +202,7 @@ export async function signOut(): Promise<void> {
     /* cookie сотрётся при следующем /me; локально выходим в любом случае */
   }
   token = null;
+  avatarRetries = 0;
   set({ status: 'anon', user: null, isAdmin: false });
 }
 

@@ -115,12 +115,6 @@
   margin: 12px 16px 0;
 }
 
-@media (min-width: 720px) {
-  .pf-tiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
 .pf-tile {
   display: flex;
   flex-direction: column;
@@ -261,6 +255,10 @@
   font-size: 13px;
   background: var(--surface-2);
   color: var(--muted);
+}
+
+.pf-pts--none {
+  background: none;
 }
 
 .pf-pts--exact {
