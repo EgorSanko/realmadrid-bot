@@ -176,12 +176,14 @@ def test_collector_tick_uses_queue(client, svc, clock, env):
     import time
     from datetime import datetime, timezone
 
+    from app.bot import TelegramBot
     from app.collector import Collector
 
     clock.set(datetime.now(timezone.utc))
     login(client, sign_widget(7, photo_url=PIC))
     col = Collector.__new__(Collector)  # без HTTP-клиентов источников
     col.last_avatars, col.cycles, col._avatar_close = 0.0, {}, None
+    col.bot = TelegramBot("")  # бот не настроен — заявки tg-file не разрешаются
     col._avatar_fetch = FakeNet({PIC: ok()})
     assert asyncio.run(col.tick_avatars(time.time())) == [(7, f"ok {len(JPEG)} B .jpg")]
     assert asyncio.run(col.tick_avatars(time.time())) == []  # пауза AVATAR_INTERVAL

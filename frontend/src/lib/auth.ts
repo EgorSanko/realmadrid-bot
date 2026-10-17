@@ -5,7 +5,8 @@ import { retrieveRawInitData } from '@tma.js/sdk-react';
  * Вход через Telegram (backend/app/auth_api.py).
  *
  * Мини-апп: при старте тихо POST /api/auth/telegram {initData} — без кнопок.
- * Сайт: GET /api/auth/me по cookie rm_session; вход — Telegram Login Widget (lib/telegramWidget.ts).
+ * Сайт: GET /api/auth/me по cookie rm_session; вход — по коду через бота (lib/codeLogin.ts),
+ * запасной путь — Telegram Login Widget (lib/telegramWidget.ts).
  * Сессию сервер кладёт в HttpOnly-cookie и дублирует в ответе — значение держим только в памяти
  * и шлём заголовком `Authorization: Session …` (на случай, если cookie не работают, например
  * в Telegram Web внутри iframe). Без сессии в мини-аппе — заголовок `tma <initData>`.
@@ -30,7 +31,7 @@ export interface AuthState {
   startParam: string | null;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   user: AuthUser | null;
   is_admin: boolean;
   token?: string;
@@ -151,6 +152,12 @@ function apply(r: AuthResponse) {
     avatarRetries += 1;
     window.setTimeout(() => void refreshMe(), delay);
   }
+}
+
+/** Принять сессию, выданную сервером (вход по коду). */
+export function acceptSession(r: AuthResponse): AuthState {
+  apply(r);
+  return state;
 }
 
 /** Отправить данные входа (initData или Login Widget). */

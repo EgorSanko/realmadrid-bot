@@ -50,6 +50,12 @@ services:
     # поэтому сборщик живёт в сети хоста (портов не открывает). API остаётся в bridge.
     network_mode: host
     mem_limit: 256m
+    # BOT_TOKEN — бот входа по коду: long polling getUpdates через туннель (app/bot.py).
+    # Без токена приём апдейтов выключен; выключить на ходу — DISABLED_SOURCES=telegram_bot
+    # или строка telegram_bot в data/disabled_sources.
+    env_file:
+      - path: .env
+        required: false
     environment:
       - TZ=UTC
       - DATA_DIR=/data

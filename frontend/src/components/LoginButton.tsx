@@ -1,50 +1,63 @@
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { BOT_PROFILE_LINK, BOT_USERNAME, inMiniApp, signIn } from '../lib/auth';
+import { showToast } from '../lib/toast';
 import { openExternal } from '../lib/tmaNav';
 import { mountTelegramWidget, type WidgetUser } from '../lib/telegramWidget';
+import { CodeLogin, TG_ICON } from './CodeLogin';
 import '../styles/login.css';
 
-type Phase = 'idle' | 'loading' | 'ready' | 'sending' | 'failed';
-
-const TG_ICON = (
-  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      fill="currentColor"
-      d="M21.4 3.6 2.9 10.7c-1.3.5-1.2 1.3-.2 1.6l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.5-1.5zM9.6 14.9l-.3 3.2-1.4-4.6 10.6-6.7z"
-    />
-  </svg>
-);
+type Mode = 'idle' | 'code' | 'widget';
 
 /**
- * «Войти через Telegram» на сайте. Скрипт виджета грузится только по нажатию;
- * не загрузился за 8 с — сообщение и запасной путь «Открыть в Telegram» (там вход автоматический).
- * В мини-аппе кнопка не нужна — там вход происходит сам.
+ * «Войти через Telegram» на сайте. По нажатию — вход по коду через бота (components/CodeLogin.tsx):
+ * ничего не грузится с telegram.org, работает и там, где telegram.org не открывается.
+ * Запасной путь — ссылка «Другой способ входа»: официальный виджет Telegram, только по нажатию.
+ * `autoStart` — сразу показать код (панель входа в шапке ПК уже открыта нажатием).
+ * В мини-аппе кнопка не нужна — там вход происходит сам по initData.
  */
 export function LoginButton({ hint, compact, autoStart }: { hint?: string; compact?: boolean; autoStart?: boolean }) {
-  const [phase, setPhase] = useState<Phase>('idle');
+  const [mode, setMode] = useState<Mode>(autoStart ? 'code' : 'idle');
+
+  if (inMiniApp()) return null;
+
+  return (
+    <div className={`tg-login${compact ? ' tg-login--compact' : ''}`}>
+      {hint && mode === 'idle' && <p className="tg-login__hint">{hint}</p>}
+      {mode === 'idle' && (
+        <button type="button" className="tg-login__btn" onClick={() => setMode('code')}>
+          {TG_ICON}
+          Войти через Telegram
+        </button>
+      )}
+      {mode === 'code' && <CodeLogin onAlt={() => setMode('widget')} />}
+      {mode === 'widget' && <WidgetLogin onBack={() => setMode('code')} />}
+    </div>
+  );
+}
+
+type Phase = 'loading' | 'ready' | 'sending' | 'failed';
+
+/**
+ * Официальный Telegram Login Widget — запасной способ. Скрипт с telegram.org грузится только после
+ * нажатия «Другой способ входа»; не загрузился за 8 с — сообщение и «Открыть в Telegram».
+ */
+function WidgetLogin({ onBack }: { onBack: () => void }) {
+  const [phase, setPhase] = useState<Phase>('loading');
   const [error, setError] = useState<string | null>(null);
   const slot = useRef<HTMLDivElement>(null);
   const cancel = useRef<(() => void) | null>(null);
 
-  useEffect(() => () => cancel.current?.(), []);
-
-  // в шапке сайта кнопка уже нажата (открыла панель входа) — сразу грузим виджет
-  const startRef = useRef<() => void>(() => {});
-  useEffect(() => {
-    if (autoStart && !inMiniApp()) startRef.current();
-  }, [autoStart]);
-
-  if (inMiniApp()) return null;
-
   const start = async () => {
     if (!slot.current) return;
+    cancel.current?.();
     setError(null);
     setPhase('loading');
     const onAuth = async (u: WidgetUser) => {
       setPhase('sending');
       try {
-        await signIn(u as unknown as Record<string, unknown>);
+        const st = await signIn(u as unknown as Record<string, unknown>);
+        if (st.user) showToast(`Вы вошли как ${st.user.name}`);
         cancel.current?.();
         cancel.current = null;
       } catch (e) {
@@ -64,25 +77,32 @@ export function LoginButton({ hint, compact, autoStart }: { hint?: string; compa
     }
   };
 
-  startRef.current = () => void start();
+  const startRef = useRef(start);
+  startRef.current = start;
+  useEffect(() => {
+    void startRef.current();
+    return () => cancel.current?.();
+  }, []);
 
   const openInTelegram = (e: MouseEvent<HTMLAnchorElement>) => {
     if (openExternal(BOT_PROFILE_LINK)) e.preventDefault();
   };
 
   return (
-    <div className={`tg-login${compact ? ' tg-login--compact' : ''}`}>
-      {hint && phase === 'idle' && <p className="tg-login__hint">{hint}</p>}
-      {(phase === 'idle' || phase === 'loading') && (
-        <button type="button" className="tg-login__btn" onClick={start} disabled={phase === 'loading'} aria-busy={phase === 'loading'}>
-          {TG_ICON}
-          {phase === 'loading' ? 'Загружаем вход Telegram…' : 'Войти через Telegram'}
-        </button>
+    <>
+      {phase === 'loading' && (
+        <p className="tg-login__note" role="status">
+          Загружаем вход Telegram…
+        </p>
       )}
       {/* сюда виджет Telegram вставляет свою кнопку */}
       <div ref={slot} className="tg-login__widget" hidden={phase !== 'ready' && phase !== 'sending'} />
       {phase === 'ready' && <p className="tg-login__note">Нажмите кнопку Telegram и подтвердите вход</p>}
-      {phase === 'sending' && <p className="tg-login__note" role="status">Входим…</p>}
+      {phase === 'sending' && (
+        <p className="tg-login__note" role="status">
+          Входим…
+        </p>
+      )}
       {error && (
         <p className="tg-login__err" role="alert">
           {error}
@@ -91,23 +111,21 @@ export function LoginButton({ hint, compact, autoStart }: { hint?: string; compa
       {phase === 'failed' && (
         <div className="tg-login__fail" role="alert">
           <p className="tg-login__err">
-            Telegram не отвечает — вход через сайт сейчас недоступен. Откройте приложение в Telegram: там вход
-            произойдёт автоматически.
+            Виджет Telegram не загрузился — telegram.org сейчас недоступен. Войдите по коду или откройте приложение в
+            Telegram: там вход произойдёт автоматически.
           </p>
           <a className="tg-login__btn" href={BOT_PROFILE_LINK} target="_blank" rel="noopener noreferrer" onClick={openInTelegram}>
             {TG_ICON}
             Открыть в Telegram
           </a>
-          <button type="button" className="tg-login__retry" onClick={start}>
+          <button type="button" className="tg-login__retry" onClick={() => void start()}>
             Попробовать ещё раз
           </button>
         </div>
       )}
-      {(phase === 'ready' || phase === 'sending') && (
-        <a className="tg-login__alt" href={BOT_PROFILE_LINK} target="_blank" rel="noopener noreferrer">
-          Не получается? Открыть в Telegram
-        </a>
-      )}
-    </div>
+      <button type="button" className="tg-login__alt" onClick={onBack}>
+        Войти по коду
+      </button>
+    </>
   );
 }

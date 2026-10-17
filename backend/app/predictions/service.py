@@ -38,6 +38,8 @@ MAX_MEMBERSHIPS = 50
 PREDICT_RATE = (30, 60.0)   # не больше 30 изменений прогноза в минуту
 JOIN_RATE = (20, 60.0)      # попытки вступления по коду — против перебора
 LOGIN_RATE = (30, 60.0)     # входов с одного IP в минуту (/api/auth/telegram)
+CODE_RATE = (10, 600.0)     # кодов входа с одного IP за 10 мин (POST /api/auth/code)
+CODE_POLL_RATE = (300, 60.0)  # опросов статуса кода с одного IP в минуту (браузер — 40/мин)
 
 
 class PredictError(Exception):
@@ -126,6 +128,18 @@ def display_name(first: Optional[str], last: Optional[str], username: Optional[s
     return first or (f"@{username}" if username else "Болельщик")
 
 
+def upsert_names(c: sqlite3.Connection, uid: int, first: Optional[str], last: Optional[str],
+                 username: Optional[str], now: str) -> None:
+    """Пользователь по имени и username, photo_url не трогаем (вход по коду, бот)."""
+    c.execute(
+        """INSERT INTO users(id, first_name, last_name, username, created_at, updated_at) VALUES (?,?,?,?,?,?)
+           ON CONFLICT(id) DO UPDATE SET first_name=excluded.first_name, last_name=excluded.last_name,
+               username=excluded.username, updated_at=excluded.updated_at
+           WHERE users.first_name IS NOT excluded.first_name OR users.last_name IS NOT excluded.last_name
+              OR users.username IS NOT excluded.username""",
+        (uid, (first or "")[:128], last, username, now, now))
+
+
 class PredictionService:
     def __init__(self, provider: MatchProvider, db_path: Optional[str] = None,
                  clock: Callable[[], datetime] = utcnow, bot_username: Optional[str] = None,
@@ -137,6 +151,8 @@ class PredictionService:
         self.predict_limiter = RateLimiter(*PREDICT_RATE, clock=rate_clock)
         self.join_limiter = RateLimiter(*JOIN_RATE, clock=rate_clock)
         self.login_limiter = RateLimiter(*LOGIN_RATE, clock=rate_clock)
+        self.code_limiter = RateLimiter(*CODE_RATE, clock=rate_clock)
+        self.code_poll_limiter = RateLimiter(*CODE_POLL_RATE, clock=rate_clock)
 
     # --- инфраструктура ---
 
@@ -179,11 +195,16 @@ class PredictionService:
 
     # --- пользователи ---
 
-    def upsert_user(self, user: Any) -> int:
-        """Создаёт/обновляет пользователя по данным initData (WebAppUser или dict)."""
+    def upsert_user(self, user: Any, keep_photo: bool = False) -> int:
+        """Создаёт/обновляет пользователя по данным initData (WebAppUser или dict).
+        keep_photo — не трогать photo_url (вход по коду: ссылки на фото в данных нет)."""
         g = (lambda k: user.get(k)) if isinstance(user, dict) else (lambda k: getattr(user, k, None))
         uid = int(g("id"))
         now = iso(self.now())
+        if keep_photo:
+            with self.conn() as c:
+                upsert_names(c, uid, g("first_name"), g("last_name"), g("username"), now)
+            return uid
         with self.conn() as c:
             c.execute(
                 """INSERT INTO users(id, first_name, last_name, username, photo_url, created_at, updated_at)

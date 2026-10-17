@@ -5,6 +5,7 @@ import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { RouteMeta } from './components/RouteMeta';
 import { StartParamHandler } from './components/StartParamHandler';
+import { Toaster } from './components/Toaster';
 import { backgroundOf } from './lib/playerNav';
 import { useDesktop } from './lib/shell';
 import { SectionScreen } from './screens/SectionScreen';
@@ -165,6 +166,7 @@ function AppRoutes() {
         </Routes>
       </div>
       {desktop ? <SiteFooter /> : <BottomNav />}
+      <Toaster />
       {bg && (
         <Routes>
           <Route path="/player/:id" element={player} />

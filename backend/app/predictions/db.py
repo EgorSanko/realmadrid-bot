@@ -146,6 +146,30 @@ MIGRATIONS: list[str] = [
     CREATE INDEX game_results_week ON game_results(game, week, score DESC);
     CREATE INDEX game_results_user ON game_results(user_id, game, level, score DESC);
     """,
+    # v5 — вход на сайте по коду через бота (app/login_codes.py, app/bot.py)
+    """
+    -- заявка на вход: сайт выдал код, бот вписывает того, кто его прислал; браузер забирает сессию
+    CREATE TABLE login_codes (
+        token        TEXT PRIMARY KEY,                 -- в deep link: /start login_<token>
+        code         TEXT NOT NULL UNIQUE,             -- 6 цифр — ввести боту вручную
+        nonce_hash   TEXT NOT NULL UNIQUE,             -- SHA-256 от nonce; сам nonce — только в cookie браузера
+        ip           TEXT,
+        created_at   TEXT NOT NULL,
+        expires_at   TEXT NOT NULL,
+        user_id      INTEGER,                          -- NULL — ещё не подтверждён
+        first_name   TEXT,
+        last_name    TEXT,
+        username     TEXT,
+        confirmed_at TEXT
+    );
+    CREATE INDEX login_codes_expires ON login_codes(expires_at);
+
+    -- состояние бота: офсет getUpdates (после рестарта апдейты не теряются и не повторяются)
+    CREATE TABLE bot_state (
+        key    TEXT PRIMARY KEY,
+        value  TEXT NOT NULL
+    );
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

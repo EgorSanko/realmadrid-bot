@@ -4,6 +4,10 @@ POST /api/auth/telegram  {initData} из мини-аппа или данные L
                          → пользователь в users (та же таблица, что у прогнозов), заявка на аватар,
                            сессия: cookie rm_session (HttpOnly, Secure, SameSite=Lax, Path=/, 30 дней)
                            и то же значение в ответе (`token`) — для `Authorization: Session <token>`.
+POST /api/auth/code      → вход по коду через бота: {code, expires_at, ttl, deep_link, bot}; секретный nonce —
+                           в HttpOnly-cookie rm_login (Path=/api/auth/code, 5 мин), в ответ и в ссылку не попадает.
+GET  /api/auth/code/status → {status: pending|expired|missing} или, когда бот подтвердил, — сессия как у
+                           /api/auth/telegram (cookie + token, via="code"). Заявка при этом удаляется.
 GET  /api/auth/me        → {user|null, is_admin}
 POST /api/auth/logout    → выход: cookie стирается, сессии пользователя отзываются (session_epoch + 1).
 """
@@ -17,9 +21,10 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi.responses import JSONResponse
 
-from .auth import (SESSION_COOKIE, SESSION_TTL, InitDataError, admin_ids, issue_session, validate_init_data,
-                   validate_widget)
-from .identity import Principal, authenticate, has_credentials
+from . import login_codes
+from .auth import (SESSION_COOKIE, SESSION_TTL, InitDataError, _session_key, admin_ids, issue_session,
+                   validate_init_data, validate_widget)
+from .identity import Principal, _cross_site, authenticate, has_credentials
 from .predictions.api import get_service
 from .predictions.service import PredictionService
 
@@ -28,6 +33,9 @@ log = logging.getLogger("auth")
 router = APIRouter(prefix="/api/auth")
 
 BODY_MAX = 8192
+LOGIN_COOKIE = "rm_login"
+LOGIN_COOKIE_PATH = "/api/auth/code"
+DEFAULT_BOT = "Real_Madrid_football_bot"
 
 
 def _json(body: Any, status: int = 200) -> JSONResponse:
@@ -100,10 +108,72 @@ async def login(request: Request, svc: PredictionService = Depends(get_service))
         svc.want_avatar(uid, photo)
     except Exception:  # аватар — не повод не пустить
         log.exception("avatar queue: %s", uid)
+    return _session_response(svc, uid, via, start_param)
+
+
+def _session_response(svc: PredictionService, uid: int, via: str, start_param: Optional[str] = None,
+                      extra: Optional[dict[str, Any]] = None) -> JSONResponse:
     token, exp = issue_session(uid, svc.session_epoch(uid) or 0)
-    resp = _json({**_me_body(svc, uid), "via": via, "token": token, "start_param": start_param,
+    resp = _json({**(extra or {}), **_me_body(svc, uid), "via": via, "token": token, "start_param": start_param,
                   "expires_at": datetime.fromtimestamp(exp, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
     _set_cookie(resp, token)
+    return resp
+
+
+# ---------- вход по коду через бота ----------
+
+def _set_login_cookie(resp: JSONResponse, nonce: str) -> None:
+    resp.set_cookie(LOGIN_COOKIE, nonce, max_age=int(login_codes.CODE_TTL.total_seconds()),
+                    path=LOGIN_COOKIE_PATH, secure=_secure(), httponly=True, samesite="lax")
+
+
+def _clear_login_cookie(resp: JSONResponse) -> None:
+    resp.delete_cookie(LOGIN_COOKIE, path=LOGIN_COOKIE_PATH, secure=_secure(), httponly=True, samesite="lax")
+
+
+@router.post("/code")
+def code_issue(request: Request, svc: PredictionService = Depends(get_service)):
+    if _cross_site(request):
+        return _err(403, "cross_site", "Запрос с чужого сайта отклонён")
+    try:
+        _session_key()  # без ключа сессий вход всё равно не завершить
+    except InitDataError as e:
+        return _err(503, "not_configured", e.message)
+    if not svc.code_limiter.hit(_client_ip(request)):
+        return _err(429, "rate_limited", "Слишком много кодов входа — подождите несколько минут")
+    now = svc.now()
+    try:
+        with svc.conn() as c:
+            it = login_codes.issue(c, now, _client_ip(request), request.cookies.get(LOGIN_COOKIE))
+    except login_codes.TooMany:
+        return _err(503, "busy", "Сейчас слишком много входов — попробуйте через минуту")
+    bot = svc.bot_username() or DEFAULT_BOT
+    resp = _json({"code": it.code, "expires_at": login_codes.iso_short(it.expires_at),
+                  "ttl": int((it.expires_at - now).total_seconds()), "bot": bot,
+                  "deep_link": f"https://t.me/{bot}?start={login_codes.START_PREFIX}{it.token}"})
+    _set_login_cookie(resp, it.nonce)
+    return resp
+
+
+@router.get("/code/status")
+def code_status(request: Request, svc: PredictionService = Depends(get_service)):
+    if not svc.code_poll_limiter.hit(_client_ip(request)):
+        return _err(429, "rate_limited", "Слишком частые запросы — подождите минуту")
+    now = svc.now()
+    with svc.conn() as c:
+        st = login_codes.take(c, now, request.cookies.get(LOGIN_COOKIE))
+    if st.state == "pending":
+        return _json({"status": "pending", "expires_at": login_codes.iso_short(st.expires_at),
+                      "ttl": max(0, int((st.expires_at - now).total_seconds()))})
+    if st.state != "ok":
+        resp = _json({"status": st.state})
+        if request.cookies.get(LOGIN_COOKIE):
+            _clear_login_cookie(resp)
+        return resp
+    uid = svc.upsert_user(st.user, keep_photo=True)
+    _seen(svc, uid)
+    resp = _session_response(svc, uid, "code", extra={"status": "ok"})
+    _clear_login_cookie(resp)
     return resp
 
 

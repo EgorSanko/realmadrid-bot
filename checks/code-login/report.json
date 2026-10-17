@@ -1,0 +1,131 @@
+{
+  "started": "2026-10-17T13:02:39.805Z",
+  "viewports": {
+    "390": {
+      "deep_link": {
+        "qr": false,
+        "status": "Ждём подтверждения в Telegram… 5:00",
+        "botReply": "Вход на сайт выполнен ✅ Можно вернуться в браузер.",
+        "toast": "Вы вошли как Алексей М.",
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/me"
+          ]
+        },
+        "ok": true
+      },
+      "expired": {
+        "expiredText": "Код истёк — получите новый.Получить новый код",
+        "botReplyOld": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "renewed": true,
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "POST /api/auth/code"
+          ]
+        },
+        "ok": true
+      },
+      "digits": {
+        "copied": true,
+        "botReplyWrong": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "botReply": "Вход на сайт выполнен ✅ Можно вернуться в браузер.",
+        "toast": "Вы вошли как Мария",
+        "botReplyRepeat": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/me"
+          ]
+        },
+        "ok": true
+      }
+    },
+    "1440": {
+      "deep_link": {
+        "qr": true,
+        "status": "Ждём подтверждения в Telegram… 5:00",
+        "botReply": "Вход на сайт выполнен ✅ Можно вернуться в браузер.",
+        "toast": "Вы вошли как Алексей М.",
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/me"
+          ]
+        },
+        "ok": true
+      },
+      "expired": {
+        "expiredText": "Код истёк — получите новый.Получить новый код",
+        "botReplyOld": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "renewed": true,
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "GET /api/auth/code/status",
+            "POST /api/auth/code"
+          ]
+        },
+        "ok": true
+      },
+      "digits": {
+        "copied": true,
+        "botReplyWrong": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "botReply": "Вход на сайт выполнен ✅ Можно вернуться в браузер.",
+        "toast": "Вы вошли как Мария",
+        "botReplyRepeat": "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз.",
+        "log": {
+          "external": {},
+          "errors": [],
+          "failed": [],
+          "authRequests": [
+            "GET /api/auth/me",
+            "POST /api/auth/code",
+            "GET /api/auth/code/status",
+            "GET /api/auth/me"
+          ]
+        },
+        "ok": true
+      }
+    }
+  },
+  "summary": {
+    "external_requests": 0,
+    "console_errors": 0,
+    "failed": false
+  },
+  "finished": "2026-10-17T13:03:17.412Z"
+}

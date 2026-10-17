@@ -466,6 +466,8 @@ def health_sources() -> JSONResponse:
                       "sources": [states[n] for n in config.SOURCE_ORDER if n in states],
                       # медиа — отдельный список: в цепочку данных матча они не входят
                       "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
+                      # бот входа по коду (long polling в сборщике): breaker, офсет, счётчики без личных данных
+                      "bot": states.get("telegram_bot"),
                       "snapshots": snaps, "players": players, "articles": articles,
                       "idmap": store.map_count(conn)}, 0)
     finally:
