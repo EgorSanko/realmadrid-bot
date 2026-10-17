@@ -18,9 +18,10 @@ import { useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
-import { EmptyState, ErrorState, FormStrip, LeagueLogo, MatchCard, Skeleton, plural } from '../ui';
+import { EmptyState, ErrorState, FormStrip, LeagueLogo, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
 import { HomeDesk } from './home/HomeDesk';
+import { RecentResults } from './home/RecentResults';
 import { LatestNews } from './media/LatestNews';
 import './screens.css';
 
@@ -94,23 +95,15 @@ export default function HomeScreen() {
         <Skeleton height={86} radius={20} />
       </div>
     ) : view?.last ? (
-      <MatchCard
-        status="finished"
-        competition={view.last.competition}
-        kickoff={view.last.kickoff}
-        home={view.last.home}
-        away={view.last.away}
-        score={view.last.score}
-        caption="Прошлый матч"
-        actionLabel="Обзор"
-        crests
-        {...link(view.last.href)}
-      />
+      <RecentResults limit={3} />
     ) : view?.nextRow ? (
-      <section className="ui-card home-next" aria-label="Следующий матч">
-        <div className="home-tile__cap">Следующий матч</div>
-        <CalendarRow {...view.nextRow} highlighted={false} {...link(view.nextRow.href)} />
-      </section>
+      <>
+        <section className="ui-card home-next" aria-label="Следующий матч">
+          <div className="home-tile__cap">Следующий матч</div>
+          <CalendarRow {...view.nextRow} highlighted={false} {...link(view.nextRow.href)} />
+        </section>
+        <RecentResults limit={3} />
+      </>
     ) : null;
 
   // сайт на компьютере: две колонки и лента на всю ширину (мини-апп и телефон — как раньше, ниже)
@@ -176,7 +169,7 @@ export default function HomeScreen() {
         )
       )}
 
-      {/* 5. Прошлый матч (или следующий, если сверху итог только что сыгранного) */}
+      {/* 5. Последние 3 матча (или следующий, если сверху итог только что сыгранного) */}
       {lastBlock}
 
       {/* 6. новости — блок раздела «Медиа»; нет данных — блок не показывается */}

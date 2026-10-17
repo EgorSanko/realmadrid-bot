@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import type { ApiFixtures, ApiTables } from '../lib/api';
 import {
   COMP_TABS,
@@ -34,7 +35,11 @@ const tablesPoll = () => 5 * 60_000;
 
 export default function MatchesScreen() {
   const [tab, setTab] = useState<CompTab>('all');
-  const [view, setView] = useState<View>('calendar');
+  const [params] = useSearchParams();
+  const initialView = params.get('view');
+  const [view, setView] = useState<View>(
+    initialView === 'results' || initialView === 'tables' ? initialView : 'calendar',
+  );
   const [allUpcoming, setAllUpcoming] = useState(false);
   const [allResults, setAllResults] = useState(false);
   const fx = usePoll<ApiFixtures>('/api/fixtures', fixturesPoll);

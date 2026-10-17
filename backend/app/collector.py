@@ -39,6 +39,8 @@ from .model import compute_available, iso_utc, name_key, same_person, same_team,
 from .sources import article, espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
+BACKFILL_EVERY = 4.0  # секунд между докачкой старых матчей
+
 log = logging.getLogger("collector")
 
 SOFA_NEXT_PAGES = 5   # страниц team/…/events/next за раз — с запасом (сезон помещается в 2)
@@ -970,6 +972,30 @@ class Collector:
                 out.append(fid)
         return list(dict.fromkeys(out))
 
+    def backfill_ids(self, now: float) -> list[str]:
+        """Матчи без снимка: все сыгранные в сезоне (свежие первыми) и 3 ближайших."""
+        fx = [f for f in self._fixtures() if isinstance(f.get("id"), int) and f.get("kickoff")]
+        done = [f for f in fx if f["status"]["finished"]][::-1]
+        upcoming = [f for f in fx if not f["status"]["finished"]
+                    and f["status"]["state"] not in ("cancelled", "postponed")][:3]
+        return [str(f["id"]) for f in (*done, *upcoming) if not store.get(self.conn, f"match:{f['id']}")]
+
+    async def tick_backfill(self, now: float) -> str | None:
+        """Один матч за раз, не чаще раза в BACKFILL_EVERY секунд — бережно к источникам."""
+        if now < getattr(self, "_backfill_due", 0.0):
+            return None
+        self._backfill_due = now + BACKFILL_EVERY
+        ids = self.backfill_ids(now)
+        if not ids:
+            self._backfill_due = now + 600  # всё собрано — проверим снова через 10 мин
+            return None
+        fid = ids[0]
+        m = await self.refresh_match(fid)
+        log.info("backfill %s → %s (осталось %d)", fid, m and m["source"], len(ids) - 1)
+        if not m:
+            self._backfill_due = now + 120  # источник не ответил — не долбим
+        return fid
+
     def last_next(self, now: float) -> list[str]:
         fx = [f for f in self._fixtures() if isinstance(f.get("id"), int) and f.get("kickoff")]
         done = [f for f in fx if f["status"]["finished"]]
@@ -1000,6 +1026,12 @@ class Collector:
         while not stop.is_set():
             now = time.time()
             try:
+                # человек открыл матч, которого нет в снимках, и ждёт — это первым делом в такте,
+                # до долгих обновлений команды/новостей/игроков
+                for fid in store.take_demand(self.conn, 2):
+                    if not store.get(self.conn, f"match:{fid}"):
+                        m = await self.refresh_match(fid)
+                        log.info("demand %s → %s", fid, m and m["source"])
                 if now - self.last_team >= config.TEAM_INTERVAL:
                     before = self._results_sig()
                     log.info("team: %s", await self.refresh_team())
@@ -1029,10 +1061,9 @@ class Collector:
                         self.match_due[fid] = now + config.IDLE_MATCH_INTERVAL
                         m = await self.refresh_match(fid)
                         log.info("idle %s → %s", fid, m and m["source"])
-                for fid in store.take_demand(self.conn, 1):
-                    if not store.get(self.conn, f"match:{fid}"):
-                        m = await self.refresh_match(fid)
-                        log.info("demand %s → %s", fid, m and m["source"])
+                # заранее собрать все сыгранные матчи сезона и 3 ближайших — открываются мгновенно
+                if not win:
+                    await self.tick_backfill(now)
                 # карточки игроков: заявки — всегда, плановое обновление состава — вне окна матча
                 await self.tick_players(now, squad=not win)
                 # тексты статей по заявкам API (человек ждёт) — и в окне матча, с лимитом в минуту
