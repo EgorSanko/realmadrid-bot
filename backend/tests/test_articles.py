@@ -111,6 +111,7 @@ def test_sportsru_blog_subtitles_photos_no_promo():
     a = extract("sportsru_blog")
     assert a["title"].startswith("Вундеркинд из «МЮ»") and a["author"]
     assert a["published"] == "2026-10-15T16:40:00Z"                  # блог: дата из data-test="published-date"
+    assert a["hero_in_text"] and a["html"].splitlines()[1].startswith("<figure>")  # фото — в тексте, не дублируем
     assert a["html"].count("<h2>") == 4
     assert a["images"] == 5 and a["html"].count('src="/img/news/sportsru-photo/preset/') == 5
     assert "sprts.cc" not in a["html"] and "dumpster" not in a["html"]  # промо-картинка со ссылкой — убрана

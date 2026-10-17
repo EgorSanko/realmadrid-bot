@@ -284,6 +284,8 @@ def _sportsru(doc, url: str) -> dict:
         "lead": lead, "blocks": blocks, "images": ctx.images,
         "image": _hero(_meta(doc, "og:image"), url), "image_caption": None,
         "author": author, "published": published, "origin": origin,
+        # блоги Sports.ru начинаются с того же фото, что и og:image (в другом размере) — второй раз не показываем
+        "hero_in_text": any(b.startswith("<figure") for b in blocks[:2]),
     }
 
 
@@ -376,6 +378,7 @@ def extract(site: str, url: str, page: bytes | str) -> dict:
         "words": len((lead or "").split()) + len(text.split()),
         "images": len(a["images"]),
         "parser": site,
+        "hero_in_text": bool(a.get("hero_in_text")),
     }
 
 

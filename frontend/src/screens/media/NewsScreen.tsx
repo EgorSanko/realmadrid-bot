@@ -132,7 +132,8 @@ function Article({
   pending: boolean;
 }) {
   const head = data ?? (pre ? { ...pre, words: null } : null);
-  const image = data?.image ?? pre?.image ?? null;
+  // у статьи своё решение о главной картинке (фото может быть первым в тексте) — превью из списка только до загрузки
+  const image = data ? data.image : (pre?.image ?? null);
   return (
     <article className="nr-art" aria-busy={pending || undefined}>
       {image && <Hero key={image} src={image} caption={data?.image_caption} />}

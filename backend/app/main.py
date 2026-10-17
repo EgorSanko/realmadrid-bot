@@ -334,7 +334,7 @@ def news_item(aid: str) -> JSONResponse:
             known.pop(base["id"], None)
             body.update({k: d.get(k) for k in _ARTICLE_FIELDS})
             body["html"] = article.link_internal(d.get("html") or "", known)
-            body["image"] = d.get("image") or body["image"]
+            body["image"] = None if d.get("hero_in_text") else (d.get("image") or body["image"])
             body["title"] = body["title"] or d.get("title")
             avail = ["text"] + (["image"] if body["image"] else [])
             return _resp({**body, "full": True, "pending": False, "available": avail,

@@ -275,7 +275,8 @@ class Collector:
         data = {**a, "aid": aid, "id": item["id"], "url": item["url"], "site": item["site"],
                 "source": item["source"], "title": item.get("title") or a["title"],
                 "published": item.get("published") or a["published"],
-                "summary": item.get("summary") or "", "image": a["image"] or item.get("image")}
+                "summary": item.get("summary") or "",
+                "image": None if a["hero_in_text"] else (a["image"] or item.get("image"))}
         with self.conn:
             store.put(self.conn, f"article:{aid}", src.name, data)
             self.conn.execute("DELETE FROM snapshots WHERE key=?", (f"article_fail:{aid}",))
