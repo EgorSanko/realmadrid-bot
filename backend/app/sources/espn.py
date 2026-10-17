@@ -3,7 +3,7 @@
 import re
 
 from .. import config
-from ..model import (ctx_team, empty_match, event, finish_match, img_league, img_player, img_team, iso_utc,
+from ..model import (country_ref, venue as venue_ref, ctx_team, empty_match, event, finish_match, img_league, img_player, img_team, iso_utc,
                      lineup_player, person, resolve_player, result_for, stat_list, status)
 from .base import HttpxSource
 
@@ -93,8 +93,7 @@ def normalize_match(raw: dict, ctx: dict | None = None) -> dict:
                        "round": None, "logo": img_league(lid)}
     gi = raw.get("gameInfo") or {}
     v = gi.get("venue") or {}
-    if v.get("fullName"):
-        m["venue"] = {"name": v.get("fullName"), "city": (v.get("address") or {}).get("city")}
+    m["venue"] = venue_ref(v.get("fullName"), (v.get("address") or {}).get("city"), (v.get("address") or {}).get("country"))
     m["attendance"] = gi.get("attendance")
     ref = next((o for o in gi.get("officials") or [] if "referee" in str((o.get("position") or {}).get("name", "")).lower()
                 or o.get("order") == 1), None)
@@ -194,7 +193,9 @@ def normalize_match(raw: dict, ctx: dict | None = None) -> dict:
     for t in raw.get("lastFiveGames") or []:
         key = side_of.get(str((t.get("team") or {}).get("id")))
         if key:
-            form[key] = [{"result": e.get("gameResult"), "score": e.get("score"), "kickoff": iso_utc(e.get("gameDate"))}
+            # id соперника у ESPN — не FotMob: эмблему по нему не получить
+            form[key] = [{"result": e.get("gameResult"), "score": e.get("score"), "kickoff": iso_utc(e.get("gameDate")),
+                          "opponent": None}
                          for e in t.get("events") or []]
     if len(form) == 2:
         m["form"] = form

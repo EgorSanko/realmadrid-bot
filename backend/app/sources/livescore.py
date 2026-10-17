@@ -11,7 +11,7 @@ LiveScore, на реальных данных не проверены.
 import re
 
 from .. import config
-from ..model import (_LINE_X, empty_match, event, finish_match, img_league, img_team, iso_utc,
+from ..model import (country_ref, venue as venue_ref, _LINE_X, empty_match, event, finish_match, img_league, img_team, iso_utc,
                      lineup_player, person, resolve_player, stat_list, status)
 from .base import HttpxSource
 
@@ -98,7 +98,7 @@ def normalize_match(b: dict, ctx: dict | None = None) -> dict:
                        "logo": img_league(lid)}
     v = sb.get("Venue") or {}
     if v.get("Vnm"):
-        m["venue"] = {"name": v.get("Vnm"), "city": v.get("Vcy")}
+        m["venue"] = venue_ref(v.get("Vnm"), v.get("Vcy"))
         m["attendance"] = v.get("Vsp")
     started = m["status"]["state"] not in ("scheduled", "postponed", "cancelled")
     for key, n, fm_team in (("home", "1", ids["home"]), ("away", "2", ids["away"])):

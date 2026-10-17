@@ -95,6 +95,47 @@ def iso2(code) -> str | None:
     return _A3.get(c.upper())
 
 
+# Названия стран по-английски (FotMob, ESPN отдают у стадиона только название) → ISO alpha-2.
+# Только страны, где реально играют «Реал» и его соперники: УЕФА, КЧМ, Суперкубок Испании.
+_COUNTRY_NAME = {
+    "spain": "es", "england": "gb-eng", "scotland": "gb-sct", "wales": "gb-wls", "northern ireland": "gb-nir",
+    "italy": "it", "germany": "de", "france": "fr", "portugal": "pt", "netherlands": "nl", "belgium": "be",
+    "austria": "at", "switzerland": "ch", "turkey": "tr", "türkiye": "tr", "greece": "gr", "croatia": "hr",
+    "serbia": "rs", "czech republic": "cz", "czechia": "cz", "slovakia": "sk", "poland": "pl",
+    "hungary": "hu", "romania": "ro", "bulgaria": "bg", "ukraine": "ua", "russia": "ru", "denmark": "dk",
+    "sweden": "se", "norway": "no", "finland": "fi", "iceland": "is", "ireland": "ie",
+    "republic of ireland": "ie", "slovenia": "si", "bosnia and herzegovina": "ba", "montenegro": "me",
+    "north macedonia": "mk", "albania": "al", "kosovo": "xk", "moldova": "md", "belarus": "by",
+    "lithuania": "lt", "latvia": "lv", "estonia": "ee", "cyprus": "cy", "malta": "mt", "luxembourg": "lu",
+    "israel": "il", "kazakhstan": "kz", "azerbaijan": "az", "georgia": "ge", "armenia": "am",
+    "andorra": "ad", "gibraltar": "gi", "faroe islands": "fo", "san marino": "sm", "liechtenstein": "li",
+    "monaco": "mc", "usa": "us", "united states": "us", "saudi arabia": "sa", "qatar": "qa",
+    "united arab emirates": "ae", "morocco": "ma", "mexico": "mx", "brazil": "br", "argentina": "ar",
+}
+
+
+def iso2_by_name(name) -> str | None:
+    if not name or not isinstance(name, str):
+        return None
+    return _COUNTRY_NAME.get(name.strip().lower())
+
+
+def country_ref(code=None, name=None) -> dict | None:
+    """{code, name, flag} — как у игрока; без кода и названия — None."""
+    if not code and not name:
+        return None
+    iso = iso2(code) or iso2_by_name(name)
+    return {"code": code or None, "name": name or None, "flag": f"/img/flag/{iso}.svg" if iso else None}
+
+
+def venue(name, city=None, country=None, code=None) -> dict | None:
+    """Стадион: {name, city, country, flag}; flag — /img/flag/{iso2}.svg, если страну удалось узнать."""
+    if not name:
+        return None
+    c = country_ref(code, country)
+    return {"name": name, "city": city or None, "country": (c or {}).get("name"), "flag": (c or {}).get("flag")}
+
+
 # ---------- время и статусы ----------
 
 
@@ -257,8 +298,9 @@ def empty_match() -> dict:
         "kickoff": None,
         "status": status("scheduled"),
         "tournament": {"id": None, "name": None, "round": None, "logo": None},
-        "venue": None,      # {"name", "city"}
+        "venue": None,      # {"name", "city", "country", "flag"}
         "referee": None,
+        "referee_country": None,  # {"code", "name", "flag"}
         "attendance": None,
         "home": dict(side),
         "away": dict(side),
@@ -270,7 +312,7 @@ def empty_match() -> dict:
         "potm": None,
         "highlights": None,
         "h2h": None,
-        "form": None,       # {"home": ["W",...], "away": [...]}
+        "form": None,       # {"home": [{result, score, kickoff, opponent: {id, name} | None}], "away": [...]}
     }
 
 

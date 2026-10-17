@@ -11,7 +11,7 @@ from datetime import datetime
 from curl_cffi.requests import AsyncSession
 
 from .. import config
-from ..model import (ROLE_BY_POS, age_on, ctx_team, empty_match, empty_player, event, finish_match,
+from ..model import (country_ref, venue as venue_ref, ROLE_BY_POS, age_on, ctx_team, empty_match, empty_player, event, finish_match,
                      finish_player, formation_layout, img_flag, img_league, img_player, img_team, iso_utc,
                      lineup_player, person, resolve_player, result_for, stat_list, status)
 from .base import NotFound, Source
@@ -182,9 +182,13 @@ def normalize_match(b: dict, ctx: dict | None = None, now: float | None = None) 
                        "round": str((ev.get("roundInfo") or {}).get("round") or "") or None, "logo": img_league(lid)}
     v = ev.get("venue") or {}
     vname = v.get("name") or (v.get("stadium") or {}).get("name")
-    if vname:
-        m["venue"] = {"name": vname, "city": (v.get("city") or {}).get("name")}
-    m["referee"] = (ev.get("referee") or {}).get("name")
+    vc = v.get("country") or (v.get("city") or {}).get("country") or {}
+    m["venue"] = venue_ref(vname, (v.get("city") or {}).get("name"), vc.get("name"), vc.get("alpha2"))
+    ref = ev.get("referee") or {}
+    m["referee"] = ref.get("name")
+    if m["referee"]:
+        rc = ref.get("country") or {}
+        m["referee_country"] = country_ref(rc.get("alpha2"), rc.get("name"))
     m["attendance"] = ev.get("attendance")
     started = m["status"]["state"] not in ("scheduled", "postponed", "cancelled")
     for key in ("home", "away"):
