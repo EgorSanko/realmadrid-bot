@@ -4,6 +4,7 @@
 Если все источники упали, сборщик снимок не трогает — здесь отдаётся последний удачный
 с его возрастом и кодом 200.
 """
+import os
 import re
 import time
 from datetime import datetime, timezone
@@ -19,6 +20,9 @@ from .sources import article, media
 from .stream import router as stream_router
 
 VERSION = "0.2.0"
+# git sha сборки: deploy.sh передаёт GIT_SHA в docker compose build → ARG → ENV BUILD_SHA
+BUILD_SHA = os.environ.get("BUILD_SHA") or None
+HEARTBEAT_OK_S = 300  # сборщик пишет сердцебиение раз в 5 с; старше 5 мин — он стоит (watchdog перезапустит)
 
 app = FastAPI(title="Мадридиста API", version=VERSION, docs_url=None, redoc_url=None, openapi_url=None)
 app.include_router(stream_router)
@@ -60,9 +64,45 @@ def _no_data(what: str) -> JSONResponse:
     return _resp({"error": "no_data", "detail": f"{what}: сборщик ещё не получил данные", "available": []}, 0, 503)
 
 
+def _heartbeat_age() -> float | None:
+    try:
+        with open(config.HEARTBEAT_FILE) as f:
+            return round(time.time() - float(f.read().strip()), 1)
+    except (OSError, ValueError):
+        return None
+
+
+_COUNTS: dict = {"at": 0.0, "value": None}
+COUNTS_TTL = 60  # health дёргают healthcheck (30 с) и мониторинг — базу прогнозов считаем не чаще раза в минуту
+
+
+def _counts() -> dict | None:
+    """Сколько пользователей и прогнозов — только числа, без персональных данных."""
+    now = time.monotonic()
+    if _COUNTS["value"] is not None and now - _COUNTS["at"] < COUNTS_TTL:
+        return _COUNTS["value"]
+    svc = predict_api._service
+    if svc is None:
+        return None
+    try:
+        with svc.conn() as c:
+            value = {"users": c.execute("SELECT COUNT(*) FROM users").fetchone()[0],
+                     "predictions": c.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]}
+    except Exception:  # health не должен падать из-за базы прогнозов
+        return None
+    _COUNTS.update(at=now, value=value)
+    return value
+
+
 @app.api_route("/api/health", methods=["GET", "HEAD"])
-async def health() -> JSONResponse:
-    return _resp({"status": "ok", "version": VERSION, "time": datetime.now(timezone.utc).isoformat()}, 0)
+def health() -> JSONResponse:  # sync: чтение базы — в пуле потоков, не в цикле событий
+    """Живость API (всегда 200, пока процесс отвечает) + сведения для мониторинга: сборка,
+    возраст сердцебиения сборщика, число пользователей и прогнозов."""
+    hb = _heartbeat_age()
+    return _resp({"status": "ok", "version": VERSION, "build": BUILD_SHA,
+                  "time": datetime.now(timezone.utc).isoformat(),
+                  "collector": {"heartbeat_age_s": hb, "ok": hb is not None and hb < HEARTBEAT_OK_S},
+                  "counts": _counts()}, 0)
 
 
 # ---------- главная ----------
@@ -324,7 +364,7 @@ def news_item(aid: str) -> JSONResponse:
                 "site": base.get("site"), "url": base.get("url"), "published": base.get("published"),
                 "image": base.get("image"), "summary": base.get("summary") or "",
                 "more": _more_news(items, aid)}
-        if art:
+        if art and not art["data"].get("text_removed"):
             d = art["data"]
             known = {}
             for i in items:
@@ -340,6 +380,11 @@ def news_item(aid: str) -> JSONResponse:
             return _resp({**body, "full": True, "pending": False, "available": avail,
                           "updated_at": _iso(art["fetched_at"])}, 300)
         partial = {**{k: None for k in _ARTICLE_FIELDS}, "html": None, "full": False}
+        if art:  # текст удалён суточной очисткой (старше ARTICLE_TEXT_TTL_DAYS) — заново не качаем
+            avail = ["summary"] if body["summary"] else []
+            return _resp({**body, **partial, "author": art["data"].get("author"), "origin": art["data"].get("origin"),
+                          "pending": False, "reason": "expired", "available": avail,
+                          "updated_at": _iso(art["fetched_at"])}, 300)
         fail = store.get(conn, f"article_fail:{aid}")
         now = time.time()
         if fail and (fail["data"].get("tries", 0) >= config.ARTICLE_MAX_TRIES

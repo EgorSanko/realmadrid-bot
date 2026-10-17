@@ -14,7 +14,10 @@ import MatchesScreen from './screens/MatchesScreen';
 
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
-const UiKitPage = lazy(() => import('./dev/UiKitPage'));
+// витрина компонентов /dev/ui — только в dev-сервере или при сборке с VITE_UIKIT=1:
+// в обычной прод-сборке условие — константа false, маршрута и чанка UiKitPage в dist нет
+const UiKitPage =
+  import.meta.env.DEV || import.meta.env.VITE_UIKIT === '1' ? lazy(() => import('./dev/UiKitPage')) : null;
 // экран матча, «Команда», «Медиа» и карточка игрока — свои ленивые чанки
 const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
 const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
@@ -127,15 +130,17 @@ function AppRoutes() {
           <Route path="/player/:id" element={player} />
           <Route path="/news/:id" element={newsReader} />
           <Route path="/video/:id" element={videoPlayer} />
-          {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк */}
-          <Route
-            path="/dev/ui"
-            element={
-              <Suspense fallback={null}>
-                <UiKitPage />
-              </Suspense>
-            }
-          />
+          {/* скрытая витрина компонентов, не в меню; отдельный ленивый чанк, в прод-сборку не входит */}
+          {UiKitPage && (
+            <Route
+              path="/dev/ui"
+              element={
+                <Suspense fallback={null}>
+                  <UiKitPage />
+                </Suspense>
+              }
+            />
+          )}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

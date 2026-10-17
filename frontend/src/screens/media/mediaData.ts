@@ -142,7 +142,7 @@ export interface ArticleData {
   words: number | null;
   full: boolean;
   pending: boolean;
-  reason?: 'no_text' | 'unavailable' | 'busy';
+  reason?: 'no_text' | 'unavailable' | 'busy' | 'expired'; // expired — текст старше 90 дней удалён
   available: string[];
   more: NewsBrief[];
 }

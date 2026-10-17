@@ -125,6 +125,11 @@ MIGRATIONS: list[str] = [
     );
     CREATE INDEX avatar_queue_next ON avatar_queue(next_at);
     """,
+    # v3 — когда пользователь был в последний раз (вход, /me; пишется не чаще раза в сутки).
+    # По нему сборщик удаляет аватары тех, кого нет больше AVATAR_TTL_DAYS
+    """
+    ALTER TABLE users ADD COLUMN seen_at TEXT;
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

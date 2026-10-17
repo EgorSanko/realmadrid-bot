@@ -12,6 +12,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
   python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
   python -m app.collector once settle           # начислить очки прогнозов за сыгранные матчи
+  python -m app.collector once cleanup          # суточная очистка (старые тексты статей, аватары, чужие игроки)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -30,15 +31,17 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, config, store
+from . import avatars, cleanup, config, store
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
-from .model import iso_utc, name_key, same_person, same_team, ts
+from .model import compute_available, iso_utc, name_key, same_person, same_team, ts
 from .sources import article, espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
 log = logging.getLogger("collector")
+
+SOFA_NEXT_PAGES = 5   # страниц team/…/events/next за раз — с запасом (сезон помещается в 2)
 
 
 def _ymd(iso: str, sep: str = "") -> str:
@@ -70,6 +73,7 @@ class Collector:
         self.last_news = 0.0
         self.last_videos = 0.0
         self.last_avatars = 0.0
+        self.last_cleanup = 0.0
         self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
         self._avatar_close = None
         self._avatar_task: asyncio.Task | None = None
@@ -116,6 +120,31 @@ class Collector:
         finally:
             conn.close()
         return done
+
+    # ================= суточная очистка =================
+
+    def tick_cleanup(self, now: float, force: bool = False) -> dict | None:
+        """Раз в CLEANUP_INTERVAL: тексты статей старше 90 дн., аватары тех, кого нет 180 дн.,
+        карточки чужих игроков старше 30 дн. (подробности — app/cleanup.py). Не в окне матча."""
+        if not force and now - self.last_cleanup < config.CLEANUP_INTERVAL:
+            return None
+        self.last_cleanup = now
+        try:
+            pconn = predictions_db.connect()
+        except Exception:
+            log.exception("cleanup: predictions.db недоступна — аватары пропускаю")
+            pconn = None
+        try:
+            res = cleanup.run(self.conn, pconn, now)
+        except Exception:
+            log.exception("cleanup: ошибка (продолжаю)")
+            return None
+        finally:
+            if pconn is not None:
+                pconn.close()
+        log.info("cleanup: %s", res)
+        self.cycles["cleanup"] = self.cycles.get("cleanup", 0) + 1
+        return res
 
     # ================= прогнозы: начисление очков =================
 
@@ -398,9 +427,20 @@ class Collector:
         return ctx
 
     async def _sofa_team_events(self) -> list:
+        """Последние матчи Реала (страница 0) и все будущие: team/2829/events/next/{page} листаем,
+        пока hasNextPage (по 30 матчей на странице; на сезон — 2 страницы, предохранитель — SOFA_NEXT_PAGES).
+        Дальние туры (апрель–май) лежат только на второй странице."""
         last = await self.ss.team_events("last")
-        nxt = await self.ss.team_events("next")
-        self.sofa_events = (last.get("events") or []) + (nxt.get("events") or [])
+        evs = list(last.get("events") or [])
+        for page in range(SOFA_NEXT_PAGES):
+            try:
+                nxt = await self.ss.team_events("next", page)
+            except NotFound:
+                break                         # за последней страницей SofaScore отвечает 404
+            evs += nxt.get("events") or []
+            if not nxt.get("hasNextPage"):
+                break
+        self.sofa_events = evs
         return self.sofa_events
 
     async def _espn_schedules(self, leagues=None) -> dict:
@@ -472,7 +512,10 @@ class Collector:
                 res["sofascore"] = self._map_list(fixtures, "sofascore", [
                     (str(e.get("id")), e.get("startTimestamp"), (e.get("homeTeam") or {}).get("name"),
                      (e.get("awayTeam") or {}).get("name"), (e.get("homeTeam") or {}).get("id"),
-                     (e.get("awayTeam") or {}).get("id"), None) for e in evs])
+                     (e.get("awayTeam") or {}).get("id"), None,
+                     config.SOFA_TO_FM_LEAGUE.get(((e.get("tournament") or {}).get("uniqueTournament") or {}).get("id")))
+                    for e in evs])
+                res["sofascore_events"] = len(evs)
             except SourceError as e:
                 log.warning("mapping: sofascore: %s", e)
         if self.es.available():
@@ -482,7 +525,8 @@ class Collector:
                 items = []
                 for f in espn.normalize_fixtures(sched):
                     items.append((str(f["ids"]["espn"]), ts(f["kickoff"]), f["home"]["name"], f["away"]["name"],
-                                  f["_espn_team_ids"][0], f["_espn_team_ids"][1], f["ids"]["espn_league"]))
+                                  f["_espn_team_ids"][0], f["_espn_team_ids"][1], f["ids"]["espn_league"],
+                                  config.ESPN_TO_FM_LEAGUE.get(f["ids"]["espn_league"])))
                 res["espn"] = self._map_list(fixtures, "espn", items)
             except SourceError as e:
                 log.warning("mapping: espn: %s", e)
@@ -513,34 +557,53 @@ class Collector:
         return n
 
     def _map_list(self, fixtures, source, items) -> int:
+        """items: (id, начало unix, хозяева, гости, id хозяев, id гостей, note[, турнир FotMob]).
+        Турнир (если источник его дал) обязан совпасть: иначе в запасном правиле ±4 дня матч Ла Лиги
+        с Реал Сосьедадом 7 февраля уходил в Суперкубок с той же парой 3 февраля."""
         n = 0
+        teams = store.map_all(self.conn, "team", source)
+
+        def team_ok(fside: dict, name, sid_team) -> bool:
+            # имя или уже известный id команды у источника («Real Racing Club» = «Racing Santander»)
+            return same_team(fside["name"], name) or (
+                sid_team is not None and teams.get(str(sid_team)) == str(fside.get("id")))
+
+        def league_ok(f: dict, league) -> bool:
+            return league is None or (f.get("tournament") or {}).get("id") in (None, league)
+
         with self.conn:
-            for sid, start, hname, aname, hid, aid, note in items:
+            for sid, start, hname, aname, hid, aid, note, *rest in items:
+                league = rest[0] if rest else None
                 if not start:
                     continue
                 near = [f for f in fixtures
                         if ts(f["kickoff"]) is not None and abs(ts(f["kickoff"]) - float(start)) <= 3 * 3600]
                 for f in near:
-                    names_ok = same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)
+                    names_ok = team_ok(f["home"], hname, hid) and team_ok(f["away"], aname, aid)
                     # Реал не играет два матча за 3 часа: единственный кандидат с Реалом на той же
                     # стороне — тот же матч, даже если имена соперника не совпали
                     # («Racing Santander» / «Real Racing Club»)
                     real_side_ok = len(near) == 1 and (
                         (f["home"]["id"] == config.TEAM_ID and same_team(hname, "Real Madrid")) or
                         (f["away"]["id"] == config.TEAM_ID and same_team(aname, "Real Madrid")))
-                    if names_ok or real_side_ok:
+                    if (names_ok or real_side_ok) and league_ok(f, league):
                         break
                 else:
                     # дальние туры без назначенного времени: у источников разные даты-заглушки.
-                    # Пара «хозяин–гость» за ±4 дня не повторяется — сопоставляем по ней.
-                    f = next((f for f in fixtures if ts(f["kickoff"]) is not None
-                              and abs(ts(f["kickoff"]) - float(start)) <= 4 * 86400
-                              and same_team(f["home"]["name"], hname) and same_team(f["away"]["name"], aname)), None)
-                    if not f:
+                    # Пара «хозяин–гость» в одном турнире за ±4 дня не повторяется — сопоставляем по ней,
+                    # из нескольких кандидатов — ближайший по времени.
+                    cands = [f for f in fixtures if ts(f["kickoff"]) is not None
+                             and abs(ts(f["kickoff"]) - float(start)) <= 4 * 86400 and league_ok(f, league)
+                             and team_ok(f["home"], hname, hid) and team_ok(f["away"], aname, aid)]
+                    if not cands:
                         continue
+                    f = min(cands, key=lambda f: abs(ts(f["kickoff"]) - float(start)))
                 store.map_set(self.conn, "match", source, sid, f["id"], note)
                 store.map_set(self.conn, "team", source, hid, f["home"]["id"])
                 store.map_set(self.conn, "team", source, aid, f["away"]["id"])
+                for t_sid, t_fid in ((hid, f["home"]["id"]), (aid, f["away"]["id"])):
+                    if t_sid not in (None, "") and t_fid not in (None, ""):
+                        teams[str(t_sid)] = str(t_fid)
                 n += 1
         return n
 
@@ -788,6 +851,13 @@ class Collector:
             for other in ("sofascore", "espn", "livescore"):
                 m["ids"][other] = m["ids"].get(other) or store.from_fotmob(self.conn, "match", other, fid)
             m["fallback_errors"] = errors or None
+            now = time.time()
+            if keep_fuller(prev, m, now):
+                # завершённый матч, счёт и статус те же, а старый снимок полнее — его и оставляем
+                log.info("match %s: %s беднее снимка %s (%d < %d пунктов) — оставляю прежний", fid, name,
+                         prev["source"], len(m.get("available") or []), len(prev["data"].get("available") or []))
+                return prev["data"]
+            borrow_live_blocks(prev, m, now)
             # новый или исправленный итог — очки прогнозов пересчитать в этом же такте
             if m["status"]["finished"] and _result_of(m) != _result_of((prev or {}).get("data")):
                 self.settle_due = True
@@ -919,6 +989,7 @@ class Collector:
             store.put_source_state(self.conn, "_collector", {
                 "pid": os.getpid(), "cycles": self.cycles, "last_team": self.last_team,
                 "last_mapping": self.last_mapping, "last_news": self.last_news, "last_videos": self.last_videos,
+                "last_cleanup": self.last_cleanup,
                 "in_window": self.window(time.time()),
                 "disabled": sorted(config.disabled_sources()),
             })
@@ -968,6 +1039,9 @@ class Collector:
                 await self.tick_articles(now)
                 # очки прогнозов: после «завершён», при исправлении итога и раз в 10 мин
                 await self.tick_settle(now)
+                # суточная очистка — вне окна матча (в окне откладывается до его конца)
+                if not win:
+                    self.tick_cleanup(now)
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
@@ -1031,6 +1105,115 @@ def _ctx_from_match(m: dict) -> dict:
     return {"numbers": numbers, "names": names, "last": last}
 
 
+# ================= полнота снимка матча =================
+
+def _score_state(m: dict) -> tuple:
+    return (m["status"]["state"], m["home"].get("score"), m["away"].get("score"))
+
+
+def keep_fuller(prev: dict | None, new: dict, now: float) -> bool:
+    """True — новый снимок завершённого матча беднее прежнего (меньше пунктов available и не надмножество),
+    счёт и статус не изменились, а прежний моложе KEEP_FULL_DAYS: прежний не заменяем.
+
+    Пример: FotMob дал 18 пунктов, потом FotMob недоступен и ESPN приносит 6 — остаются 18."""
+    if not prev or not new["status"]["finished"]:
+        return False
+    old = prev["data"]
+    if not (old.get("status") or {}).get("finished") or _score_state(old) != _score_state(new):
+        return False
+    if now - prev["fetched_at"] >= config.KEEP_FULL_DAYS * 86400:
+        return False
+    a_old, a_new = set(old.get("available") or []), set(new.get("available") or [])
+    return len(a_new) < len(a_old) and not a_new >= a_old
+
+
+# блоки, которые в лайве берём из прошлого снимка, если в свежем их нет: ключ available → поле
+LIVE_BLOCKS = ("ratings", "xg", "stats", "momentum", "shotmap")
+
+
+def _block_at(prev: dict, block: str) -> float:
+    """Когда блок прежнего снимка получен от источника: если его самого уже заимствовали — время оригинала."""
+    b = (prev["data"].get("borrowed") or {}).get(block)
+    return b["at"] if b else prev["fetched_at"]
+
+
+def _copy_ratings(dst: dict, src: dict) -> bool:
+    """Оценки игроков из прошлых составов в свежие: по id FotMob, иначе по стороне и имени."""
+    n = 0
+    for side in ("home", "away"):
+        old = (src.get(side) or {})
+        by_id, by_name = {}, {}
+        for p in (old.get("starters") or []) + (old.get("subs") or []):
+            if p.get("rating") is None:
+                continue
+            if p.get("id"):
+                by_id[p["id"]] = p["rating"]
+            if p.get("name"):
+                by_name[name_key(p["name"])] = p["rating"]
+        new = dst.get(side) or {}
+        for p in (new.get("starters") or []) + (new.get("subs") or []):
+            if p.get("rating") is not None:
+                continue
+            r = by_id.get(p.get("id")) if p.get("id") else None
+            if r is None and p.get("name"):
+                r = by_name.get(name_key(p["name"]))
+            if r is not None:
+                p["rating"] = r
+                n += 1
+    return n > 0
+
+
+def borrow_live_blocks(prev: dict | None, m: dict, now: float) -> list[str]:
+    """Идущий матч: свежесть важнее полноты, но блоки, которых нет в новом снимке (оценки, xG, статистика,
+    давление, удары), берём из прошлого снимка того же матча, если им не больше LIVE_BORROW_MAX_AGE.
+    Так экран не «мигает» блоками, когда FotMob на цикл-другой уступает резервному источнику.
+    Что взято — в m["borrowed"] = {блок: {source, at}}; возвращает список взятых блоков."""
+    m.pop("borrowed", None)
+    if not prev or not m["status"]["live"]:
+        return []
+    old = prev["data"]
+    have, had = set(m.get("available") or []), set(old.get("available") or [])
+    borrowed = {}
+    for block in LIVE_BLOCKS:
+        if block in have or block not in had:
+            continue
+        at = _block_at(prev, block)
+        if now - at > config.LIVE_BORROW_MAX_AGE:
+            continue
+        src = ((old.get("borrowed") or {}).get(block) or {}).get("source") or prev["source"]
+        ok = False
+        if block == "ratings":
+            if not m.get("lineups"):
+                m["lineups"] = old.get("lineups")
+                ok = bool(m["lineups"])
+            else:
+                ok = _copy_ratings(m["lineups"], old.get("lineups") or {})
+        elif block == "stats":
+            if not (m.get("stats") or {}).get("all"):
+                m["stats"] = old.get("stats")
+                ok = True
+        elif block == "xg":
+            xg = next((x for x in (old.get("stats") or {}).get("all") or [] if x.get("key") == "xg"), None)
+            if xg and (m.get("stats") or {}).get("all") is not None:
+                m["stats"]["all"].append(xg)
+                ok = True
+        elif block == "momentum":
+            m["momentum"] = old.get("momentum") or []
+            ok = bool(m["momentum"])
+        elif block == "shotmap":
+            m["shots"] = old.get("shots") or []
+            ok = bool(m["shots"])
+        if ok:
+            borrowed[block] = {"source": src, "at": at}
+    if borrowed:
+        m["available"] = compute_available(m)
+        # xG статистики взяли вместе с блоком stats — помечаем и его тем же временем
+        if "stats" in borrowed and "xg" in m["available"] and "xg" not in have:
+            borrowed.setdefault("xg", borrowed["stats"])
+        m["borrowed"] = borrowed
+    return list(borrowed)
+
+
 # ================= CLI =================
 
 def _result_of(m: dict | None) -> tuple | None:
@@ -1086,6 +1269,8 @@ async def _cli(args) -> int:
             elif args.what == "settle":
                 res = await c.tick_settle(time.time(), force=True) or []
                 print(json.dumps([r for r in res if r["result"] != "unchanged"], ensure_ascii=False))
+            elif args.what == "cleanup":
+                print(json.dumps(c.tick_cleanup(time.time(), force=True), ensure_ascii=False))
             elif args.what == "avatars":
                 c.last_avatars = 0.0
                 print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
@@ -1131,7 +1316,8 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle",
+                                    "cleanup"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")

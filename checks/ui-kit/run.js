@@ -1,4 +1,7 @@
 // Проверка UI-кита на /dev/ui против локального vite preview.
+// В обычной прод-сборке /dev/ui нет — preview собирать с флагом:
+//   cd frontend && VITE_UIKIT=1 npx vite build && npx vite preview
+// (или смотреть на dev-сервере `npm run dev`, там маршрут есть всегда).
 // Запуск (preview уже поднят):
 //   NODE_PATH=C:/Users/egor3/node_modules MODE=noimg BASE=http://127.0.0.1:4173 node checks/ui-kit/run.js
 //   NODE_PATH=C:/Users/egor3/node_modules MODE=img   BASE=http://127.0.0.1:4174 node checks/ui-kit/run.js

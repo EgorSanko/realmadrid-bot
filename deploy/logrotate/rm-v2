@@ -1,0 +1,11 @@
+# «Мадридиста»: логи скриптов cron (бэкап, watchdog). Ставит deploy.sh при INSTALL_CRON=1
+# → /etc/logrotate.d/rm-v2. Логи контейнеров ротирует сам docker (json-file 10m × 3, docker-compose.yml).
+/var/log/rm-v2-*.log {
+    weekly
+    rotate 4
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root adm
+}
