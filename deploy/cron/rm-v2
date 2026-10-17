@@ -1,0 +1,9 @@
+# «Мадридиста»: бэкап баз и слежение за сборщиком.
+# Ставит deploy.sh только при INSTALL_CRON=1 → /etc/cron.d/rm-v2 ({{REMOTE_DIR}} подставляется).
+# Время — серверное (UTC на realmadridfan.ru).
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# m  h  dom mon dow user command
+40 3  *   *   *   root {{REMOTE_DIR}}/deploy/backup.sh >>/var/log/rm-v2-backup.log 2>&1
+*/5 * *   *   *   root WATCHDOG_TG=0 {{REMOTE_DIR}}/deploy/watchdog.sh >>/var/log/rm-v2-watchdog.log 2>&1
