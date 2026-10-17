@@ -30,6 +30,9 @@ async function start() {
   initShell(inTelegram);
   // вход не задерживает отрисовку: в мини-аппе — тихо по initData, на сайте — /api/auth/me по cookie
   void bootstrapAuth();
+  // заставка: пока собирается эмблема, не рисуем — первая отрисовка блокирует главный поток и рвёт её анимацию
+  const splash = (window as { __rmSplash?: Promise<void> }).__rmSplash;
+  if (splash) await Promise.race([splash, new Promise((r) => setTimeout(r, 3000))]);
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

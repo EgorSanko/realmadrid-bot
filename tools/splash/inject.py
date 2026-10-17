@@ -21,6 +21,10 @@ css = re.sub(r"\s*\n\s*", "", css)
 # img.brand__crest в шапке (FLIP: transform translate+scale), фон растворяется; в конце заставка убирается,
 # а картинка шапки, скрытая на время полёта, показывается в том же кадре — подмены не видно.
 # Не главная (или картинки шапки нет) — просто растворение. React не готов за CAP мс — уходим всё равно.
+# Пока эмблема собирается, React не рисует (window.__rmSplash, ждёт main.tsx): маски SVG анимируются в главном
+# потоке, и первая отрисовка приложения (~350 мс на слабом телефоне) рвала сборку.
+# Перед полётом ждём 3 ровных кадра подряд (не дольше 700 мс): сразу после отрисовки приложение догружает
+# данные и картинки, и полёт, начатый в этот момент, дёргался.
 # Тап: во время сборки — сразу к уходу, во время полёта — сразу в конец.
 # Геометрия: эмблема в svg занимает 0..32 × 0..43 во viewBox -1 -1 34 45; в PNG шапки — её непрозрачная
 # область (меряем по альфе на canvas; не вышло — запасные доли FB для /img/team/8633.png 192×192).
@@ -30,6 +34,7 @@ if(seen){s.remove();return}
 var mm=function(q){return window.matchMedia&&matchMedia(q).matches};
 if(!/tgWebApp/.test(location.hash+location.search)&&!/MadridistaApp\\/\\d/.test(navigator.userAgent)&&mm('(min-width: 1024px)')){s.remove();return}
 var rm=mm('(prefers-reduced-motion: reduce)'),BUILD=rm?400:2300,CAP=7000,FLY=760,t0=Date.now(),stage=0,img=null,fl=[],cur=null,IB=null,fix=0,rt=0;
+var hold;window.__rmSplash=new Promise(function(r){hold=r});
 var crest=s.querySelector('.sp-crest'),FB=[27/192,4/192,167/192,190/192];
 function end(){if(stage>2)return;stage=3;if(img)img.style.visibility='';s.remove()}
 function fade(){s.classList.add('sp-out');setTimeout(end,rm?300:500)}
@@ -63,10 +68,12 @@ fl=[a,s.querySelector('.sp-bg').animate([{opacity:1},{opacity:0}],{duration:FLY-
 [].forEach.call(s.querySelectorAll('.sp-word,.sp-line'),function(e){
 fl.push(e.animate([{opacity:1,transform:'none'},{opacity:0,transform:'translateY(6px)'}],{duration:240,easing:'ease-out',fill:'forwards'}))});
 a.onfinish=a.oncancel=land}
-function leave(){if(stage)return;stage=1;settle();
-var i=rm?null:target();if(i&&loaded(i)&&crest.animate){img=i;i.decode?i.decode().then(fly,fly):fly()}else fade()}
+function quiet(f){var n=0,l=0,t=Date.now();crest.style.willChange='transform';
+(function q(now){if(l&&now-l<24)n++;else n=0;l=now;if(n>=3||Date.now()-t>700)f();else requestAnimationFrame(q)})(0)}
+function leave(){hold();if(stage)return;stage=1;settle();
+var i=rm?null:target();if(i&&loaded(i)&&crest.animate){img=i;var go=function(){quiet(fly)};i.decode?i.decode().then(go,go):go()}else fade()}
 function tick(){if(stage)return;var now=Date.now(),dt=now-t0;if(dt>=CAP)return leave();
-var root=document.getElementById('root'),i;if(root&&root.childElementCount&&!rt)rt=now;
+if(dt>=BUILD)hold();var root=document.getElementById('root'),i;if(root&&root.childElementCount&&!rt)rt=now;
 var wait=location.pathname==='/'&&!rm&&!document.documentElement.classList.contains('desk')&&now-rt<1500;
 if(dt<BUILD||!rt||(wait&&!((i=target())&&i.complete)))return setTimeout(tick,60);
 requestAnimationFrame(function(){requestAnimationFrame(leave)})}
