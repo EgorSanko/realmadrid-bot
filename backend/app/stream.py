@@ -23,9 +23,11 @@ from pathlib import Path
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlsplit
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel
-from app.auth import INIT_DATA_MAX_AGE, InitDataError, is_tma, validate_tma  # noqa: F401
+from app.auth import (INIT_DATA_MAX_AGE, SESSION_COOKIE, InitDataError, is_session_header, is_tma,  # noqa: F401
+                      validate_tma)
+from app.identity import authenticate
 
 router = APIRouter()
 
@@ -142,6 +144,7 @@ def _deny(status: int, msg: str) -> HTTPException:
 
 
 def require_admin(
+    request: Request,
     authorization: Optional[str] = Header(default=None),
     x_admin_token: Optional[str] = Header(default=None),
 ) -> str:
@@ -160,18 +163,24 @@ def require_admin(
             return "token"
         raise _deny(401, "Неверный токен")
 
-    if is_tma(authorization):
+    # initData мини-аппа или сессия сайта (заголовок `Session …` / cookie rm_session)
+    via_cookie = not authorization and bool(request.cookies.get(SESSION_COOKIE))
+    if is_tma(authorization) or is_session_header(authorization) or via_cookie:
         if not tg_enabled:
             raise _deny(401, "Вход через Telegram не настроен")
+        from app.predictions.api import get_service  # сессии сверяются с users.session_epoch
+
         try:
-            data = validate_tma(authorization, bot_token)
+            p = authenticate(request, authorization, get_service(), bot_token)
         except InitDataError as e:
             if e.reason == "no_user":
                 raise _deny(403, "Нет доступа") from None
+            if e.reason == "missing":
+                raise _deny(401, "Нужна авторизация") from None
             raise _deny(401, e.message) from None
-        if data.user.id not in admin_ids:
+        if p.id not in admin_ids:
             raise _deny(403, "Нет доступа")
-        return f"tg:{data.user.id}"
+        return f"tg:{p.id}" if p.via == "tma" else f"session:{p.id}"
 
     raise _deny(401, "Нужна авторизация")
 

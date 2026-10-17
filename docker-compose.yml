@@ -18,8 +18,9 @@ services:
     ports:
       - "127.0.0.1:8010:8000"
     mem_limit: 256m
-    # секреты админки и бота (ADMIN_TOKEN, BOT_TOKEN, ADMIN_IDS, BOT_USERNAME) — только на сервере
-    # в /opt/rm-v2/.env, в git их нет; без файла админка просто закрыта
+    # секреты админки и бота (ADMIN_TOKEN, BOT_TOKEN, ADMIN_IDS, BOT_USERNAME, необязательный SESSION_SECRET —
+    # ключ сессий входа; без него ключ выводится из BOT_TOKEN) — только на сервере в /opt/rm-v2/.env,
+    # в git их нет; без файла админка и вход закрыты
     env_file:
       - path: .env
         required: false
@@ -51,6 +52,8 @@ services:
       - TZ=UTC
       - DATA_DIR=/data
       - SOFA_PROXY=socks5h://127.0.0.1:1080
+      # аватары пользователей с t.me — через тот же туннель
+      - TG_PROXY=socks5h://127.0.0.1:1080
       - DISABLED_SOURCES=${DISABLED_SOURCES:-}
       - DEBUG_LIVE_MATCH=${DEBUG_LIVE_MATCH:-}
     volumes:

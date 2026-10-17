@@ -19,6 +19,7 @@ CERTBOT="${CERTBOT:-0}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WEBROOT="$REMOTE_DIR/frontend-dist"
 IMGROOT="$REMOTE_DIR/img-fallback"          # заглушки для /img/* (силуэт игрока, прозрачный 1×1)
+DATAROOT="$REMOTE_DIR/data"                 # том данных; nginx читает из него только avatars/ (/img/avatar/*)
 IMG_CONF="/etc/nginx/conf.d/rmv2-img-cache.conf"  # proxy_cache_path (http-контекст), зона rmv2img
 SSH="ssh -o BatchMode=yes $SERVER"
 
@@ -51,7 +52,8 @@ tar -czf - -C "$ROOT/frontend/dist" . \
 # ---------- 4. backend в docker (api + collector) ----------
 # том со снимками: создаём, но никогда не перезаписываем; владелец — uid пользователя app в образе
 log "docker compose up -d --build"
-$SSH "mkdir -p '$REMOTE_DIR/data' && chown 10001 '$REMOTE_DIR/data' && cd '$REMOTE_DIR' && docker compose up -d --build && docker compose ps"
+# avatars/ — аватары пользователей: пишет сборщик (uid 10001), читает nginx на хосте (www-data)
+$SSH "mkdir -p '$REMOTE_DIR/data/avatars' && chown 10001 '$REMOTE_DIR/data' '$REMOTE_DIR/data/avatars' && chmod 755 '$REMOTE_DIR/data' '$REMOTE_DIR/data/avatars' && cd '$REMOTE_DIR' && docker compose up -d --build && docker compose ps"
 
 # ---------- 5. сертификат (по желанию и только при живом DNS) ----------
 if [ "$CERTBOT" = "1" ]; then
@@ -101,6 +103,7 @@ CONF="${CONF//\{\{DOMAIN\}\}/$DOMAIN}"
 CONF="${CONF//\{\{WEBROOT\}\}/$WEBROOT}"
 CONF="${CONF//\{\{API_PORT\}\}/$API_PORT}"
 CONF="${CONF//\{\{IMGROOT\}\}/$IMGROOT}"
+CONF="${CONF//\{\{DATAROOT\}\}/$DATAROOT}"
 IMGC="$(cat "$ROOT/deploy/nginx-img-cache.conf")"
 
 AV="/etc/nginx/sites-available/$SITE_NAME"

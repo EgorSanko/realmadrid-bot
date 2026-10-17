@@ -18,6 +18,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Iterator, Optional
 
+from .. import avatars
 from . import db, rules
 from .provider import Match, MatchProvider, parse_kickoff, rm_is_home
 
@@ -36,6 +37,7 @@ MAX_MEMBERSHIPS = 50
 
 PREDICT_RATE = (30, 60.0)   # не больше 30 изменений прогноза в минуту
 JOIN_RATE = (20, 60.0)      # попытки вступления по коду — против перебора
+LOGIN_RATE = (30, 60.0)     # входов с одного IP в минуту (/api/auth/telegram)
 
 
 class PredictError(Exception):
@@ -134,6 +136,7 @@ class PredictionService:
         self._bot_username = bot_username
         self.predict_limiter = RateLimiter(*PREDICT_RATE, clock=rate_clock)
         self.join_limiter = RateLimiter(*JOIN_RATE, clock=rate_clock)
+        self.login_limiter = RateLimiter(*LOGIN_RATE, clock=rate_clock)
 
     # --- инфраструктура ---
 
@@ -191,6 +194,31 @@ class PredictionService:
                       OR users.username IS NOT excluded.username OR users.photo_url IS NOT excluded.photo_url""",
                 (uid, (g("first_name") or "")[:128], g("last_name"), g("username"), g("photo_url"), now, now))
         return uid
+
+    def session_epoch(self, user_id: int) -> Optional[int]:
+        """Счётчик сессий пользователя; None — пользователя нет."""
+        with self.conn() as c:
+            row = c.execute("SELECT session_epoch FROM users WHERE id=?", (user_id,)).fetchone()
+        return None if row is None else int(row[0])
+
+    def bump_session_epoch(self, user_id: int) -> None:
+        with self.conn() as c:
+            c.execute("UPDATE users SET session_epoch = session_epoch + 1, updated_at=? WHERE id=?",
+                      (iso(self.now()), user_id))
+
+    def want_avatar(self, user_id: int, photo_url: Optional[str]) -> bool:
+        """Заявка сборщику скачать аватар (если файла нет / url сменился / файл старше недели)."""
+        with self.conn() as c:
+            return avatars.want(c, user_id, photo_url, self.now())
+
+    def user_view(self, user_id: int) -> Optional[dict[str, Any]]:
+        with self.conn() as c:
+            u = c.execute("SELECT * FROM users WHERE id=?", (user_id,)).fetchone()
+        if u is None:
+            return None
+        return {"id": u["id"], "name": display_name(u["first_name"], u["last_name"], u["username"]),
+                "first_name": u["first_name"], "last_name": u["last_name"], "username": u["username"],
+                "avatar": avatars.url_for(u["id"])}
 
     # --- матчи ---
 
@@ -449,7 +477,8 @@ class PredictionService:
     @staticmethod
     def _row_view(r: sqlite3.Row, rank: int, me: Optional[int]) -> dict[str, Any]:
         return {"rank": rank, "name": display_name(r["first_name"], r["last_name"], r["username"]),
-                "username": r["username"], "photo_url": r["photo_url"], "points": r["points"],
+                "username": r["username"], "photo_url": r["photo_url"], "avatar": avatars.url_for(r["user_id"]),
+                "points": r["points"],
                 "exact": r["exact"], "played": r["played"], "is_me": me is not None and r["user_id"] == me}
 
     def _global_rank(self, c: sqlite3.Connection, key: str, user_id: int) -> Optional[dict[str, Any]]:

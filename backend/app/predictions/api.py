@@ -13,7 +13,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 
-from app.auth import InitDataError, is_tma, validate_tma
+from app.auth import InitDataError
+from app.identity import authenticate, has_credentials
 
 from .service import PredictError, PredictionService
 from .snapshot_provider import SnapshotProvider
@@ -46,26 +47,29 @@ def _err(status: int, error: str, message: str) -> JSONResponse:
 
 # ---------- авторизация ----------
 
-def _auth(authorization: Optional[str], svc: PredictionService) -> int:
+def _auth(request: Request, authorization: Optional[str], svc: PredictionService) -> int:
+    """initData мини-аппа или наша сессия (заголовок `Session …` / cookie rm_session) — app/identity.py."""
     try:
-        data = validate_tma(authorization)
+        p = authenticate(request, authorization, svc)
     except InitDataError as e:
         raise PredictError(401, "unauthorized", e.message) from None
-    return svc.upsert_user(data.user)
+    if p.tg_user is not None:
+        return svc.upsert_user(p.tg_user)
+    return p.id
 
 
-def current_user(authorization: Optional[str] = Header(default=None),
+def current_user(request: Request, authorization: Optional[str] = Header(default=None),
                  svc: PredictionService = Depends(get_service)) -> int:
-    return _auth(authorization, svc)
+    return _auth(request, authorization, svc)
 
 
-def optional_user(authorization: Optional[str] = Header(default=None),
+def optional_user(request: Request, authorization: Optional[str] = Header(default=None),
                   svc: PredictionService = Depends(get_service)) -> Optional[int]:
-    """Без initData или с невалидным — аноним (только чтение, без своего места)."""
-    if not is_tma(authorization):
+    """Без входа или с невалидным — аноним (только чтение, без своего места)."""
+    if not has_credentials(request, authorization):
         return None
     try:
-        return _auth(authorization, svc)
+        return _auth(request, authorization, svc)
     except PredictError:
         return None
 

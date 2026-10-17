@@ -177,3 +177,13 @@
 .admin-preview .admin-label {
   margin-bottom: 8px;
 }
+
+/* «или по токену» между входом через Telegram и формой токена */
+.admin-or {
+  margin: 16px 0 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

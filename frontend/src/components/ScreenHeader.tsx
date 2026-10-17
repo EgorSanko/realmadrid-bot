@@ -1,4 +1,7 @@
-/** Шапка раздела, как .topbar в макете. На главной — логотип-надпись. */
+import { useSpaLink } from '../lib/spaLink';
+import { AvatarButton } from './UserAvatar';
+
+/** Шапка раздела, как .topbar в макете. На главной — логотип-надпись и справа кнопка-аватар (профиль). */
 export function ScreenHeader({
   title,
   brand = false,
@@ -30,11 +33,14 @@ export function ScreenHeader({
             <span className="brand__sub">Real Madrid · фан-приложение</span>
           </span>
         </h1>
-        {live && (
-          <span className="badge-live">
-            <span className="live-dot" />В ЭФИРЕ
-          </span>
-        )}
+        <div className="brandbar__right">
+          {live && (
+            <span className="badge-live">
+              <span className="live-dot" />В ЭФИРЕ
+            </span>
+          )}
+          <ProfileLink />
+        </div>
       </header>
     );
   }
@@ -43,4 +49,9 @@ export function ScreenHeader({
       <h1 className="topbar__title">{title}</h1>
     </header>
   );
+}
+
+function ProfileLink() {
+  const link = useSpaLink();
+  return <AvatarButton onClick={link('/profile').onClick} />;
 }

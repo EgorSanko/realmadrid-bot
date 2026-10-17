@@ -9,6 +9,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once match <id>       # один цикл матча (цепочка источников)
   python -m app.collector once player <id>      # карточка игрока (FotMob → SofaScore)
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
+  python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -27,7 +28,8 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import config, store
+from . import avatars, config, store
+from .predictions import db as predictions_db
 from .model import iso_utc, name_key, same_person, same_team, ts
 from .sources import espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
@@ -62,10 +64,48 @@ class Collector:
         self.last_mapping = 0.0
         self.last_news = 0.0
         self.last_videos = 0.0
+        self.last_avatars = 0.0
+        self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
+        self._avatar_close = None
+        self._avatar_task: asyncio.Task | None = None
 
     async def close(self):
         for s in (*self.sources.values(), *self.media.values()):
             await s.close()
+        if self._avatar_task is not None and not self._avatar_task.done():
+            self._avatar_task.cancel()
+        if self._avatar_close is not None:
+            await self._avatar_close()
+
+    # ================= аватары пользователей (заявки API при входе) =================
+    async def tick_avatars(self, now: float, limit: int = 2) -> list:
+        """Скачать до `limit` аватаров из avatar_queue (predictions.db) через туннель t.me."""
+        if now - self.last_avatars < config.AVATAR_INTERVAL:
+            return []
+        self.last_avatars = now
+        try:
+            done = await self._avatars_once(limit)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("avatars: ошибка (продолжаю)")
+            return []
+        for uid, res in done:
+            log.info("avatar %s → %s", uid, res)
+        self.cycles["avatars"] = self.cycles.get("avatars", 0) + len(done)
+        return done
+
+    async def _avatars_once(self, limit: int) -> list:
+        conn = predictions_db.connect()
+        try:
+            if not conn.execute("SELECT 1 FROM avatar_queue LIMIT 1").fetchone():
+                return []
+            if self._avatar_fetch is None:
+                self._avatar_fetch, self._avatar_close = avatars.curl_fetch(config.TG_PROXY, config.SOFA_TIMEOUT)
+            done = await avatars.process(conn, self._avatar_fetch, limit=limit)
+        finally:
+            conn.close()
+        return done
 
     # ================= медиа: новости и видео =================
 
@@ -771,6 +811,9 @@ class Collector:
                         log.info("demand %s → %s", fid, m and m["source"])
                 # карточки игроков: заявки — всегда, плановое обновление состава — вне окна матча
                 await self.tick_players(now, squad=not win)
+                # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
+                if self._avatar_task is None or self._avatar_task.done():
+                    self._avatar_task = asyncio.create_task(self.tick_avatars(now))
                 if now >= next_state:
                     self.write_state()
                     next_state = now + 5
@@ -867,6 +910,9 @@ async def _cli(args) -> int:
                 print(json.dumps({k: p.get(k) for k in ("id", "name", "source", "available")} if p else None,
                                  ensure_ascii=False))
                 c.write_state()
+            elif args.what == "avatars":
+                c.last_avatars = 0.0
+                print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
             elif args.what == "players":
                 done = []
                 while True:
@@ -909,7 +955,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players", "avatars"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")
