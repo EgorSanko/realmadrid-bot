@@ -1,0 +1,17 @@
+{
+  "name": "Мадридиста — фан-приложение Real Madrid",
+  "short_name": "Мадридиста",
+  "description": "Матчи, трансляции, новости и прогнозы для болельщиков «Реала».",
+  "lang": "ru",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#06070B",
+  "theme_color": "#06070B",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

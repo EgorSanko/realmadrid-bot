@@ -1,0 +1,33 @@
+// Мета страниц для поиска: описание и канонический адрес по пути. Без импортов — их гоняет node --test.
+
+export const SITE_ORIGIN = 'https://realmadridfan.ru';
+
+const DEFAULT_DESC =
+  'Мадридиста — фан-приложение «Реала»: ближайший матч с отсчётом, онлайн-трансляции, календарь и таблица Ла Лиги, состав, новости и видео, прогнозы на матчи.';
+
+/** Описание страницы по адресу. Для конкретных матчей и новостей — общее описание раздела. */
+export function descriptionFor(pathname: string): string {
+  if (pathname === '/') return DEFAULT_DESC;
+  if (pathname.startsWith('/matches'))
+    return 'Календарь и результаты матчей «Реала» в Ла Лиге и Лиге чемпионов, турнирные таблицы с текущим местом команды.';
+  if (pathname.startsWith('/match/'))
+    return 'Матч «Реала»: счёт и хронология, стартовые составы на поле, статистика, лучшие игроки и обзор.';
+  if (pathname.startsWith('/team'))
+    return 'Состав «Реала» сезона: игроки по линиям, лидеры по голам, передачам и оценкам, лазарет и трансферы.';
+  if (pathname.startsWith('/player/')) return 'Карточка игрока «Реала»: статистика сезона, последние матчи, карьера и травмы.';
+  if (pathname.startsWith('/media')) return 'Свежие новости о «Реале» из Чемпионата, Спорт-Экспресса и Sports.ru, обзоры матчей и видео клуба.';
+  if (pathname.startsWith('/news/')) return 'Новость о «Реале» — текст целиком внутри приложения, со ссылкой на источник.';
+  if (pathname.startsWith('/video/')) return 'Видео «Реала» внутри приложения: обзоры матчей, голы и ролики официального канала клуба.';
+  if (pathname.startsWith('/predict'))
+    return 'Угадывай счёт матчей «Реала» и первого бомбардира, набирай очки, соревнуйся в рейтинге и лигах с друзьями.';
+  if (pathname.startsWith('/profile')) return 'Профиль болельщика: очки за прогнозы, история прогнозов и лиги с друзьями.';
+  return DEFAULT_DESC;
+}
+
+/** Канонический адрес: домен без www, без query и хвостовых вкладок экрана матча. */
+export function canonicalFor(pathname: string): string {
+  let p = pathname.replace(/\/{2,}/g, '/');
+  p = p.replace(/^(\/match\/[^/]+)\/(lineups|stats)\/?$/, '$1');
+  if (p.length > 1) p = p.replace(/\/+$/, '');
+  return SITE_ORIGIN + p;
+}

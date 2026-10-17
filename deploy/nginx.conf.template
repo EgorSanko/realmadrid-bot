@@ -1,10 +1,18 @@
 # Мадридиста (rm-v2). Сгенерировано deploy/deploy.sh из deploy/nginx.conf.template — руками не править.
-# Плейсхолдеры в двойных фигурных скобках: DOMAIN, LISTEN, REDIRECT, WEBROOT, API_PORT, IMGROOT, DATAROOT.
+# Плейсхолдеры в двойных фигурных скобках: DOMAIN, SCHEME, LISTEN, REDIRECT, WEBROOT, API_PORT, IMGROOT, DATAROOT.
 # Зона кэша rmv2img объявлена в /etc/nginx/conf.d/rmv2-img-cache.conf (deploy/nginx-img-cache.conf).
 {{REDIRECT}}
+# www → домен без www (canonical): тот же listen и сертификат (в нём есть www), один 301 на основной адрес
 server {
 {{LISTEN}}
-    server_name {{DOMAIN}} www.{{DOMAIN}};
+    server_name www.{{DOMAIN}};
+    location /.well-known/acme-challenge/ { root /var/www/html; }
+    location / { return 301 {{SCHEME}}://{{DOMAIN}}$request_uri; }
+}
+
+server {
+{{LISTEN}}
+    server_name {{DOMAIN}};
 
     root {{WEBROOT}};
     index index.html;
@@ -401,6 +409,34 @@ server {
         try_files $uri =404;
         access_log off;
         add_header Cache-Control "public, max-age=31536000, immutable" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
+    # SEO и значки (frontend/public → корень dist): отдаём файлом, а не index.html SPA
+    location = /robots.txt {
+        try_files $uri =404;
+        default_type text/plain;
+        add_header Cache-Control "public, max-age=3600" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    location = /sitemap.xml {
+        try_files $uri =404;
+        default_type application/xml;
+        add_header Cache-Control "public, max-age=3600" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    location = /manifest.webmanifest {
+        try_files $uri =404;
+        types { }
+        default_type application/manifest+json;
+        add_header Cache-Control "public, max-age=86400" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    # значки и картинка превью: имена без хэша — кэш сутки, не год
+    location ~ "^/(favicon\.ico|favicon\.svg|favicon-32\.png|apple-touch-icon\.png|icon-192\.png|icon-512\.png|icon-maskable-512\.png|og\.png)$" {
+        try_files $uri =404;
+        access_log off;
+        add_header Cache-Control "public, max-age=86400" always;
         add_header X-Content-Type-Options nosniff always;
     }
 
