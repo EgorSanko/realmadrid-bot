@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { retrieveRawInitData } from '@tma.js/sdk-react';
+import { LoginButton } from '../components/LoginButton';
 import { Player } from '../components/Player';
+import { authHeaders, useAuth } from '../lib/auth';
 import { ApiError, adminRequest } from '../lib/stream';
 import type { AdminStreamState } from '../lib/stream';
 import { describeExpiry, formatMsk } from '../lib/linkExpiry';
@@ -43,11 +45,16 @@ export default function AdminScreen() {
   const initData = useMemo(telegramInitData, []);
   const [token, setToken] = useState(readToken);
   const [tokenDraft, setTokenDraft] = useState('');
+  const me = useAuth();
+  // мини-апп — initData; введённый токен — он; иначе сессия входа через Telegram (cookie / Session),
+  // если вошёл админ. Токен остаётся запасным способом.
+  const sessionAdmin = me.status === 'user' && me.isAdmin;
   const auth = useMemo((): Record<string, string> | null => {
     if (initData) return { Authorization: `tma ${initData}` };
     if (token) return { 'X-Admin-Token': token };
+    if (sessionAdmin) return authHeaders();
     return null;
-  }, [initData, token]);
+  }, [initData, token, sessionAdmin]);
 
   const [state, setState] = useState<AdminStreamState | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -166,6 +173,17 @@ export default function AdminScreen() {
   };
 
   // ---------- вход ----------
+  if (!auth && !initData && me.status === 'loading') {
+    return (
+      <main className="admin">
+        <header className="topbar">
+          <h1 className="topbar__title">Эфир</h1>
+        </header>
+        <p className="admin-hint admin-pad">Проверяем доступ…</p>
+      </main>
+    );
+  }
+
   if (!auth || (!state && authError)) {
     return (
       <main className="admin">
@@ -178,6 +196,17 @@ export default function AdminScreen() {
               {authError ?? 'Нет доступа'}. Админка доступна только владельцу.
             </p>
           ) : (
+            <>
+              <div className="admin-form">
+                {me.status === 'user' && me.user ? (
+                  <p className="admin-msg admin-msg--err" role="alert">
+                    Вы вошли как {me.user.name} — у этого аккаунта нет доступа к эфиру.
+                  </p>
+                ) : (
+                  <LoginButton hint="Владельцу достаточно войти через Telegram — токен не нужен." />
+                )}
+              </div>
+              <p className="admin-or">или по токену</p>
             <form onSubmit={login} className="admin-form">
               <label className="admin-label" htmlFor="admin-token">
                 Админ-токен
@@ -201,6 +230,7 @@ export default function AdminScreen() {
               </button>
               <p className="admin-hint">Токен хранится только в этой вкладке и забудется после её закрытия.</p>
             </form>
+            </>
           )}
         </section>
       </main>
@@ -223,7 +253,7 @@ export default function AdminScreen() {
     <main className="admin">
       <header className="topbar">
         <h1 className="topbar__title">Эфир</h1>
-        {!initData && (
+        {!initData && token && (
           <button type="button" className="admin-link" onClick={logout}>
             Выйти
           </button>

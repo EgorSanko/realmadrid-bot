@@ -1,0 +1,57 @@
+/* Аватар пользователя и кнопка-аватар в шапке главной. Палитра — токены из tokens.css.
+   Стили «Войти через Telegram» — в login.css (грузятся с экраном профиля / админки). */
+
+.uav {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 30% 20%, #1a1e2b, var(--surface));
+  box-shadow: 0 0 0 1.5px var(--gold-edge), 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.uav img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.uav__sil {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.85;
+  transform: translateY(1px);
+}
+
+.avatar-btn {
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  margin: -3px -3px -3px 0;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease;
+}
+
+.avatar-btn:active {
+  transform: scale(0.94);
+}
+
+.avatar-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.brandbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

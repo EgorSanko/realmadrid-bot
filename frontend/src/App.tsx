@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
+import { StartParamHandler } from './components/StartParamHandler';
 import { backgroundOf } from './lib/playerNav';
 import { SectionScreen } from './screens/SectionScreen';
 import { SECTIONS } from './sections';
@@ -15,6 +16,8 @@ const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
 const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
 const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
 const PlayerScreen = lazy(() => import('./screens/player/PlayerScreen'));
+// профиль и вход — свой ленивый чанк
+const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
 
 function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
@@ -39,6 +42,7 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop pathname={shown.pathname} />
+      <StartParamHandler />
       <div className="app">
         <Routes location={shown}>
           <Route path="/" element={<HomeScreen />} />
@@ -76,6 +80,14 @@ function AppRoutes() {
             element={
               <Suspense fallback={null}>
                 <MatchScreen />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Suspense fallback={null}>
+                <ProfileScreen />
               </Suspense>
             }
           />

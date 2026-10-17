@@ -1,0 +1,92 @@
+/* «Войти через Telegram» (components/LoginButton.tsx). */
+
+.tg-login {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.tg-login__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.tg-login__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-btn);
+  background: var(--gold-grad);
+  color: var(--gold-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.tg-login__btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.tg-login__btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.tg-login__widget {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.tg-login__widget[hidden] {
+  display: none;
+}
+
+.tg-login__note {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tg-login__err {
+  margin: 0;
+  color: #f1b7b1;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.tg-login__fail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 90, 78, 0.07);
+  border: 1px solid rgba(255, 90, 78, 0.22);
+}
+
+.tg-login__retry,
+.tg-login__alt {
+  align-self: center;
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  color: var(--gold);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+}
