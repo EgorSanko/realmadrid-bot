@@ -84,6 +84,8 @@ export interface PenaltyShot {
   zone: number;
   keeper: number;
   goal: boolean;
+  /** goal | save | post | bar; у старого сервера поля нет — см. shotOutcome */
+  outcome?: 'goal' | 'save' | 'post' | 'bar';
   rival_goal: boolean;
   goals: number;
   rival: number;

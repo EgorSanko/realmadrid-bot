@@ -1,34 +1,68 @@
-import { forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useMemo, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { ballFrame, easeOut, zoneCell, zoneFromSwipe } from '../../lib/games';
+import ballSrc from '../../assets/games/ball.webp';
+import diveSrc from '../../assets/games/courtois-dive.webp';
+import idleSrc from '../../assets/games/courtois-idle.webp';
+import { zoneFromSwipe } from '../../lib/games';
+import {
+  BALL_SIZE,
+  DIVE,
+  GOAL,
+  GOAL_LINE,
+  IDLE,
+  POST_W,
+  SPOT,
+  WORLD,
+  catchPoint,
+  cell,
+  divePoint,
+  diveTransform,
+  ease,
+  goalPoint,
+  keeperPose,
+  lerp,
+  reboundPoint,
+  woodPoint,
+  zonePoint,
+} from '../../lib/penalty';
+import type { PenaltyOutcome, Pt } from '../../lib/penalty';
 import { reducedMotion } from './kit';
 
 /*
- * Сцена пенальти — вид от бьющего: тёмный стадион, прожекторы, ворота с сеткой, газон в перспективе.
- * Всё — SVG и CSS, без картинок. Вратарь — силуэт. Полёт мяча и прыжок — requestAnimationFrame,
- * только transform (мяч, вратарь) и opacity — 60 кадров/с без перерисовки React.
+ * Сцена пенальти — вид от бьющего. Фон (стадион, прожекторы, газон, ворота с сеткой) — SVG.
+ * Куртуа и мяч — картинки из старой игры (penalty.html) в слое «мира» 400×320, который
+ * масштабируется под ширину сцены. Всё движение — requestAnimationFrame и только transform/opacity
+ * (слои на GPU, без перерисовки React): стойка с раскачкой → присед → прыжок → сейв или гол.
  */
 
-const W = 400;
-const H = 320;
-const GOAL = { x: 60, y: 80, w: 280, h: 112 };
-const SPOT = { x: 200, y: 284 };
-const KEEPER = { x: 200, y: GOAL.y + GOAL.h }; // ступни вратаря на линии ворот
-const HIP = 36; // высота таза над ступнями — центр поворота в прыжке
+const { w: W, h: H } = WORLD;
+const R = BALL_SIZE / 2;
 
-const FLIGHT_MS = 560;
-const DIVE_DELAY_MS = 70;
-const DIVE_MS = 520;
-const DEFLECT_MS = 380;
+/** тайминги, мс (при prefers-reduced-motion — короче) */
+const T = {
+  prepMin: 150, // присед перед ударом, пока сервер решает
+  flight: 520, // полёт мяча
+  diveDelay: 80, // вратарь стартует чуть позже удара
+  dive: 440,
+  hold: 110, // сейв: мяч прилип к перчаткам — короткая остановка
+  fall: 380, // приземление вратаря
+  net: 150, // гол: мяч продавливает сетку
+  drop: 430, // гол: мяч падает в сетке
+  rebound: 470, // штанга: отскок
+};
 
 export interface ShotPlan {
   zone: number;
   keeper: number;
-  goal: boolean;
+  outcome: PenaltyOutcome;
+  /** момент касания: перчатки, сетка или каркас — для вибрации и надписи */
+  onImpact?: () => void;
 }
 
 export interface SceneHandle {
-  /** проиграть удар; промис — когда мяч долетел (и отскочил при сейве) */
+  /** присед вратаря сразу по нажатию — пока сервер решает исход */
+  prepare(): void;
+  /** проиграть удар; промис — когда всё отыграло (вратарь приземлился, мяч упал) */
   play(plan: ShotPlan): Promise<void>;
   reset(): void;
 }
@@ -38,29 +72,36 @@ export interface FpsSample {
   ms: number;
   fps: number;
   worst_ms: number;
+  outcome: PenaltyOutcome;
 }
 
 declare global {
   interface Window {
     /** замер плавности последнего удара (для проверок Playwright) */
     __rmShotFps?: FpsSample[];
+    /** только для проверок: «стоп-кадр» удара на этой миллисекунде (кадры для скриншотов) */
+    __rmPkAt?: number;
   }
 }
 
-function zonePoint(zone: number, jitter: number): { x: number; y: number } {
-  const { col, row } = zoneCell(zone);
-  return {
-    x: GOAL.x + (GOAL.w * (col + 0.5)) / 3 + jitter * 14,
-    y: GOAL.y + GOAL.h * (row === 0 ? 0.27 : 0.73),
+/** Конфетти: детерминированный разброс (одинаковый на каждом рендере). */
+function confettiPieces(n: number) {
+  const colors = ['#F4D57A', '#D4AF37', '#FFFFFF', '#EEF0F5', '#B8962E'];
+  let seed = 7;
+  const rnd = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
   };
-}
-
-/** Поза вратаря в прыжке к зоне: смещение ступней и наклон корпуса. */
-function divePose(zone: number): { dx: number; dy: number; rot: number } {
-  const { col, row } = zoneCell(zone);
-  if (col === 1) return row === 0 ? { dx: 0, dy: -30, rot: 0 } : { dx: 0, dy: 4, rot: 0 };
-  const side = col === 0 ? -1 : 1;
-  return row === 0 ? { dx: side * 82, dy: -36, rot: side * 72 } : { dx: side * 86, dy: -8, rot: side * 88 };
+  return Array.from({ length: n }, (_, i) => ({
+    left: rnd() * 100,
+    delay: rnd() * 0.25,
+    dur: 1.3 + rnd() * 0.8,
+    drift: (rnd() - 0.5) * 80,
+    spin: 360 + rnd() * 540,
+    w: 4 + rnd() * 4,
+    round: rnd() > 0.55,
+    color: colors[i % colors.length],
+  }));
 }
 
 export const PenaltyScene = forwardRef<
@@ -72,39 +113,85 @@ export const PenaltyScene = forwardRef<
     onAim: (zone: number) => void;
   }
 >(function PenaltyScene({ aim, disabled, onShoot, onAim }, ref) {
-  const ball = useRef<SVGGElement>(null);
-  const ballShadow = useRef<SVGEllipseElement>(null);
-  const keeper = useRef<SVGGElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const world = useRef<HTMLDivElement>(null);
+  const idle = useRef<HTMLDivElement>(null);
+  const dive = useRef<HTMLImageElement>(null);
+  const ball = useRef<HTMLImageElement>(null);
+  const shadow = useRef<HTMLDivElement>(null);
   const net = useRef<SVGGElement>(null);
+  const frame = useRef<SVGGElement>(null);
+  const dent = useRef<HTMLDivElement>(null);
+  const spark = useRef<HTMLDivElement>(null);
+  const confetti = useRef<HTMLDivElement>(null);
+  const arrow = useRef<HTMLDivElement>(null);
   const raf = useRef(0);
+  const prepAt = useRef(0);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const swiped = useRef(false);
-  const stage = useRef<HTMLDivElement>(null);
+  const pieces = useMemo(() => confettiPieces(36), []);
 
-  const setBall = (x: number, y: number, s: number, spin: number, o = 1) => {
-    if (ball.current) {
-      ball.current.style.transform = `translate(${x}px, ${y}px) scale(${s}) rotate(${spin}deg)`;
-      ball.current.style.opacity = String(o);
-    }
+  // ---------- позиционирование слоёв ----------
+  const setBall = (p: Pt, s: number, spin: number, o = 1) => {
+    const el = ball.current;
+    if (!el) return;
+    el.style.transform = `translate(${(p.x - R).toFixed(2)}px, ${(p.y - R).toFixed(2)}px) scale(${s.toFixed(3)}) rotate(${spin.toFixed(1)}deg)`;
+    el.style.opacity = String(o);
   };
-  const setShadow = (x: number, s: number, o: number) => {
-    if (ballShadow.current) {
-      ballShadow.current.style.transform = `translate(${x}px, ${SPOT.y + 12}px) scale(${s})`;
-      ballShadow.current.style.opacity = String(o);
-    }
+  const setShadow = (x: number, y: number, s: number, o: number) => {
+    const el = shadow.current;
+    if (!el) return;
+    el.style.transform = `translate(${(x - 16).toFixed(2)}px, ${(y - 4).toFixed(2)}px) scale(${s.toFixed(3)})`;
+    el.style.opacity = o.toFixed(3);
   };
-  const setKeeper = (dx: number, dy: number, rot: number) => {
-    if (keeper.current)
-      keeper.current.style.transform = `translate(${KEEPER.x + dx}px, ${KEEPER.y + dy}px) translate(0px, ${-HIP}px) rotate(${rot}deg) translate(0px, ${HIP}px)`;
+  const setIdle = (dy: number, sx: number, sy: number, o: number) => {
+    const el = idle.current;
+    if (!el) return;
+    el.style.transform = `translate(${(IDLE.foot.x - IDLE.w / 2).toFixed(2)}px, ${(IDLE.foot.y - IDLE.h + dy).toFixed(2)}px) scale(${sx.toFixed(3)}, ${sy.toFixed(3)})`;
+    el.style.opacity = o.toFixed(3);
+  };
+  const setDive = (hip: Pt, rot: number, flip: 1 | -1, s: number, o: number) => {
+    const el = dive.current;
+    if (!el) return;
+    el.style.transform = diveTransform(hip, rot, flip, s);
+    el.style.opacity = o.toFixed(3);
+  };
+  /** перезапуск CSS-анимации по классу */
+  const kick = (el: Element | null, cls: string) => {
+    if (!el) return;
+    el.classList.remove(cls);
+    void (el as HTMLElement).getBoundingClientRect();
+    el.classList.add(cls);
   };
 
   const reset = useCallback(() => {
     cancelAnimationFrame(raf.current);
-    setBall(SPOT.x, SPOT.y, 1, 0);
-    setShadow(SPOT.x, 1, 0.55);
-    setKeeper(0, 0, 0);
-    keeper.current?.classList.remove('is-diving');
-    net.current?.classList.remove('is-hit');
+    setBall(SPOT, 1, 0);
+    setShadow(SPOT.x, SPOT.y + R - 2, 1, 0.5);
+    setIdle(0, 1, 1, 1);
+    if (dive.current) dive.current.style.opacity = '0';
+    idle.current?.classList.remove('is-ready', 'is-off');
+    for (const [el, cls] of [
+      [stage.current, 'is-shake'],
+      [net.current, 'is-hit'],
+      [frame.current, 'is-hit'],
+      [dent.current, 'is-on'],
+      [spark.current, 'is-on'],
+      [confetti.current, 'is-on'],
+    ] as const)
+      el?.classList.remove(cls);
+    stage.current?.classList.remove('is-flying');
+  }, []);
+
+  // масштаб мира под ширину сцены
+  useLayoutEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const fit = () => world.current?.style.setProperty('--k', String(el.clientWidth / W));
+    fit();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null;
+    ro?.observe(el);
+    return () => ro?.disconnect();
   }, []);
 
   // до первой отрисовки: мяч на отметке, вратарь в воротах
@@ -117,57 +204,184 @@ export const PenaltyScene = forwardRef<
     ref,
     () => ({
       reset,
-      play(plan) {
+      prepare() {
+        prepAt.current = performance.now();
+        idle.current?.classList.add('is-ready');
+        stage.current?.classList.add('is-flying');
+      },
+      async play(plan) {
         cancelAnimationFrame(raf.current);
         const fast = reducedMotion();
-        const k = fast ? 0.45 : 1;
-        const jitter = Math.random() * 2 - 1;
-        const target = zonePoint(plan.zone, jitter);
-        const pose = divePose(plan.keeper);
-        const flight = FLIGHT_MS * k;
-        const diveDelay = DIVE_DELAY_MS * k;
-        const dive = DIVE_MS * k;
-        const deflect = DEFLECT_MS * k;
-        const lift = plan.zone <= 3 ? 46 : 22;
-        const away = { x: target.x + (target.x < 200 ? -70 : 70), y: target.y - 60 };
-        keeper.current?.classList.add('is-diving');
+        const k = fast ? 0.5 : 1;
+        const waited = performance.now() - prepAt.current;
+        if (!fast && prepAt.current && waited < T.prepMin) await new Promise((r) => window.setTimeout(r, T.prepMin - waited));
+        prepAt.current = 0;
+        stage.current?.classList.add('is-flying');
 
-        // замер плавности: интервалы между кадрами
+        const flight = T.flight * k;
+        const diveDelay = T.diveDelay * k;
+        const diveMs = T.dive * k;
+        const hold = T.hold * k;
+        const fallMs = T.fall * k;
+        const netMs = T.net * k;
+        const dropMs = T.drop * k;
+        const reboundMs = T.rebound * k;
+
+        const { outcome } = plan;
+        const pose = keeperPose(plan.keeper);
+        const top = cell(plan.zone).row === 0;
+        const side = cell(plan.zone).col === 0 ? -1 : cell(plan.zone).col === 2 ? 1 : 0;
+        const target =
+          outcome === 'save'
+            ? catchPoint(pose)
+            : outcome === 'goal'
+              ? goalPoint(plan.zone, Math.random() * 2 - 1, Math.random() * 2 - 1)
+              : woodPoint(plan.zone, outcome);
+        const endScale = outcome === 'save' ? 0.62 : 0.52;
+        const lift = outcome === 'bar' ? 52 : top ? 44 : 20;
+        const spinDir = side < 0 ? -1 : 1;
+        const rebound = outcome === 'post' || outcome === 'bar' ? reboundPoint(plan.zone, outcome) : null;
+
+        // старт прыжка: корпус почти вертикально у центра ворот, перчатка вверх
+        const flip = pose.kind === 'dive' ? pose.flip : 1;
+        const hip0: Pt = { x: 200 + flip * 6, y: GOAL_LINE - 34 };
+        const rot0 = flip * -62;
+        const keeperRow = cell(plan.keeper).row;
+        const land = { y: GOAL_LINE - (keeperRow === 0 ? 14 : 10), rot: flip * 8 };
+        const caught = outcome === 'save';
+        // вратарь падает: при сейве — после остановки с мячом, иначе — сразу, как долетел
+        const fallAt = caught ? flight + hold : diveDelay + diveMs;
+
+
         let frames = 0;
         let worst = 0;
         let prev = 0;
+        let impacted = false;
         const t0 = performance.now();
+        const end =
+          outcome === 'save'
+            ? flight + hold + fallMs + 140 * k
+            : outcome === 'goal'
+              ? flight + netMs + dropMs + 80 * k
+              : flight + reboundMs + 60 * k;
+
+        const keeperAt = (t: number): { glove: Pt } => {
+          const u = ease.out((t - diveDelay) / diveMs);
+          const f = ease.in((t - fallAt) / fallMs);
+          if (pose.kind === 'idle') {
+            // по центру: вверх — прыжок, вниз — глубокий присед; потом обратно в стойку
+            const back = ease.inOut((t - fallAt) / fallMs);
+            const dy = pose.dy * (pose.dy < 0 ? Math.sin((Math.PI / 2) * u) : u) * (1 - back);
+            const sy = lerp(1, pose.sy, u * (1 - back));
+            const sx = pose.sy < 1 ? lerp(1, 1.1, u * (1 - back)) : 1;
+            setIdle(dy, sx, sy, 1);
+            // точка «поймал» от ступней: в позе — (catchAt − ступни − dy) / sy; сейчас — с текущими dy и sy
+            const offY = (pose.catchAt.y - IDLE.foot.y - pose.dy) / pose.sy;
+            return { glove: { x: pose.catchAt.x, y: IDLE.foot.y + dy + offY * sy } };
+          }
+          // прыжок: стойка гаснет, картинка прыжка разворачивается в позу
+          const show = Math.min(1, Math.max(0, (t - diveDelay) / (60 * k)));
+          setIdle(-6 * show, 1, 1, 1 - show);
+          const arc = (keeperRow === 0 ? -16 : -6) * Math.sin(Math.PI * u);
+          const hip = {
+            x: lerp(hip0.x, pose.hip.x, u),
+            y: lerp(hip0.y, pose.hip.y, u) + arc + (land.y - pose.hip.y) * Math.max(0, f) * (pose.hip.y < land.y ? 1 : 0),
+          };
+          const rot = lerp(rot0, pose.rot, u) + land.rot * f;
+          const s = lerp(0.9, 1, u);
+          setDive(hip, rot, pose.flip, s, show);
+          return { glove: divePoint(DIVE.ball, hip, rot, pose.flip) };
+        };
+
+        const impact = () => {
+          impacted = true;
+          plan.onImpact?.();
+          if (outcome === 'save') {
+            if (!fast) kick(stage.current, 'is-shake');
+          } else if (outcome === 'goal') {
+            const n = net.current;
+            if (n) n.style.transformOrigin = `${target.x}px ${target.y}px`;
+            kick(n, 'is-hit');
+            if (dent.current) {
+              dent.current.style.transform = `translate(${target.x - 30}px, ${target.y - 30}px)`;
+              kick(dent.current, 'is-on');
+            }
+            if (!fast) kick(confetti.current, 'is-on');
+          } else {
+            kick(frame.current, 'is-hit');
+            if (spark.current) {
+              spark.current.style.transform = `translate(${target.x - 18}px, ${target.y - 18}px)`;
+              kick(spark.current, 'is-on');
+            }
+          }
+        };
 
         return new Promise<void>((resolve) => {
           const tick = (now: number) => {
             if (prev) worst = Math.max(worst, now - prev);
             prev = now;
             frames += 1;
-            const t = now - t0;
-            // мяч
-            if (t <= flight) {
-              const f = ballFrame(t / flight, SPOT, target, lift);
-              setBall(f.x, f.y, f.scale, f.spin);
-              setShadow(f.x, 1 - 0.6 * easeOut(t / flight), 0.55 * (1 - t / flight));
-            } else if (!plan.goal && t <= flight + deflect) {
-              // сейв: мяч отскакивает от перчаток в сторону и гаснет
-              const u = easeOut((t - flight) / deflect);
-              setBall(target.x + (away.x - target.x) * u, target.y + (away.y - target.y) * u - 20 * Math.sin(Math.PI * u), 0.45, 540 + 360 * u, 1 - u);
-            } else if (plan.goal) {
-              setBall(target.x, target.y + 4, 0.42, 560);
-              net.current?.classList.add('is-hit');
-            }
-            // вратарь
-            const d = Math.min(1, Math.max(0, (t - diveDelay) / dive));
-            const e = easeOut(d);
-            setKeeper(pose.dx * e, pose.dy * Math.sin((Math.PI / 2) * e), pose.rot * e);
+            const freeze = window.__rmPkAt;
+            const t = freeze != null ? Math.min(now - t0, freeze) : now - t0;
+            // присед держится до старта прыжка
+            if (t >= diveDelay) idle.current?.classList.remove('is-ready');
+            const gk = keeperAt(t);
 
-            const end = flight + (plan.goal ? 60 : deflect);
-            if (t < Math.max(end, diveDelay + dive)) raf.current = requestAnimationFrame(tick);
+            if (t <= flight) {
+              // полёт: дуга, уменьшение (перспектива), вращение; тень скользит по газону к линии ворот
+              const x = t / flight;
+              const e = 1 - (1 - x) ** 2;
+              const p = { x: lerp(SPOT.x, target.x, e), y: lerp(SPOT.y, target.y, e) - lift * Math.sin(Math.PI * e) };
+              setBall(p, lerp(1, endScale, e), spinDir * 620 * e);
+              const gy = lerp(SPOT.y + R - 2, GOAL_LINE + 1, e);
+              setShadow(p.x, gy, lerp(1, 0.45, e), 0.5 * (1 - 0.75 * e));
+            } else {
+              if (!impacted) impact();
+              const a = t - flight;
+              if (outcome === 'save') {
+                // мяч прилип к перчаткам и падает вместе с вратарём
+                setBall(gk.glove, endScale, spinDir * 620);
+                setShadow(gk.glove.x, GOAL_LINE + 1, 0.45, Math.max(0, 0.12 - a / 2000));
+              } else if (outcome === 'goal') {
+                if (a <= netMs) {
+                  // продавливает сетку
+                  const u = ease.out(a / netMs);
+                  setBall({ x: target.x + side * 3 * u, y: target.y + 3 * u }, endScale * lerp(1, 0.84, u), spinDir * (620 + 90 * u));
+                } else {
+                  // падает в сетке с отскоком
+                  const u = Math.min(1, (a - netMs) / dropMs);
+                  const floor = GOAL_LINE - 8;
+                  const y0 = target.y + 3;
+                  const fallU = Math.min(1, u / 0.72);
+                  let y = lerp(y0, floor, ease.in(fallU));
+                  if (u > 0.72) y = floor - 7 * Math.sin((Math.PI * (u - 0.72)) / 0.28);
+                  setBall({ x: target.x + side * (3 + 6 * u), y }, endScale * 0.84, spinDir * (710 + 160 * u));
+                  setShadow(target.x + side * (3 + 6 * u), GOAL_LINE - 6, 0.35, 0.3 * ease.in(u));
+                }
+              } else if (rebound) {
+                // штанга/перекладина: отскок наружу и к бьющему
+                const u = Math.min(1, a / reboundMs);
+                const e = ease.out(u);
+                const p = {
+                  x: lerp(target.x, rebound.x, e),
+                  y: lerp(target.y, rebound.y, e) - (outcome === 'bar' ? 34 : 18) * Math.sin(Math.PI * e),
+                };
+                setBall(p, lerp(endScale, 0.78, e), spinDir * (620 - 300 * e), 1 - Math.max(0, (u - 0.7) / 0.3));
+                setShadow(p.x, lerp(GOAL_LINE + 1, rebound.y + 10, e), lerp(0.45, 0.7, e), 0.3 * (1 - u));
+              }
+            }
+
+            if (t < end || freeze != null) raf.current = requestAnimationFrame(tick);
             else {
               const ms = now - t0;
-              const sample = { frames, ms: Math.round(ms), fps: Math.round((frames / ms) * 1000 * 10) / 10, worst_ms: Math.round(worst * 10) / 10 };
-              (window.__rmShotFps ??= []).push(sample);
+              (window.__rmShotFps ??= []).push({
+                frames,
+                ms: Math.round(ms),
+                fps: Math.round((frames / ms) * 1000 * 10) / 10,
+                worst_ms: Math.round(worst * 10) / 10,
+                outcome,
+              });
+              stage.current?.classList.remove('is-flying');
               resolve();
             }
           };
@@ -178,14 +392,39 @@ export const PenaltyScene = forwardRef<
     [reset],
   );
 
+  // ---------- свайп от мяча ----------
+  const toWorld = (dx: number, dy: number) => {
+    const w = stage.current?.clientWidth || W;
+    return { dx: (dx * W) / w, dy: (dy * W) / w, w };
+  };
+  const showArrow = (dx: number, dy: number) => {
+    const el = arrow.current;
+    if (!el) return;
+    const len = Math.min(150, Math.hypot(dx, dy));
+    const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+    el.style.transform = `translate(${SPOT.x}px, ${SPOT.y}px) rotate(${ang.toFixed(1)}deg) scaleX(${(len / 100).toFixed(3)})`;
+    el.style.opacity = len > 12 ? '1' : '0';
+  };
   const onDown = (e: ReactPointerEvent<HTMLButtonElement>) => {
     if (disabled) return;
     swipe.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
+  const onMove = (e: ReactPointerEvent<HTMLButtonElement>) => {
+    const s = swipe.current;
+    if (!s || s.id !== e.pointerId || disabled) return;
+    const v = toWorld(e.clientX - s.x, e.clientY - s.y);
+    showArrow(v.dx, v.dy);
+    const z = zoneFromSwipe(e.clientX - s.x, e.clientY - s.y, v.w);
+    if (z != null) onAim(z);
+  };
+  const endSwipe = () => {
+    swipe.current = null;
+    if (arrow.current) arrow.current.style.opacity = '0';
+  };
   const onUp = (e: ReactPointerEvent<HTMLButtonElement>) => {
     const s = swipe.current;
-    swipe.current = null;
+    endSwipe();
     if (!s || s.id !== e.pointerId || disabled) return;
     const w = stage.current?.clientWidth ?? 360;
     const z = zoneFromSwipe(e.clientX - s.x, e.clientY - s.y, w);
@@ -193,138 +432,194 @@ export const PenaltyScene = forwardRef<
     if (z != null) onShoot(z);
   };
 
+  const aimPt = aim != null ? zonePoint(aim) : null;
+
   return (
     <div className={`pk-stage${disabled ? ' is-busy' : ''}`} ref={stage}>
-      <svg className="pk-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ворота, вратарь и мяч на одиннадцатиметровой отметке">
+      <svg className="pk-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Стадион ночью: ворота, Куртуа и мяч на одиннадцатиметровой отметке">
         <defs>
           <linearGradient id="pk-sky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#020308" />
-            <stop offset="0.55" stopColor="#0A0D17" />
+            <stop offset="0.6" stopColor="#090C16" />
             <stop offset="1" stopColor="#0E1220" />
           </linearGradient>
-          <radialGradient id="pk-flood-l" cx="0.08" cy="0.02" r="0.55">
-            <stop offset="0" stopColor="#FFF4CF" stopOpacity="0.42" />
-            <stop offset="0.25" stopColor="#F4D57A" stopOpacity="0.12" />
+          <radialGradient id="pk-flood" cx="0.5" cy="0" r="0.5">
+            <stop offset="0" stopColor="#FFF4CF" stopOpacity="0.55" />
+            <stop offset="0.35" stopColor="#F4D57A" stopOpacity="0.14" />
             <stop offset="1" stopColor="#F4D57A" stopOpacity="0" />
           </radialGradient>
-          <radialGradient id="pk-flood-r" cx="0.92" cy="0.02" r="0.55">
-            <stop offset="0" stopColor="#FFF4CF" stopOpacity="0.42" />
-            <stop offset="0.25" stopColor="#F4D57A" stopOpacity="0.12" />
+          <linearGradient id="pk-beam" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FFF1C4" stopOpacity="0.16" />
             <stop offset="1" stopColor="#F4D57A" stopOpacity="0" />
-          </radialGradient>
+          </linearGradient>
           <pattern id="pk-crowd" width="9" height="7" patternUnits="userSpaceOnUse">
             <circle cx="2.5" cy="2.5" r="1.5" fill="#262C3E" />
             <circle cx="7" cy="5.5" r="1.3" fill="#1B2030" />
           </pattern>
+          <linearGradient id="pk-stand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#06070B" stopOpacity="0.2" />
+            <stop offset="1" stopColor="#06070B" stopOpacity="0.85" />
+          </linearGradient>
+          <linearGradient id="pk-board" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#1A1408" />
+            <stop offset="0.5" stopColor="#2A2110" />
+            <stop offset="1" stopColor="#1A1408" />
+          </linearGradient>
           <linearGradient id="pk-grass" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#0B2016" />
-            <stop offset="1" stopColor="#133524" />
+            <stop offset="0" stopColor="#0C2318" />
+            <stop offset="1" stopColor="#154029" />
           </linearGradient>
+          <radialGradient id="pk-pitchlight" cx="0.5" cy="0.15" r="0.75">
+            <stop offset="0" stopColor="#F4D57A" stopOpacity="0.10" />
+            <stop offset="1" stopColor="#F4D57A" stopOpacity="0" />
+          </radialGradient>
           <linearGradient id="pk-mouth" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#151B2B" />
-            <stop offset="1" stopColor="#0D1220" />
+            <stop offset="0" stopColor="#141A2A" />
+            <stop offset="1" stopColor="#0B101C" />
           </linearGradient>
-          <pattern id="pk-mesh" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <path d="M0 0H10M0 0V10" stroke="#E8ECF5" strokeOpacity="0.16" strokeWidth="0.8" fill="none" />
+          <pattern id="pk-mesh" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0H9M0 0V9" stroke="#E8ECF5" strokeOpacity="0.2" strokeWidth="0.7" fill="none" />
+          </pattern>
+          <pattern id="pk-mesh-side" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0H7M0 0V7" stroke="#E8ECF5" strokeOpacity="0.13" strokeWidth="0.6" fill="none" />
           </pattern>
           <linearGradient id="pk-post" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stopColor="#FFFFFF" />
-            <stop offset="1" stopColor="#B9BFCC" />
+            <stop offset="0.6" stopColor="#E9ECF2" />
+            <stop offset="1" stopColor="#A9B0BE" />
           </linearGradient>
           <linearGradient id="pk-bar" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#FFFFFF" />
-            <stop offset="1" stopColor="#B9BFCC" />
+            <stop offset="1" stopColor="#B4BAC8" />
           </linearGradient>
-          <radialGradient id="pk-ball" cx="0.38" cy="0.32" r="0.75">
-            <stop offset="0" stopColor="#FFFFFF" />
-            <stop offset="0.7" stopColor="#E3E6EE" />
-            <stop offset="1" stopColor="#9EA4B3" />
-          </radialGradient>
           <linearGradient id="pk-rim" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stopColor="#D4AF37" stopOpacity="0" />
             <stop offset="0.5" stopColor="#F4D57A" stopOpacity="0.9" />
             <stop offset="1" stopColor="#D4AF37" stopOpacity="0" />
           </linearGradient>
+          <radialGradient id="pk-vignette" cx="0.5" cy="0.55" r="0.75">
+            <stop offset="0.6" stopColor="#000" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity="0.55" />
+          </radialGradient>
         </defs>
 
-        {/* небо и трибуны */}
+        {/* небо, трибуны, рекламный борт */}
         <rect width={W} height={H} fill="url(#pk-sky)" />
-        <path d="M0 40 L400 40 L400 176 L0 176 Z" fill="url(#pk-crowd)" opacity="0.9" />
-        <path d="M0 40 L400 40" stroke="url(#pk-rim)" strokeWidth="1.2" />
-        <path d="M0 118 L400 118" stroke="#D4AF37" strokeOpacity="0.18" strokeWidth="6" />
-        <rect width={W} height={H} fill="url(#pk-flood-l)" />
-        <rect width={W} height={H} fill="url(#pk-flood-r)" />
-        {/* мачты прожекторов */}
-        <g fill="#FFF7DD" opacity="0.9">
-          <rect x="14" y="10" width="26" height="6" rx="2" />
-          <rect x="360" y="10" width="26" height="6" rx="2" />
+        <path d="M0 34 L400 34 L400 160 L0 160 Z" fill="url(#pk-crowd)" />
+        <path d="M0 34 L400 34 L400 160 L0 160 Z" fill="url(#pk-stand)" />
+        <path d="M0 34 L400 34" stroke="url(#pk-rim)" strokeWidth="1.2" />
+        <path d="M0 96 L400 96" stroke="#D4AF37" strokeOpacity="0.12" strokeWidth="4" />
+        <rect x="0" y="160" width={W} height="14" fill="url(#pk-board)" />
+        <path d="M0 160 H400 M0 174 H400" stroke="#D4AF37" strokeOpacity="0.35" strokeWidth="0.8" />
+        {/* светодиодный борт: золотые полосы по краям (центр закрывают ворота) */}
+        <g fill="#F4D57A">
+          {[6, 22, 38, 352, 368, 384].map((x, i) => (
+            <rect key={x} x={x - 5} y="164" width="10" height="6" rx="1" opacity={i % 3 === 1 ? 0.5 : 0.28} />
+          ))}
         </g>
 
-        {/* газон в перспективе */}
-        <path d="M0 176 L400 176 L400 320 L0 320 Z" fill="url(#pk-grass)" />
-        <g fill="#FFFFFF" opacity="0.035">
-          <path d="M0 196 L400 196 L400 214 L0 214 Z" />
-          <path d="M0 236 L400 236 L400 260 L0 260 Z" />
-          <path d="M0 288 L400 288 L400 320 L0 320 Z" />
+        {/* прожекторы: мачты, свечение, лучи */}
+        <path d="M18 18 L-30 176 L60 176 Z" fill="url(#pk-beam)" />
+        <path d="M382 18 L340 176 L430 176 Z" fill="url(#pk-beam)" />
+        <ellipse cx="28" cy="16" rx="120" ry="90" fill="url(#pk-flood)" />
+        <ellipse cx="372" cy="16" rx="120" ry="90" fill="url(#pk-flood)" />
+        <g fill="#FFF7DD">
+          <rect x="8" y="8" width="40" height="12" rx="2.5" opacity="0.18" />
+          <rect x="352" y="8" width="40" height="12" rx="2.5" opacity="0.18" />
+          {[0, 1, 2, 3].map((i) => (
+            <g key={i}>
+              <circle cx={13 + i * 10} cy="11" r="2.6" />
+              <circle cx={13 + i * 10} cy="17" r="2.6" opacity="0.85" />
+              <circle cx={357 + i * 10} cy="11" r="2.6" />
+              <circle cx={357 + i * 10} cy="17" r="2.6" opacity="0.85" />
+            </g>
+          ))}
         </g>
+
+        {/* газон: полосы стрижки шире к бьющему, свет прожекторов */}
+        <path d={`M0 174 L400 174 L400 ${H} L0 ${H} Z`} fill="url(#pk-grass)" />
+        <g fill="#FFFFFF" opacity="0.04">
+          <path d="M0 182 H400 V192 H0 Z" />
+          <path d="M0 204 H400 V220 H0 Z" />
+          <path d="M0 238 H400 V260 H0 Z" />
+          <path d="M0 286 H400 V320 H0 Z" />
+        </g>
+        <rect x="0" y="174" width={W} height={H - 174} fill="url(#pk-pitchlight)" />
         {/* разметка: линия ворот, вратарская, отметка */}
-        <g stroke="#E8ECF5" strokeOpacity="0.5" strokeWidth="1.6" fill="none">
-          <path d="M0 192 L400 192" />
-          <path d="M34 192 L18 222 L382 222 L366 192" strokeOpacity="0.35" />
+        <g stroke="#E8ECF5" strokeOpacity="0.55" strokeWidth="1.5" fill="none">
+          <path d={`M0 ${GOAL_LINE} L400 ${GOAL_LINE}`} />
+          <path d={`M30 ${GOAL_LINE} L12 226 L388 226 L370 ${GOAL_LINE}`} strokeOpacity="0.38" />
         </g>
-        <ellipse cx={SPOT.x} cy={SPOT.y + 10} rx="5" ry="2" fill="#E8ECF5" opacity="0.6" />
+        <ellipse cx={SPOT.x} cy={SPOT.y + R - 3} rx="5.5" ry="2" fill="#E8ECF5" opacity="0.6" />
 
-        {/* ворота: сетка, штанги, перекладина */}
+        {/* ворота: задняя сетка, боковые, свод — прогибается при голе */}
         <g ref={net} className="pk-net">
           <rect x={GOAL.x} y={GOAL.y} width={GOAL.w} height={GOAL.h} fill="url(#pk-mouth)" />
-          <rect x={GOAL.x} y={GOAL.y} width={GOAL.w} height={GOAL.h} fill="url(#pk-mesh)" />
-          <path d={`M${GOAL.x + 8} ${GOAL.y + 8} H${GOAL.x + GOAL.w - 8} M${GOAL.x + 8} ${GOAL.y + 8} L${GOAL.x} ${GOAL.y + GOAL.h} M${GOAL.x + GOAL.w - 8} ${GOAL.y + 8} L${GOAL.x + GOAL.w} ${GOAL.y + GOAL.h}`} stroke="#E8ECF5" strokeOpacity="0.22" strokeWidth="1" />
+          <path d={`M${GOAL.x} ${GOAL.y} L${GOAL.x + 16} ${GOAL.y + 12} L${GOAL.x + 16} ${GOAL_LINE - 2} L${GOAL.x} ${GOAL_LINE} Z`} fill="url(#pk-mesh-side)" />
+          <path d={`M${GOAL.x + GOAL.w} ${GOAL.y} L${GOAL.x + GOAL.w - 16} ${GOAL.y + 12} L${GOAL.x + GOAL.w - 16} ${GOAL_LINE - 2} L${GOAL.x + GOAL.w} ${GOAL_LINE} Z`} fill="url(#pk-mesh-side)" />
+          <rect x={GOAL.x + 16} y={GOAL.y + 12} width={GOAL.w - 32} height={GOAL.h - 14} fill="url(#pk-mesh)" />
+          <path d={`M${GOAL.x} ${GOAL.y} L${GOAL.x + 16} ${GOAL.y + 12} H${GOAL.x + GOAL.w - 16} L${GOAL.x + GOAL.w} ${GOAL.y}`} fill="url(#pk-mesh-side)" />
+          <path
+            d={`M${GOAL.x + 16} ${GOAL.y + 12} H${GOAL.x + GOAL.w - 16} M${GOAL.x + 16} ${GOAL.y + 12} V${GOAL_LINE - 2} M${GOAL.x + GOAL.w - 16} ${GOAL.y + 12} V${GOAL_LINE - 2} M${GOAL.x + 16} ${GOAL_LINE - 2} H${GOAL.x + GOAL.w - 16}`}
+            stroke="#E8ECF5"
+            strokeOpacity="0.28"
+            strokeWidth="0.9"
+            fill="none"
+          />
         </g>
-        <rect x={GOAL.x - 7} y={GOAL.y - 7} width="7" height={GOAL.h + 7} rx="2" fill="url(#pk-post)" />
-        <rect x={GOAL.x + GOAL.w} y={GOAL.y - 7} width="7" height={GOAL.h + 7} rx="2" fill="url(#pk-post)" />
-        <rect x={GOAL.x - 7} y={GOAL.y - 7} width={GOAL.w + 14} height="7" rx="2" fill="url(#pk-bar)" />
-        <ellipse cx={W / 2} cy={GOAL.y + GOAL.h + 2} rx="150" ry="4" fill="#000" opacity="0.35" />
-
-        {/* вратарь — силуэт (ступни в 0,0) */}
-        <g ref={keeper} className="pk-keeper">
-          <g className="pk-keeper__idle">
-            <ellipse cx="0" cy="2" rx="20" ry="3.5" fill="#000" opacity="0.4" />
-            <g fill="#04050A" stroke="#04050A" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M-9 -34 L-15 -1" strokeWidth="9" fill="none" />
-              <path d="M9 -34 L15 -1" strokeWidth="9" fill="none" />
-              <path d="M-14 -61 Q0 -66 14 -61 L11 -33 Q0 -29 -11 -33 Z" strokeWidth="2" />
-              <path d="M-13 -58 L-29 -45 L-35 -36" strokeWidth="7" fill="none" />
-              <path d="M13 -58 L29 -45 L35 -36" strokeWidth="7" fill="none" />
-              <circle cx="-36" cy="-34" r="5.2" />
-              <circle cx="36" cy="-34" r="5.2" />
-              <circle cx="0" cy="-72" r="7.5" />
-            </g>
-            {/* контровой свет прожекторов по краю силуэта */}
-            <g fill="none" stroke="#F4D57A" strokeOpacity="0.38" strokeWidth="1" strokeLinecap="round">
-              <path d="M-6.5 -77.5 A7.5 7.5 0 0 1 6.5 -77.5" />
-              <path d="M-14 -61 Q0 -66 14 -61" />
-              <path d="M13.5 -60 L30 -47" />
-              <path d="M-13.5 -60 L-30 -47" />
-            </g>
-          </g>
+        <ellipse cx={W / 2} cy={GOAL_LINE + 2} rx="152" ry="4.5" fill="#000" opacity="0.35" />
+        {/* каркас: штанги и перекладина — дрожат при попадании */}
+        <g ref={frame} className="pk-frame">
+          <rect x={GOAL.x - POST_W} y={GOAL.y - POST_W} width={POST_W} height={GOAL.h + POST_W} rx="2" fill="url(#pk-post)" />
+          <rect x={GOAL.x + GOAL.w} y={GOAL.y - POST_W} width={POST_W} height={GOAL.h + POST_W} rx="2" fill="url(#pk-post)" />
+          <rect x={GOAL.x - POST_W} y={GOAL.y - POST_W} width={GOAL.w + POST_W * 2} height={POST_W} rx="2" fill="url(#pk-bar)" />
+          <path d={`M${GOAL.x - POST_W + 1} ${GOAL.y - POST_W + 1.5} H${GOAL.x + GOAL.w + POST_W - 1}`} stroke="#FFFFFF" strokeOpacity="0.9" strokeWidth="1" />
         </g>
-
-        {/* мяч */}
-        <ellipse ref={ballShadow} cx="0" cy="0" rx="13" ry="3.6" fill="#000" opacity="0.55" className="pk-shadow" />
-        <g ref={ball} className="pk-ball">
-          <circle r="13" fill="url(#pk-ball)" />
-          <g fill="#1A1E2A">
-            <path d="M0 -4.6 L4.4 -1.4 L2.7 3.7 L-2.7 3.7 L-4.4 -1.4 Z" />
-            <path d="M-1 -13 L3.4 -12.2 L2 -8.6 L-2.3 -9 Z" opacity="0.85" />
-            <path d="M11.6 -5 L12.8 1 L9.4 0.2 L8.8 -3.8 Z" opacity="0.85" />
-            <path d="M-12.4 -3.4 L-9.2 -3 L-9.6 1.6 L-12.8 2.2 Z" opacity="0.85" />
-            <path d="M-6.4 10.8 L-2.8 8.4 L1 11 L-2 12.8 Z" opacity="0.8" />
-            <path d="M6 9.6 L8.8 6.6 L10.8 8.2 L8.2 11 Z" opacity="0.8" />
-          </g>
-        </g>
+        <rect width={W} height={H} fill="url(#pk-vignette)" pointerEvents="none" />
       </svg>
 
-      {/* зоны ворот — кнопки поверх сцены (проценты = координаты ворот в viewBox) */}
+      {/* слой «мира» 400×320: Куртуа, мяч, тень, прицел, эффекты */}
+      <div className="pk-world" ref={world} aria-hidden="true">
+        <div className="pk-dent" ref={dent} />
+        <div className="pk-gk" ref={idle} style={{ width: IDLE.w, height: IDLE.h, transformOrigin: `${IDLE.w / 2}px ${IDLE.h}px` }}>
+          <div className="pk-gk__pose">
+            <div className="pk-gk__sway">
+              <img src={idleSrc} alt="" width={IDLE.w} height={IDLE.h} draggable={false} decoding="async" />
+            </div>
+          </div>
+        </div>
+        <img className="pk-dive" ref={dive} src={diveSrc} alt="" width={DIVE.w} height={DIVE.h} draggable={false} decoding="async" />
+        {aimPt && (
+          <div className="pk-aim" style={{ transform: `translate(${aimPt.x - 15}px, ${aimPt.y - 15}px)` }}>
+            <i />
+          </div>
+        )}
+        <div className="pk-shadow" ref={shadow} />
+        <div className="pk-swipe" ref={arrow} />
+        <img className="pk-ball" ref={ball} src={ballSrc} alt="" width={BALL_SIZE} height={BALL_SIZE} draggable={false} decoding="async" />
+        <div className="pk-spark" ref={spark} />
+      </div>
+
+      <div className="pk-confetti" ref={confetti} aria-hidden="true">
+        {pieces.map((p, i) => (
+          <i
+            key={i}
+            style={{
+              left: `${p.left}%`,
+              width: p.w,
+              height: p.round ? p.w : p.w * 1.6,
+              borderRadius: p.round ? '50%' : 1.5,
+              background: p.color,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.dur}s`,
+              ['--drift' as string]: `${p.drift}px`,
+              ['--spin' as string]: `${p.spin}deg`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* зоны ворот — кнопки поверх сцены (проценты = координаты ворот в мире) */}
       <div
         className="pk-zones"
         style={{
@@ -360,8 +655,9 @@ export const PenaltyScene = forwardRef<
         aria-label="Мяч: проведите пальцем к воротам или нажмите — удар в выбранную зону"
         disabled={disabled}
         onPointerDown={onDown}
+        onPointerMove={onMove}
         onPointerUp={onUp}
-        onPointerCancel={() => (swipe.current = null)}
+        onPointerCancel={endSwipe}
         onClick={() => {
           // после свайпа браузер всё равно шлёт click — удар уже сделан
           if (swiped.current) {
