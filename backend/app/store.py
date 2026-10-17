@@ -42,9 +42,14 @@ CREATE TABLE IF NOT EXISTS player_demand (  -- то же для карточки
     player_id  TEXT PRIMARY KEY,
     asked_at   REAL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS article_demand (  -- текст новости: человек открыл её, а статьи ещё нет
+    aid        TEXT PRIMARY KEY,
+    asked_at   REAL NOT NULL
+);
 """
 
 PLAYER_DEMAND_CAP = 200  # больше заявок в очереди не копим — защита от перебора id
+ARTICLE_DEMAND_CAP = 100  # API принимает заявки только на новости из снимка, это предохранитель
 
 
 def connect(path: str | None = None) -> sqlite3.Connection:
@@ -156,3 +161,20 @@ def peek_player_demand(conn, limit: int = 1) -> list[str]:
 
 def drop_player_demand(conn, player_id) -> None:
     conn.execute("DELETE FROM player_demand WHERE player_id=?", (str(player_id),))
+
+
+def ask_article(conn, aid: str) -> bool:
+    """Заявка на текст новости. False — очередь переполнена."""
+    n = conn.execute("SELECT COUNT(*) FROM article_demand").fetchone()[0]
+    if n >= ARTICLE_DEMAND_CAP:
+        return bool(conn.execute("SELECT 1 FROM article_demand WHERE aid=?", (aid,)).fetchone())
+    conn.execute("INSERT OR IGNORE INTO article_demand(aid, asked_at) VALUES (?,?)", (aid, time.time()))
+    return True
+
+
+def peek_article_demand(conn, limit: int = 1) -> list[str]:
+    return [r[0] for r in conn.execute("SELECT aid FROM article_demand ORDER BY asked_at LIMIT ?", (limit,))]
+
+
+def drop_article_demand(conn, aid: str) -> None:
+    conn.execute("DELETE FROM article_demand WHERE aid=?", (aid,))

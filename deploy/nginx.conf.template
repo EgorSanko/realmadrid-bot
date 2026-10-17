@@ -259,6 +259,100 @@ server {
         add_header X-Content-Type-Options nosniff always;
     }
 
+    # фото в тексте статей (чтение новости внутри приложения): CDN самих источников.
+    # Sports.ru photobooth режет размер по query — у нас он фиксированный (ширина колонки чтения),
+    # чужой query из адреса клиента не передаётся.
+    location ~ "^/img/news/sportsru-photo/(?<rmv2p>preset/[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp))$" {
+        set $rmv2_up https://photobooth.cdn.sports.ru/$rmv2p?q=85&w=730;
+        error_page 400 403 404 410 500 502 503 504 = @rmv2_blank;
+        proxy_pass $rmv2_up;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+        proxy_set_header Cookie "";
+        proxy_set_header Referer "";
+        proxy_set_header Accept "image/avif,image/webp,image/png,image/*;q=0.8";
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Vary;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_ignore_headers Set-Cookie Cache-Control Expires Vary X-Accel-Expires;
+        proxy_cache rmv2img;
+        proxy_cache_key $rmv2_up;
+        proxy_cache_valid 200 7d;
+        proxy_cache_valid 403 404 1d;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
+        proxy_intercept_errors on;
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Cache-Status $upstream_cache_status always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    location ~ "^/img/news/sportsru-dump/(?<rmv2p>[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp))$" {
+        set $rmv2_up https://dumpster.cdn.sports.ru/$rmv2p;
+        error_page 400 403 404 410 500 502 503 504 = @rmv2_blank;
+        proxy_pass $rmv2_up;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+        proxy_set_header Cookie "";
+        proxy_set_header Referer "";
+        proxy_set_header Accept "image/avif,image/webp,image/png,image/*;q=0.8";
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Vary;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_ignore_headers Set-Cookie Cache-Control Expires Vary X-Accel-Expires;
+        proxy_cache rmv2img;
+        proxy_cache_key $rmv2_up;
+        proxy_cache_valid 200 7d;
+        proxy_cache_valid 403 404 1d;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
+        proxy_intercept_errors on;
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Cache-Status $upstream_cache_status always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+    location ~ "^/img/news/sportexpress/(?<rmv2p>userfiles/[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp))$" {
+        set $rmv2_up https://ss.sport-express.ru/$rmv2p;
+        error_page 400 403 404 410 500 502 503 504 = @rmv2_blank;
+        proxy_pass $rmv2_up;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+        proxy_set_header Cookie "";
+        proxy_set_header Referer "";
+        proxy_set_header Accept "image/avif,image/webp,image/png,image/*;q=0.8";
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Vary;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_ignore_headers Set-Cookie Cache-Control Expires Vary X-Accel-Expires;
+        proxy_cache rmv2img;
+        proxy_cache_key $rmv2_up;
+        proxy_cache_valid 200 7d;
+        proxy_cache_valid 403 404 1d;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
+        proxy_intercept_errors on;
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Cache-Status $upstream_cache_status always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
     # аватары пользователей: файлы кладёт сборщик (скачивает с t.me через туннель) в {{DATAROOT}}/avatars;
     # nginx на хосте читает их напрямую (папка 0755, файлы 0644). PNG лежит как {id}.png — отдаём его
     # с верным типом. Нет файла — силуэт. Ссылка в API несёт ?v=<mtime>, поэтому кэш у клиента длинный.

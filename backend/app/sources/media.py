@@ -6,6 +6,7 @@
 их гоняют тесты на сохранённых реальных ответах.
 """
 import email.utils
+import hashlib
 import html
 import re
 import time
@@ -41,7 +42,16 @@ NEWS_FEEDS = (
 )
 NEWS_HOSTS = {"www.championat.com", "championat.com", "www.sport-express.ru", "sport-express.ru",
               "www.sports.ru", "sports.ru"}
-MEDIA_SOURCES = ("championat", "sportexpress", "sportsru", "sportsru_pages", "youtube")
+# страницы статей — свои клиенты (breaker и счётчики отдельно от лент): блокировка страниц не
+# должна выключать ленту. sportsru_pages — и og:image, и текст статей Sports.ru.
+PAGE_SOURCES = {"championat": "championat_pages", "sportexpress": "sportexpress_pages", "sportsru": "sportsru_pages"}
+MEDIA_SOURCES = ("championat", "sportexpress", "sportsru", "sportsru_pages", "championat_pages",
+                 "sportexpress_pages", "youtube")
+# вежливый User-Agent для страниц статей: кто мы и где нас найти
+PAGE_UA = "Mozilla/5.0 (compatible; MadridistaBot/1.0; +https://realmadridfan.ru)"
+# «Чемпионат» без cookie отдаёт заглушку «Вход через SberID» (JS-редирект на SSO). Этот cookie
+# ставит их же скрипт, когда вход откладывают («unity_pause_sso=1»), — с ним приходит сама статья.
+PAGE_COOKIES = {"championat_pages": {"unity_pause_sso": "1"}}
 
 
 class RssSource(HttpxSource):
@@ -54,6 +64,11 @@ class RssSource(HttpxSource):
         super().__init__()
         self.client.headers["Accept"] = "application/rss+xml, application/atom+xml, application/xml, text/xml, */*"
         self.client.headers["Accept-Language"] = "ru,en;q=0.8"
+        if name.endswith("_pages"):
+            self.client.headers["Accept"] = "text/html,application/xhtml+xml;q=0.9,*/*;q=0.5"
+            self.client.headers["User-Agent"] = PAGE_UA
+            for k, v in PAGE_COOKIES.get(name, {}).items():
+                self.client.cookies.set(k, v)
 
     async def _fetch(self, url, params):
         r = await self.client.get(url, params=params)
@@ -149,19 +164,35 @@ def canonical_url(url: str) -> str:
     return f"{p.netloc.lower().removeprefix('www.')}{p.path.rstrip('/')}"
 
 
+def news_aid(news_id: str) -> str:
+    """Короткий id новости для адреса /news/<aid>: 12 hex от канонического id (хост+путь)."""
+    return hashlib.sha1(news_id.encode("utf-8")).hexdigest()[:12]
+
+
+_AID = re.compile(r"^[0-9a-f]{12}$")
+
+
+def is_aid(s: str) -> bool:
+    return bool(_AID.match(s or ""))
+
+
 # ===================================================================== картинки новостей
 # Клиент не ходит на чужие хосты: картинка — путь /img/news/<ключ>/<путь>, nginx знает только
 # эти ключи (deploy/nginx.conf.template) и проксирует на соответствующий хост. Открытого
 # прокси нет: путь только из безопасных символов, хост задан ключом, не URL.
 
 NEWS_IMG_HOSTS = {
-    # ключ: (хост, допустимый префикс пути)
+    # ключ: (хост, допустимый префикс пути); у каждого ключа — свой location в nginx
     "championat": ("img.championat.com", "/"),
     "sportsru": ("www.sports.ru", "/dynamic_images/"),
+    "sportsru-photo": ("photobooth.cdn.sports.ru", "/preset/"),      # фото в тексте статей и блогов
+    "sportsru-dump": ("dumpster.cdn.sports.ru", "/"),                # картинки в блогах
+    "sportexpress": ("ss.sport-express.ru", "/userfiles/"),          # фото в материалах «Спорт-Экспресса»
 }
 _HOST_KEY = {h: (k, pfx) for k, (h, pfx) in NEWS_IMG_HOSTS.items()}
 # те же символы, что пропускает nginx (location /img/news/…): только ASCII, без %-кодов
 _SAFE_PATH = re.compile(r"^/[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp)$")
+_CH_SIGNED = re.compile(r"^/[A-Za-z0-9_-]{20,80}/p\([A-Za-z0-9:%/]*\)/(.+)$")
 
 
 def news_image_path(url: str | None) -> str | None:
@@ -174,7 +205,12 @@ def news_image_path(url: str | None) -> str | None:
     if host not in _HOST_KEY:
         return None
     key, prefix = _HOST_KEY[host]
-    path = quote(unquote(p.path), safe="/._~-")
+    path = quote(unquote(p.path), safe="/._~-()")
+    if key == "championat":
+        # подписанный адрес ресайзера: /<подпись>/p(w:732/h:488)/news/big/… → тот же файл без подписи
+        m = _CH_SIGNED.match(path)
+        if m:
+            path = "/" + m.group(1)
     if not path.startswith(prefix) or ".." in path or "//" in path or not _SAFE_PATH.match(path):
         return None
     return f"/img/news/{key}{path}"

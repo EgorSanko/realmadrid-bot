@@ -372,7 +372,7 @@ def test_collector_news_videos_and_api(tmp_db, monkeypatch):
     _put_team(conn)
     c = Collector(conn)
     try:
-        r = asyncio.run(c.refresh_news())
+        r = asyncio.run(c.refresh_news(article_limit=0))
         v = asyncio.run(c.refresh_videos())
         c.write_state()
     finally:
@@ -388,7 +388,7 @@ def test_collector_news_videos_and_api(tmp_db, monkeypatch):
     n = api.get("/api/news?limit=5").json()
     assert n["count"] == 5 and n["available"][0] == "news" and not n["stale"]
     it = n["items"][0]
-    assert set(it) == {"id", "title", "summary", "source", "url", "published", "image", "also"}
+    assert set(it) == {"id", "title", "summary", "source", "url", "published", "image", "aid", "also"}
     assert all(i["published"] >= j["published"] for i, j in zip(n["items"], n["items"][1:]))
     assert api.get("/api/news?limit=999").json()["count"] <= 100
     assert api.get("/api/news").headers["cache-control"] == "public, max-age=60"
@@ -414,7 +414,7 @@ def test_collector_news_all_feeds_down_keeps_snapshot(tmp_db, monkeypatch):
     conn = store.connect()
     c = Collector(conn)
     try:
-        asyncio.run(c.refresh_news(og_limit=0))
+        asyncio.run(c.refresh_news(og_limit=0, article_limit=0))
         before = store.get(conn, "news")
         monkeypatch.setattr(M.RssSource, "_fetch", _fake_fetch(fail={"championat", "sportexpress", "sportsru"}))
         r = asyncio.run(c.refresh_news())
@@ -422,7 +422,7 @@ def test_collector_news_all_feeds_down_keeps_snapshot(tmp_db, monkeypatch):
         assert store.get(conn, "news") == before
         # упала одна лента — снимок обновляется по остальным, старые новости остаются
         monkeypatch.setattr(M.RssSource, "_fetch", _fake_fetch(fail={"sportsru"}))
-        r = asyncio.run(c.refresh_news(og_limit=0))
+        r = asyncio.run(c.refresh_news(og_limit=0, article_limit=0))
         assert not r["feeds"]["sportsru_real"]["ok"] and r["feeds"]["championat"]["ok"]
         after = store.get(conn, "news")
         assert after["source"] == "championat+sportexpress"

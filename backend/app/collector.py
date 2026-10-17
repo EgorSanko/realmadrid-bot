@@ -6,6 +6,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector                       # демон
   python -m app.collector once team|mapping     # один цикл команды / сопоставления id
   python -m app.collector once news|videos      # один цикл новостей (RSS) / видео (YouTube)
+  python -m app.collector once articles         # тексты статей для новостей из снимка (до ARTICLE_PER_CYCLE)
   python -m app.collector once match <id>       # один цикл матча (цепочка источников)
   python -m app.collector once player <id>      # карточка игрока (FotMob → SofaScore)
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
@@ -34,7 +35,7 @@ from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
 from .model import iso_utc, name_key, same_person, same_team, ts
-from .sources import espn, fotmob, livescore, media, sofascore
+from .sources import article, espn, fotmob, livescore, media, sofascore
 from .sources.base import NotFound, SourceError
 
 log = logging.getLogger("collector")
@@ -61,8 +62,9 @@ class Collector:
         # медиа — свои HTTP-клиенты (breaker и счётчики у каждого сайта), в цепочку матча не входят
         self.media = media.make_sources()
         self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0,
-                       "player": 0, "player_failed": 0}
+                       "player": 0, "player_failed": 0, "article": 0, "article_failed": 0}
         self.player_req: deque = deque()          # время запросов карточек игроков (лимит в минуту)
+        self.article_req: deque = deque()         # время запросов страниц статей (лимит в минуту)
         self.last_team = 0.0
         self.last_mapping = 0.0
         self.last_news = 0.0
@@ -165,8 +167,9 @@ class Collector:
             ids.add(d["coach"]["id"])
         return ids or None
 
-    async def refresh_news(self, og_limit: int | None = None) -> dict:
-        """Ленты RSS → фильтр «про Реал» → без дублей → снимок `news`. Упали все ленты — снимок не трогаем."""
+    async def refresh_news(self, og_limit: int | None = None, article_limit: int | None = None) -> dict:
+        """Ленты RSS → фильтр «про Реал» → без дублей → снимок `news`. Упали все ленты — снимок не трогаем.
+        Заодно — тексты статей для свежих новостей (не больше `article_limit`; в окне матча — 0)."""
         self.cycles["news"] += 1
         self.last_news = time.time()
         feeds, fresh, ok_sites = {}, [], []
@@ -195,10 +198,12 @@ class Collector:
             return {"news": "stale", "feeds": feeds}
         prev = store.get(self.conn, "news")
         merged = media.merge_news((prev["data"]["items"] if prev else []), fresh, squad)
+        arts = await self._prefetch_articles(
+            merged, config.ARTICLE_PER_CYCLE if article_limit is None else article_limit)
         og = await self._news_images(merged, config.NEWS_OG_PER_CYCLE if og_limit is None else og_limit)
         store.put(self.conn, "news", "+".join(ok_sites),
-                  {"items": merged, "feeds": feeds, "og_fetched": og})
-        return {"news": len(merged), "fresh": len(fresh), "og": og, "feeds": feeds}
+                  {"items": merged, "feeds": feeds, "og_fetched": og, "articles_fetched": arts})
+        return {"news": len(merged), "fresh": len(fresh), "og": og, "articles": arts, "feeds": feeds}
 
     async def _news_images(self, items: list[dict], limit: int) -> int:
         """У Sports.ru в RSS нет картинок: берём og:image со страницы — только для новостей про Реал,
@@ -219,6 +224,101 @@ class Collector:
                 continue
             it["image"] = media.news_image_path(media.og_image(page))
         return n
+
+    # ================= медиа: тексты статей =================
+    # Страница источника → article.extract → снимок `article:<aid>`. Кэш навсегда (статьи не меняются).
+    # Не вышло — `article_fail:<aid>` с числом попыток: повтор через ARTICLE_RETRY, после
+    # ARTICLE_MAX_TRIES — больше не ходим, API показывает лид и ссылку на источник.
+
+    def _article_state(self, aid: str, now: float) -> str:
+        """done — статья есть; wait — недавно не вышло или попытки кончились; due — можно идти."""
+        if self.conn.execute("SELECT 1 FROM snapshots WHERE key=?", (f"article:{aid}",)).fetchone():
+            return "done"
+        fail = store.get(self.conn, f"article_fail:{aid}")
+        if fail and (fail["data"].get("tries", 0) >= config.ARTICLE_MAX_TRIES
+                     or now - fail["fetched_at"] < config.ARTICLE_RETRY):
+            return "wait"
+        return "due"
+
+    def _article_budget(self, now: float) -> bool:
+        while self.article_req and self.article_req[0] < now - 60:
+            self.article_req.popleft()
+        return len(self.article_req) < config.ARTICLE_RATE_PER_MIN
+
+    def _news_index(self) -> dict[str, dict]:
+        """aid → новость из снимка."""
+        snap = store.get(self.conn, "news")
+        return {media.news_aid(it["id"]): it for it in (snap["data"]["items"] if snap else [])}
+
+    async def refresh_article(self, item: dict) -> dict | None:
+        """Скачать и разобрать статью одной новости. None — источник недоступен или текста нет."""
+        aid = media.news_aid(item["id"])
+        src = self.media.get(media.PAGE_SOURCES.get(item.get("site"), ""))
+        if src is None or not src.available():
+            return None                       # breaker / выключен — попытку не засчитываем
+        self.cycles["article"] += 1
+        self.article_req.append(time.time())
+        try:
+            page = await src.text(item["url"], kind="article")
+            a = await asyncio.to_thread(article.extract, item["site"], item["url"], page)
+        except (SourceError, article.NoArticle) as e:
+            self.cycles["article_failed"] += 1
+            prev = store.get(self.conn, f"article_fail:{aid}")
+            tries = (prev["data"].get("tries", 0) if prev else 0) + 1
+            if isinstance(e, NotFound):
+                tries = config.ARTICLE_MAX_TRIES   # страницы нет — повторять незачем
+            status = "no_text" if isinstance(e, article.NoArticle) else "fetch"
+            store.put(self.conn, f"article_fail:{aid}", src.name,
+                      {"tries": tries, "status": status, "error": str(e)[:300], "url": item["url"]})
+            log.info("article %s %s: %s (попытка %d)", aid, item["url"], e, tries)
+            return None
+        data = {**a, "aid": aid, "id": item["id"], "url": item["url"], "site": item["site"],
+                "source": item["source"], "title": item.get("title") or a["title"],
+                "published": item.get("published") or a["published"],
+                "summary": item.get("summary") or "", "image": a["image"] or item.get("image")}
+        with self.conn:
+            store.put(self.conn, f"article:{aid}", src.name, data)
+            self.conn.execute("DELETE FROM snapshots WHERE key=?", (f"article_fail:{aid}",))
+        return data
+
+    async def _prefetch_articles(self, items: list[dict], limit: int) -> int:
+        """Тексты для свежих новостей снимка: не больше `limit` страниц за цикл, новые сначала.
+        У Sports.ru из той же страницы берём картинку — og:image отдельно открывать не нужно."""
+        n = 0
+        now = time.time()
+        for it in items[:40]:
+            if n >= limit or not self._article_budget(time.time()):
+                break
+            if self._article_state(media.news_aid(it["id"]), now) != "due":
+                continue
+            src = self.media.get(media.PAGE_SOURCES.get(it.get("site"), ""))
+            if src is None or not src.available():
+                continue
+            n += 1
+            a = await self.refresh_article(it)
+            if a and a.get("image") and not it.get("image"):
+                it["image"] = a["image"]
+                it["img_tried"] = True
+        return n
+
+    async def tick_articles(self, now: float, per_tick: int = 2) -> list[str]:
+        """Заявки API: человек открыл новость, а текста ещё нет. Лимит в минуту — общий с предзагрузкой."""
+        done = []
+        index = None
+        for aid in store.peek_article_demand(self.conn, 5):
+            if len(done) >= per_tick or not self._article_budget(now):
+                break
+            store.drop_article_demand(self.conn, aid)
+            if self._article_state(aid, now) != "due":
+                continue
+            index = index if index is not None else self._news_index()
+            item = index.get(aid)
+            if not item:
+                continue                       # новость ушла из снимка — API ответит 404
+            a = await self.refresh_article(item)
+            done.append(aid)
+            log.info("article demand %s → %s", aid, "ok" if a else "нет текста")
+        return done
 
     async def refresh_videos(self) -> dict:
         """RSS официального канала → снимок `videos` (последние 40). Обзоры матчей собирает API
@@ -839,7 +939,8 @@ class Collector:
                 # медиа — после команды (нужен состав для фильтра). Ленты качаются параллельно,
                 # такт держат не дольше одного таймаута; в окне матча страницы ради картинок не открываем
                 if now - self.last_news >= config.NEWS_INTERVAL:
-                    r = await self.refresh_news(og_limit=0 if win else config.NEWS_OG_PER_CYCLE)
+                    r = await self.refresh_news(og_limit=0 if win else config.NEWS_OG_PER_CYCLE,
+                                                article_limit=0 if win else config.ARTICLE_PER_CYCLE)
                     log.info("news: %s", {k: v for k, v in r.items() if k != "feeds"})
                 if now - self.last_videos >= config.VIDEO_INTERVAL:
                     log.info("videos: %s", await self.refresh_videos())
@@ -862,6 +963,8 @@ class Collector:
                         log.info("demand %s → %s", fid, m and m["source"])
                 # карточки игроков: заявки — всегда, плановое обновление состава — вне окна матча
                 await self.tick_players(now, squad=not win)
+                # тексты статей по заявкам API (человек ждёт) — и в окне матча, с лимитом в минуту
+                await self.tick_articles(now)
                 # очки прогнозов: после «завершён», при исправлении итога и раз в 10 мин
                 await self.tick_settle(now)
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
@@ -966,6 +1069,12 @@ async def _cli(args) -> int:
             elif args.what == "videos":
                 print(json.dumps(await c.refresh_videos(), ensure_ascii=False))
                 c.write_state()
+            elif args.what == "articles":
+                snap = store.get(conn, "news")
+                items = snap["data"]["items"] if snap else []
+                n = await c._prefetch_articles(items, int(args.id) if args.id else config.ARTICLE_PER_CYCLE)
+                print(json.dumps({"articles": n, "cycles": c.cycles}, ensure_ascii=False))
+                c.write_state()
             elif args.what == "match":
                 print(_summary(await c.refresh_match(args.id)))
             elif args.what == "player":
@@ -1021,7 +1130,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "player", "players", "avatars", "settle"])
+    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")

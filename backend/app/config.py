@@ -51,6 +51,12 @@ MAPPING_INTERVAL = _int("MAPPING_INTERVAL", 6 * 3600)    # сопоставле�
 NEWS_INTERVAL = _int("NEWS_INTERVAL", 600)          # новости (RSS): 10 мин
 VIDEO_INTERVAL = _int("VIDEO_INTERVAL", 900)        # видео YouTube (RSS канала): 15 мин
 NEWS_OG_PER_CYCLE = _int("NEWS_OG_PER_CYCLE", 6)    # сколько страниц Sports.ru открыть за цикл ради картинки
+# тексты статей: заранее — не больше N за цикл новостей и только вне окна матча; по заявке API
+# (человек открыл новость) — сразу, но не больше ARTICLE_RATE_PER_MIN страниц в минуту на все сайты
+ARTICLE_PER_CYCLE = _int("ARTICLE_PER_CYCLE", 8)
+ARTICLE_RATE_PER_MIN = _int("ARTICLE_RATE_PER_MIN", 10)
+ARTICLE_RETRY = _int("ARTICLE_RETRY", 1800)          # не вышло — повтор не раньше чем через 30 мин
+ARTICLE_MAX_TRIES = _int("ARTICLE_MAX_TRIES", 3)     # после 3 неудач — только лид и ссылка на источник
 # карточки игроков: свои — заранее раз в 6 ч, чужие — по заявке API, кэш 24 ч
 PLAYER_INTERVAL = _int("PLAYER_INTERVAL", 6 * 3600)
 PLAYER_FOREIGN_TTL = _int("PLAYER_FOREIGN_TTL", 24 * 3600)
