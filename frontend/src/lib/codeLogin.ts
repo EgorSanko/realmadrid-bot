@@ -1,4 +1,5 @@
 import { acceptSession, authFetch, type AuthResponse, type AuthUser } from './auth';
+import { showToast } from './toast';
 
 /**
  * Вход на сайте по коду через бота (backend/app/auth_api.py, app/bot.py).
@@ -42,6 +43,8 @@ export async function checkCode(signal?: AbortSignal): Promise<CodeCheck> {
   if (r.status === 'pending') return { state: 'pending' };
   if (r.status === 'ok') {
     const st = acceptSession(r);
+    // тост — здесь, а не в компоненте: после входа форма входа сразу исчезает (размонтируется)
+    showToast(st.user ? `Вы вошли как ${st.user.name}` : 'Вы вошли');
     return { state: 'ok', user: st.user };
   }
   return { state: 'expired' };

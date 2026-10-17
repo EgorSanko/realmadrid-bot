@@ -3,7 +3,6 @@ import { BOT_USERNAME } from '../lib/auth';
 import { countdown, spacedCode } from '../lib/codeFormat';
 import { checkCode, POLL_MS, requestCode, type LoginCode } from '../lib/codeLogin';
 import type { QrCode } from '../lib/qr';
-import { showToast } from '../lib/toast';
 
 type Phase = 'loading' | 'active' | 'expired' | 'error' | 'done';
 
@@ -71,7 +70,6 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
       if (!alive.current) return;
       if (r.state === 'ok') {
         setPhase('done');
-        showToast(r.user ? `Вы вошли как ${r.user.name}` : 'Вы вошли');
       } else if (r.state === 'expired') {
         setPhase('expired');
       }
