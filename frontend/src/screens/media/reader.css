@@ -1,0 +1,110 @@
+/* Чтение новости (/news/:aid) и просмотр видео (/video/:id). Слой поверх экрана, как карточка игрока.
+   Префикс nr- (news reader) и vp- (video player) — только свои классы. */
+
+.nr {
+  position: fixed;
+  inset: 0;
+  z-index: 40; /* выше нижнего меню (10) */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  outline: none;
+}
+.nr--overlay { animation: nr-in .22s cubic-bezier(.2, .8, .2, 1); }
+@keyframes nr-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .nr--overlay { animation: none; } }
+
+/* колонка чтения: до 680 px на ПК */
+.nr-in {
+  max-width: 680px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: var(--safe-top) var(--safe-right) calc(32px + var(--safe-bottom)) var(--safe-left);
+  background: var(--hero-glow) no-repeat 0 0 / 100% 420px;
+}
+.nr-in--video { max-width: 760px; }
+.nr-pad { padding: 0 16px; }
+.nr-state { margin: 14px 16px 0; }
+
+.nr-top { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px; min-height: 60px; padding: 16px 16px 6px; }
+.nr-top__back { position: relative; width: 44px; height: 44px; padding: 0; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.nr-top__gap { display: block; width: 44px; height: 1px; }
+.nr-top__title { text-align: center; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.nr-toast { position: absolute; right: 0; top: 50px; z-index: 2; white-space: nowrap; padding: 6px 10px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+
+/* главная картинка */
+.nr-hero { margin: 8px 16px 0; }
+.nr-hero img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 18px; background: var(--surface); }
+.nr-hero figcaption { margin-top: 6px; font-size: 12px; color: var(--dim); }
+
+/* заголовок и подпись */
+.nr-title {
+  margin: 18px 16px 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.3;
+  letter-spacing: -.005em; color: var(--text); overflow-wrap: anywhere;
+}
+.nr-title--video { margin: 16px 0 0; font-size: 19px; }
+.nr-meta { margin: 8px 16px 0; font-size: 13px; color: var(--muted); }
+.nr-pad > .nr-meta { margin-left: 0; margin-right: 0; }
+
+/* текст для чтения: 17 px, межстрочный 1.55 */
+.nr-lead { margin: 18px 16px 0; font-size: 17px; line-height: 1.55; font-weight: 600; color: var(--text); }
+.nr-pad > .nr-lead { margin-left: 0; margin-right: 0; }
+.nr-body { padding: 0 16px; font-size: 17px; line-height: 1.55; color: #DCDFE7; overflow-wrap: anywhere; }
+@media (max-width: 359px) { .nr-body, .nr-lead { font-size: 16px; } }
+.nr-body > :first-child { margin-top: 18px; }
+.nr-body p { margin: 14px 0 0; }
+.nr-body h2 { margin: 28px 0 0; font-family: var(--display); font-size: 19px; line-height: 1.35; font-weight: 600; color: var(--text); }
+.nr-body h3 { margin: 22px 0 0; font-size: 17px; line-height: 1.4; font-weight: 700; color: var(--text); }
+.nr-body strong { color: var(--text); font-weight: 700; }
+.nr-body a { color: var(--gold-light); text-decoration: underline; text-decoration-color: var(--gold-edge); text-underline-offset: 3px; }
+.nr-body a[data-internal] { text-decoration-style: solid; }
+.nr-body blockquote { margin: 18px 0 0; padding: 2px 0 2px 14px; border-left: 3px solid var(--gold); color: var(--text); font-style: italic; }
+.nr-body blockquote > :first-child { margin-top: 0; }
+.nr-body ul, .nr-body ol { margin: 14px 0 0; padding-left: 22px; }
+.nr-body li + li { margin-top: 6px; }
+.nr-body figure { margin: 20px 0 0; }
+.nr-body img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: 14px; background: var(--surface); }
+.nr-body p img { margin-top: 8px; }
+.nr-body figcaption { margin-top: 6px; font-size: 12px; line-height: 1.4; color: var(--dim); }
+
+/* ожидание и «только лид» */
+.nr-wait__text { margin: 16px 0 4px; font-size: 14px; color: var(--muted); }
+.nr-note { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+.nr-full { margin-top: 14px; text-decoration: none; }
+
+/* низ: источник (обязательно), поделиться */
+.nr-foot { margin: 26px 16px 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.nr-src { margin: 0; font-size: 12px; line-height: 1.5; color: var(--dim); }
+.nr-src__link { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+.nr-share { margin-top: 14px; }
+
+/* «Ещё новости» */
+.nr-more { margin: 26px 16px 0; }
+.nr-more__title { margin: 0 0 4px; font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--text); }
+.nr-more__item:not(:last-child) > .ui-news--list { border-bottom: 1px solid var(--line); }
+.nr-more__item:last-child > .ui-news--list { border-bottom: none; }
+
+/* ---------- плеер ---------- */
+.vp { position: relative; margin: 6px 16px 0; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000; }
+.vp--short {
+  aspect-ratio: 9 / 16;
+  width: min(calc(100% - 32px), calc((100dvh - 230px) * 9 / 16), 420px);
+  margin-left: auto; margin-right: auto;
+}
+.vp-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vp-poster { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.vp-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+.vp-spinner { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .25); border-top-color: var(--gold); animation: vp-spin .9s linear infinite; }
+@keyframes vp-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .vp-spinner { animation: none; } }
+
+.vp-hint { margin: 10px 16px 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.vp-hint__link { color: var(--gold-light); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.vp-hint--slow { padding: 12px 14px; border-radius: 14px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--text); }
+.nr-vmore { margin-top: 26px; }
+.nr-vmore .mx-grid { padding-top: 8px; }

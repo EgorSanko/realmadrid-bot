@@ -15,7 +15,7 @@ from . import auth_api, config, store
 from .model import ts
 from .predictions import api as predict_api
 from .predictions.snapshot_provider import SnapshotProvider
-from .sources import media
+from .sources import article, media
 from .stream import router as stream_router
 
 VERSION = "0.2.0"
@@ -273,7 +273,7 @@ def news(limit: int | None = None) -> JSONResponse:
         snap = store.get(conn, "news")
         if not snap:
             return _no_data("news")
-        items = [{**{k: it.get(k) for k in _NEWS_FIELDS}, "also": it.get("also") or []}
+        items = [{**{k: it.get(k) for k in _NEWS_FIELDS}, "aid": media.news_aid(it["id"]), "also": it.get("also") or []}
                  for it in snap["data"]["items"][:_limit(limit, 20, 100)]]
         feeds = {k: {"ok": v.get("ok"), **({"error": v["error"]} if v.get("error") else {})}
                  for k, v in (snap["data"].get("feeds") or {}).items()}
@@ -282,6 +282,75 @@ def news(limit: int | None = None) -> JSONResponse:
             avail.append("images")
         return _resp({**_meta(snap, STALE_AFTER["news"]), "available": avail, "feeds": feeds,
                       "count": len(items), "items": items}, 60)
+    finally:
+        conn.close()
+
+
+def _brief_news(it: dict) -> dict:
+    return {"aid": media.news_aid(it["id"]), "title": it.get("title"), "source": it.get("source"),
+            "published": it.get("published"), "image": it.get("image")}
+
+
+def _more_news(items: list[dict], aid: str, n: int = 3) -> list[dict]:
+    """«Ещё новости»: следующие (более ранние) за этой; в конце ленты — самые свежие."""
+    aids = [media.news_aid(i["id"]) for i in items]
+    start = aids.index(aid) + 1 if aid in aids else 0
+    order = items[start:] + items[:max(0, start - 1)]
+    return [_brief_news(i) for i in order if media.news_aid(i["id"]) != aid][:n]
+
+
+_ARTICLE_FIELDS = ("lead", "html", "author", "origin", "image_caption", "words")
+
+
+@app.get("/api/news/{aid}")
+def news_item(aid: str) -> JSONResponse:
+    """Новость целиком для чтения внутри приложения.
+
+    Есть текст — `full: true` и `html` (безопасный, только белый список тегов). Текста ещё нет —
+    `pending: true` и заявка сборщику (клиент повторяет запрос). Источник не отдал текст — `full: false`:
+    клиент показывает лид, картинку и ссылку «Читать полностью на <источник>»."""
+    if not media.is_aid(aid):
+        return _resp({"error": "not_found", "detail": "неверный id новости", "available": []}, 60, 404)
+    conn = _db()
+    try:
+        snap = store.get(conn, "news")
+        items = snap["data"]["items"] if snap else []
+        item = next((i for i in items if media.news_aid(i["id"]) == aid), None)
+        art = store.get(conn, f"article:{aid}")
+        if not item and not art:
+            return _resp({"error": "not_found", "detail": "такой новости нет", "available": []}, 60, 404)
+        base = item or art["data"]
+        body = {"aid": aid, "id": base["id"], "title": base.get("title"), "source": base.get("source"),
+                "site": base.get("site"), "url": base.get("url"), "published": base.get("published"),
+                "image": base.get("image"), "summary": base.get("summary") or "",
+                "more": _more_news(items, aid)}
+        if art:
+            d = art["data"]
+            known = {}
+            for i in items:
+                a2 = media.news_aid(i["id"])
+                for nid in (i["id"], *(i.get("also_ids") or ())):
+                    known[nid] = a2
+            known.pop(base["id"], None)
+            body.update({k: d.get(k) for k in _ARTICLE_FIELDS})
+            body["html"] = article.link_internal(d.get("html") or "", known)
+            body["image"] = None if d.get("hero_in_text") else (d.get("image") or body["image"])
+            body["title"] = body["title"] or d.get("title")
+            avail = ["text"] + (["image"] if body["image"] else [])
+            return _resp({**body, "full": True, "pending": False, "available": avail,
+                          "updated_at": _iso(art["fetched_at"])}, 300)
+        partial = {**{k: None for k in _ARTICLE_FIELDS}, "html": None, "full": False}
+        fail = store.get(conn, f"article_fail:{aid}")
+        now = time.time()
+        if fail and (fail["data"].get("tries", 0) >= config.ARTICLE_MAX_TRIES
+                     or now - fail["fetched_at"] < config.ARTICLE_RETRY):
+            reason = "no_text" if fail["data"].get("status") == "no_text" else "unavailable"
+            avail = ["summary"] if body["summary"] else []
+            return _resp({**body, **partial, "pending": False, "reason": reason, "available": avail,
+                          "updated_at": _iso(fail["fetched_at"])}, 60)
+        if not store.ask_article(conn, aid):
+            return _resp({**body, **partial, "pending": False, "reason": "busy", "available": []}, 0)
+        return _resp({**body, **partial, "pending": True, "available": [], "updated_at": None}, 0)
     finally:
         conn.close()
 
@@ -338,15 +407,20 @@ def health_sources() -> JSONResponse:
             pass
         ages = store.ages(conn)
         # карточки игроков — только счётчики, иначе список разрастается с каждым чужим игроком
-        snaps = {k: v for k, v in ages.items() if not k.startswith(("ctx:", "player:", "player_fail:"))}
+        snaps = {k: v for k, v in ages.items()
+                 if not k.startswith(("ctx:", "player:", "player_fail:", "article:", "article_fail:"))}
         players = {"cards": sum(k.startswith("player:") for k in ages),
                    "failed": sum(k.startswith("player_fail:") for k in ages),
                    "queued": conn.execute("SELECT COUNT(*) FROM player_demand").fetchone()[0]}
+        articles = {"texts": sum(k.startswith("article:") for k in ages),
+                    "failed": sum(k.startswith("article_fail:") for k in ages),
+                    "queued": conn.execute("SELECT COUNT(*) FROM article_demand").fetchone()[0]}
         return _resp({"collector": {**(collector or {}), "heartbeat_age_s": hb},
                       "sources": [states[n] for n in config.SOURCE_ORDER if n in states],
                       # медиа — отдельный список: в цепочку данных матча они не входят
                       "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
-                      "snapshots": snaps, "players": players, "idmap": store.map_count(conn)}, 0)
+                      "snapshots": snaps, "players": players, "articles": articles,
+                      "idmap": store.map_count(conn)}, 0)
     finally:
         conn.close()
 
