@@ -11,6 +11,7 @@ import {
   lastMatchOf,
   leagueSummary,
   matchStatusOf,
+  RM_ID,
   splitFixtures,
   staleNote,
 } from '../lib/mapMatches';
@@ -18,6 +19,8 @@ import { isNativeApp, useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
+import { useGoalWatch } from '../lib/useGoalWatch';
+import { DEBUG_GOAL_DELAY, debugGoalHome, debugGoalMode } from '../dev/debugGoal';
 import { EmptyState, ErrorState, FormStrip, LeagueLogo, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
 import { HomeDesk } from './home/HomeDesk';
@@ -50,7 +53,15 @@ export default function HomeScreen() {
       : 'Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости';
   }, []);
 
-  const d = home.data;
+  // dev: ?debugGoal=1 — ближайший матч «идёт», через 2,5 с гол (в прод-сборку не попадает)
+  const [dbgTick, setDbgTick] = useState(0);
+  useEffect(() => {
+    if (!import.meta.env.DEV || !debugGoalMode()) return;
+    const t = window.setTimeout(() => setDbgTick(1), DEBUG_GOAL_DELAY + 100);
+    return () => window.clearTimeout(t);
+  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const d = useMemo(() => (import.meta.env.DEV ? debugGoalHome(home.data) : home.data), [home.data, dbgTick]);
   const view = useMemo(() => {
     if (!d) return null;
     const hero = heroOf(d, now);
@@ -71,6 +82,20 @@ export default function HomeScreen() {
       leagueId: d.laliga?.league?.id ?? null,
     };
   }, [d, now]);
+
+  // гол Реала в лайве — праздник (автора слой спросит сам); гол соперника — только табло
+  const hero = view?.hero;
+  useGoalWatch(
+    hero && hero.status !== 'upcoming'
+      ? {
+          id: hero.id,
+          score: hero.score,
+          live: hero.status === 'live',
+          real: hero.home.id === RM_ID ? 'home' : hero.away.id === RM_ID ? 'away' : null,
+        }
+      : null,
+    () => ({ minute: hero?.minute }),
+  );
 
   const note = d ? staleNote(d, home.receivedAt ? (now - home.receivedAt) / 1000 : 0) : null;
   const err = errorText(home.error);

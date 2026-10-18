@@ -296,3 +296,22 @@ export function homeLine(m: NextMatch): { pick: string | null; tail: string | nu
   if (m.my_points) return { pick, tail: `+${m.my_points.total}` };
   return { pick, tail: 'приём закрыт' };
 }
+
+/* ---------- праздник точного счёта ---------- */
+
+export const EXACT_SEEN_KEY = 'rmExactSeen';
+const EXACT_FRESH_MS = 10 * 86400_000;
+
+/**
+ * Точные прогнозы, которые ещё не праздновали: рассчитанные «точный счёт» за последние 10 дней
+ * (старые не празднуем — это не новость), без тех, что уже показаны (localStorage rmExactSeen).
+ */
+export function exactToCelebrate(items: HistoryItem[], seen: string[], now = Date.now()): string[] {
+  return items
+    .filter((h) => h.tone === 'exact' && !seen.includes(h.id))
+    .filter((h) => {
+      const k = Date.parse(h.kickoff);
+      return Number.isFinite(k) && now - k >= 0 && now - k < EXACT_FRESH_MS;
+    })
+    .map((h) => h.id);
+}

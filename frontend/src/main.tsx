@@ -24,6 +24,9 @@ window.addEventListener('vite:preloadError', (e) => {
   window.location.reload();
 });
 
+// iOS Safari включает :active (пружина нажатий, ui/motion.css) только при подписке на touchstart
+document.addEventListener('touchstart', () => {}, { passive: true });
+
 async function start() {
   const inTelegram = await initTelegram();
   // оболочка: мини-апп или сайт (на сайте от 1024 px — десктопная раскладка)

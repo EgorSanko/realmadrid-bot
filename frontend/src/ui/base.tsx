@@ -124,7 +124,7 @@ export function Tabs<T extends string>({
             type="button"
             role="tab"
             aria-selected={on}
-            className={cx('ui-tabs__tab', on && 'is-on', it.icon != null && 'ui-tabs__tab--icon')}
+            className={cx('ui-tabs__tab', 'ui-press', on && 'is-on', it.icon != null && 'ui-tabs__tab--icon')}
             onClick={() => onChange(it.id)}
           >
             {it.icon != null ? (
@@ -212,7 +212,7 @@ export function Button({
   className,
   style,
 }: ButtonProps) {
-  const cls = cx('ui-btn', `ui-btn--${variant}`, block && 'ui-btn--block', className);
+  const cls = cx('ui-btn', 'ui-press', `ui-btn--${variant}`, block && 'ui-btn--block', className);
   if (href != null && !disabled)
     return (
       <a className={cls} href={href} onClick={onClick} style={style}>

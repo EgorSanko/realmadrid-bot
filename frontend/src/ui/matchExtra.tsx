@@ -4,9 +4,10 @@
  * — CalendarRow: строка «Ближайших» с логотипом турнира в плашке (Кубок, Суперкубок) и состоянием «идёт».
  * Вёрстка и классы — те же, что у MatchCard / FixtureRow; свои стили — в matchExtra.css.
  */
-import type { MouseEventHandler, ReactNode } from 'react';
+import { useRef, type MouseEventHandler, type ReactNode } from 'react';
 import { Badge, Chip } from './base';
 import { cx, formatKickoff, formatTime, formatWeekdayShort, formatDayShort, type DateInput } from './format';
+import { FlipScore } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { Countdown, OutcomeBadge, type CompetitionRef, type MatchStatus, type Outcome, type TeamRef } from './match';
 import './matchExtra.css';
@@ -74,7 +75,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
             <span className="ui-mc__name ui-mc__name--lg">{away.name}</span>
           </div>
         </div>
-        <Countdown to={kickoff} className="ui-mc__cd" onEnd={props.onKickoff} />
+        <Countdown to={kickoff} className="ui-mc__cd" onEnd={props.onKickoff} liveOnEnd />
         {props.venue && <div className="ui-mc__venue">{props.venue}</div>}
       </>
     );
@@ -95,7 +96,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
             <span className="ui-mc__name">{home.name}</span>
           </div>
           <div className="ui-mc__mid">
-            <div className="ui-mc__score">{sc}</div>
+            <div className="ui-mc__score">{live && score ? <FlipScore score={score} /> : sc}</div>
             {live && props.minute && <div className="ui-mc__minute">{props.minute}</div>}
             {!live && <div className="hero-mc__final">Финальный свисток</div>}
           </div>
@@ -109,9 +110,17 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
     );
   }
 
+  // матч начался на глазах (отсчёт → лайв) — содержимое карточки входит с переходом; при открытии — без него
+  const prev = useRef(status);
+  const started = useRef(false);
+  if (prev.current !== status) {
+    started.current = prev.current === 'upcoming' && status === 'live';
+    prev.current = status;
+  }
+
   const label =
     status === 'live' ? `Идёт матч: ${home.name} — ${away.name}` : status === 'finished' ? 'Матч завершён' : 'Ближайший матч';
-  const cls = cx('ui-mc', status === 'live' && 'ui-mc--live', 'hero-mc', `hero-mc--${status}`, className);
+  const cls = cx('ui-mc', status === 'live' && 'ui-mc--live', 'hero-mc', `hero-mc--${status}`, started.current && 'hero-mc--started', href != null && 'ui-press-soft', className);
   return (
     <section className="hero-wrap" aria-label={label}>
       {href != null ? (
@@ -216,7 +225,7 @@ export function MatchRow(p: MatchRowProps) {
     </>
   );
   const label = done ? `${home.name} ${score![0]}:${score![1]} ${away.name}, ${c.name}` : `${home.name} — ${away.name}, ${c.name}`;
-  const cls = cx('mrow', p.highlighted && 'mrow--next', className);
+  const cls = cx('mrow', 'ui-press-soft', p.highlighted && 'mrow--next', className);
   return href != null ? (
     <a className={cls} href={href} onClick={onClick} aria-label={label}>
       {inner}

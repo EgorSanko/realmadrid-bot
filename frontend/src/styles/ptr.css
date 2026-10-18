@@ -1,0 +1,37 @@
+/* Pull-to-refresh (components/PullToRefresh.tsx): мяч в тёмной шайбе с золотым кантом.
+   Положение и поворот ставит скрипт (transform), здесь — вид и вращение во время загрузки. */
+.ptr {
+  position: fixed;
+  z-index: 30;
+  /* выезжает из-под шапки (бренд-строка ~64 px), а не поверх названия */
+  top: calc(var(--safe-top) + 60px);
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  margin-left: -18px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.ptr[hidden] { display: none; }
+.ptr__disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #1A1F2C, #0C0E15);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, .35), 0 6px 18px rgba(0, 0, 0, .55);
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ptr__ball { display: block; width: 24px; height: 24px; }
+/* дотянули до порога — шайба «щёлкает» чуть крупнее: отпускай */
+.ptr.is-armed .ptr__disc { transform: scale(1.1); box-shadow: 0 0 0 1.5px rgba(244, 213, 122, .8), 0 6px 18px rgba(0, 0, 0, .55); }
+/* загрузка: мяч катится — оборот с разгоном и торможением, как у мяча, а не у колеса */
+.ptr.is-loading .ptr__ball { animation: ptr-roll .9s cubic-bezier(.45, .05, .55, .95) infinite; }
+@keyframes ptr-roll { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .ptr.is-loading .ptr__ball { animation: ptr-fade 1.2s ease-in-out infinite; }
+  @keyframes ptr-fade { 50% { opacity: .45; } }
+}

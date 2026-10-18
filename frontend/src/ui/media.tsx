@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
+import { CountUp } from './countUp';
 import { Chip } from './base';
 import { cx } from './format';
 
@@ -52,7 +53,7 @@ export function NewsItem({ title, source, time, href, imageUrl, variant = 'row',
   const [noImg, setNoImg] = useState(!imageUrl);
   const Tag = href != null ? 'a' : 'article';
   return (
-    <Tag className={cx('ui-news', `ui-news--${variant}`, className)} href={href}>
+    <Tag className={cx('ui-news', `ui-news--${variant}`, href != null && 'ui-press-soft', className)} href={href}>
       {!noImg && imageUrl && (
         <span className="ui-news__thumb">
           <Thumb src={imageUrl} className="ui-news__img" onFail={() => setNoImg(true)} />
@@ -108,7 +109,7 @@ export function VideoCard({
   const Tag = href != null ? 'a' : 'article';
   if (variant === 'tile') {
     return (
-      <Tag className={cx('ui-vtile', className)} href={href}>
+      <Tag className={cx('ui-vtile', href != null && 'ui-press-soft', className)} href={href}>
         <span className="ui-vtile__screen">
           {thumbnailUrl && <Thumb src={thumbnailUrl} className="ui-video__img" />}
           <span className="ui-vtile__play">{PLAY(16)}</span>
@@ -119,7 +120,7 @@ export function VideoCard({
     );
   }
   return (
-    <Tag className={cx('ui-card', 'ui-card--bleed', 'ui-video', className)} href={href}>
+    <Tag className={cx('ui-card', 'ui-card--bleed', 'ui-video', href != null && 'ui-press-soft', className)} href={href}>
       <span className="ui-video__screen" style={{ height }}>
         {thumbnailUrl && <Thumb src={thumbnailUrl} className="ui-video__img" />}
         <span className="ui-video__play">{PLAY(22)}</span>
@@ -153,7 +154,7 @@ export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, dis
     <div className={cx('ui-stepper', className)} role="group" aria-label={`Голы — ${teamName}`}>
       <button
         type="button"
-        className="ui-stepper__btn ui-stepper__btn--minus"
+        className="ui-stepper__btn ui-stepper__btn--minus ui-press"
         aria-label={`Меньше голов — ${teamName}`}
         disabled={disabled || value <= min}
         onClick={() => onChange(Math.max(min, value - 1))}
@@ -165,7 +166,7 @@ export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, dis
       </span>
       <button
         type="button"
-        className="ui-stepper__btn"
+        className="ui-stepper__btn ui-press"
         aria-label={`Больше голов — ${teamName}`}
         disabled={disabled || value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
@@ -203,15 +204,20 @@ export interface LeaderboardRowProps {
   silhouette?: boolean;
   /** серая подпись под именем («точных: 2») */
   sub?: string;
+  /** место «отсчитывается» при появлении — от этого числа к rank (своя строка) */
+  rankFrom?: number;
   className?: string;
+  style?: CSSProperties;
 }
 
-export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, className }: LeaderboardRowProps) {
+export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, rankFrom, className, style }: LeaderboardRowProps) {
   const [imgOk, setImgOk] = useState(true);
   const letter = (isMe ? 'Я' : name.trim()[0] ?? '?').toUpperCase();
   return (
-    <div className={cx('ui-lb', isMe && 'is-me', className)}>
-      <span className={cx('ui-lb__rank', rank <= 3 && 'is-top')}>{rank}</span>
+    <div className={cx('ui-lb', isMe && 'is-me', rank <= 3 && 'is-top', className)} style={style}>
+      <span className={cx('ui-lb__rank', rank <= 3 && 'is-top')}>
+        {rankFrom != null && rankFrom > rank ? <CountUp value={rank} from={rankFrom} duration={900} delay={450} /> : rank}
+      </span>
       <span className="ui-lb__av" aria-hidden="true">
         {avatarUrl && imgOk ? (
           <img src={avatarUrl} alt="" width={36} height={36} loading="lazy" decoding="async" onError={() => setImgOk(false)} />

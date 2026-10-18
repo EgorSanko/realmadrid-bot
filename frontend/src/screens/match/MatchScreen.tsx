@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { ApiMatch } from '../../api/match';
 import { useDesktop } from '../../lib/shell';
@@ -9,7 +9,10 @@ import { OverviewTab } from './OverviewTab';
 import { StatsTab } from './StatsTab';
 import { useMatch } from './useMatch';
 import { useScrollAnchorFallback } from './useScrollAnchor';
-import { compactTitle, headerView, teamRef, tournamentLine } from './view';
+import { REAL_ID, compactTitle, goals, headerView, minuteText, realSide, shortName, teamRef, tournamentLine } from './view';
+import { useGoalWatch } from '../../lib/useGoalWatch';
+import { flyFrom, takeRects } from '../../lib/flipOrigin';
+import { reducedMotion } from '../../lib/motion';
 import { addMatchToCalendar, canAddToCalendar } from '../../lib/nativeBridge';
 import './match.css';
 
@@ -54,6 +57,36 @@ export default function MatchScreen() {
   const match = state.kind === 'ok' ? state.match : null;
   const head = useMemo(() => (match ? headerView(match) : null), [match]);
   useScrollAnchorFallback(match);
+
+  // пришли с карточки матча: эмблемы команд перелетают из неё в шапку (lib/flipOrigin.ts)
+  const ready = !!head;
+  useLayoutEffect(() => {
+    if (!ready) return;
+    const from = takeRects(`match:${id}`);
+    if (!from || reducedMotion()) return;
+    const crests = document.querySelectorAll<HTMLElement>('.mt .ui-score-head .ui-crest, .mt .mt-top__title .ui-crest');
+    if (crests.length < 2) return;
+    flyFrom(crests[0], from[0]);
+    flyFrom(crests[1], from[1]);
+    document.querySelector<HTMLElement>('.mt .ui-score-head__score, .mt .ui-score-head .ui-mc__vs')?.animate(
+      [{ opacity: 0, transform: 'scale(.85)' }, { opacity: 1, transform: 'none' }],
+      { duration: 380, delay: 120, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' },
+    );
+  }, [ready, id]);
+
+  // новый гол в лайве: Реал — праздник (плашка, конфетти), соперник — только перелистывание табло
+  const hasReal = !!match && (match.home.id === REAL_ID || match.away.id === REAL_ID);
+  useGoalWatch(
+    match && head ? { id: match.id ?? id, score: head.score, live: head.live, real: hasReal ? realSide(match) : null } : null,
+    (g) => {
+      const ev = match ? goals(match).filter((x) => x.side === g.side)[g.n - 1]?.ev : undefined;
+      const pid = Number(ev?.player?.id);
+      return {
+        minute: ev ? minuteText(ev.minute, ev.added) : head?.minute,
+        scorer: ev?.player?.name ? { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name: shortName(ev.player.name) } : null,
+      };
+    },
+  );
 
   useEffect(() => {
     document.title = match ? `${compactTitle(match)} — Мадридиста` : 'Матч — Мадридиста';
@@ -183,7 +216,7 @@ function Header({ match, onKickoff }: { match: ApiMatch; onKickoff: () => void }
         statusText={h.statusText}
         scorers={h.scorers}
       />
-      {h.countdown && match.kickoff && <Countdown to={match.kickoff} className="mt-cd" onEnd={onKickoff} />}
+      {h.countdown && match.kickoff && <Countdown to={match.kickoff} className="mt-cd" onEnd={onKickoff} liveOnEnd />}
       {h.countdown && match.kickoff && canAddToCalendar() && <CalendarButton match={match} />}
     </>
   );

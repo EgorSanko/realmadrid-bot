@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { cx, plural } from './format';
 import { PlayerPhoto } from './images';
 import { PlayerTap, type PlayerLinkProps } from './playerLink';
+import { useInViewOnce } from './reveal';
 
 /* ---------- RatingChip ---------- */
 
@@ -53,6 +54,8 @@ const PITCH_H = 470;
 
 /** Поле с расстановкой (a-match-lineup): фото, оценка, номер, фамилия. */
 export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый состав на поле', className, playerHref, onPlayerClick }: PitchProps) {
+  // выход на поле: линиями от вратаря к нападающим (по y), внутри линии — от края к краю
+  const lines = Array.from(new Set(players.map((p) => Math.round(p.y * 20)))).sort((a, b) => a - b);
   return (
     <section className={cx('ui-pitch', className)} aria-label={ariaLabel}>
       <svg className="ui-pitch__lines" viewBox={`0 0 ${PITCH_W} ${PITCH_H}`} aria-hidden="true" preserveAspectRatio="none">
@@ -70,7 +73,8 @@ export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый
         {players.map((p, i) => {
           const left = (mirrorX ? 1 - p.x : p.x) * 100;
           const top = (1 - p.y) * 100;
-          const style: CSSProperties = { left: `${left}%`, top: `${top}%` };
+          const line = lines.indexOf(Math.round(p.y * 20));
+          const style = { left: `${left}%`, top: `${top}%`, '--pl-d': `${line * 85 + Math.round(left * 0.6)}ms` } as CSSProperties;
           const body = (
             <>
               <span className="ui-pl__shirt">
@@ -132,8 +136,10 @@ export function StatRow({ label, home, away, homeValue, awayValue, better = 'hig
     hi = (h > a) === (better === 'higher') ? 'home' : 'away';
   }
   const total = (Number.isFinite(h) ? h : 0) + (Number.isFinite(a) ? a : 0);
+  // полоса заполняется, когда строка впервые попала в кадр
+  const [ref, seen] = useInViewOnce<HTMLDivElement>(0.6);
   return (
-    <div className={cx('ui-st', className)}>
+    <div ref={ref} className={cx('ui-st', 'mo-reveal', seen && 'is-in', className)}>
       <div className="ui-st__row">
         <span className={cx('ui-st__v', hi === 'home' && 'is-hi')}>{home}</span>
         <span className="ui-st__label">{label}</span>
@@ -179,14 +185,17 @@ export function MomentumChart({
 }: MomentumChartProps) {
   const max = Math.max(1, ...data.map((d) => Math.abs(d.value)));
   const HALF = 56; // из 60 px половины — как в макете
+  // в кадре график «прорисовывается» слева направо: столбики вырастают волной по минутам
+  const [ref, seen] = useInViewOnce<HTMLDivElement>(0.4);
+  const step = 900 / Math.max(1, data.length);
   return (
     <div className={className}>
-      <div className="ui-mom" role="img" aria-label={ariaLabel}>
+      <div ref={ref} className={cx('ui-mom', 'mo-reveal', seen && 'is-in')} role="img" aria-label={ariaLabel}>
         {data.map((d, i) => {
           const hgt = Math.round((Math.abs(d.value) / max) * HALF);
           const up = d.value > 0;
           return (
-            <i key={i} title={`${d.minute}′`}>
+            <i key={i} title={`${d.minute}′`} style={{ '--d': `${Math.round(i * step)}ms` } as CSSProperties}>
               <span className="ui-mom__up">{up && <b style={{ height: hgt, background: homeColor }} />}</span>
               <span className="ui-mom__dn">{!up && d.value !== 0 && <b style={{ height: hgt, background: awayColor }} />}</span>
             </i>
@@ -246,9 +255,12 @@ export function shotSummary(shots: Shot[]): string {
 export function ShotMap({ shots, ariaLabel = 'Карта ударов', legend = true, className }: ShotMapProps) {
   // голы рисуем последними, чтобы были сверху
   const order = [...shots].sort((a, b) => Number(a.outcome === 'goal') - Number(b.outcome === 'goal'));
+  // в кадре удары падают на карту по очереди, голы — последними и с отскоком
+  const [ref, seen] = useInViewOnce<SVGSVGElement>(0.4);
+  const step = Math.min(70, 1000 / Math.max(1, order.length));
   return (
     <div className={className}>
-      <svg className="ui-shots" viewBox={`0 0 ${SM_W} ${SM_H}`} role="img" aria-label={ariaLabel}>
+      <svg ref={ref} className={cx('ui-shots', 'mo-reveal', seen && 'is-in')} viewBox={`0 0 ${SM_W} ${SM_H}`} role="img" aria-label={ariaLabel}>
         <g fill="none" stroke="#24324F" strokeWidth="1.5">
           <rect x="1" y="1" width="324" height="168" rx="4" />
           <rect x="66.5" y="1" width="193" height="79" />
@@ -261,9 +273,9 @@ export function ShotMap({ shots, ariaLabel = 'Карта ударов', legend =
           const cy0 = Math.min(SM_H - 1, Math.max(1, smY(s.x)));
           const r = shotR(s.xg);
           return s.outcome === 'goal' ? (
-            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="#D4AF37" stroke="#06070B" strokeWidth="1" />
+            <circle key={i} className="ui-shot ui-shot--goal" style={{ '--d': `${Math.round(i * step)}ms` } as CSSProperties} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="#D4AF37" stroke="#06070B" strokeWidth="1" />
           ) : (
-            <circle key={i} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="none" stroke="#8A90A1" strokeWidth="1.5" />
+            <circle key={i} className="ui-shot" style={{ '--d': `${Math.round(i * step)}ms` } as CSSProperties} cx={cx0.toFixed(1)} cy={cy0.toFixed(1)} r={r.toFixed(1)} fill="none" stroke="#8A90A1" strokeWidth="1.5" />
           );
         })}
       </svg>

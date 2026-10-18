@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiFetchError, fetchApi } from './api';
+import { onRefresh } from './refresh';
 
 export interface PollState<T> {
   data: T | null;
@@ -71,7 +72,13 @@ export function usePoll<T>(path: string, intervalFor: (data: T | null) => number
 
     void load();
     document.addEventListener('visibilitychange', onVisible);
+    // pull-to-refresh: перечитать сейчас (опрос дальше идёт своим чередом)
+    const off = onRefresh(() => {
+      window.clearTimeout(timer);
+      return load();
+    });
     return () => {
+      off();
       alive = false;
       window.clearTimeout(timer);
       ctrl?.abort();

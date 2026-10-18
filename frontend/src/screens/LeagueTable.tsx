@@ -22,7 +22,12 @@ export function LeagueTable({ table, title }: { table: ApiTable; title: string }
   return (
     <section className="ui-card" aria-label={`Таблица: ${title}`}>
       <SectionHeader title={title} aside={roundsAside(table)} />
-      <StandingsTable rows={shown} highlightTeamId={us?.team.id ?? undefined} zones={zonesFor(table, shown)} />
+      <StandingsTable
+        rows={shown}
+        highlightTeamId={us?.team.id ?? undefined}
+        zones={zonesFor(table, shown)}
+        rememberKey={`rmTablePos:${table.league.id}`}
+      />
       {collapsed && (
         <MoreButton open={full} onToggle={() => setFull((v) => !v)} more="Вся таблица" less="Свернуть таблицу" />
       )}
@@ -39,7 +44,7 @@ export function LeagueTableMini({ table, title }: { table: ApiTable; title: stri
   return (
     <section className="ui-card dk-table-mini" aria-label={`Таблица: ${title}`}>
       <SectionHeader title={title} aside={roundsAside(table)} />
-      <StandingsTable rows={rows} highlightTeamId={us?.team.id ?? undefined} zones={zonesFor(table, rows)} />
+      <StandingsTable rows={rows} highlightTeamId={us?.team.id ?? undefined} zones={zonesFor(table, rows)} rememberKey={`rmTablePos:${table.league.id}`} />
       <a className="screen-more" {...link('/matches')}>
         Вся таблица и календарь
       </a>

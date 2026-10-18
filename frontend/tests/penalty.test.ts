@@ -97,3 +97,13 @@ test('соперник на табло: из ближайшего матча, Р
   assert.equal(rivalFrom({ next: fx(team(8633, 'Real Madrid'), team(null, 'TBD')), last: null }), null);
   assert.equal(rivalFrom(null), null);
 });
+
+test('сейв: мяч отлетает от перчаток в поле, от центра ворот наружу', async () => {
+  const { parryPoint, GOAL, GOAL_LINE } = await import('../src/lib/penalty.ts');
+  const left = parryPoint({ x: GOAL.x + 30, y: GOAL.y + 30 });
+  const right = parryPoint({ x: GOAL.x + GOAL.w - 30, y: GOAL.y + 30 });
+  assert.ok(left.x < GOAL.x + 30 && left.y > GOAL_LINE, 'слева — влево и к бьющему');
+  assert.ok(right.x > GOAL.x + GOAL.w - 30 && right.y > GOAL_LINE, 'справа — вправо и к бьющему');
+  const mid = parryPoint({ x: GOAL.x + GOAL.w / 2, y: GOAL.y + 60 });
+  assert.ok(mid.y > GOAL_LINE);
+});

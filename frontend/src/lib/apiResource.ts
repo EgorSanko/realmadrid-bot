@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useRefreshBump } from './refresh';
 
 /**
  * Чтение снимка нашего API (/api/*). Клиент ходит только на свой сервер, по относительным путям.
@@ -52,6 +53,8 @@ export function useApiResource<T>(url: string): Resource<T> {
     loading: true,
   });
   const [attempt, setAttempt] = useState(0);
+  const reload = useCallback(() => setAttempt((a) => a + 1), []);
+  const settle = useRefreshBump(reload);
 
   useEffect(() => {
     const ctl = new AbortController();
@@ -61,11 +64,13 @@ export function useApiResource<T>(url: string): Resource<T> {
       .catch((error: Error) => {
         if (ctl.signal.aborted) return;
         setState((s) => ({ data: s.data, error, loading: false }));
+      })
+      .finally(() => {
+        if (!ctl.signal.aborted) settle();
       });
     return () => ctl.abort();
-  }, [url, attempt]);
+  }, [url, attempt, settle]);
 
-  const reload = useCallback(() => setAttempt((a) => a + 1), []);
   return { ...state, reload };
 }
 

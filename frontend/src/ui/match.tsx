@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { Chip } from './base';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Badge, Chip } from './base';
 import {
   cx,
   formatDayShort,
@@ -11,8 +11,10 @@ import {
   toMs,
   type DateInput,
 } from './format';
+import { FlipScore, FlipText } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { PlayerInline, type PlayerLinkProps } from './playerLink';
+import { useInViewOnce } from './reveal';
 
 export interface TeamRef {
   /** id для /img/team/{id}.png; нет — эмблема не показывается */
@@ -46,11 +48,16 @@ export interface CountdownProps {
   to: DateInput;
   /** что показать, когда время вышло */
   endedLabel?: ReactNode;
+  /** отсчёт до начала матча: в конце он превращается в «LIVE · Матч начинается» */
+  liveOnEnd?: boolean;
   onEnd?: () => void;
   className?: string;
 }
 
-function useMinuteClock(target: number): number {
+const SOON_MS = 10 * 60_000;
+
+/** Часы табло: в последний час — посекундно (видно перелистывание), раньше — раз в минуту. */
+function useCountdownClock(target: number): number {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     let timer = 0;
@@ -59,8 +66,9 @@ function useMinuteClock(target: number): number {
       setNow(t);
       const left = target - t;
       if (left <= 0) return;
-      // следующее срабатывание — ровно когда сменится минута на табло
-      timer = window.setTimeout(schedule, (left % 60_000) + 30);
+      // следующее срабатывание — ровно когда сменится цифра на табло
+      const step = left <= 3_600_000 ? 1000 : 60_000;
+      timer = window.setTimeout(schedule, (left % step) + 30);
     };
     schedule();
     // фоновые вкладки и свёрнутый Telegram тормозят таймеры — сверяемся при возврате
@@ -81,10 +89,32 @@ function useMinuteClock(target: number): number {
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
-/** Обратный отсчёт «дни : часы : минуты» до начала матча. Тикает сам. */
-export function Countdown({ to, endedLabel = 'Матч начинается', onEnd, className }: CountdownProps) {
+/** Части табло: дни : часы : минуты, а в последний час — часы : минуты : секунды. */
+export function countdownUnits(left: number): Array<[number, [string, string, string]]> {
+  if (left <= 3_600_000) {
+    const s = Math.ceil(left / 1000);
+    return [
+      [Math.floor(s / 3600), ['час', 'часа', 'часов']],
+      [Math.floor((s % 3600) / 60), ['минута', 'минуты', 'минут']],
+      [s % 60, ['секунда', 'секунды', 'секунд']],
+    ];
+  }
+  const totalMin = Math.floor(left / 60_000);
+  return [
+    [Math.floor(totalMin / 1440), ['день', 'дня', 'дней']],
+    [Math.floor((totalMin % 1440) / 60), ['час', 'часа', 'часов']],
+    [totalMin % 60, ['минута', 'минуты', 'минут']],
+  ];
+}
+
+/**
+ * Обратный отсчёт до начала матча. Тикает сам; цифры перелистываются, как на табло.
+ * За 10 минут до старта — класс ui-cd--soon (карточка мягко пульсирует золотом),
+ * в момент старта (liveOnEnd) — «LIVE · Матч начинается» с переходом.
+ */
+export function Countdown({ to, endedLabel = 'Матч начинается', liveOnEnd, onEnd, className }: CountdownProps) {
   const target = toMs(to);
-  const now = useMinuteClock(target);
+  const now = useCountdownClock(target);
   const left = Math.max(0, target - now);
   const ended = left === 0;
 
@@ -92,19 +122,27 @@ export function Countdown({ to, endedLabel = 'Матч начинается', on
     if (ended) onEnd?.();
   }, [ended, onEnd]);
 
-  if (ended) return <div className={cx('ui-cd', 'ui-cd--ended', className)}>{endedLabel}</div>;
+  if (ended)
+    return (
+      <div className={cx('ui-cd', 'ui-cd--ended', liveOnEnd && 'ui-cd--live', className)} role="status">
+        {liveOnEnd ? (
+          <span className="ui-cd__go">
+            <Badge tone="live" />
+            <span>{endedLabel}</span>
+          </span>
+        ) : (
+          endedLabel
+        )}
+      </div>
+    );
 
-  const totalMin = Math.floor(left / 60_000);
-  const d = Math.floor(totalMin / 1440);
-  const h = Math.floor((totalMin % 1440) / 60);
-  const m = totalMin % 60;
-  const units: Array<[number, string]> = [
-    [d, plural(d, ['день', 'дня', 'дней'])],
-    [h, plural(h, ['час', 'часа', 'часов'])],
-    [m, plural(m, ['минута', 'минуты', 'минут'])],
-  ];
+  const units = countdownUnits(left).map(([n, f]) => [n, plural(n, f)] as const);
   return (
-    <div className={cx('ui-cd', className)} role="timer" aria-label={`До начала: ${units.map(([n, w]) => `${n} ${w}`).join(' ')}`}>
+    <div
+      className={cx('ui-cd', left <= SOON_MS && 'ui-cd--soon', className)}
+      role="timer"
+      aria-label={`До начала: ${units.map(([n, w]) => `${n} ${w}`).join(' ')}`}
+    >
       {units.map(([n, w], i) => (
         <Fragment key={i}>
           {i > 0 && (
@@ -113,7 +151,7 @@ export function Countdown({ to, endedLabel = 'Матч начинается', on
             </span>
           )}
           <span className="ui-cd__unit" aria-hidden="true">
-            <span className="ui-cd__num">{pad2(n)}</span>
+            <FlipText value={pad2(n)} className="ui-cd__num" stagger={70} />
             <span className="ui-cd__lbl">{w}</span>
           </span>
         </Fragment>
@@ -192,7 +230,7 @@ export function MatchCard(props: MatchCardProps) {
         <span className="ui-mc-past__act">{props.actionLabel ?? 'Обзор'}</span>
       </>
     );
-    const cls = cx('ui-mc-past', className);
+    const cls = cx('ui-mc-past', href != null && 'ui-press-soft', className);
     return href != null ? (
       <a className={cls} href={href} onClick={onClick} style={style}>
         {body}
@@ -217,7 +255,9 @@ export function MatchCard(props: MatchCardProps) {
             <span className="ui-mc__name">{home.name}</span>
           </div>
           <div className="ui-mc__mid">
-            <div className="ui-mc__score">{score ? `${score[0]} : ${score[1]}` : '0 : 0'}</div>
+            <div className="ui-mc__score">
+              <FlipScore score={score ?? [0, 0]} />
+            </div>
             {props.minute && <div className="ui-mc__minute">{props.minute}</div>}
           </div>
           <div className="ui-mc__team">
@@ -295,7 +335,9 @@ export function ScoreHeader({ home, away, status, score, kickoff, minute, status
           {status === 'upcoming' ? (
             <div className="ui-mc__vs">VS</div>
           ) : (
-            <div className="ui-score-head__score">{score ? `${score[0]} : ${score[1]}` : '0 : 0'}</div>
+            <div className="ui-score-head__score">
+              <FlipScore score={score ?? [0, 0]} />
+            </div>
           )}
           {status === 'live' && minute ? (
             <div className="ui-mc__minute">{minute}</div>
@@ -410,7 +452,7 @@ export function FixtureRow(props: FixtureRowProps) {
   if (props.kind === 'result') {
     const sc = <b className="ui-fx__score">{`${props.score[0]} : ${props.score[1]}`}</b>;
     return (
-      <Tag className={cx('ui-fx', className)} href={href} onClick={onClick} aria-label={href != null ? label : undefined}>
+      <Tag className={cx('ui-fx', href != null && 'ui-press-soft', className)} href={href} onClick={onClick} aria-label={href != null ? label : undefined}>
         <span className="ui-fx__date-sm">{formatDayShort(kickoff)}</span>
         {props.crests ? (
           <div className="ui-fx__line ui-fx__line--crests">
@@ -477,14 +519,76 @@ export interface StandingsTableProps {
   zones?: StandingZone[];
   /** хвост подписи под таблицей: «вся таблица — по нажатию» */
   footnote?: string;
+  /**
+   * ключ localStorage для прошлого места подсвеченной команды: место сменилось с прошлого раза —
+   * строка переезжает со старого места на новое (FLIP) и показывает стрелку ↑/↓
+   */
+  rememberKey?: string;
   className?: string;
 }
 
-export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, className }: StandingsTableProps) {
+const MAX_SLIDE_ROWS = 4;
+
+/** Прошлое место из хранилища; сразу записывает новое. null — первый раз или без хранилища. */
+function swapStoredPos(key: string, pos: number): number | null {
+  try {
+    const prev = Number(localStorage.getItem(key));
+    localStorage.setItem(key, String(pos));
+    return Number.isInteger(prev) && prev > 0 ? prev : null;
+  } catch {
+    return null;
+  }
+}
+
+export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, rememberKey, className }: StandingsTableProps) {
   const zoneOf = (pos: number) => zones.find((z) => pos >= z.from && pos <= z.to);
+  const myPos = highlightTeamId != null ? rows.find((r) => r.team.id === highlightTeamId)?.pos : undefined;
+  const [moved, setMoved] = useState<{ from: number; to: number } | null>(null);
+  const [ref, seen] = useInViewOnce<HTMLTableElement>(0.5);
+  const body = useRef<HTMLTableSectionElement>(null);
+  const played = useRef<string | null>(null);
+
+  // смена места запоминается при отрисовке, а переезд играется, когда таблица впервые в кадре
+  useLayoutEffect(() => {
+    if (!rememberKey || myPos == null) return;
+    const prev = swapStoredPos(rememberKey, myPos);
+    if (prev != null && prev !== myPos) setMoved({ from: prev, to: myPos });
+  }, [rememberKey, myPos]);
+
+  useLayoutEffect(() => {
+    const tb = body.current;
+    if (!moved || !seen || !tb || played.current === `${moved.from}>${moved.to}`) return;
+    played.current = `${moved.from}>${moved.to}`;
+    if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const trs = Array.from(tb.rows);
+    const me = trs.find((tr) => tr.classList.contains('is-me'));
+    if (!me || typeof me.animate !== 'function') return;
+    const h = me.getBoundingClientRect().height;
+    const up = moved.to < moved.from; // поднялись: были ниже
+    const steps = Math.min(Math.abs(moved.from - moved.to), MAX_SLIDE_ROWS);
+    const opts = { duration: 760, delay: 250, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'backwards' as const };
+    me.animate([{ transform: `translateY(${(up ? 1 : -1) * steps * h}px)` }, { transform: 'none' }], opts);
+    // кого обогнали (или кто обогнал) — сдвигаются на строку в обратную сторону
+    const lo = Math.min(moved.from, moved.to);
+    const hi = Math.max(moved.from, moved.to);
+    trs.forEach((tr) => {
+      const pos = Number(tr.dataset.pos);
+      if (tr === me || !(pos >= lo && pos <= hi)) return;
+      // под проезжающей строкой обойдённые притухают — наложение читается как обгон, а не как каша
+      tr.animate(
+        [
+          { transform: `translateY(${(up ? -1 : 1) * h}px)`, opacity: 1 },
+          { opacity: 0.25, offset: 0.45 },
+          { transform: 'none', opacity: 1 },
+        ],
+        opts,
+      );
+    });
+  }, [moved, seen]);
+
   return (
     <div className={className}>
-      <table className="ui-table">
+      <table ref={ref} className="ui-table">
         <thead>
           <tr>
             <th className="ui-table__pos">#</th>
@@ -494,14 +598,23 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, cl
             <th className="ui-table__pts">О</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody ref={body}>
           {rows.map((r) => {
             const z = zoneOf(r.pos);
             const me = highlightTeamId != null && r.team.id === highlightTeamId;
+            const mv = me && moved ? (moved.to < moved.from ? 'up' : 'down') : null;
             return (
-              <tr key={r.pos} className={cx(me && 'is-me')} aria-current={me || undefined}>
+              <tr key={r.pos} data-pos={r.pos} className={cx(me && 'is-me', mv && seen && 'is-moved')} aria-current={me || undefined}>
                 <td className="ui-table__pos" style={{ borderLeftColor: z ? z.color : 'transparent' }}>
                   {r.pos}
+                  {mv && seen && (
+                    <span
+                      className={`ui-table__mv ui-table__mv--${mv}`}
+                      aria-label={mv === 'up' ? `поднялись с ${moved!.from}-го места` : `опустились с ${moved!.from}-го места`}
+                    >
+                      {mv === 'up' ? '↑' : '↓'}
+                    </span>
+                  )}
                 </td>
                 <td className="ui-table__team">
                   <span className="ui-table__tm">

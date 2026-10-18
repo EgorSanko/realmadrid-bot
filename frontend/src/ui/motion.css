@@ -1,0 +1,245 @@
+/* Общий моушен интерфейса. Правила: только transform и opacity (+ статичный clip-path),
+   появления — expo-out, пружина — только там, где есть «удар». prefers-reduced-motion — без движения. */
+:root {
+  --ease-out: cubic-bezier(.22, 1, .36, 1);      /* expo-out: появления */
+  --ease-in: cubic-bezier(.55, 0, .75, .2);      /* уход, падение */
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1); /* пружина с перелётом */
+  --ease-snap: cubic-bezier(.3, 1.35, .5, 1);     /* мягкий отскок в конце */
+}
+
+/* ---------- табло с перелистыванием (ui/flip.tsx) ---------- */
+.ui-flip { display: inline-flex; white-space: pre; }
+.ui-flip__c { position: relative; display: inline-block; }
+.ui-flip__fx { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ui-flip__c.is-flip > .ui-flip__b { visibility: hidden; }
+  .ui-flip__fx { position: absolute; inset: 0; display: block; pointer-events: none; }
+  .ui-flip__fx > span { position: absolute; inset: 0; text-align: center; backface-visibility: hidden; }
+  /* сверху — новая цифра (её открывает падающая старая), снизу — старая (её накрывает новая) */
+  .ui-flip__nt, .ui-flip__ft { clip-path: inset(0 0 50% 0); }
+  .ui-flip__ob, .ui-flip__fb { clip-path: inset(50% 0 0 0); }
+  .ui-flip__ft { transform-origin: 50% 50%; animation: ui-flip-top .26s var(--ease-in) var(--flip-d, 0ms) both; }
+  .ui-flip__fb { transform-origin: 50% 50%; animation: ui-flip-bot .3s var(--ease-snap) calc(var(--flip-d, 0ms) + .25s) both; }
+  .ui-flip__ob { animation: ui-flip-ob .18s ease-out calc(var(--flip-d, 0ms) + .3s) both; }
+  .ui-flip__nt { animation: ui-flip-nt .26s ease-out var(--flip-d, 0ms) both; }
+}
+@keyframes ui-flip-top {
+  from { transform: perspective(220px) rotateX(0); }
+  to { transform: perspective(220px) rotateX(-90deg); opacity: .55; }
+}
+@keyframes ui-flip-bot {
+  from { transform: perspective(220px) rotateX(90deg); opacity: .55; }
+  to { transform: perspective(220px) rotateX(0); opacity: 1; }
+}
+@keyframes ui-flip-ob { to { opacity: 0; } }
+@keyframes ui-flip-nt { from { opacity: .35; } }
+
+/* ---------- конфетти (lib/confetti.ts): геометрия, без картинок ---------- */
+.cf-x { position: absolute; left: 0; top: 0; display: block; }
+.cf-p { position: absolute; display: block; left: -4px; top: -6px; width: 8px; height: 12px; border-radius: 1.5px; }
+.cf-p--strip { left: -2px; top: -8px; width: 4px; height: 16px; border-radius: 2px; }
+.cf-p--dot { left: -3.5px; top: -3.5px; width: 7px; height: 7px; border-radius: 50%; }
+.cf-p--diamond { left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 1px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+/* ---------- отсчёт до матча (ui/match.tsx Countdown) ---------- */
+/* последние 10 минут: карточка мягко дышит золотом — рамка-слой поверх, меняется только opacity */
+.hero-mc { position: relative; }
+.hero-mc::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(244, 213, 122, .75);
+  box-shadow: 0 0 22px rgba(212, 175, 55, .28), inset 0 0 28px rgba(212, 175, 55, .10);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-mc:has(.ui-cd--soon)::after { animation: ui-breathe 2.6s cubic-bezier(.45, 0, .55, 1) infinite; }
+  /* старт: отсчёт превращается в LIVE */
+  .ui-cd--live .ui-cd__go { animation: ui-go .55s var(--ease-spring) both; }
+  .ui-cd--live .ui-cd__go::before { animation: ui-go-ring .9s var(--ease-out) .1s both; }
+  /* карточка, ставшая лайвом на глазах: счёт и команды входят снизу */
+  .hero-mc--started > :not(:first-child) { animation: ui-rise .45s var(--ease-out) both; }
+  .hero-mc--started > :nth-child(3) { animation-delay: 80ms; }
+  .hero-mc--started .ui-mc__score { animation: ui-go .6s var(--ease-spring) .12s both; }
+}
+@keyframes ui-breathe { 0%, 100% { opacity: .15; } 50% { opacity: 1; } }
+.ui-cd__go { position: relative; display: inline-flex; align-items: center; gap: 10px; }
+.ui-cd__go::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin-top: -28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 90, 78, .6);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes ui-go { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes ui-go-ring { from { transform: scale(.3); opacity: .9; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes ui-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* точка LIVE — спокойная волна от точки (сама точка не мигает) */
+.ui-badge__dot { position: relative; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-badge__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--live);
+    animation: ui-dot 1.8s var(--ease-out) infinite;
+  }
+}
+@keyframes ui-dot { from { transform: scale(1); opacity: .55; } to { transform: scale(2.6); opacity: 0; } }
+
+/* ---------- прогноз сохранён (lib/motion.ts stamp/spark) ---------- */
+.mo-ring { position: fixed; z-index: 65; pointer-events: none; border: 2px solid rgba(244, 213, 122, .9); box-shadow: 0 0 18px rgba(212, 175, 55, .35); }
+.mo-spark { position: fixed; z-index: 66; width: 0; height: 0; pointer-events: none; }
+.mo-spark__dot {
+  position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle, #FFFDF2 0 20%, #F8DF8E 32%, rgba(244, 213, 122, .7) 44%, rgba(212, 175, 55, .25) 60%, transparent 72%);
+}
+.mo-spark__dot--tail { background: radial-gradient(circle, #F4D57A 0 25%, rgba(212, 175, 55, .4) 55%, transparent 72%); }
+
+/* ---------- состав на поле (ui/stats.tsx Pitch): игроки выбегают линиями от вратаря к атаке ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .ui-pl { animation: ui-pl-in .5s var(--ease-snap) var(--pl-d, 0ms) both; }
+  .ui-pitch__lines { animation: ui-fade .5s ease-out both; }
+}
+@keyframes ui-pl-in {
+  from { transform: translateY(34px) scale(.55); opacity: 0; }
+  45% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes ui-fade { from { opacity: 0; } }
+
+/* карточка игрока раскрывается из кружка: пока идёт переход, обычное появление выключено */
+.pc.pc--flip { animation: none; }
+
+/* ---------- нижнее меню: метка активной вкладки скользит, иконка выбранной мягко пружинит ---------- */
+.bottom-nav__inner { position: relative; }
+.bottom-nav__ind {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 20%;
+  height: 2px;
+  pointer-events: none;
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition: transform .42s var(--ease-out), opacity .2s ease;
+}
+.bottom-nav__ind::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 28px;
+  height: 2px;
+  margin-left: -14px;
+  border-radius: 0 0 2px 2px;
+  background: var(--gold-grad);
+  box-shadow: 0 0 10px rgba(212, 175, 55, .55);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bottom-nav a.on svg { animation: nav-pop .45s var(--ease-spring); }
+}
+@media (prefers-reduced-motion: reduce) { .bottom-nav__ind { transition: opacity .2s ease; } }
+@keyframes nav-pop { 0% { transform: scale(.8) translateY(2px); } 100% { transform: none; } }
+
+/* ---------- статистика матча (ui/stats.tsx): оживает, когда впервые попала в кадр ---------- */
+/* .mo-reveal ставит React; пока блок не в кадре — исходное положение, .is-in — запуск. Без JS классов нет */
+@media (prefers-reduced-motion: no-preference) {
+  .ui-st.mo-reveal .ui-st__bar span { transform: scaleX(0); }
+  .ui-st.mo-reveal .ui-st__bar span:first-child { transform-origin: 100% 50%; }
+  .ui-st.mo-reveal .ui-st__bar span:last-child { transform-origin: 0 50%; }
+  .ui-st.mo-reveal.is-in .ui-st__bar span { animation: ui-bar .8s var(--ease-out) .05s both; }
+
+  .ui-mom.mo-reveal b { transform: scaleY(0); }
+  .ui-mom.mo-reveal .ui-mom__up b { transform-origin: 50% 100%; }
+  .ui-mom.mo-reveal .ui-mom__dn b { transform-origin: 50% 0; }
+  .ui-mom.mo-reveal.is-in b { animation: ui-mom .45s var(--ease-snap) var(--d, 0ms) both; }
+
+  .ui-shots.mo-reveal .ui-shot { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+  .ui-shots.mo-reveal.is-in .ui-shot { animation: ui-shot .42s var(--ease-out) calc(var(--d, 0ms) + 80ms) both; }
+  .ui-shots.mo-reveal.is-in .ui-shot--goal { animation: ui-shot-goal .55s var(--ease-spring) calc(var(--d, 0ms) + 80ms) both; }
+}
+@keyframes ui-bar { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes ui-mom { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes ui-shot { from { opacity: 0; transform: translateY(-14px) scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes ui-shot-goal { from { opacity: 0; transform: translateY(-18px) scale(.3); } 50% { opacity: 1; } to { opacity: 1; transform: none; } }
+
+/* ---------- турнирная таблица (ui/match.tsx StandingsTable): место Реала сменилось ---------- */
+.ui-table tr.is-me { position: relative; z-index: 1; }
+.ui-table td.ui-table__pos { position: relative; }
+.ui-table__mv { position: absolute; right: -2px; top: 50%; margin-top: -8px; font-size: 11px; font-weight: 800; line-height: 16px; }
+.ui-table__mv--up { color: #4FD18B; }
+.ui-table__mv--down { color: #FF7A70; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-table tr.is-moved .ui-table__mv { animation: ui-mv .5s var(--ease-spring) .95s both; }
+}
+@keyframes ui-mv { from { transform: translateY(6px) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- рейтинг прогнозистов (LeaderboardRow в .pd-board__rows) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .pd-board__rows > .ui-lb { animation: ui-lb-in .42s var(--ease-out) calc(var(--i, 0) * 32ms) both; }
+  /* своя строка подъезжает последней, с пружиной и золотым контуром */
+  .pd-board__rows > .ui-lb.is-me { animation: ui-lb-me .62s var(--ease-snap) calc(var(--i, 0) * 32ms + 140ms) both; }
+  .pd-board__rows > .ui-lb.is-me::before { animation: ui-lb-ring 1.1s var(--ease-out) calc(var(--i, 0) * 32ms + 420ms) both; }
+  /* топ-3: мягкий золотой блик раз в несколько секунд — медленно, без мигания */
+  .ui-lb.is-top::after { animation: ui-lb-shine 7s cubic-bezier(.45, 0, .55, 1) infinite; }
+  .ui-lb.is-top:nth-child(2)::after { animation-delay: .5s; }
+  .ui-lb.is-top:nth-child(3)::after { animation-delay: 1s; }
+}
+.ui-lb { position: relative; }
+.ui-lb.is-me::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  border: 1px solid rgba(244, 213, 122, .7); opacity: 0;
+}
+.ui-lb.is-top { overflow: hidden; }
+.ui-lb.is-top::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(244, 213, 122, .10) 40%, rgba(255, 243, 196, .16) 50%, rgba(244, 213, 122, .10) 60%, transparent);
+  transform: translateX(-120%) skewX(-16deg);
+}
+@keyframes ui-lb-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes ui-lb-me { from { opacity: 0; transform: translateY(26px) scale(.97); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
+@keyframes ui-lb-ring { 0% { opacity: .9; } 100% { opacity: 0; } }
+@keyframes ui-lb-shine { 0%, 62% { transform: translateX(-120%) skewX(-16deg); } 88%, 100% { transform: translateX(320%) skewX(-16deg); } }
+
+/* ---------- нажатия: всё, что нажимается, пружинит одинаково ----------
+   .ui-press — кнопки, вкладки, чипы, степперы (scale .96); .ui-press-soft — карточки и строки-ссылки (scale .985:
+   крупному блоку хватает меньшего хода). Нажали — быстро вдавливается (100 мс), отпустили — возвращается пружиной.
+   Класс удвоен (.ui-press.ui-press) — чтобы перебить transition компонентов, загруженных позже. Ниже тем же правилом — элементы экранов со своими классами (ссылки «Все», назад, меню, ответы игр). */
+.ui-press.ui-press, .ui-press-soft.ui-press-soft,
+.bottom-nav a, .screen-more, .mt-top__back, .pc-top__back, .pd-scorer, .gm-ans, .gm-level, .home-tile, .hp-link, .tm-more,
+.ui-section-head__action, .tg-login__btn, .avatar-btn {
+  transition: transform .45s var(--ease-spring), background-color .15s ease, border-color .15s ease, color .15s ease, opacity .2s ease, box-shadow .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ui-press.ui-press:active:not(:disabled):not([aria-disabled="true"]),
+  .bottom-nav a:active, .screen-more:active, .mt-top__back:active, .pc-top__back:active, .pd-scorer:active:not(:disabled),
+  .gm-ans:active:not(:disabled), .gm-level:active, .hp-link:active, .tm-more:active, .ui-section-head__action:active,
+  .tg-login__btn:active:not(:disabled), .avatar-btn:active {
+    transform: scale(.96);
+    transition: transform .1s var(--ease-out), background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .ui-press-soft.ui-press-soft:active, a.home-tile:active {
+    transform: scale(.985);
+    transition: transform .1s var(--ease-out), background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  /* игрок на поле: вдавливается кружок, подпись остаётся на месте */
+  .ui-pl__tap.ui-press-soft:active { transform: none; }
+  .ui-pl__shirt { transition: transform .45s var(--ease-spring); }
+  .ui-pl__tap:active .ui-pl__shirt { transform: scale(.9); transition: transform .1s var(--ease-out); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-press:active, .ui-press-soft:active { opacity: .8; }
+}
