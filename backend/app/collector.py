@@ -1030,6 +1030,12 @@ class Collector:
             self._backfill_due = now + 120  # источник не ответил — не долбим
         return fid
 
+    def live_due(self, fid: str, now: float) -> bool:
+        """Пора ли обновить матч в окне. Срок от редкого «idle»-обновления (до 30 мин) лайв не ждёт:
+        открылось окно — сразу частый режим (иначе состав и счёт висели до конца idle-интервала)."""
+        due = self.match_due.get(fid, 0)
+        return now >= due or due - now > config.LIVE_INTERVAL
+
     def last_next(self, now: float) -> list[str]:
         fx = [f for f in self._fixtures() if isinstance(f.get("id"), int) and f.get("kickoff")]
         done = [f for f in fx if f["status"]["finished"]]
@@ -1086,7 +1092,7 @@ class Collector:
                 if now - self.last_videos >= config.VIDEO_INTERVAL:
                     log.info("videos: %s", await self.refresh_videos())
                 for fid in win:
-                    if now >= self.match_due.get(fid, 0):
+                    if self.live_due(fid, now):
                         self.match_due[fid] = now + config.LIVE_INTERVAL
                         m = await self.refresh_match(fid, live=True)
                         if m:
