@@ -65,7 +65,10 @@ export interface MatchesResponse {
 }
 
 export interface LbRow {
+  /** порядковый номер строки — уникален */
   rank: number;
+  /** место с учётом равенства очков и точных (1, 1, 3…); старый сервер — нет поля */
+  place?: number;
   name: string;
   username: string | null;
   avatar: string | null;
@@ -77,6 +80,7 @@ export interface LbRow {
 
 export interface LbMe {
   rank: number | null;
+  place?: number | null;
   points: number;
   exact: number;
   played: number;
@@ -182,6 +186,7 @@ export function scorerName(squad: SquadPlayer[], id: string | null | undefined):
 export interface Summary {
   points: number;
   rank: number | null;
+  place?: number | null;
   exact: number;
   played: number;
 }
@@ -189,24 +194,62 @@ export interface Summary {
 export function summaryTiles(s: Summary | null): Array<{ label: string; value: string; gold?: boolean }> {
   return [
     { label: 'Очки', value: String(s?.points ?? 0), gold: true },
-    { label: 'Место', value: s?.rank != null ? String(s.rank) : '—' },
+    { label: 'Место', value: s?.rank != null ? String(s.place ?? s.rank) : '—' },
     { label: 'Точных', value: String(s?.exact ?? 0) },
   ];
 }
 
+function ru(n: number, forms: [string, string, string]): string {
+  const a = Math.abs(n) % 100;
+  const b = a % 10;
+  if (a > 10 && a < 20) return forms[2];
+  if (b > 1 && b < 5) return forms[1];
+  return b === 1 ? forms[0] : forms[2];
+}
+
+/** Подпись под именем в рейтинге: «3 прогноза · 1 точный». played — рассчитанные прогнозы. */
+export function rowSub(r: { played: number; exact: number }): string {
+  if (!r.played) return 'пока без прогнозов';
+  return `${r.played} ${ru(r.played, ['прогноз', 'прогноза', 'прогнозов'])} · ${r.exact} ${ru(r.exact, ['точный', 'точных', 'точных'])}`;
+}
+
+export interface BoardRow extends LbRow {
+  /** место для показа: равным очкам и точным — одно (1, 1, 3…) */
+  place: number;
+  sub: string;
+}
+
+/**
+ * Места с учётом равенства. Сервер отдаёт place; без него (старый ответ) считаем по порядку строк:
+ * те же очки и точные, что у строки выше, — её место, иначе — свой номер.
+ */
+export function withPlaces(rows: LbRow[]): BoardRow[] {
+  const out: BoardRow[] = [];
+  rows.forEach((r, i) => {
+    const prev = out[i - 1];
+    const place = r.place ?? (prev && prev.points === r.points && prev.exact === r.exact ? prev.place : r.rank);
+    out.push({ ...r, place, sub: rowSub(r) });
+  });
+  return out;
+}
+
 export interface BoardView {
-  rows: LbRow[];
+  rows: BoardRow[];
   /** моя строка отдельно внизу — если я есть в рейтинге, но не попал в показанный топ */
-  meRow: LbRow | null;
+  meRow: BoardRow | null;
   empty: boolean;
+  /** хоть у кого-то есть рассчитанный прогноз; нет — лига ещё не стартовала */
+  started: boolean;
+  /** моё место (с равенством) — для «ты N-й из M»; null — меня нет в рейтинге */
+  myPlace: number | null;
 }
 
 export function boardView(lb: Leaderboard, myName: string, myAvatar: string | null): BoardView {
-  const rows = lb.top;
-  const inTop = rows.some((r) => r.is_me);
-  let meRow: LbRow | null = null;
-  if (!inTop && lb.me && lb.me.rank != null) {
-    meRow = {
+  const rows = withPlaces(lb.top);
+  const mine = rows.find((r) => r.is_me);
+  let meRow: BoardRow | null = null;
+  if (!mine && lb.me && lb.me.rank != null) {
+    const r: LbRow = {
       rank: lb.me.rank,
       name: myName,
       username: null,
@@ -216,8 +259,71 @@ export function boardView(lb: Leaderboard, myName: string, myAvatar: string | nu
       played: lb.me.played,
       is_me: true,
     };
+    meRow = { ...r, place: lb.me.place ?? lb.me.rank, sub: rowSub(r) };
   }
-  return { rows, meRow, empty: rows.length === 0 };
+  const started = rows.some((r) => r.played > 0) || (lb.me?.played ?? 0) > 0;
+  const myPlace = mine?.place ?? meRow?.place ?? null;
+  return { rows, meRow, empty: rows.length === 0, started, myPlace };
+}
+
+/* ---------- шапка лиги: GET /api/predict/leagues/{id} ---------- */
+
+export interface LeaguePerson {
+  name: string;
+  avatar: string | null;
+  is_me: boolean;
+  is_owner: boolean;
+  /** сделал ли прогноз на ближайший матч — только факт, без счёта */
+  predicted_next: boolean;
+}
+
+export interface LeagueNextMatch {
+  id: string;
+  kickoff_utc: string;
+  home: PTeam;
+  away: PTeam;
+  rm_side: 'home' | 'away';
+}
+
+export interface LeagueHeader {
+  id: number;
+  name: string;
+  code: string;
+  invite_link: string | null;
+  is_owner: boolean;
+  members: number;
+  faces?: Array<{ name: string; avatar: string | null }>;
+  people: LeaguePerson[];
+  /** ближайший матч, на который ещё принимают прогнозы; нет — null */
+  next_match: LeagueNextMatch | null;
+  predicted_next_count: number;
+}
+
+/** «Реал — Севилья» / «Севилья — Реал»: Реал коротко, порядок — как в матче. */
+export function matchTitle(m: { home: PTeam; away: PTeam; rm_side: 'home' | 'away' }): string {
+  return m.rm_side === 'home' ? `Реал — ${m.away.name}` : `${m.home.name} — Реал`;
+}
+
+/** «ты 2-й из 5»; в нестартовавшей лиге или без моего места — null (все пока первые). */
+export function placeLine(v: Pick<BoardView, 'started' | 'myPlace'>, total: number): string | null {
+  if (!v.started || v.myPlace == null) return null;
+  return `ты ${v.myPlace}-й из ${total}`;
+}
+
+/** «Прогнозы сделали 1 из 2» на ближайший матч; матча нет — null. */
+export function nextLine(h: LeagueHeader): string | null {
+  if (!h.next_match) return null;
+  const k = h.predicted_next_count;
+  const m = h.members;
+  if (m > 1 && k === m) return 'Прогнозы сделали все';
+  if (k === 0) return m > 1 ? 'Прогнозов пока нет ни у кого' : 'Прогноза пока нет';
+  return `Прогнозы сделали ${k} из ${m}`;
+}
+
+/** Участники нестартовавшей лиги: я первым, дальше — как пришли с сервера (создатель, по вступлению). */
+export function waitingPeople(h: LeagueHeader): Array<LeaguePerson & { state: 'done' | 'wait' | 'none' }> {
+  const ps = [...h.people].sort((a, b) => Number(b.is_me) - Number(a.is_me));
+  return ps.map((p) => ({ ...p, state: !h.next_match ? 'none' : p.predicted_next ? 'done' : 'wait' }));
 }
 
 export interface HistoryItem {

@@ -100,11 +100,65 @@ def test_league_leaderboard(client, provider, clock, svc):
     assert [(r["rank"], r["name"], r["points"]) for r in lb["top"]] == [(1, "U2", 3), (2, "U3", 2), (3, "U9", 0)]
     assert lb["me"]["rank"] == 2
     lb = client.get(f"/api/predict/leaderboard?league={lg['id']}&limit=1", headers=tma(9, first_name="U9")).json()
-    assert len(lb["top"]) == 1 and lb["me"] == {"rank": 3, "points": 0, "exact": 0, "played": 0}
+    assert len(lb["top"]) == 1 and lb["me"] == {"rank": 3, "place": 3, "points": 0, "exact": 0, "played": 0}
     r = client.get(f"/api/predict/leaderboard?league={lg['id']}", headers=tma(1))
     assert r.status_code == 403 and r.json()["error"] == "not_member"
     assert client.get(f"/api/predict/leaderboard?league={lg['id']}").status_code == 401
     assert client.get("/api/predict/leaderboard?league=9999", headers=tma(1)).status_code == 404
+
+
+def test_league_header_access(client):
+    lg = _create(client, 1).json()
+    assert client.get(f"{L}/{lg['id']}").status_code == 401
+    r = client.get(f"{L}/{lg['id']}", headers=tma(2))
+    assert r.status_code == 403 and r.json()["error"] == "not_member"
+    r = client.get(f"{L}/9999", headers=tma(1))
+    assert r.status_code == 404 and r.json()["error"] == "league_not_found"
+    assert client.get(f"{L}/abc", headers=tma(1)).status_code == 422
+
+
+def test_league_header_people_and_next(client, provider, clock):
+    provider.put(mk_match(1))
+    provider.put(mk_match(2, kickoff=T0 + timedelta(days=4)))
+    lg = client.post(L, json={"name": "Бомжи"}, headers=tma(1697882482, first_name="Егор")).json()
+    client.post(f"{L}/join", json={"code": lg["code"]}, headers=tma(55, first_name="artur"))
+    client.post(f"{L}/join", json={"code": lg["code"]}, headers=tma(66, first_name="Вика", last_name="Петрова"))
+    assert predict(client, 55, 1, 3, 1, first_name="artur").status_code == 200
+    assert predict(client, 66, 2, 2, 2, first_name="Вика", last_name="Петрова").status_code == 200  # не ближайший
+    r = client.get(f"{L}/{lg['id']}", headers=tma(1697882482, first_name="Егор"))
+    assert r.status_code == 200, r.text
+    h = r.json()
+    assert h["name"] == "Бомжи" and h["members"] == 3 and h["is_owner"] is True
+    assert h["next_match"] == {"id": "1", "kickoff_utc": "2026-10-18T19:00:00Z", "home": {"id": "8633", "name": "Реал Мадрид"},
+                               "away": {"id": "8302", "name": "Севилья"}, "rm_side": "home"}
+    assert [(p["name"], p["is_me"], p["is_owner"], p["predicted_next"]) for p in h["people"]] == [
+        ("Егор", True, True, False), ("artur", False, False, True), ("Вика П.", False, False, False)]
+    assert h["predicted_next_count"] == 1
+    assert [f["name"] for f in h["faces"]] == ["Егор", "artur", "Вика П."]
+    # ни id пользователей, ни счёта чужих прогнозов
+    body = r.text
+    assert "1697882482" not in body and '"user_id"' not in body and '"home":3' not in body and '"away":1' not in body
+    for p in h["people"]:
+        assert set(p) == {"name", "avatar", "is_me", "is_owner", "predicted_next"}
+    # список лиг — те же лица
+    mine = client.get(L, headers=tma(55, first_name="artur")).json()["leagues"][0]
+    assert mine["faces"] == h["faces"] and mine["is_owner"] is False
+    # матч начался — приём закрыт: ближайший открытый — следующий, прогноз на него у Вики
+    clock.set(T0 + timedelta(minutes=5))
+    provider.update(1, status="live")
+    h = client.get(f"{L}/{lg['id']}", headers=tma(55, first_name="artur")).json()
+    assert h["next_match"]["id"] == "2" and h["predicted_next_count"] == 1
+    assert [p["predicted_next"] for p in h["people"]] == [False, False, True]
+    assert [p["is_me"] for p in h["people"]] == [False, True, False]
+
+
+def test_league_header_without_matches(client, provider):
+    lg = _create(client, 1).json()
+    h = client.get(f"{L}/{lg['id']}", headers=tma(1)).json()
+    assert h["next_match"] is None and h["predicted_next_count"] == 0
+    assert [p["predicted_next"] for p in h["people"]] == [False]
+    provider.put(mk_match(7, status="cancelled"))
+    assert client.get(f"{L}/{lg['id']}", headers=tma(1)).json()["next_match"] is None
 
 
 def test_invite_link_from_env(env, provider, clock, monkeypatch):

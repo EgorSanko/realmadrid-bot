@@ -94,6 +94,44 @@
 .pd-board__rows .ui-skel { margin-top: 8px; }
 .pd-board__me { margin-top: 10px; }
 
+/* шапка лиги: название, лица, моё место, кто готов к ближайшему матчу */
+.pd-lhead { margin-top: 12px; padding: 14px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
+.pd-lhead__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pd-lhead__title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pd-lhead__title b { font-family: var(--display); font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pd-lhead__place { color: var(--gold-light); font-weight: 600; white-space: nowrap; }
+.pd-nowrap { white-space: nowrap; }
+.pd-lhead__next { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.pd-lhead__match { font-size: 12px; color: var(--muted); }
+.pd-faces { display: flex; flex: none; padding-left: 8px; }
+.pd-face {
+  width: 28px; height: 28px; flex: none; margin-left: -8px; border-radius: 50%; overflow: hidden; box-sizing: border-box;
+  border: 2px solid var(--bg); background: var(--surface-2); color: var(--muted);
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+}
+.pd-face img { width: 100%; height: 100%; object-fit: cover; }
+.pd-face.is-me { background: var(--gold); color: var(--gold-ink); }
+.pd-face--more { font-size: 11px; color: var(--text); }
+.pd-pbar { display: flex; flex-direction: column; gap: 6px; }
+.pd-pbar__label { font-size: 13px; font-weight: 600; }
+.pd-pbar__track { display: block; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.pd-pbar__fill { display: block; height: 100%; border-radius: 3px; background: var(--gold-grad); transition: width .4s cubic-bezier(.22, 1, .36, 1); }
+
+/* лига до первого сыгранного матча */
+.pd-lstart { padding: 14px 0 2px; }
+.pd-lstart__title { margin: 0 0 4px; font-size: 15px; font-weight: 600; line-height: 1.35; }
+.pd-lstart .pd-pbar { margin-top: 12px; }
+.pd-lstart__people { list-style: none; margin: 12px 0 0; padding: 0; }
+.pd-lstart__row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.pd-lstart__row .pd-face { margin-left: 0; width: 32px; height: 32px; border-color: transparent; }
+.pd-lstart__name { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.pd-lstart__nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pd-lstart__tag { flex: none; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--line); font-size: 11px; font-weight: 500; color: var(--muted); }
+.pd-lstart__st { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--dim); }
+.pd-lstart__st.is-done { color: var(--gold-light); font-weight: 600; }
+.pd-lstart__st .pd-check { width: 15px; height: 15px; vertical-align: 0; }
+.pd-lstart__note { margin: 4px 0 0; font-size: 12px; line-height: 1.45; color: var(--dim); }
+
 /* мои прогнозы */
 .pd-mine .pd-h2 { margin-bottom: 6px; }
 .pd-hist { list-style: none; margin: 0; padding: 0; }
@@ -127,8 +165,21 @@
 .pd-input:focus { outline: none; border-color: var(--gold-edge); }
 .pd-invite__btn { width: 100%; }
 .pd-league { margin-top: 14px; padding: 14px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
-.pd-league__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; }
-.pd-league__link { margin: 8px 0 0; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pd-league__head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.pd-league__title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pd-league__title b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pd-league__more { display: flex; gap: 18px; margin: 4px 0 -8px; }
+.pd-league__act {
+  padding: 10px 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.pd-league__act.is-danger { color: #FF8A80; }
+.pd-league__rename { display: flex; flex-direction: column; gap: 8px; }
+.pd-league__rename .pd-league__actions { margin-top: 2px; }
+.pd-league__lbl { font-size: 12px; color: var(--muted); }
+.pd-league__confirm { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgba(255, 90, 78, .07); border: 1px solid rgba(255, 138, 128, .22); }
+.pd-league__q { margin: 0; font-size: 13px; line-height: 1.45; }
+.pd-league__danger { background: #E5484D; color: #fff; font-weight: 700; font-size: 14px; }
 .pd-league__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
 .pd-league__actions .ui-btn { height: 44px; }
 .pd-league__share { box-shadow: none; font-size: 14px; }
@@ -158,6 +209,8 @@ html.desk .pd-desk .pd-tiles, html.desk .pd-desk .pd-skel, html.desk .pd-desk .p
 html.desk .pd-desk .pd-tile__value { font-size: 28px; }
 html.desk .pd-board__rows a:hover, html.desk .pd-hist__row:hover { background: rgba(255, 255, 255, .025); }
 html.desk .pd-input:hover { border-color: var(--gold-edge); }
+html.desk .pd-league__act:hover { color: var(--text); }
+html.desk .pd-league__act.is-danger:hover { color: #FFB1AA; }
 html.desk .ui-stepper__btn:hover { background: var(--surface-2); }
 .hp-link { padding: 0; border: 0; background: none; color: var(--gold-light); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 

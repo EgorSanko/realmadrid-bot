@@ -34,6 +34,7 @@ LEAGUE_CODE_LEN = 10
 CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # 32 символа без 0/O/1/I: 10 знаков = 50 бит
 MAX_OWNED_LEAGUES = 10
 MAX_MEMBERSHIPS = 50
+LEAGUE_FACES = 5           # сколько аватаров участников отдаём в списке лиг
 
 PREDICT_RATE = (30, 60.0)   # не больше 30 изменений прогноза в минуту
 JOIN_RATE = (20, 60.0)      # попытки вступления по коду — против перебора
@@ -545,8 +546,10 @@ class PredictionService:
     # --- рейтинги ---
 
     @staticmethod
-    def _row_view(r: sqlite3.Row, rank: int, me: Optional[int]) -> dict[str, Any]:
-        return {"rank": rank, "name": display_name(r["first_name"], r["last_name"], r["username"]),
+    def _row_view(r: sqlite3.Row, rank: int, me: Optional[int], place: Optional[int] = None) -> dict[str, Any]:
+        """rank — порядковый номер строки (уникален); place — место с учётом равенства очков и точных
+        (1, 1, 3…): одинаковым — одно место, порядок внутри — по rank."""
+        return {"rank": rank, "place": place if place is not None else rank, "name": display_name(r["first_name"], r["last_name"], r["username"]),
                 "username": r["username"], "photo_url": r["photo_url"], "avatar": avatars.url_for(r["user_id"]),
                 "points": r["points"],
                 "exact": r["exact"], "played": r["played"], "is_me": me is not None and r["user_id"] == me}
@@ -554,12 +557,16 @@ class PredictionService:
     def _global_rank(self, c: sqlite3.Connection, key: str, user_id: int) -> Optional[dict[str, Any]]:
         s = c.execute("SELECT * FROM standings WHERE period=? AND user_id=?", (key, user_id)).fetchone()
         if s is None:
-            return {"rank": None, "points": 0, "exact": 0, "played": 0}
+            return {"rank": None, "place": None, "points": 0, "exact": 0, "played": 0}
+        ahead = c.execute(  # строго больше очков или точных при равных очках — общее место у равных
+            "SELECT COUNT(*) FROM standings WHERE period=:p AND (points > :pts OR (points = :pts AND exact > :ex))",
+            {"p": key, "pts": s["points"], "ex": s["exact"]}).fetchone()[0]
         better = c.execute(
             """SELECT COUNT(*) FROM standings WHERE period=:p AND (points > :pts OR (points = :pts AND (
                    exact > :ex OR (exact = :ex AND (last_pred_at < :l OR (last_pred_at = :l AND user_id < :u))))))""",
             {"p": key, "pts": s["points"], "ex": s["exact"], "l": s["last_pred_at"], "u": user_id}).fetchone()[0]
-        return {"rank": better + 1, "points": s["points"], "exact": s["exact"], "played": s["played"]}
+        return {"rank": better + 1, "place": ahead + 1, "points": s["points"], "exact": s["exact"],
+                "played": s["played"]}
 
     def leaderboard(self, period: str = "season", league_id: Optional[int] = None, limit: int = 50,
                     user_id: Optional[int] = None) -> dict[str, Any]:
@@ -569,11 +576,12 @@ class PredictionService:
         with self.conn() as c:
             if league_id is None:
                 rows = c.execute(
-                    """SELECT s.*, u.first_name, u.last_name, u.username, u.photo_url
+                    """SELECT s.*, u.first_name, u.last_name, u.username, u.photo_url,
+                              RANK() OVER (ORDER BY s.points DESC, s.exact DESC) AS place
                        FROM standings s JOIN users u ON u.id = s.user_id WHERE s.period = ?
                        ORDER BY s.points DESC, s.exact DESC, s.last_pred_at ASC, s.user_id ASC LIMIT ?""",
                     (key, limit)).fetchall()
-                top = [self._row_view(r, i + 1, user_id) for i, r in enumerate(rows)]
+                top = [self._row_view(r, i + 1, user_id, r["place"]) for i, r in enumerate(rows)]
                 total = c.execute("SELECT COUNT(*) FROM standings WHERE period=?", (key,)).fetchone()[0]
                 me = self._global_rank(c, key, user_id) if user_id is not None else None
                 return {**info, "league": None, "total": total, "top": top, "me": me}
@@ -590,7 +598,8 @@ class PredictionService:
                        SELECT lm.user_id, COALESCE(s.points, 0) AS points, COALESCE(s.exact, 0) AS exact,
                               COALESCE(s.played, 0) AS played,
                               ROW_NUMBER() OVER (ORDER BY COALESCE(s.points, 0) DESC, COALESCE(s.exact, 0) DESC,
-                                                 s.last_pred_at IS NULL, s.last_pred_at ASC, lm.user_id ASC) AS rnk
+                                                 s.last_pred_at IS NULL, s.last_pred_at ASC, lm.user_id ASC) AS rnk,
+                              RANK() OVER (ORDER BY COALESCE(s.points, 0) DESC, COALESCE(s.exact, 0) DESC) AS place
                        FROM league_members lm
                        LEFT JOIN standings s ON s.user_id = lm.user_id AND s.period = ?
                        WHERE lm.league_id = ?)
@@ -598,10 +607,11 @@ class PredictionService:
                    FROM ranked r JOIN users u ON u.id = r.user_id
                    WHERE r.rnk <= ? OR r.user_id = ? ORDER BY r.rnk""",
                 (key, league_id, limit, user_id)).fetchall()
-            top = [self._row_view(r, r["rnk"], user_id) for r in rows if r["rnk"] <= limit]
+            top = [self._row_view(r, r["rnk"], user_id, r["place"]) for r in rows if r["rnk"] <= limit]
             mine = next(r for r in rows if r["user_id"] == user_id)
             total = c.execute("SELECT COUNT(*) FROM league_members WHERE league_id=?", (league_id,)).fetchone()[0]
-            me = {"rank": mine["rnk"], "points": mine["points"], "exact": mine["exact"], "played": mine["played"]}
+            me = {"rank": mine["rnk"], "place": mine["place"], "points": mine["points"], "exact": mine["exact"],
+                  "played": mine["played"]}
             return {**info, "league": {"id": lg["id"], "name": lg["name"]}, "total": total, "top": top, "me": me}
 
     def me(self, user_id: int) -> dict[str, Any]:
@@ -674,10 +684,23 @@ class PredictionService:
             code = code[7:]
         return re.sub(r"[\s-]", "", code).upper()
 
+    @staticmethod
+    def _member_rows(c: sqlite3.Connection, lg: sqlite3.Row, limit: int = -1) -> list[sqlite3.Row]:
+        """Участники лиги: создатель первым, дальше — в порядке вступления."""
+        return c.execute(
+            """SELECT lm.user_id, u.first_name, u.last_name, u.username FROM league_members lm
+               JOIN users u ON u.id = lm.user_id WHERE lm.league_id = ?
+               ORDER BY lm.user_id != ?, lm.joined_at, lm.user_id LIMIT ?""",
+            (lg["id"], lg["owner_id"], limit)).fetchall()
+
     def _league_view(self, c: sqlite3.Connection, lg: sqlite3.Row, user_id: int) -> dict[str, Any]:
         members = c.execute("SELECT COUNT(*) FROM league_members WHERE league_id=?", (lg["id"],)).fetchone()[0]
+        # лица для карточки приглашения: первые пятеро — имя и аватар, без id
+        faces = [{"name": display_name(r["first_name"], r["last_name"], r["username"]),
+                  "avatar": avatars.url_for(r["user_id"])} for r in self._member_rows(c, lg, LEAGUE_FACES)]
         return {"id": lg["id"], "name": lg["name"], "code": lg["code"], "invite_link": self.invite_link(lg["code"]),
-                "is_owner": lg["owner_id"] == user_id, "members": members, "created_at": lg["created_at"]}
+                "is_owner": lg["owner_id"] == user_id, "members": members, "faces": faces,
+                "created_at": lg["created_at"]}
 
     def _memberships(self, c: sqlite3.Connection, user_id: int) -> int:
         return c.execute("SELECT COUNT(*) FROM league_members WHERE user_id=?", (user_id,)).fetchone()[0]
@@ -760,3 +783,43 @@ class PredictionService:
             rows = c.execute("""SELECT l.* FROM leagues l JOIN league_members lm ON lm.league_id = l.id
                                 WHERE lm.user_id = ? ORDER BY lm.joined_at, l.id""", (user_id,)).fetchall()
             return {"leagues": [self._league_view(c, r, user_id) for r in rows]}
+
+    def _next_open(self) -> Optional[dict[str, Any]]:
+        """Ближайший матч, на который ещё принимают прогнозы (как в matches(): без отменённых, accepting()).
+        Источник матчей недоступен — None: шапка лиги покажется и без матча."""
+        try:
+            upcoming = self._provider("upcoming", 5)
+        except PredictError:
+            return None
+        for m in upcoming:
+            if m.get("status") == "cancelled":
+                continue
+            n = self._norm(m)
+            if self.accepting(n["status"], n["kickoff"]):
+                return {"id": n["id"], "kickoff_utc": iso_short(n["kickoff"]),
+                        "home": {"id": n["home_id"], "name": n["home_name"]},
+                        "away": {"id": n["away_id"], "name": n["away_name"]},
+                        "rm_side": "home" if n["rm_is_home"] else "away"}
+        return None
+
+    def league(self, user_id: int, league_id: int) -> dict[str, Any]:
+        """Шапка лиги — только участникам: кто в лиге и кто уже сделал прогноз на ближайший матч.
+        Только факт прогноза — счёт чужих прогнозов до начала матча не отдаём; telegram id — тоже."""
+        nxt = self._next_open()
+        with self.conn() as c:
+            lg = self._league_for(c, league_id)
+            if not c.execute("SELECT 1 FROM league_members WHERE league_id=? AND user_id=?",
+                             (league_id, user_id)).fetchone():
+                raise PredictError(403, "not_member", "Вы не состоите в этой лиге")
+            rows = self._member_rows(c, lg)
+            done: set[int] = set()
+            if nxt is not None:
+                done = {r[0] for r in c.execute(
+                    """SELECT p.user_id FROM predictions p JOIN league_members lm ON lm.user_id = p.user_id
+                       WHERE lm.league_id = ? AND p.match_id = ?""", (league_id, nxt["id"]))}
+            people = [{"name": display_name(r["first_name"], r["last_name"], r["username"]),
+                       "avatar": avatars.url_for(r["user_id"]), "is_me": r["user_id"] == user_id,
+                       "is_owner": r["user_id"] == lg["owner_id"], "predicted_next": r["user_id"] in done}
+                      for r in rows]
+            return {**self._league_view(c, lg, user_id), "people": people, "next_match": nxt,
+                    "predicted_next_count": sum(p["predicted_next"] for p in people)}

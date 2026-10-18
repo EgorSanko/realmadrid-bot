@@ -28,6 +28,8 @@ export interface PeriodStat {
   key: string;
   label: string;
   rank: number | null;
+  /** место с учётом равенства очков и точных (1, 1, 3…); старый сервер — нет поля */
+  place?: number | null;
   points: number;
   exact: number;
   played: number;
@@ -44,6 +46,12 @@ export interface PredictMe {
   history: PredHistoryItem[];
 }
 
+/** Участник лиги в списке: имя и аватар, без id. */
+export interface LeagueFace {
+  name: string;
+  avatar: string | null;
+}
+
 export interface League {
   id: number;
   name: string;
@@ -51,6 +59,8 @@ export interface League {
   invite_link: string | null;
   is_owner: boolean;
   members: number;
+  /** первые пятеро: создатель, дальше по вступлению */
+  faces?: LeagueFace[];
 }
 
 export interface Tile {
@@ -75,7 +85,7 @@ export function pointsTiles(me: PredictMe | null): Tile[] {
   return [
     { label: 'Очки за сезон', value: String(s?.points ?? 0), sub: s?.label },
     { label: 'За месяц', value: String(m?.points ?? 0), sub: monthLabel(m?.label) },
-    { label: 'Место', value: s?.rank != null ? `${s.rank}` : '—', sub: s?.rank != null ? 'в сезоне' : 'нет прогнозов' },
+    { label: 'Место', value: s?.rank != null ? `${s.place ?? s.rank}` : '—', sub: s?.rank != null ? 'в сезоне' : 'нет прогнозов' },
     { label: 'Точных счетов', value: String(s?.exact ?? 0), sub: s ? `из ${s.played}` : undefined },
   ];
 }

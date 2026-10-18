@@ -128,6 +128,11 @@ def post_league(body: LeagueIn, user: int = Depends(current_user), svc: Predicti
     return _ok(svc.create_league(user, body.name), 201)
 
 
+@router.get("/leagues/{league_id}")
+def get_league(league_id: int, user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
+    return _ok(svc.league(user, league_id))
+
+
 @router.post("/leagues/join")
 def post_join(body: JoinIn, user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
     return _ok(svc.join_league(user, body.code))

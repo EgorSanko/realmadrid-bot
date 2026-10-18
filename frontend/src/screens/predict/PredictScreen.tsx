@@ -4,9 +4,21 @@ import { GamesTabs } from '../../components/GamesTabs';
 import { LoginButton } from '../../components/LoginButton';
 import { useDesktop } from '../../lib/shell';
 import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, useAuth } from '../../lib/auth';
-import { EXACT_SEEN_KEY, RULE_LINES, boardView, exactToCelebrate, historyItem, predictError, summaryTiles } from '../../lib/predict';
+import {
+  EXACT_SEEN_KEY,
+  RULE_LINES,
+  boardView,
+  exactToCelebrate,
+  historyItem,
+  matchTitle,
+  nextLine,
+  placeLine,
+  predictError,
+  summaryTiles,
+  waitingPeople,
+} from '../../lib/predict';
 import { reducedMotion } from '../../lib/motion';
-import type { HistoryItem, Leaderboard, MeHistoryEntry } from '../../lib/predict';
+import type { BoardView, HistoryItem, Leaderboard, LeagueHeader, MeHistoryEntry } from '../../lib/predict';
 import type { League, PredictMe } from '../../lib/profile';
 import { copyText, shareLink } from '../../lib/share';
 import { inviteLink } from '../../lib/startParam';
@@ -21,6 +33,8 @@ import {
   Tabs,
   TeamCrest,
   formatDayShort,
+  formatKickoff,
+  formatWeekdayShort,
   plural,
 } from '../../ui';
 import { PredictForm } from './PredictForm';
@@ -134,13 +148,13 @@ export default function PredictScreen() {
 
           </div>
           <aside className="dk-col" aria-label="Рейтинг и лиги">
-      <Board authed={authed} leagues={leagues} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
+      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
 
       <Invite
         authed={authed}
         leagues={leagues}
         onRetry={reloadLeagues}
-        onCreated={() => {
+        onChanged={() => {
           setLeaguesVer((v) => v + 1);
         }}
       />
@@ -222,7 +236,7 @@ export default function PredictScreen() {
         </p>
       </section>
 
-      <Board authed={authed} leagues={leagues} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
+      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
 
       {authed && <MyPredictions me={me} onRetry={reloadMe} />}
 
@@ -230,7 +244,7 @@ export default function PredictScreen() {
         authed={authed}
         leagues={leagues}
         onRetry={reloadLeagues}
-        onCreated={() => {
+        onChanged={() => {
           setLeaguesVer((v) => v + 1);
         }}
       />
@@ -243,11 +257,14 @@ export default function PredictScreen() {
 function Board({
   authed,
   leagues,
+  ver,
   myName,
   myAvatar,
 }: {
   authed: boolean;
   leagues: Load<{ leagues: League[] }>;
+  /** меняется после создания, переименования, удаления лиги — перечитать */
+  ver: number;
   myName: string;
   myAvatar: string | null;
 }) {
@@ -263,7 +280,11 @@ function Board({
         : lid != null
           ? `/api/predict/leaderboard?period=season&league=${lid}&limit=${TOP}`
           : null;
-  const [lb, reload] = useAuthedGet<Leaderboard>(path);
+  const [lb, reload] = useAuthedGet<Leaderboard>(path, [ver]);
+  const inLeague = tab === 'leagues' && lid != null;
+  // шапка лиги: участники и кто уже сделал прогноз на ближайший матч
+  const [head, reloadHead] = useAuthedGet<LeagueHeader>(inLeague ? `/api/predict/leagues/${lid}` : null, [ver]);
+  const headData = head.kind === 'ok' && head.data.id === lid ? head.data : null;
   const view = useMemo(() => (lb.kind === 'ok' ? boardView(lb.data, myName, myAvatar) : null), [lb, myName, myAvatar]);
   // при смене вкладки старый ответ ещё на экране, пока не пришёл новый — его не показываем
   const stale =
@@ -278,6 +299,15 @@ function Board({
     body = <Skeleton shape="list" rows={4} />;
   } else if (lb.kind === 'error') {
     body = <ErrorState plain text={loadError(lb) ?? undefined} onRetry={reload} />;
+  } else if (view && inLeague && !view.started) {
+    // у всех 0 сыгранных — не ряды нулей, а с какого матча старт и кто уже готов
+    body = headData ? (
+      <LeagueStart head={headData} />
+    ) : head.kind === 'error' ? (
+      <ErrorState plain text={loadError(head) ?? undefined} onRetry={reloadHead} />
+    ) : (
+      <Skeleton shape="list" rows={2} />
+    );
   } else if (view && view.empty) {
     body = <p className="pd-muted pd-board__msg">Пока пусто: очки появятся после первого сыгранного матча.</p>;
   } else if (view) {
@@ -286,8 +316,9 @@ function Board({
         {view.rows.map((r, i) => (
           <LeaderboardRow
             key={`${r.rank}-${r.name}`}
-            rank={r.rank}
+            rank={r.place}
             name={r.is_me ? `${r.name} · ты` : r.name}
+            sub={r.sub}
             points={r.points}
             avatarUrl={r.avatar ?? undefined}
             isMe={r.is_me}
@@ -300,8 +331,9 @@ function Board({
           <LeaderboardRow
             rankFrom={lb.kind === 'ok' ? lb.data.total : undefined}
             style={{ '--i': view.rows.length } as CSSProperties}
-            rank={view.meRow.rank}
+            rank={view.meRow.place}
             name={`${view.meRow.name} · ты`}
+            sub={view.meRow.sub}
             points={view.meRow.points}
             avatarUrl={view.meRow.avatar ?? undefined}
             isMe
@@ -317,7 +349,7 @@ function Board({
     <section className="ui-card pd-board" aria-label="Рейтинг">
       <div className="pd-board__head">
         <h2 className="pd-h2">Рейтинг</h2>
-        {lb.kind === 'ok' && !stale && (
+        {lb.kind === 'ok' && !stale && !inLeague && (
           <span className="pd-muted">
             {lb.data.total} {plural(lb.data.total, ['участник', 'участника', 'участников'])}
           </span>
@@ -335,7 +367,8 @@ function Board({
           { id: 'leagues', label: 'Лиги' },
         ]}
       />
-      {tab === 'leagues' && list.length > 0 && (
+      {/* одна лига — её название в шапке, переключатель не нужен */}
+      {tab === 'leagues' && list.length > 1 && (
         <Tabs<string>
           ariaLabel="Моя лига"
           variant="pill"
@@ -345,8 +378,154 @@ function Board({
           items={list.map((l) => ({ id: String(l.id), label: l.name }))}
         />
       )}
+      {inLeague && (
+        <LeagueHead
+          league={list.find((l) => l.id === lid)!}
+          head={headData}
+          view={view && !stale ? view : null}
+          total={lb.kind === 'ok' && !stale ? lb.data.total : null}
+        />
+      )}
       {body}
     </section>
+  );
+}
+
+/* ---------- лига: шапка и старт ---------- */
+
+function initial(name: string): string {
+  return (name.replace(/^@/, '').trim()[0] ?? '?').toUpperCase();
+}
+
+/** Аватар участника: фото или первая буква имени. */
+function Face({ name, avatar, me }: { name: string; avatar: string | null; me?: boolean }) {
+  const [ok, setOk] = useState(true);
+  return (
+    <span className={`pd-face${me ? ' is-me' : ''}`}>
+      {avatar && ok ? (
+        <img src={avatar} alt="" width={28} height={28} loading="lazy" decoding="async" onError={() => setOk(false)} />
+      ) : (
+        initial(name)
+      )}
+    </span>
+  );
+}
+
+/** Аватарки стопкой: первые пятеро и «+N». */
+function Faces({ faces, total }: { faces: Array<{ name: string; avatar: string | null; is_me?: boolean }>; total: number }) {
+  const shown = faces.slice(0, 5);
+  const more = total - shown.length;
+  if (!shown.length) return null;
+  return (
+    <span className="pd-faces" aria-hidden="true">
+      {shown.map((f, i) => (
+        <Face key={`${i}-${f.name}`} name={f.name} avatar={f.avatar} me={f.is_me} />
+      ))}
+      {more > 0 && <span className="pd-face pd-face--more">+{more}</span>}
+    </span>
+  );
+}
+
+function LeagueHead({
+  league,
+  head,
+  view,
+  total,
+}: {
+  league: League;
+  head: LeagueHeader | null;
+  view: BoardView | null;
+  total: number | null;
+}) {
+  const members = head?.members ?? league.members;
+  const place = view && total != null ? placeLine(view, total) : null;
+  const next = head?.next_match ?? null;
+  // до старта лиги ближайший матч и кто готов — в блоке «Лига стартует», здесь не повторяем
+  const showNext = head != null && next != null && !!view?.started;
+  return (
+    <div className="pd-lhead">
+      <div className="pd-lhead__top">
+        <div className="pd-lhead__title">
+          <b>{head?.name ?? league.name}</b>
+          <span className="pd-muted">
+            {members} {plural(members, ['участник', 'участника', 'участников'])}
+            {place && (
+              <>
+                {' · '}
+                <span className="pd-lhead__place">{place}</span>
+              </>
+            )}
+          </span>
+        </div>
+        <Faces faces={head?.people ?? league.faces ?? []} total={members} />
+      </div>
+      {showNext && head && next && (
+        <div className="pd-lhead__next">
+          <span className="pd-lhead__match">
+            Ближайший матч: {matchTitle(next)} · <span className="pd-nowrap">{formatWeekdayShort(next.kickoff_utc)}</span>
+          </span>
+          <PredictedBar done={head.predicted_next_count} of={head.members} label={nextLine(head)} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** «прогнозы сделали 1 из 2» и полоска заполненности. */
+function PredictedBar({ done, of, label }: { done: number; of: number; label: string | null }) {
+  return (
+    <span className="pd-pbar">
+      <span className="pd-pbar__label">{label}</span>
+      <span className="pd-pbar__track" role="img" aria-label={`Прогнозы сделали ${done} из ${of}`}>
+        <span className="pd-pbar__fill" style={{ width: `${of ? Math.round((done / of) * 100) : 0}%` }} />
+      </span>
+    </span>
+  );
+}
+
+/** Лига ещё без сыгранных матчей: с какого матча старт и кто уже сделал прогноз. */
+function LeagueStart({ head }: { head: LeagueHeader }) {
+  const next = head.next_match;
+  const people = waitingPeople(head);
+  return (
+    <div className="pd-lstart">
+      {next ? (
+        <>
+          <p className="pd-lstart__title">
+            Лига стартует с матча <b>{matchTitle(next)}</b>
+          </p>
+          <p className="pd-muted">{formatKickoff(next.kickoff_utc)}</p>
+          <PredictedBar done={head.predicted_next_count} of={head.members} label={nextLine(head)} />
+        </>
+      ) : (
+        <>
+          <p className="pd-lstart__title">Лига стартует с ближайшего матча Реала</p>
+          <p className="pd-muted">Расписание пока не объявили — когда матч появится, здесь будет видно, кто уже сделал прогноз.</p>
+        </>
+      )}
+      <ul className="pd-lstart__people">
+        {people.map((p, i) => (
+          <li key={`${i}-${p.name}`} className="pd-lstart__row">
+            <Face name={p.name} avatar={p.avatar} me={p.is_me} />
+            <span className="pd-lstart__name">
+              <span className="pd-lstart__nm">{p.is_me ? `${p.name} · ты` : p.name}</span>
+              {p.is_owner && <span className="pd-lstart__tag">создатель</span>}
+            </span>
+            {p.state === 'done' ? (
+              <span className="pd-lstart__st is-done">
+                прогноз сделан
+                <svg className="pd-check" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12.5l4.5 4.5L19 7.5" />
+                </svg>
+              </span>
+            ) : p.state === 'wait' ? (
+              <span className="pd-lstart__st">ждём</span>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      {next && <p className="pd-lstart__note">Чужой счёт не виден до начала матча — только то, что прогноз сделан.</p>}
+    </div>
   );
 }
 
@@ -456,25 +635,34 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
   );
 }
 
-/* ---------- лиги: создать и позвать друга ---------- */
+/* ---------- лиги: создать, позвать друга, переименовать, удалить, выйти ---------- */
+
+/** Ошибка действия с лигой: понятные (403/404/409/422) — текстом сервера, остальное — общим. */
+function leagueError(ex: unknown): string {
+  const fe = ex instanceof AuthFetchError ? ex : new AuthFetchError(0, null, '');
+  return [403, 404, 409, 422].includes(fe.status) && fe.message ? fe.message : predictError(fe.status, fe.code, fe.message).message;
+}
 
 function Invite({
   authed,
   leagues,
   onRetry,
-  onCreated,
+  onChanged,
 }: {
   authed: boolean;
   leagues: Load<{ leagues: League[] }>;
   onRetry: () => void;
-  onCreated: () => void;
+  /** лигу создали, переименовали, удалили или из неё вышли — перечитать списки */
+  onChanged: () => void;
 }) {
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [fresh, setFresh] = useState<League | null>(null);
-  const own = authed && leagues.kind === 'ok' ? leagues.data.leagues.filter((l) => l.is_owner) : [];
-  const shown = fresh && !own.some((l) => l.id === fresh.id) ? [fresh, ...own] : own;
+  // удалённые/покинутые — прячем сразу, не дожидаясь нового списка
+  const [gone, setGone] = useState<number[]>([]);
+  const all = authed && leagues.kind === 'ok' ? leagues.data.leagues : [];
+  const shown = (fresh && !all.some((l) => l.id === fresh.id) ? [...all, fresh] : all).filter((l) => !gone.includes(l.id));
 
   const create = async (e: FormEvent) => {
     e.preventDefault();
@@ -484,18 +672,17 @@ function Invite({
       const lg = await authFetch<League>('/api/predict/leagues', { method: 'POST', body: { name } });
       setFresh(lg);
       setName('');
-      onCreated();
+      onChanged();
     } catch (ex) {
-      const fe = ex instanceof AuthFetchError ? ex : new AuthFetchError(0, null, '');
-      setErr(fe.status === 409 || fe.status === 422 ? fe.message : predictError(fe.status, fe.code, fe.message).message);
+      setErr(leagueError(ex));
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <section className="ui-card pd-invite" aria-label="Позвать друга в лигу">
-      <h2 className="pd-h2">Позвать друга в лигу</h2>
+    <section className="ui-card pd-invite" aria-label="Лиги с друзьями">
+      <h2 className="pd-h2">Лиги с друзьями</h2>
       <p className="pd-muted">Своя лига — отдельный рейтинг для друзей. Друг откроет ссылку в Telegram и сразу окажется в лиге.</p>
       {!authed ? (
         <p className="pd-muted pd-invite__anon">Создать лигу можно после входа через Telegram.</p>
@@ -503,7 +690,16 @@ function Invite({
         <>
           {leagues.kind === 'error' && <ErrorState plain text={loadError(leagues) ?? undefined} onRetry={onRetry} />}
           {shown.map((lg) => (
-            <InviteRow key={lg.id} lg={lg} />
+            <InviteRow
+              key={lg.id}
+              lg={lg}
+              onChanged={onChanged}
+              onGone={() => {
+                setGone((g) => [...g, lg.id]);
+                if (fresh?.id === lg.id) setFresh(null);
+                onChanged();
+              }}
+            />
           ))}
           <form className="pd-invite__form" onSubmit={create}>
             <label className="ui-sr" htmlFor="pd-league-name">
@@ -532,45 +728,159 @@ function Invite({
   );
 }
 
-function InviteRow({ lg }: { lg: League }) {
+type RowMode = 'idle' | 'rename' | 'delete' | 'leave';
+
+function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => void; onGone: () => void }) {
   const url = inviteLink(lg.code, lg.invite_link, BOT_USERNAME);
   const [msg, setMsg] = useState<string | null>(null);
+  const [mode, setMode] = useState<RowMode>('idle');
+  const [draft, setDraft] = useState(lg.name);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
     if (!msg) return;
     const t = window.setTimeout(() => setMsg(null), 2500);
     return () => window.clearTimeout(t);
   }, [msg]);
+  const open = (m: RowMode) => {
+    setMode(m);
+    setErr(null);
+    if (m === 'rename') setDraft(lg.name);
+  };
+  const run = async (fn: () => Promise<unknown>, after: () => void) => {
+    setBusy(true);
+    setErr(null);
+    try {
+      await fn();
+      after();
+    } catch (ex) {
+      setErr(leagueError(ex));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const rename = (e: FormEvent) => {
+    e.preventDefault();
+    if (draft.trim() === lg.name) return open('idle');
+    void run(
+      () => authFetch<League>(`/api/predict/leagues/${lg.id}`, { method: 'PATCH', body: { name: draft } }),
+      () => {
+        setMode('idle');
+        setMsg('Название сохранено');
+        onChanged();
+      },
+    );
+  };
+  const remove = () =>
+    void run(
+      () => authFetch(mode === 'delete' ? `/api/predict/leagues/${lg.id}` : `/api/predict/leagues/${lg.id}/membership`, { method: 'DELETE' }),
+      onGone,
+    );
+  const confirm = mode === 'delete' || mode === 'leave';
+
   return (
     <div className="pd-league">
-      <div className="pd-league__head">
-        <b>{lg.name}</b>
-        <span className="pd-muted">
-          {lg.members} {plural(lg.members, ['участник', 'участника', 'участников'])}
-        </span>
-      </div>
-      <p className="pd-league__link" title={url}>
-        {url}
-      </p>
-      <div className="pd-league__actions">
-        <button
-          type="button"
-          className="ui-btn ui-btn--secondary"
-          onClick={async () => setMsg((await copyText(url)) ? 'Ссылка скопирована' : 'Не удалось скопировать')}
-        >
-          Скопировать
-        </button>
-        <button
-          type="button"
-          className="ui-btn ui-btn--primary pd-league__share"
-          onClick={async () => {
-            const r = await shareLink(url, `Присоединяйся к моей лиге прогнозов «${lg.name}» в Мадридисте`);
-            if (r === 'copied') setMsg('Ссылка скопирована');
-            if (r === 'failed') setMsg('Не удалось поделиться');
-          }}
-        >
-          Поделиться
-        </button>
-      </div>
+      {mode === 'rename' ? (
+        <form className="pd-league__rename" onSubmit={rename}>
+          <label className="pd-league__lbl" htmlFor={`pd-league-rn-${lg.id}`}>
+            Новое название
+          </label>
+          <input
+            id={`pd-league-rn-${lg.id}`}
+            className="pd-input"
+            value={draft}
+            maxLength={40}
+            autoFocus
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') open('idle');
+            }}
+          />
+          <div className="pd-league__actions">
+            <button type="button" className="ui-btn ui-btn--secondary" onClick={() => open('idle')} disabled={busy}>
+              Отмена
+            </button>
+            <button type="submit" className="ui-btn ui-btn--primary pd-league__share" disabled={busy || !draft.trim()}>
+              {busy ? 'Сохраняем…' : 'Сохранить'}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="pd-league__head">
+          <div className="pd-league__title">
+            <b>{lg.name}</b>
+            <span className="pd-muted">
+              {lg.members} {plural(lg.members, ['участник', 'участника', 'участников'])}
+              {lg.is_owner ? ' · ты создатель' : ''}
+            </span>
+          </div>
+          <Faces faces={lg.faces ?? []} total={lg.members} />
+        </div>
+      )}
+
+      {confirm && (
+        <div className="pd-league__confirm" role="alertdialog" aria-label={mode === 'delete' ? 'Удалить лигу' : 'Выйти из лиги'}>
+          <p className="pd-league__q">
+            {mode === 'delete'
+              ? `Удалить лигу «${lg.name}»? Её рейтинг пропадёт у всех участников. Прогнозы и очки в общем рейтинге останутся.`
+              : `Выйти из лиги «${lg.name}»? Вернуться можно по ссылке-приглашению.`}
+          </p>
+          <div className="pd-league__actions">
+            <button type="button" className="ui-btn ui-btn--secondary" onClick={() => open('idle')} disabled={busy}>
+              Отмена
+            </button>
+            <button type="button" className="ui-btn pd-league__danger" onClick={remove} disabled={busy}>
+              {busy ? (mode === 'delete' ? 'Удаляем…' : 'Выходим…') : mode === 'delete' ? 'Удалить' : 'Выйти'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {mode === 'idle' && (
+        <>
+          <div className="pd-league__actions">
+            <button
+              type="button"
+              className="ui-btn ui-btn--secondary"
+              onClick={async () => setMsg((await copyText(url)) ? 'Ссылка скопирована' : 'Не удалось скопировать')}
+            >
+              Скопировать
+            </button>
+            <button
+              type="button"
+              className="ui-btn ui-btn--primary pd-league__share"
+              onClick={async () => {
+                const r = await shareLink(url, `Присоединяйся к моей лиге прогнозов «${lg.name}» в Мадридисте`);
+                if (r === 'copied') setMsg('Ссылка скопирована');
+                if (r === 'failed') setMsg('Не удалось поделиться');
+              }}
+            >
+              Поделиться
+            </button>
+          </div>
+          <div className="pd-league__more">
+            {lg.is_owner ? (
+              <>
+                <button type="button" className="pd-league__act" onClick={() => open('rename')}>
+                  Переименовать
+                </button>
+                <button type="button" className="pd-league__act is-danger" onClick={() => open('delete')}>
+                  Удалить
+                </button>
+              </>
+            ) : (
+              <button type="button" className="pd-league__act is-danger" onClick={() => open('leave')}>
+                Выйти из лиги
+              </button>
+            )}
+          </div>
+        </>
+      )}
+      {err && (
+        <p className="pd-msg pd-msg--err" role="alert">
+          {err}
+        </p>
+      )}
       {msg && (
         <p className="pd-league__msg" role="status">
           {msg}

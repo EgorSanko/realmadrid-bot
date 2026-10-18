@@ -7,12 +7,18 @@ import {
   historyItem,
   homeLine,
   livePoints,
+  matchTitle,
+  nextLine,
+  placeLine,
   predictError,
+  rowSub,
   scorePoints,
   shortName,
   summaryTiles,
+  waitingPeople,
+  withPlaces,
 } from '../src/lib/predict.ts';
-import type { Leaderboard, MeHistoryEntry, NextMatch } from '../src/lib/predict.ts';
+import type { LbRow, Leaderboard, LeagueHeader, MeHistoryEntry, NextMatch } from '../src/lib/predict.ts';
 
 test('очки за счёт: точный 5, разница 3, исход 2, мимо 0', () => {
   assert.equal(scorePoints(2, 1, 2, 1), 5);
@@ -123,4 +129,62 @@ test('мои прогнозы: мой счёт против итогового, 
 test('мои итоги: очки, место, точных', () => {
   assert.deepEqual(summaryTiles({ points: 21, rank: 12, exact: 2, played: 7 }).map((t) => t.value), ['21', '12', '2']);
   assert.deepEqual(summaryTiles(null).map((t) => t.value), ['0', '—', '0']);
+});
+
+test('мои итоги: место с учётом равенства, если сервер его отдал', () => {
+  assert.equal(summaryTiles({ points: 3, rank: 4, place: 3, exact: 0, played: 2 })[1].value, '3');
+});
+
+const row = (rank: number, points: number, exact: number, played = 2, extra: Partial<LbRow> = {}): LbRow => ({
+  rank, name: `U${rank}`, username: null, avatar: null, points, exact, played, is_me: false, ...extra,
+});
+
+test('рейтинг: общие места при равных очках и точных (1, 1, 3…)', () => {
+  // без place от сервера — считаем по порядку строк
+  const local = withPlaces([row(1, 5, 1), row(2, 5, 1), row(3, 5, 0), row(4, 3, 0), row(5, 3, 0), row(6, 2, 0)]);
+  assert.deepEqual(local.map((r) => r.place), [1, 1, 3, 4, 4, 6]);
+  // place от сервера — главнее
+  assert.deepEqual(withPlaces([row(1, 0, 0, 0, { place: 1 }), row(2, 0, 0, 0, { place: 1 })]).map((r) => r.place), [1, 1]);
+  const v = boardView({ ...LB, top: [row(1, 3, 0), row(2, 3, 0, 2, { is_me: true })], me: { rank: 2, place: 1, points: 3, exact: 0, played: 2 } }, 'x', null);
+  assert.equal(v.myPlace, 1);
+  const out = boardView({ ...LB, me: { rank: 9, place: 7, points: 1, exact: 0, played: 1 } }, 'Я', null);
+  assert.equal(out.meRow?.place, 7);
+  assert.equal(out.meRow?.sub, '1 прогноз · 0 точных');
+});
+
+test('рейтинг: подпись «N прогнозов · M точных»', () => {
+  assert.equal(rowSub({ played: 3, exact: 1 }), '3 прогноза · 1 точный');
+  assert.equal(rowSub({ played: 5, exact: 2 }), '5 прогнозов · 2 точных');
+  assert.equal(rowSub({ played: 21, exact: 11 }), '21 прогноз · 11 точных');
+  assert.equal(rowSub({ played: 0, exact: 0 }), 'пока без прогнозов');
+});
+
+const HEAD: LeagueHeader = {
+  id: 1, name: 'Бомжи', code: 'ABC', invite_link: null, is_owner: true, members: 2,
+  people: [
+    { name: 'Егор', avatar: null, is_me: false, is_owner: true, predicted_next: false },
+    { name: 'artur', avatar: null, is_me: true, is_owner: false, predicted_next: true },
+  ],
+  next_match: { id: '7', kickoff_utc: '2026-10-25T15:15:00Z', home: { id: 9, name: 'Барселона' }, away: { id: 8633, name: 'Реал Мадрид' }, rm_side: 'away' },
+  predicted_next_count: 1,
+};
+
+test('лига до старта: у всех 0 сыгранных, я первым, кто сделал прогноз', () => {
+  const zero = boardView({ ...LB, league: { id: 1, name: 'Бомжи' }, total: 2, top: [row(1, 0, 0, 0), row(2, 0, 0, 0, { is_me: true })], me: { rank: 2, place: 1, points: 0, exact: 0, played: 0 } }, 'x', null);
+  assert.equal(zero.started, false);
+  assert.equal(placeLine(zero, 2), null); // все пока первые — «ты 1-й из 2» не пишем
+  assert.deepEqual(waitingPeople(HEAD).map((p) => [p.name, p.state]), [['artur', 'done'], ['Егор', 'wait']]);
+  assert.deepEqual(waitingPeople({ ...HEAD, next_match: null }).map((p) => p.state), ['none', 'none']);
+  assert.equal(matchTitle(HEAD.next_match!), 'Барселона — Реал');
+  assert.equal(matchTitle({ ...HEAD.next_match!, home: HEAD.next_match!.away, away: HEAD.next_match!.home, rm_side: 'home' }), 'Реал — Барселона');
+});
+
+test('лига: «ты N-й из M» и «прогнозы сделали K из M»', () => {
+  const v = boardView({ ...LB, total: 5, top: [row(1, 5, 1), row(2, 3, 0, 2, { is_me: true, place: 2 })], me: { rank: 2, place: 2, points: 3, exact: 0, played: 2 } }, 'x', null);
+  assert.equal(v.started, true);
+  assert.equal(placeLine(v, 5), 'ты 2-й из 5');
+  assert.equal(nextLine(HEAD), 'Прогнозы сделали 1 из 2');
+  assert.equal(nextLine({ ...HEAD, predicted_next_count: 2 }), 'Прогнозы сделали все');
+  assert.equal(nextLine({ ...HEAD, predicted_next_count: 0 }), 'Прогнозов пока нет ни у кого');
+  assert.equal(nextLine({ ...HEAD, next_match: null }), null);
 });
