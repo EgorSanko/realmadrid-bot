@@ -100,6 +100,16 @@ export function reboundPoint(zone: number, outcome: 'post' | 'bar'): Pt {
   return outcome === 'bar' ? { x: hit.x + side * 40, y: GOAL_LINE + 34 } : { x: hit.x + side * 58, y: GOAL_LINE + 46 };
 }
 
+/**
+ * Сейв: мяч отлетает от перчаток обратно в поле и в сторону от центра ворот — куда приземлится.
+ * По центру (вратарь в стойке) — отбивает перед собой, чуть вбок.
+ */
+export function parryPoint(glove: Pt): Pt {
+  const cx = GOAL.x + GOAL.w / 2;
+  const dir = glove.x < cx - 8 ? -1 : glove.x > cx + 8 ? 1 : 0.5;
+  return { x: Math.min(GOAL.x + GOAL.w + 30, Math.max(GOAL.x - 30, glove.x + dir * 46)), y: GOAL_LINE + 52 };
+}
+
 /** Поза вратаря. kind: dive — картинка прыжка (повёрнута, при flip — зеркально), idle — стойка. */
 export type KeeperPose =
   | { kind: 'dive'; hip: Pt; rot: number; flip: 1 | -1 }

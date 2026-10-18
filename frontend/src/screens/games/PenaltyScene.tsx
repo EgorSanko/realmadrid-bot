@@ -21,6 +21,7 @@ import {
   goalPoint,
   keeperPose,
   lerp,
+  parryPoint,
   reboundPoint,
   woodPoint,
   zonePoint,
@@ -44,7 +45,8 @@ const T = {
   flight: 520, // полёт мяча
   diveDelay: 80, // вратарь стартует чуть позже удара
   dive: 440,
-  hold: 110, // сейв: мяч прилип к перчаткам — короткая остановка
+  hold: 110, // сейв: вратарь на миг замирает в прыжке, потом падает
+  parry: 560, // сейв: мяч отлетает от перчаток в поле, отскакивает от газона
   fall: 380, // приземление вратаря
   net: 150, // гол: мяч продавливает сетку
   drop: 430, // гол: мяч падает в сетке
@@ -226,6 +228,7 @@ export const PenaltyScene = forwardRef<
         const netMs = T.net * k;
         const dropMs = T.drop * k;
         const reboundMs = T.rebound * k;
+        const parryMs = T.parry * k;
 
         const { outcome } = plan;
         const pose = keeperPose(plan.keeper);
@@ -257,10 +260,11 @@ export const PenaltyScene = forwardRef<
         let worst = 0;
         let prev = 0;
         let impacted = false;
+        let parry: { from: Pt; to: Pt } | null = null;
         const t0 = performance.now();
         const end =
           outcome === 'save'
-            ? flight + hold + fallMs + 140 * k
+            ? Math.max(flight + hold + fallMs + 140 * k, flight + parryMs + 40 * k)
             : outcome === 'goal'
               ? flight + netMs + dropMs + 80 * k
               : flight + reboundMs + 60 * k;
@@ -298,6 +302,11 @@ export const PenaltyScene = forwardRef<
           plan.onImpact?.();
           if (outcome === 'save') {
             if (!fast) kick(stage.current, 'is-shake');
+            // вспышка у перчаток в момент отбития
+            if (spark.current) {
+              spark.current.style.transform = `translate(${target.x - 18}px, ${target.y - 18}px)`;
+              kick(spark.current, 'is-on');
+            }
           } else if (outcome === 'goal') {
             const n = net.current;
             if (n) n.style.transformOrigin = `${target.x}px ${target.y}px`;
@@ -339,9 +348,28 @@ export const PenaltyScene = forwardRef<
               if (!impacted) impact();
               const a = t - flight;
               if (outcome === 'save') {
-                // мяч прилип к перчаткам и падает вместе с вратарём
-                setBall(gk.glove, endScale, spinDir * 620);
-                setShadow(gk.glove.x, GOAL_LINE + 1, 0.45, Math.max(0, 0.12 - a / 2000));
+                // отбил: мяч отлетает от перчаток к бьющему (растёт — летит к нам), бьётся о газон и
+                // подпрыгивает ещё раз пониже; вращение меняет направление
+                if (!parry) parry = { from: gk.glove, to: parryPoint(gk.glove) };
+                const u = Math.min(1, a / parryMs);
+                const f1 = 0.62; // доля до первого касания газона
+                let p: Pt;
+                let s: number;
+                if (u <= f1) {
+                  const e = u / f1;
+                  p = {
+                    x: lerp(parry.from.x, parry.to.x, ease.out(e)),
+                    y: lerp(parry.from.y, parry.to.y, e * e) - 30 * Math.sin(Math.PI * e),
+                  };
+                  s = lerp(endScale, 0.86, e);
+                } else {
+                  const e = (u - f1) / (1 - f1);
+                  p = { x: parry.to.x + (parry.to.x - parry.from.x) * 0.22 * e, y: parry.to.y - 12 * Math.sin(Math.PI * e) };
+                  s = lerp(0.86, 0.9, e);
+                }
+                setBall(p, s, spinDir * (620 - 520 * ease.out(u)), 1 - Math.max(0, (u - 0.8) / 0.2));
+                const gy = u <= f1 ? lerp(GOAL_LINE + 1, parry.to.y + 9, u / f1) : parry.to.y + 9;
+                setShadow(p.x, gy, lerp(0.45, 0.85, Math.min(1, u / f1)), (0.12 + 0.3 * Math.min(1, u / f1)) * (1 - Math.max(0, (u - 0.8) / 0.2)));
               } else if (outcome === 'goal') {
                 if (a <= netMs) {
                   // продавливает сетку
