@@ -19,6 +19,32 @@ const BACK_ICON = (
 );
 
 const SLOW_MS = 10_000; // YouTube в России замедлен: не загрузился за 10 с — подсказку делаем заметнее
+const YT_ORIGIN = 'https://www.youtube-nocookie.com';
+/** Ошибки плеера YouTube «автор запретил встраивание» (у обзоров LaLiga — запрет на сторонних сайтах). */
+const EMBED_BLOCKED = new Set([101, 150, 153]);
+
+/**
+ * Слушаем плеер YouTube (enablejsapi): ролик нельзя смотреть у нас — вместо его серой заглушки
+ * «Видео недоступно» показываем свою карточку с кнопкой «Смотреть на YouTube».
+ */
+function useEmbedBlocked(frame: React.RefObject<HTMLIFrameElement | null>, id: string): boolean {
+  const [blocked, setBlocked] = useState(false);
+  useEffect(() => {
+    setBlocked(false);
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin !== YT_ORIGIN || e.source !== frame.current?.contentWindow) return;
+      try {
+        const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (d?.event === 'onError' && EMBED_BLOCKED.has(Number(d.info))) setBlocked(true);
+      } catch {
+        /* чужое сообщение */
+      }
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [frame, id]);
+  return blocked;
+}
 
 /**
  * Видео внутри приложения: /video/:id — слой поверх экрана, с которого открыли (как новость).
@@ -100,7 +126,7 @@ export default function VideoScreen() {
             <Player key={id} id={id} short={short} title={title ?? 'Видео Real Madrid'} />
             <div className="nr-pad">
               {title ? <h1 className="nr-title nr-title--video">{title}</h1> : <Skeleton width="80%" height={20} />}
-              <p className="nr-meta">{[found?.subtitle ?? (short ? 'Shorts · Real Madrid' : 'Real Madrid · YouTube'), date].filter(Boolean).join(' · ')}</p>
+              <p className="nr-meta">{metaLine(found?.subtitle ?? (short ? 'Shorts · Real Madrid' : 'Real Madrid · YouTube'), date)}</p>
             </div>
             {more.length > 0 && (
               <section className="mx-videos nr-vmore" aria-label="Ещё видео">
@@ -121,15 +147,44 @@ export default function VideoScreen() {
   );
 }
 
+/** «Ла Лига · 18 октября» — без второй даты, если подпись её уже содержит (обзоры матчей). */
+function metaLine(sub: string, date: string | null): string {
+  return [sub, date && !sub.includes(date) ? date : null].filter(Boolean).join(' · ');
+}
+
 function Player({ id, short, title }: { id: string; short: boolean; title: string }) {
   const [loaded, setLoaded] = useState(false);
   const [slow, setSlow] = useState(false);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const blocked = useEmbedBlocked(frame, id);
   useEffect(() => {
     const t = window.setTimeout(() => setSlow(true), SLOW_MS);
     return () => window.clearTimeout(t);
   }, []);
-  const src = ytEmbedUrl(id);
+  const base = ytEmbedUrl(id);
+  // enablejsapi — плеер шлёт события (в т. ч. ошибку «встраивание запрещено») в postMessage
+  const src = base && `${base}&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
   const watch = ytWatchUrl(id, short);
+  // подписка на события плеера: без «listening» YouTube не присылает onError
+  const listen = () => {
+    frame.current?.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 'rm', channel: 'widget' }), YT_ORIGIN);
+  };
+  if (blocked)
+    return (
+      <div className={short ? 'vp vp--short vp--blocked' : 'vp vp--blocked'}>
+        <img className="vp-blocked__bg" src={`/img/yt/${id}.jpg`} alt="" decoding="async" />
+        <div className="vp-blocked__in">
+          <p className="vp-blocked__title">Этот ролик смотрят только на YouTube</p>
+          <p className="vp-blocked__text">Автор запретил показывать его в других приложениях и на сайтах</p>
+          <ExternalLink href={watch} className="ui-btn ui-btn--primary vp-blocked__btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5.5v13l11-6.5z" />
+            </svg>
+            Смотреть на YouTube
+          </ExternalLink>
+        </div>
+      </div>
+    );
   return (
     <>
       <div className={short ? 'vp vp--short' : 'vp'}>
@@ -141,13 +196,17 @@ function Player({ id, short, title }: { id: string; short: boolean; title: strin
         )}
         {src && (
           <iframe
+            ref={frame}
             className="vp-frame"
             src={src}
             title={title}
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin"
-            onLoad={() => setLoaded(true)}
+            onLoad={() => {
+              setLoaded(true);
+              listen();
+            }}
           />
         )}
       </div>

@@ -237,7 +237,7 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
   return (
     <section ref={card} className="ui-card pd-match" aria-label="Прогноз на матч">
       <div className="pd-match__meta">
-        <Chip label={comp.name} tone={comp.tone === 'ucl' ? 'ucl' : 'gold'} leagueId={comp.withLogo ? comp.id : undefined} />
+        <Chip label={comp.name} tone={comp.tone === 'ucl' ? 'ucl' : 'gold'} leagueId={comp.id ?? undefined} />
         <span>{formatKickoff(match.kickoff_utc)}</span>
       </div>
       <div className="pd-teams">

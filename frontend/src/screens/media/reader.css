@@ -104,6 +104,14 @@
 @media (prefers-reduced-motion: reduce) { .vp-spinner { animation: none; } }
 
 .vp-hint { margin: 10px 16px 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+/* ролик нельзя встроить (LaLiga и др.): превью под затемнением и кнопка на YouTube */
+.vp--blocked { display: flex; align-items: center; justify-content: center; }
+.vp-blocked__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .32; filter: blur(2px); transform: scale(1.04); }
+.vp--blocked::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 7, 11, .35), rgba(6, 7, 11, .85)); }
+.vp-blocked__in { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; text-align: center; }
+.vp-blocked__title { font-family: var(--display); font-weight: 800; font-size: 17px; color: var(--text); }
+.vp-blocked__text { font-size: 13px; line-height: 1.4; color: var(--muted); max-width: 300px; }
+.vp-blocked__btn { margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; }
 .vp-hint__link { color: var(--gold-light); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .vp-hint--slow { padding: 12px 14px; border-radius: 14px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--text); }
 .nr-vmore { margin-top: 26px; }
