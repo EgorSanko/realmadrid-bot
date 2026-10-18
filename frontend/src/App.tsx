@@ -16,6 +16,30 @@ import { SECTIONS, sectionActive } from './sections';
 import HomeScreen from './screens/HomeScreen';
 import MatchesScreen from './screens/MatchesScreen';
 
+// чанки экранов: те, что открываются из меню и с главной, подгружаются в фоне после первой отрисовки —
+// иначе при первом нажатии вкладки экран ~0,3–1 с пустой (Suspense fallback), страница короче окна, и меню прыгает
+const chunks = {
+  match: () => import('./screens/match/MatchScreen'),
+  team: () => import('./screens/team/TeamScreen'),
+  media: () => import('./screens/media/MediaScreen'),
+  player: () => import('./screens/player/PlayerScreen'),
+  predict: () => import('./screens/predict/PredictScreen'),
+  quiz: () => import('./screens/games/QuizScreen'),
+  penalty: () => import('./screens/games/PenaltyScreen'),
+};
+
+function usePreloadScreens() {
+  useEffect(() => {
+    const idle = (window as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+    const run = () => {
+      // по одному, чтобы не отнимать сеть у данных текущего экрана
+      Object.values(chunks).reduce<Promise<unknown>>((q, load) => q.then(load).catch(() => {}), Promise.resolve());
+    };
+    const t = window.setTimeout(() => (idle ? idle(run, { timeout: 2000 }) : run()), 1200);
+    return () => window.clearTimeout(t);
+  }, []);
+}
+
 // скрытый маршрут, отдельный чанк — зрителям не грузится
 const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 // витрина компонентов /dev/ui — только в dev-сервере или при сборке с VITE_UIKIT=1:
@@ -23,20 +47,20 @@ const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage =
   import.meta.env.DEV || import.meta.env.VITE_UIKIT === '1' ? lazy(() => import('./dev/UiKitPage')) : null;
 // экран матча, «Команда», «Медиа» и карточка игрока — свои ленивые чанки
-const MatchScreen = lazy(() => import('./screens/match/MatchScreen'));
-const TeamScreen = lazy(() => import('./screens/team/TeamScreen'));
-const MediaScreen = lazy(() => import('./screens/media/MediaScreen'));
-const PlayerScreen = lazy(() => import('./screens/player/PlayerScreen'));
+const MatchScreen = lazy(chunks.match);
+const TeamScreen = lazy(chunks.team);
+const MediaScreen = lazy(chunks.media);
+const PlayerScreen = lazy(chunks.player);
 // чтение новости и просмотр видео внутри приложения — свои ленивые чанки (iframe YouTube — только там)
 const NewsScreen = lazy(() => import('./screens/media/NewsScreen'));
 const VideoScreen = lazy(() => import('./screens/media/VideoScreen'));
 // профиль и вход — свой ленивый чанк
 const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
 // прогнозы — свой ленивый чанк (общая часть с блоком на главной — отдельный чанк)
-const PredictScreen = lazy(() => import('./screens/predict/PredictScreen'));
+const PredictScreen = lazy(chunks.predict);
 // игры раздела «Игры» — викторина и пенальти, каждая своим ленивым чанком
-const QuizScreen = lazy(() => import('./screens/games/QuizScreen'));
-const PenaltyScreen = lazy(() => import('./screens/games/PenaltyScreen'));
+const QuizScreen = lazy(chunks.quiz);
+const PenaltyScreen = lazy(chunks.penalty);
 // политика конфиденциальности и условия — свой ленивый чанк
 const LegalScreen = lazy(() => import('./screens/legal/LegalScreen'));
 // неизвестный адрес — страница «не найдено» (раньше молча уводили на главную)
@@ -63,7 +87,7 @@ function useRouteMotion(pathname: string, app: React.RefObject<HTMLDivElement | 
     const el = app.current;
     if (!el || i < 0 || was < 0 || i === was || typeof el.animate !== 'function') return;
     const rm = reducedMotion();
-    el.animate(
+    const play = () => el.animate(
       rm
         ? [{ opacity: 0.4 }, { opacity: 1 }]
         : [
@@ -72,6 +96,19 @@ function useRouteMotion(pathname: string, app: React.RefObject<HTMLDivElement | 
           ],
       { duration: rm ? 160 : 300, easing: 'cubic-bezier(.22,1,.36,1)' },
     );
+    // экран ещё грузится (пустой Suspense) — сдвиг играем, когда появится содержимое, а не на пустоте
+    if (el.childElementCount) return void play();
+    const mo = new MutationObserver(() => {
+      if (!el.childElementCount) return;
+      mo.disconnect();
+      play();
+    });
+    mo.observe(el, { childList: true });
+    const t = window.setTimeout(() => mo.disconnect(), 3000);
+    return () => {
+      mo.disconnect();
+      window.clearTimeout(t);
+    };
   }, [pathname, app]);
 
   useEffect(() => {
@@ -123,6 +160,7 @@ function AppRoutes() {
   const shown = bg ?? location;
   const app = useRef<HTMLDivElement>(null);
   useRouteMotion(shown.pathname, app);
+  usePreloadScreens();
   return (
     <>
       <ScrollToTop pathname={shown.pathname} />
