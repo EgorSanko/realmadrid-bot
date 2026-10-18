@@ -9,9 +9,12 @@ html {
   color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
-  /* ничто не шире экрана: иначе телефон уменьшает масштаб (сдвиг экрана при смене вкладки — +22 px) и меню прыгает */
-  overflow-x: hidden;
-  overflow-x: clip;
+}
+
+/* ничто не шире экрана: иначе телефон уменьшает масштаб (сдвиг экрана при смене вкладки — +22 px) и меню прыгает.
+   На #root, а не на html: с корня overflow уходит во viewport, и мобильный Chrome его там не учитывает. */
+#root {
+  overflow-x: clip; /* не hidden: тот сделал бы #root прокручиваемым и сломал position: sticky */
 }
 
 body {
