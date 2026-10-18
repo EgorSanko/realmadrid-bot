@@ -220,8 +220,13 @@ def fixtures() -> JSONResponse:
         counts = {}
         for f in fx["data"]:
             counts[f["tournament"]["name"]] = counts.get(f["tournament"]["name"], 0) + 1
-        live = any(f["status"]["live"] for f in fx["data"])
-        return _resp({**_meta(fx, STALE_AFTER["fixtures"]), "tournaments": counts, "matches": fx["data"]},
+        # календарь сборщик обновляет раз в 12 мин — матчу вокруг «сейчас» статус и счёт берём
+        # из его лайв-снимка, иначе идущий матч в «Матчах» выглядит предстоящим
+        now = time.time()
+        matches = [_match_overlay(conn, f)[0] if abs((ts(f["kickoff"]) or 0) - now) <= 4 * 3600 else f
+                   for f in fx["data"]]
+        live = any(f["status"]["live"] for f in matches)
+        return _resp({**_meta(fx, STALE_AFTER["fixtures"]), "tournaments": counts, "matches": matches},
                      5 if live else 60)
     finally:
         conn.close()

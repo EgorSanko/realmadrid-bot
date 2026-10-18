@@ -45,6 +45,7 @@
   background: rgba(10, 15, 30, 0.72);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.25s ease;
 }
 
 .player__unmute {
@@ -162,7 +163,9 @@
   transition: opacity 0.25s ease;
 }
 
+/* LIVE прячется вместе с панелью: в левом верхнем углу у вещателя своё табло со счётом */
 .player--idle .player__bar,
+.player--idle .player__badge,
 .player--idle .player__unmute {
   opacity: 0;
   pointer-events: none;

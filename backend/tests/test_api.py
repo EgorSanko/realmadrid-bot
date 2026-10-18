@@ -91,3 +91,26 @@ def test_health_sources_and_cold_start(tmp_db):
     b = c.get("/api/health/sources").json()
     assert b["sources"][0]["name"] == "fotmob" and b["sources"][0]["requests"] == 5
     assert c.get("/api/health/sources").headers["cache-control"] == "no-store"
+
+
+def test_fixtures_take_live_status_from_match_snapshot(client):
+    """Календарь обновляется раз в 12 мин — идущий матч берёт статус и счёт из своего лайв-снимка."""
+    c, conn = client
+    fx = store.get(conn, "fixtures")["data"]
+    f = next(x for x in fx if x["id"] == 5868098)
+    f["kickoff"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 20 * 60))
+    store.put(conn, "fixtures", "fotmob", fx)
+    m = store.get(conn, "match:6106274")["data"]
+    m["status"] = {"state": "live", "live": True, "finished": False, "minute": 21, "added": None, "label": "21'"}
+    m["home"] = {**m["home"], "score": 1}
+    m["away"] = {**m["away"], "score": 0}
+    store.put(conn, "match:5868098", "fotmob", m)
+    r = c.get("/api/fixtures")
+    row = next(x for x in r.json()["matches"] if x["id"] == 5868098)
+    assert row["status"]["live"] and row["status"]["minute"] == 21
+    assert row["home"]["score"] == 1 and row["away"]["score"] == 0
+    assert row["home"]["name"] == f["home"]["name"]          # остальное — из календаря
+    assert r.headers["cache-control"] == "public, max-age=5"
+    # прошлый матч далеко от «сейчас» — как в календаре, снимок не подмешиваем
+    old = next(x for x in r.json()["matches"] if x["id"] == 6106274)
+    assert old["status"] == next(x for x in fx if x["id"] == 6106274)["status"]

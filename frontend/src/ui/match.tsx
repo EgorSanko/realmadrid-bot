@@ -118,9 +118,15 @@ export function Countdown({ to, endedLabel = 'Матч начинается', li
   const left = Math.max(0, target - now);
   const ended = left === 0;
 
+  // onEnd — один раз на время старта: новая функция-колбэк с каждым ответом опроса не должна звать его снова
+  const onEndRef = useRef(onEnd);
+  onEndRef.current = onEnd;
+  const firedFor = useRef<number | null>(null);
   useEffect(() => {
-    if (ended) onEnd?.();
-  }, [ended, onEnd]);
+    if (!ended || firedFor.current === target) return;
+    firedFor.current = target;
+    onEndRef.current?.();
+  }, [ended, target]);
 
   if (ended)
     return (

@@ -26,6 +26,8 @@ export function usePoll<T>(path: string, intervalFor: (data: T | null) => number
   const intervalRef = useRef(intervalFor);
   intervalRef.current = intervalFor;
   const loadRef = useRef<() => void>(() => {});
+  const hasData = useRef(false);
+  hasData.current = data != null;
 
   useEffect(() => {
     let alive = true;
@@ -86,10 +88,11 @@ export function usePoll<T>(path: string, intervalFor: (data: T | null) => number
     };
   }, [path]);
 
+  // стабильная ссылка: от неё зависят эффекты (конец отсчёта) — новая на каждый ответ зацикливала бы запросы
   const reload = useCallback(() => {
-    setLoading((l) => l || data == null);
+    setLoading((l) => l || !hasData.current);
     loadRef.current();
-  }, [data]);
+  }, []);
 
   return { data, error, loading, receivedAt, reload };
 }
