@@ -889,3 +889,139 @@ export function momentumView(m: ApiMatch) {
 
 /** «Real Madrid» → «Real», остальные как есть: подпись под графиком короткая. */
 export const shortTeam = (n: string | null | undefined) => (/^real madrid$/i.test(n ?? '') ? 'Real' : (n ?? ''));
+
+/* ---------- «Онлайн»: лента ключевых моментов (наши события, по-русски) ---------- */
+
+export type FeedKind =
+  | 'goal' | 'own-goal' | 'yellow' | 'second-yellow' | 'red' | 'sub' | 'var' | 'penalty-missed'
+  | 'start' | 'half' | 'second' | 'end';
+
+export interface FeedItem {
+  key: string;
+  kind: FeedKind;
+  /** «37′», «45+2′»; у начала / перерыва / конца — нет */
+  minute?: string;
+  title: string;
+  side?: Side;
+  team?: TeamRef;
+  /** игроки события: автор, ассистент («пас»), вышел / ушёл */
+  players: Array<{ id?: number; name: string; role?: string }>;
+  /** вторая строка: «Real Madrid ведёт 2:0», «травма» */
+  text?: string;
+  score?: [number, number];
+  /** перерыв и конец — разделитель во всю ширину */
+  divider?: boolean;
+}
+
+const CARD_TITLE = { yellow: 'Жёлтая карточка', 'second-yellow': 'Вторая жёлтая — удаление', red: 'Красная карточка' } as const;
+
+function scoreLine(m: ApiMatch, sc: [number, number] | undefined, side: Side): string | undefined {
+  if (!sc) return undefined;
+  const [h, a] = sc;
+  const s = `${h}:${a}`;
+  if (h === a) return `Счёт сравнялся — ${s}`;
+  const lead: Side = h > a ? 'home' : 'away';
+  const name = m[lead].name ?? '';
+  return lead === side && Math.abs(h - a) === 1 && Math.min(h, a) > 0 ? `${name} снова впереди — ${s}` : `${name} ведёт ${s}`;
+}
+
+/**
+ * Лента «Ключевое»: голы, карточки, замены, VAR, незабитые пенальти, начало, перерыв, второй тайм, конец —
+ * из наших событий (events снимка), новые сверху. Тексты — наши, по-русски; имена — латиницей, как в API.
+ */
+export function keyFeed(m: ApiMatch): FeedItem[] {
+  const st = m.status.state;
+  const started = st === 'live' || st === 'halftime' || st === 'finished' || st === 'abandoned';
+  if (!started) return [];
+  const out: FeedItem[] = [{ key: 'start', kind: 'start', title: 'Начало матча', players: [], minute: '1′' }];
+  const goalInfo = new Map<ApiGoal, GoalInfo>();
+  for (const g of goals(m)) goalInfo.set(g.ev, g);
+  let halfDone = false;
+  const evs = m.events;
+  const team = (s: Side | null | undefined) => (s ? teamRef(m, s) : undefined);
+  const pl = (p: ApiPerson | null | undefined, role?: string) =>
+    p?.name ? [{ id: photoId(p), name: shortName(p.name), role }] : [];
+  evs.forEach((e, i) => {
+    const minute = e.minute != null ? minuteText(e.minute, e.added) : undefined;
+    const base = { key: `${e.type}:${i}:${e.minute ?? 0}:${e.added ?? 0}`, minute };
+    // после перерыва первое событие второго тайма — сначала «Начался второй тайм»
+    if (halfDone && e.type !== 'period' && (e.minute ?? 0) > 45) {
+      out.push({ key: 'second', kind: 'second', title: 'Начался второй тайм', players: [], minute: '46′' });
+      halfDone = false;
+    }
+    switch (e.type) {
+      case 'goal': {
+        const g = goalInfo.get(e);
+        if (!g) return; // серия пенальти
+        out.push({
+          ...base,
+          kind: e.own_goal ? 'own-goal' : 'goal',
+          title: e.own_goal ? 'Автогол' : e.penalty ? 'Гол с пенальти!' : 'Гол!',
+          side: g.side,
+          team: team(g.side),
+          players: [...pl(e.player), ...pl(e.assist, 'пас')],
+          text: scoreLine(m, g.score, g.side),
+          score: g.score,
+        });
+        return;
+      }
+      case 'card': {
+        const kind = e.card === 'red' ? 'red' : e.card === 'second_yellow' ? 'second-yellow' : 'yellow';
+        out.push({ ...base, kind, title: CARD_TITLE[kind], side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        return;
+      }
+      case 'sub':
+        out.push({
+          ...base,
+          kind: 'sub',
+          title: 'Замена',
+          side: e.side ?? undefined,
+          team: team(e.side),
+          players: [...pl(e.player_in, 'вышел'), ...pl(e.player_out, 'ушёл')],
+          text: e.injury ? 'из-за травмы' : undefined,
+        });
+        return;
+      case 'var': {
+        const t = varText(e);
+        out.push({ ...base, kind: 'var', title: `VAR: ${t}`, side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        return;
+      }
+      case 'penalty_missed':
+        out.push({ ...base, kind: 'penalty-missed', title: 'Незабитый пенальти', side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        return;
+      case 'period': {
+        const label = (e.label ?? '').toUpperCase();
+        const sc = e.score && e.score[0] != null && e.score[1] != null ? ([e.score[0], e.score[1]] as [number, number]) : undefined;
+        const line = sc ? `${m.home.name} ${sc[0]}:${sc[1]} ${m.away.name}` : undefined;
+        if (label === 'HT') {
+          out.push({ key: `half:${i}`, kind: 'half', title: 'Перерыв', players: [], text: line, score: sc, divider: true });
+          halfDone = st !== 'halftime';
+          return;
+        }
+        // конец основного времени при продолжении (доп. время / пенальти) — разделитель
+        const rest = evs.slice(i + 1).some((x) => x.type !== 'period' && x.type !== 'added_time');
+        if (rest) out.push({ key: `period:${i}`, kind: 'half', title: PERIOD_RU[label] ?? 'Конец периода', players: [], text: line, score: sc, divider: true });
+        return;
+      }
+      default:
+        return;
+    }
+  });
+  // перерыв закончился, а событий второго тайма ещё нет
+  if (halfDone && (st === 'live' || st === 'finished') && (m.status.minute ?? 46) > 45) {
+    out.push({ key: 'second', kind: 'second', title: 'Начался второй тайм', players: [], minute: '46′' });
+  }
+  if (st === 'finished') {
+    const sc = scoreOf(m);
+    out.push({
+      key: 'end',
+      kind: 'end',
+      title: 'Матч завершён',
+      players: [],
+      text: sc ? `${m.home.name} ${sc[0]}:${sc[1]} ${m.away.name}` : undefined,
+      score: sc,
+      divider: true,
+    });
+  }
+  return out.reverse();
+}

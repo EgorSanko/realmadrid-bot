@@ -5,6 +5,7 @@ import { useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { Badge, Countdown, EmptyState, ErrorState, LeagueLogo, ScoreHeader, Skeleton, Tabs, TeamCrest } from '../../ui';
 import { LineupsTab } from './LineupsTab';
+import { OnlineTab } from './OnlineTab';
 import { OverviewTab } from './OverviewTab';
 import { StatsTab } from './StatsTab';
 import { useMatch } from './useMatch';
@@ -16,17 +17,19 @@ import { reducedMotion } from '../../lib/motion';
 import { addMatchToCalendar, canAddToCalendar } from '../../lib/nativeBridge';
 import './match.css';
 
-type TabId = 'overview' | 'lineups' | 'stats';
+type TabId = 'overview' | 'lineups' | 'stats' | 'online';
 
 const TABS: Array<{ id: TabId; label: string; suffix: string }> = [
   { id: 'overview', label: 'Обзор', suffix: '' },
   { id: 'lineups', label: 'Составы', suffix: '/lineups' },
   { id: 'stats', label: 'Статистика', suffix: '/stats' },
+  { id: 'online', label: 'Онлайн', suffix: '/online' },
 ];
 
 function tabFromPath(path: string): TabId {
   if (/\/lineups\/?$/.test(path)) return 'lineups';
   if (/\/stats\/?$/.test(path)) return 'stats';
+  if (/\/online\/?$/.test(path)) return 'online';
   return 'overview';
 }
 
@@ -36,7 +39,7 @@ const BACK_ICON = (
   </svg>
 );
 
-/** Экран матча: /match/:id, /match/:id/lineups, /match/:id/stats. */
+/** Экран матча: /match/:id, /match/:id/lineups, /match/:id/stats, /match/:id/online. */
 export default function MatchScreen() {
   const { id = '' } = useParams();
   const location = useLocation();
@@ -107,6 +110,15 @@ export default function MatchScreen() {
   }, [match]);
 
   const title = match ? (tab === 'overview' ? tournamentLine(match) : compactTitle(match)) : '';
+  // компьютер: «Онлайн» — секцией в правой колонке, когда матч начался или есть трансляция
+  const started = !!head && ['live', 'halftime', 'finished', 'abandoned'].includes(head.phase);
+  const online =
+    match && head && (started || match.available.includes('commentary')) ? (
+      <section className="mt-desk__sec" aria-label="Онлайн-трансляция">
+        <h2 className="dk-h2">Онлайн</h2>
+        <OnlineTab match={match} phase={head.phase} />
+      </section>
+    ) : null;
   const setTab = (t: TabId) => {
     const suffix = TABS.find((x) => x.id === t)?.suffix ?? '';
     // вкладки не копят историю: «назад» уводит с матча, а не по вкладкам
@@ -160,6 +172,8 @@ export default function MatchScreen() {
                 <OverviewTab match={match} phase={head.phase} />
               </div>
               <div className="dk-col mt-desk__col">
+                {/* идёт матч — «Онлайн» первым в правой колонке, после матча — в конце */}
+                {head.live && online}
                 <section className="mt-desk__sec" aria-label="Составы">
                   <h2 className="dk-h2">Составы</h2>
                   <LineupsTab match={match} phase={head.phase} />
@@ -168,6 +182,7 @@ export default function MatchScreen() {
                   <h2 className="dk-h2">Статистика</h2>
                   <StatsTab match={match} phase={head.phase} />
                 </section>
+                {!head.live && online}
               </div>
             </div>
           )}
@@ -177,7 +192,7 @@ export default function MatchScreen() {
       {match && head && !desktop && (
         <>
           {tab === 'overview' && <Header match={match} onKickoff={reload} />}
-          <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Разделы матча" />
+          <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Разделы матча" className={head.live ? 'mt-tabs--live' : undefined} />
           {match.pending ? (
             <PendingBody />
           ) : (
@@ -185,6 +200,7 @@ export default function MatchScreen() {
               {tab === 'overview' && <OverviewTab match={match} phase={head.phase} />}
               {tab === 'lineups' && <LineupsTab match={match} phase={head.phase} />}
               {tab === 'stats' && <StatsTab match={match} phase={head.phase} />}
+              {tab === 'online' && <OnlineTab match={match} phase={head.phase} />}
             </div>
           )}
         </>

@@ -1,0 +1,510 @@
+{
+ "source": "fotmob",
+ "updated_at": "2026-10-18T20:50:36Z",
+ "age_s": 0.2,
+ "stale": false,
+ "lang": "en",
+ "attribution": "Opta via FotMob",
+ "items": [
+  {
+   "id": "en:sub:250437",
+   "minute": 46,
+   "added": null,
+   "type": "sub",
+   "side": "away",
+   "text": "Luis Garcia will make one half-time change for Sevilla, with Chidera Ejuke replacing Vargas out wide.",
+   "players": [
+    {
+     "id": 837270,
+     "name": "Chidera Ejuke",
+     "photo": "/img/player/837270.png"
+    },
+    {
+     "id": 860752,
+     "name": "Rubén Vargas",
+     "photo": "/img/player/860752.png"
+    }
+   ]
+  },
+  {
+   "id": "en:26508490000049",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Guler got lucky to avoid any sanctions for that elbow aimed towards Peque midway through that first half, and sure enough it was him who broke the game open for Real Madrid. The Turkey youngster's sumptuous curling finish fired the hosts in front with his only attempt on goal so far, with Guler creating three big chances from his 13 final-third passes. The 21-year-old has won three of his four duels so far – including one in the air – overturning possession on six occasions with two successful tackles from as many attempts. Game-changer.",
+   "players": []
+  },
+  {
+   "id": "en:half_time summary:1",
+   "minute": null,
+   "added": null,
+   "type": "summary",
+   "side": null,
+   "text": "There's the whistle, as Real Madrid produce their best first-half display of the season to take a 2–0 lead over Sevilla into the break at the Bernabeu! On top for much of the first 45 minutes after Ure and Fofana's efforts at the other end, Los Blancos produced 1.41 xG and went close early on through Valverde, Endrick and Diomande. A flare-up following Guler's missed elbow towards Peque saw the young Turk go unpunished by the referee, and just moments later, Guler got Madrid up and running with a stunning first-time finish across goal and into the top corner. From there, Los Blancos looked unstoppable, and after being denied by Vlachodimos, Mbappe rounded Sevilla's number one to score the simplest of second goals after great build-up play between himself and Bellingham. Courtois kept Agoume out late in the half to maintain Real Madrid's advantage, and they go into half-time with a two-goal cushion and an attack that has firmly clicked into gear.",
+   "players": []
+  },
+  {
+   "id": "en:26508494900047",
+   "minute": 45,
+   "added": 4,
+   "type": "comment",
+   "side": null,
+   "text": "HALF-TIME: REAL MADRID 2–0 SEVILLA.",
+   "players": []
+  },
+  {
+   "id": "en:26508494800046",
+   "minute": 45,
+   "added": 3,
+   "type": "chance",
+   "side": null,
+   "text": "OVER!! Sevilla fail to properly clear a Real Madrid corner with the ball sent skyward on several occasions, until Endrick meets it with a wild overhead kick that clears the crossbar by some distance!",
+   "players": []
+  },
+  {
+   "id": "en:26508494700045",
+   "minute": 45,
+   "added": 2,
+   "type": "chance",
+   "side": null,
+   "text": "SAVED!!! Courtois is finally called into action!! Inside passes from Suazo and Vargas give Agoume space to shoot in the box, but the midfielder's side-footed finish is clawed out of the bottom corner by the Belgian's low dive!",
+   "players": []
+  },
+  {
+   "id": "en:26508494600044",
+   "minute": 45,
+   "added": 1,
+   "type": "comment",
+   "side": null,
+   "text": "We're into the first of four added first-half minutes at the Bernabeu, with Los Blancos in complete control as Diomande drills another cross into the gloves of Vlachodimos.",
+   "players": []
+  },
+  {
+   "id": "en:26508494500043",
+   "minute": 45,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Iglesias' high, hanging cross from the right almost sits up for Vargas and then Fofana in the hosts' box, but Valverde is there on both occasions to snuff the chance out.",
+   "players": []
+  },
+  {
+   "id": "en:26508494300042",
+   "minute": 43,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Salas cuts out a Madrid break by dispossessing Bellingham to launch a counter-attack of his own, but it culminates with Suazo's left-sided cross being headed well wide by the advanced Sevilla centre-back.",
+   "players": []
+  },
+  {
+   "id": "en:26508494100041",
+   "minute": 41,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Peque slaloms through challenges from both Tchouameni and Konate before feeding Correia to his left, with the captain's mid-height cross awkwardly steered behind for a corner by Huijsen.",
+   "players": []
+  },
+  {
+   "id": "en:26508493900040",
+   "minute": 39,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Mbappe has now been involved in five goals across five LaLiga games against Sevilla – with four goals and one assist – netting in four different matches against Los Hispalenses. Only against Real Sociedad (also four) has he scored in as many separate games in the competition.",
+   "players": []
+  },
+  {
+   "id": "en:assist:2:244855",
+   "minute": 37,
+   "added": null,
+   "type": "assist",
+   "side": "home",
+   "text": "Bellingham's beautiful touch left Sevilla's statuesque defence with no chance, and Mbappe did the rest with some sensational close-control of his own!",
+   "players": [
+    {
+     "id": 1077894,
+     "name": "Jude Bellingham",
+     "photo": "/img/player/1077894.png"
+    }
+   ]
+  },
+  {
+   "id": "en:goal:2:220160",
+   "minute": 37,
+   "added": null,
+   "type": "goal",
+   "side": "home",
+   "text": "GOOOOOOOOOOOOOOOOOAAAAAAAALLLL!!!! Mbappe doubles Real Madrid's lead in devastating fashion!!! Diomande's inside ball is cleverly flicked on by a Bellingham back-heel that puts his striker clean through on goal, and Mbappe beats his marker before skilfully rounding Vlachodimos to tap into nd empty net and make it 2–0!",
+   "players": [
+    {
+     "id": 701154,
+     "name": "Kylian Mbappé",
+     "photo": "/img/player/701154.png"
+    }
+   ]
+  },
+  {
+   "id": "en:26508493600037",
+   "minute": 36,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "CHANCE!! A great ball in behind from Guler gives Valverde a clear path down the right-hand side, but the skipper's sweeping cross towards Mbappe is cut out and cleared by Salas!",
+   "players": []
+  },
+  {
+   "id": "en:26508493400036",
+   "minute": 34,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Endrick escapes the challenge of Suazo down the right and drills a near-post cutback into the middle, but Vlachodimos is off his line to clean things up for Sevilla.",
+   "players": []
+  },
+  {
+   "id": "en:26508493300035",
+   "minute": 33,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "SAVED!!! Mbappe almost makes it a quick-fire double for Los Merengues! The number 10 takes off on a surging run through the heart of Sevilla's defence, darting into the box and shooting early with a low effort that Vlachodimos gets down low to and parries away with his feet!",
+   "players": []
+  },
+  {
+   "id": "en:26508493200034",
+   "minute": 32,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Sevilla manager Luis Garcia is on his longest losing streak against Real Madrid in LaLiga – six in a row – though he did pick up points (four) in two of his six games against Los Blancos when Jose Mourinho was last in charge.",
+   "players": []
+  },
+  {
+   "id": "en:assist:1:692871",
+   "minute": 30,
+   "added": null,
+   "type": "assist",
+   "side": "home",
+   "text": "Diomande's burst gave Guler the space to arrive with inch-perfect timing, teeing up Guler for an absolute peach of a finish for the opener!",
+   "players": [
+    {
+     "id": 1735453,
+     "name": "Yan Diomande",
+     "photo": "/img/player/1735453.png"
+    }
+   ]
+  },
+  {
+   "id": "en:goal:1:520250",
+   "minute": 30,
+   "added": null,
+   "type": "goal",
+   "side": "home",
+   "text": "GOOOOOOOOOOOOOOOOOOAAAAAAAAAALLLLLL!!!! An absolute rocket puts Real Madrid 1–0 up!! Bellingham releases Diomande down the left flank, and the Ivorian steps inside before cutting the ball back to an arriving Guler. The youngster doesn't need a second touch, sweeping a curling, left-footed strike across goal which nestles in the far corner, leaving Vlachodimos with absolutely no chance of keeping it out!",
+   "players": [
+    {
+     "id": 1253890,
+     "name": "Arda Güler",
+     "photo": "/img/player/1253890.png"
+    }
+   ]
+  },
+  {
+   "id": "en:26508492900031",
+   "minute": 29,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Real Madrid are unbeaten in their last 15 league games against Sevilla – winning 13 – and could set their longest historical unbeaten run against them in the competition. If Los Blancos score, they will also set their longest scoring streak against the visitors (currently 29 goals in 15 games).",
+   "players": []
+  },
+  {
+   "id": "en:26508492700030",
+   "minute": 27,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Arguably lucky to still be on the pitch following that elbow on Peque, Guler delivers a 40-yard Madrid free-kick into the box which Vlachodimos rises for and punches away from danger.",
+   "players": []
+  },
+  {
+   "id": "en:26508492500029",
+   "minute": 25,
+   "added": null,
+   "type": "var",
+   "side": "away",
+   "text": "VAR is reviewing the initial contact between Peque and Guler – with replays showing a fairly obvious elbow from the Real Madrid playmaker – but the referee hasn't taken any further action after those earlier yellows for Huijsen and Correia.",
+   "players": []
+  },
+  {
+   "id": "en:card:YC:449991",
+   "minute": 23,
+   "added": null,
+   "type": "yellow",
+   "side": "away",
+   "text": "Sevilla captain Correia is also shown a yellow card for getting involved in the multi-player scuffle, but Peque and Guler are yet to be addressed by the referee.",
+   "players": [
+    {
+     "id": 942358,
+     "name": "Félix Correia",
+     "photo": "/img/player/942358.png"
+    }
+   ]
+  },
+  {
+   "id": "en:card:YC:554605",
+   "minute": 23,
+   "added": null,
+   "type": "yellow",
+   "side": "home",
+   "text": "Guler and Peque have clashed in back-play following a shirt-pull from the latter, and Huijsen's hefty intervention in the melee earns the returning Madrid defender an early yellow card.",
+   "players": [
+    {
+     "id": 1367619,
+     "name": "Dean Huijsen",
+     "photo": "/img/player/1367619.png"
+    }
+   ]
+  },
+  {
+   "id": "en:26508492200026",
+   "minute": 22,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "WIDE!!! Diomande is sent into space by Guler and goes on a mazy run towards goal, bursting into the Sevilla box and going around the outside of Castrin before crashing a left-footed finish into the side netting!",
+   "players": []
+  },
+  {
+   "id": "en:26508492100025",
+   "minute": 21,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "SAVED!! Endrick plays a slick one-two with Bellingham before trying his luck 30 yards out, but his low strike is seen all the way by Vlachodimos and Sevilla's number one makes a simple stop!",
+   "players": []
+  },
+  {
+   "id": "en:26508492000024",
+   "minute": 20,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Sevilla have picked up points in four of their last six away games against teams from the wider Madrid area in LaLiga, winning, drawing and losing two games apiece after defeat in seven of their previous nine such matches.",
+   "players": []
+  },
+  {
+   "id": "en:26508491800023",
+   "minute": 18,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Bellingham looks to get around the outside of Salas after being slipped into the box, but he's forced wide by the Sevilla centre-back and puts his cross into the side netting for a goal-kick.",
+   "players": []
+  },
+  {
+   "id": "en:26508491700022",
+   "minute": 17,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "BLOCKED!! Mbappe inadvertently denies Valverde!! Bellingham's byline cutback is deflected into the Uruguayan's path and Valverde sends a vicious first-time strike goalwards from 20 yards, but the on-target effort hits Mbappe in the back and bounces clear, with the Frenchman unable to move quickly enough!",
+   "players": []
+  },
+  {
+   "id": "en:26508491600021",
+   "minute": 16,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Valverde brings down a peach of a cross-field pass from Huijsen and quickly looks to send Endrick through on goal, but his clipped throughball is too close to Vlachodimos, who claims it.",
+   "players": []
+  },
+  {
+   "id": "en:26508491500020",
+   "minute": 15,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "WIDE!!! Sevilla go closer still to an opener!! Suazo surges in-field from left-back and combines with Vargas in the box, with the Switzerland wideman turning to slam a snap-shot inches past the post and into Courtois' side netting!",
+   "players": []
+  },
+  {
+   "id": "en:26508491300019",
+   "minute": 13,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Real Madrid’s starting XI today – with an average age of 25 years and 148 days – is their youngest in a league match so far this season.",
+   "players": []
+  },
+  {
+   "id": "en:26508491100018",
+   "minute": 11,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Diomande beats Iglesias down the left before linking up with Cucurella and Mbappe on his inside, but neither recipient can get a shot away and Diomande's next attempted throughball for Bellingham is seized upon by Vlachodimos.",
+   "players": []
+  },
+  {
+   "id": "en:26508490900017",
+   "minute": 9,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Real Madrid have won each of their last seven home league games, and have only once recorded a longer winning run at home since the 2020-21 LaLiga season – 10 straight victories between April and November 2025.",
+   "players": []
+  },
+  {
+   "id": "en:26508490700016",
+   "minute": 7,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "WIDE! Diomande dances between three Sevilla defenders before drilling a low cross towards goal from the left, but the Ivorian scuffs his effort and the cross-cum-shot ends up in the side netting of the near post!",
+   "players": []
+  },
+  {
+   "id": "en:26508490600015",
+   "minute": 6,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "BLOCKED!! Vargas loses out to Cucurella down the left and the Madrid defender looks to slip Endrick in behind, but the Brazilian's first-time strike on the angle is blocked away from danger by Agoume!",
+   "players": []
+  },
+  {
+   "id": "en:26508490400014",
+   "minute": 4,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "WIDE!!! Mbappe combines with Diomande and Cucurella before trying his luck from the edge of the box, but the Real Madrid frontman's effort sways away from Vlachodimos and well wide of the target!",
+   "players": []
+  },
+  {
+   "id": "en:26508490300013",
+   "minute": 3,
+   "added": null,
+   "type": "chance",
+   "side": null,
+   "text": "SAVED!!! Fofana cuts back onto his right foot and floats a mid-height cross onto the head of Ure, but the Scot's glancing header is sent straight at a waiting Courtois!",
+   "players": []
+  },
+  {
+   "id": "en:26508490200012",
+   "minute": 2,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "The most recent league fixture between these two sides saw Real Madrid emerge victorious 1–0 at the Ramon Sanchez Pizjuan last term. Vinicius scored the only goal for Los Blancos in the 15th minute, but that – at the very least – certainly won't be the case today!",
+   "players": []
+  },
+  {
+   "id": "en:26508490100011",
+   "minute": 1,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Sevilla start things off through Ure in the Spanish capital, with hosts Real Madrid hoping to continue their climb back up the table!",
+   "players": []
+  },
+  {
+   "id": "en:26508490000010",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Despite their stop-start opening to the season which has left them with a sizeable gap to make up on Barcelona, our live probability tracker sees Real Madrid as near shoo-ins to seal three points in this game. Los Blancos are given a 72.5% chance of victory as the teams head out onto the Bernabeu’s hallowed turf, but Sevilla’s own start to the year means they can’t be dismissed, despite a win rating of just 12.0%!",
+   "players": []
+  },
+  {
+   "id": "en:26508490000009",
+   "minute": null,
+   "added": null,
+   "type": "team_news",
+   "side": null,
+   "text": "Sevilla boss Luis Garcia is forced into two changes of his own, both of which are enforced after key injuries in key positions. Giorgi Kochorashvili and Miguel Sierra will be big misses in the number 10 and left wing roles respectively, as Peque Fernandez and Ruben Vargas come in to join captain Thierry Correia in the attacking trifecta behind Scotland striker Robbie Ure. The latter duo both netted in the Blanquirrojos' 3–3 draw at Levante last time out, with injury-time goalscorer Isaac Romero also absent after his controversial red card at the Ciutat de Valencia.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000008",
+   "minute": null,
+   "added": null,
+   "type": "team_news",
+   "side": null,
+   "text": "Vinicius Junior begins the first of a four game suspension after his sending off for a hair pull against Villarreal last time out, leaving Jose Mourinho without one of his star attackers. Carlos Espi and Antonio Rudiger’s strikes against Roma aren’t enough to earn a start as the Portuguese makes three changes; fellow goalscorer Endrick comes in to flank Kylian Mbappe alongside Yan Diomande – who netted the winner past Villarreal – as Federico Valverde moves to the right of a back four also featuring Marc Cucurella and Dean Huijsen; the latter returning from a suspension of his own.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000007",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "SEVILLA SUBS: Fran Gonzalez, Rafael Romero, Julio Diaz, Alfon Gonzalez, Arouna Sangante, Manu Bueno, Fabio Cardoso, Lucas Stassin, Chidera Ejuke, Jose Angel Carmona, Nico Guillen, Jesus Cruz.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000006",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "SEVILLA (4-2-3-1): Odysseas Vlachodimos; Juan Iglesias, Andres Castrin, Kike Salas, Gabriel Suazo; Lucien Agoume, Youssouf Fofana; Ruben Vargas, Peque Fernandez, Felix Correia; Robbie Ure.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000005",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "REAL MADRID SUBS: Andrii Lunin, Javi Navarro, Eder Militao, Eduardo Camavinga, Trent Alexander-Arnold, Alvaro Carreras, Carlos Espi, Bernardo Silva, Brahim Diaz, Antonio Rudiger, Denzel Dumfries, Thiago Pitarch.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000004",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "REAL MADRID (4-2-3-1): Thibaut Courtois; Federico Valverde, Ibrahima Konate, Dean Huijsen, Marc Cucurella; Jude Bellingham, Aurelien Tchouameni; Endrick, Arda Guler, Yan Diomande; Kylian Mbappe.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000003",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Sevilla’s several seasons of strife, struggle and relegation battles appear to be over so far in 2026–27, with Los Hispalenses sat sixth in the table after winning four of their first eight league games. Luis Garcia Plaza’s side have gone without victory in their last two – conceding three goals to both Barcelona (3–1) and Levante (3–3) after back to back 1–0 wins over Valencia and Deportivo – but a return to winning ways here would see Sevilla go fifth, leapfrog Real Sociedad and move to within a point of Real Madrid.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000002",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Real Madrid are still playing catch-up in LaLiga’s title race, sitting fourth in the early-season table with a nine-point gap to arch-rivals Barcelona at the summit. Avoiding defeat in this game in hand will lift Los Blancos up to third above Real Betis, but Jose Mourinho’s side struggled to a 1–0 win over Villarreal last time out, and then needed three last-gasp goals to complete a 4–3 turnaround against Roma in the Champions League.",
+   "players": []
+  },
+  {
+   "id": "en:26508490000001",
+   "minute": null,
+   "added": null,
+   "type": "comment",
+   "side": null,
+   "text": "Hello and welcome, to live coverage of this fixture in LaLiga, as Real Madrid take on Sevilla at Estadio Santiago Bernabeu with both sides firmly in the running for a top-four spot.",
+   "players": []
+  }
+ ],
+ "available": [
+  "commentary"
+ ]
+}

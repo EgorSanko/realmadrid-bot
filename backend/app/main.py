@@ -222,9 +222,9 @@ def _round_snapshot_key(conn, match_id: str, m: dict) -> str | None:
 
 
 def _match_extras(conn, match_id: str, m: dict) -> dict:
-    """Факты, тур и «Кто победит?» — из отдельных снимков сборщика (в источники не ходим).
+    """Факты, тур, «Кто победит?» и сводка трансляции — из отдельных снимков сборщика (в источники не ходим).
     Нет снимка — поле null, пункта в available нет: экран просто прячет блок."""
-    out = {"insights": None, "round": None, "poll": None}
+    out = {"insights": None, "round": None, "poll": None, "commentary": None}
     ins = store.get(conn, f"insights:{match_id}")
     if ins:
         out["insights"] = {**ins["data"], "updated_at": _iso(ins["fetched_at"])}
@@ -242,7 +242,28 @@ def _match_extras(conn, match_id: str, m: dict) -> dict:
         out["poll"] = {"fotmob": fm_votes, "ours": ours if n >= config.POLL_MIN_PREDICTIONS else None,
                        "ours_count": n, "threshold": config.POLL_MIN_PREDICTIONS,
                        "updated_at": _iso(vote["fetched_at"]) if vote else None}
+    ltc = store.get(conn, f"ltc:{match_id}")
+    if ltc and ltc["data"].get("items"):
+        out["commentary"] = {"count": len(ltc["data"]["items"]), "lang": ltc["data"].get("lang") or "en",
+                             "updated_at": _iso(ltc["fetched_at"])}
     return out
+
+
+@app.get("/api/match/{match_id}/commentary")
+def match_commentary(match_id: str) -> JSONResponse:
+    """Текстовая трансляция Opta (через FotMob), английский оригинал: записи новыми первыми."""
+    conn = _db()
+    try:
+        snap = store.get(conn, f"ltc:{match_id}")
+        if not snap or not snap["data"].get("items"):
+            return _resp({"items": [], "lang": None, "attribution": None, "available": []}, 30)
+        m = store.get(conn, f"match:{match_id}")
+        live = bool(m and m["data"]["status"]["live"])
+        meta = _meta(snap, 6 * config.LTC_INTERVAL if live else STALE_AFTER["match_idle"])
+        return _resp({**meta, "lang": snap["data"].get("lang") or "en", "attribution": "Opta via FotMob",
+                      "items": snap["data"]["items"], "available": ["commentary"]}, 15 if live else 120)
+    finally:
+        conn.close()
 
 
 @app.get("/api/match/{match_id}")

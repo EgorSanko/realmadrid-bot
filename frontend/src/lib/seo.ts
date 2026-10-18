@@ -35,7 +35,7 @@ export function descriptionFor(pathname: string): string {
 /** Канонический адрес: домен без www, без query и хвостовых вкладок экрана матча. */
 export function canonicalFor(pathname: string): string {
   let p = pathname.replace(/\/{2,}/g, '/');
-  p = p.replace(/^(\/match\/[^/]+)\/(lineups|stats)\/?$/, '$1');
+  p = p.replace(/^(\/match\/[^/]+)\/(lineups|stats|online)\/?$/, '$1');
   if (p.length > 1) p = p.replace(/\/+$/, '');
   return SITE_ORIGIN + p;
 }

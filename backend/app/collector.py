@@ -1068,6 +1068,14 @@ class Collector:
                 add("vote", fid, f"vote:{fid}", config.VOTE_LIVE_INTERVAL)
             elif ahead is not None and ahead <= config.VOTE_AHEAD:
                 add("vote", fid, f"vote:{fid}", config.VOTE_INTERVAL)
+            # трансляция: только в окне матча, в лайве — раз в LTC_INTERVAL
+            if in_win and "en" in (meta.get("ltc_langs") or []):
+                if st["finished"]:
+                    add("ltc", fid, f"ltc:{fid}", 0, final=True, fin_seen=fin_seen)
+                elif st["live"]:
+                    add("ltc", fid, f"ltc:{fid}", config.LTC_INTERVAL)
+                else:
+                    add("ltc", fid, f"ltc:{fid}", config.LTC_PRE_INTERVAL)
         return plan
 
     def _is_finished(self, fid: str) -> bool:
@@ -1092,6 +1100,8 @@ class Collector:
                                               meta.get("parent_league_id"))
             elif kind == "vote":
                 data = fotmob.normalize_vote(await self.fx.vote(fid))
+            elif kind == "ltc":
+                data = fotmob.normalize_ltc(await self.fx.ltc(fid, meta.get("ltc_teams") or []))
             else:
                 return None
         except NotFound:

@@ -7,6 +7,7 @@ test('канонический адрес — домен без www, без вк
   assert.equal(canonicalFor('/'), 'https://realmadridfan.ru/');
   assert.equal(canonicalFor('/matches/'), 'https://realmadridfan.ru/matches');
   assert.equal(canonicalFor('/match/6106274/lineups'), 'https://realmadridfan.ru/match/6106274');
+  assert.equal(canonicalFor('/match/6106274/online'), 'https://realmadridfan.ru/match/6106274');
   assert.equal(canonicalFor('/match/6106274/stats/'), 'https://realmadridfan.ru/match/6106274');
   assert.equal(canonicalFor('//news//abc'), 'https://realmadridfan.ru/news/abc');
 });

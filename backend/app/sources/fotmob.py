@@ -3,6 +3,7 @@
 Один запрос teams?id=8633 даёт календарь, таблицы (Ла Лига, ЛЧ), состав, травмы,
 лидеров и трансферы. matchDetails — всё по матчу одним ответом. playerData — карточка игрока.
 """
+import json
 import re
 from datetime import datetime, timezone
 
@@ -14,6 +15,8 @@ from .base import HttpxSource, NotFound
 
 BASE = "https://www.fotmob.com/api/data"
 API = "https://www.fotmob.com/api"
+# текстовая трансляция (Opta): FotMob сам ходит за файлом по ltcUrl; русского нет — только английский
+LTC_URL = "http://data.fotmob.com/webcl/ltc/gsm/{id}_{lang}.json.gz"
 
 
 class FotMob(HttpxSource):
@@ -44,6 +47,11 @@ class FotMob(HttpxSource):
     async def vote(self, match_id) -> dict:
         """Голоса пользователей FotMob «Кто победит?» — только чтение."""
         return await self.get(f"{BASE}/vote", {"matchId": match_id}, kind="vote")
+
+    async def ltc(self, match_id, teams: list[str], lang: str = "en") -> dict | None:
+        """Текстовая трансляция Opta. Нет файла — FotMob отвечает null."""
+        return await self.get(f"{BASE}/ltc", {"ltcUrl": LTC_URL.format(id=match_id, lang=lang),
+                                               "teams": json.dumps(teams, ensure_ascii=False)}, kind="ltc")
 
     async def player(self, player_id) -> dict:
         raw = await self.get(f"{BASE}/playerData", {"id": player_id}, kind="player")
@@ -482,6 +490,48 @@ def normalize_vote(raw) -> dict | None:
     if not isinstance(v, list) or len(v) != 3 or not all(isinstance(n, int) and n >= 0 for n in v) or not sum(v):
         return None
     return {"home": v[0], "draw": v[1], "away": v[2], "total": sum(v)}
+
+
+_LTC_TYPES = {"G": "goal", "OG": "own_goal", "AS": "assist", "YC": "yellow", "Y2C": "second_yellow", "RC": "red",
+              "SI": "sub", "var": "var", "highlight": "chance", "comment": "comment", "team news": "team_news",
+              "half_time summary": "summary", "full_time summary": "summary", "PM": "penalty_missed",
+              "PS": "penalty_saved", "PSG": "penalty_goal"}
+_LTC_NO_SIDE = {"comment", "chance", "team_news", "summary"}
+LTC_LIMIT = 400
+
+
+def normalize_ltc(raw) -> dict | None:
+    """/api/data/ltc → записи трансляции (новые первыми, как у FotMob): минута, тип, текст, игроки."""
+    if not isinstance(raw, dict):
+        return None
+    items = []
+    for e in raw.get("events") or []:
+        if not isinstance(e, dict):
+            continue
+        text = str(e.get("text") or "").strip()
+        if not text:
+            continue
+        t = e.get("time") if isinstance(e.get("time"), dict) else {}
+        added = re.sub(r"\D", "", str(t.get("added") or ""))
+        mi = e.get("elapsed") if isinstance(e.get("elapsed"), int) and e["elapsed"] >= 0 else None
+        if mi is None and t:
+            mi = _int(re.sub(r"\D", "", str(t.get("main") or "")))
+        ty = _LTC_TYPES.get(e.get("type"), "comment")
+        items.append({
+            "id": str(e.get("messageId") or e.get("optaEventId") or len(items)),
+            "minute": mi, "added": int(added) if added else None,
+            "type": ty,
+            "side": e.get("teamEvent") if ty not in _LTC_NO_SIDE and e.get("teamEvent") in ("home", "away") else None,
+            "text": text[:2000],
+            "players": [{"id": _int(p.get("id")), "name": p.get("name"), "photo": img_player(p.get("id"))}
+                        for p in e.get("players") or [] if isinstance(p, dict) and p.get("name")][:2],
+        })
+        if len(items) >= LTC_LIMIT:
+            break
+    if not items:
+        return None
+    return {"lang": raw.get("lang") or "en", "items": items,
+            "updated": iso_utc(raw.get("lastUpdated")) if raw.get("lastUpdated") else None}
 
 
 def _form_opponent(f: dict) -> dict | None:

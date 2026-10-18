@@ -1,0 +1,56 @@
+/* «Онлайн»: лента ключевых моментов и текстовая трансляция (EN). Токены — styles/tokens.css. */
+
+.mo-modes { margin: 14px 16px 0; }
+.mo-list { margin: 0; padding: 0 16px; list-style: none; }
+.mo-list > .ui-card { margin: 10px 0 0; }
+.mo-list > li:first-child { margin-top: 14px; }
+
+.mo-item { position: relative; display: flex; gap: 12px; padding: 14px 16px 14px 12px; border-radius: 18px; overflow: hidden; }
+/* гол — золотая полоса слева, как подсветка нового гола в хронологии */
+.mo-item--goal { border-color: var(--gold-edge); background: linear-gradient(90deg, rgba(212, 175, 55, .10), transparent 55%), var(--card-grad); }
+.mo-item--goal::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold-grad); }
+.mo-min { flex: none; align-self: flex-start; min-width: 44px; padding: 4px 0; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--line); text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mo-min:empty { display: none; }
+.mo-item--goal .mo-min { color: var(--gold-light); border-color: var(--gold-edge); background: var(--gold-tint); }
+.mo-body { flex: 1; min-width: 0; }
+.mo-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.mo-title { display: flex; align-items: center; gap: 7px; margin: 3px 0 0; font-weight: 700; font-size: 14px; }
+.mo-head .mo-title { margin: 0; }
+.mo-title > .ui-ev, .mo-whistle, .mo-spark { flex: none; }
+.mo-whistle { color: var(--muted); }
+.mo-spark { color: var(--gold); }
+.mo-item--goal .mo-title > span { color: var(--gold-light); }
+.mo-crest { margin-left: 2px; }
+.mo-players { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 13px; font-weight: 600; }
+.mo-players--r { margin-top: 0; gap: 6px 10px; font-size: 12px; color: var(--muted); }
+.mo-player { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.mo-role { font-size: 12px; font-weight: 500; color: var(--muted); }
+.mo-text { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+.mo-en { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; color: #C9CDD8; overflow-wrap: anywhere; }
+.mo-head + .mo-en { margin-top: 8px; }
+.mo-body > .mo-en:first-child { margin-top: 2px; }
+.mo-en.is-clamped { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.mo-more { margin: 4px 0 0; padding: 0; border: 0; background: none; color: var(--gold); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.mo-more:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+
+/* перерыв, конец матча — разделитель */
+.mo-div { display: flex; justify-content: center; margin: 14px 0 0; }
+.mo-div > span { padding: 6px 14px; border-radius: 10px; background: var(--surface-2); font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--muted); text-align: center; }
+
+.mo-src { margin: 14px 16px 0; font-size: 11px; color: var(--dim); }
+.mo-skel { margin: 14px 16px 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .mo-list > .is-fresh { animation: mo-in .55s var(--ease-out) both; }
+  .mo-item--goal.is-fresh::before { animation: mo-bar .7s var(--ease-out) .15s both; transform-origin: 50% 0; }
+}
+@keyframes mo-in { from { opacity: 0; transform: translateY(-10px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes mo-bar { from { transform: scaleY(0); } to { transform: none; } }
+
+/* вкладка «Онлайн» с золотой точкой, пока идёт матч */
+.mt-tabs--live .ui-tabs__tab:last-child::after { content: ""; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--gold); display: inline-block; vertical-align: middle; }
+
+/* сайт на компьютере: в колонке без внешних отступов */
+html.desk .mo-modes, html.desk .mo-list, html.desk .mo-src, html.desk .mo-skel { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+html.desk .mo-modes { margin-top: 0; }
+html.desk .mo .mt-state { margin-left: 0; margin-right: 0; }
