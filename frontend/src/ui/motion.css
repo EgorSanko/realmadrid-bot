@@ -212,3 +212,34 @@
 @keyframes ui-lb-me { from { opacity: 0; transform: translateY(26px) scale(.97); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
 @keyframes ui-lb-ring { 0% { opacity: .9; } 100% { opacity: 0; } }
 @keyframes ui-lb-shine { 0%, 62% { transform: translateX(-120%) skewX(-16deg); } 88%, 100% { transform: translateX(320%) skewX(-16deg); } }
+
+/* ---------- нажатия: всё, что нажимается, пружинит одинаково ----------
+   .ui-press — кнопки, вкладки, чипы, степперы (scale .96); .ui-press-soft — карточки и строки-ссылки (scale .985:
+   крупному блоку хватает меньшего хода). Нажали — быстро вдавливается (100 мс), отпустили — возвращается пружиной.
+   Класс удвоен (.ui-press.ui-press) — чтобы перебить transition компонентов, загруженных позже. Ниже тем же правилом — элементы экранов со своими классами (ссылки «Все», назад, меню, ответы игр). */
+.ui-press.ui-press, .ui-press-soft.ui-press-soft,
+.bottom-nav a, .screen-more, .mt-top__back, .pc-top__back, .pd-scorer, .gm-ans, .gm-level, .home-tile, .hp-link, .tm-more,
+.ui-section-head__action, .tg-login__btn, .avatar-btn {
+  transition: transform .45s var(--ease-spring), background-color .15s ease, border-color .15s ease, color .15s ease, opacity .2s ease, box-shadow .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ui-press.ui-press:active:not(:disabled):not([aria-disabled="true"]),
+  .bottom-nav a:active, .screen-more:active, .mt-top__back:active, .pc-top__back:active, .pd-scorer:active:not(:disabled),
+  .gm-ans:active:not(:disabled), .gm-level:active, .hp-link:active, .tm-more:active, .ui-section-head__action:active,
+  .tg-login__btn:active:not(:disabled), .avatar-btn:active {
+    transform: scale(.96);
+    transition: transform .1s var(--ease-out), background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .ui-press-soft.ui-press-soft:active, a.home-tile:active {
+    transform: scale(.985);
+    transition: transform .1s var(--ease-out), background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  /* игрок на поле: вдавливается кружок, подпись остаётся на месте */
+  .ui-pl__tap.ui-press-soft:active { transform: none; }
+  .ui-pl__shirt { transition: transform .45s var(--ease-spring); }
+  .ui-pl__tap:active .ui-pl__shirt { transform: scale(.9); transition: transform .1s var(--ease-out); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-press:active, .ui-press-soft:active { opacity: .8; }
+}

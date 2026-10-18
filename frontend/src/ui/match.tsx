@@ -230,7 +230,7 @@ export function MatchCard(props: MatchCardProps) {
         <span className="ui-mc-past__act">{props.actionLabel ?? 'Обзор'}</span>
       </>
     );
-    const cls = cx('ui-mc-past', className);
+    const cls = cx('ui-mc-past', href != null && 'ui-press-soft', className);
     return href != null ? (
       <a className={cls} href={href} onClick={onClick} style={style}>
         {body}
@@ -452,7 +452,7 @@ export function FixtureRow(props: FixtureRowProps) {
   if (props.kind === 'result') {
     const sc = <b className="ui-fx__score">{`${props.score[0]} : ${props.score[1]}`}</b>;
     return (
-      <Tag className={cx('ui-fx', className)} href={href} onClick={onClick} aria-label={href != null ? label : undefined}>
+      <Tag className={cx('ui-fx', href != null && 'ui-press-soft', className)} href={href} onClick={onClick} aria-label={href != null ? label : undefined}>
         <span className="ui-fx__date-sm">{formatDayShort(kickoff)}</span>
         {props.crests ? (
           <div className="ui-fx__line ui-fx__line--crests">
