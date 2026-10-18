@@ -62,7 +62,9 @@ export default function MatchScreen() {
   const ready = !!head;
   useLayoutEffect(() => {
     if (!ready) return;
-    const from = takeRects(`match:${id}`);
+    // только если шапка появилась почти сразу: после скелетона (данные шли дольше) списка с эмблемами уже
+    // давно нет на экране, и полёт «из пустоты» поперёк отсчёта выглядел как сбой
+    const from = takeRects(`match:${id}`, 450);
     if (!from || reducedMotion()) return;
     const crests = document.querySelectorAll<HTMLElement>('.mt .ui-score-head .ui-crest, .mt .mt-top__title .ui-crest');
     if (crests.length < 2) return;

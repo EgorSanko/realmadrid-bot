@@ -241,6 +241,9 @@ server {
     }
     location ~ "^/img/news/sportsru/(?<rmv2p>dynamic_images/[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp))$" {
         set $rmv2_up https://www.sports.ru/$rmv2p;
+        # sports.ru иногда отвечает 301 на другой файл: идём туда сами (@rmv2_sportsru_follow), а не шлём
+        # браузер на чужой хост — его режет CSP img-src 'self', и картинки новости нет
+        error_page 301 302 307 308 = @rmv2_sportsru_follow;
         error_page 400 403 404 410 500 502 503 504 = @rmv2_blank;
         proxy_pass $rmv2_up;
         proxy_http_version 1.1;
@@ -389,6 +392,36 @@ server {
     }
 
     # заглушки: отдаём 200, кэш у клиента сутки (вдруг у источника появится настоящая картинка)
+    location @rmv2_sportsru_follow {
+        set $rmv2_loc $upstream_http_location;
+        # только картинки самого sports.ru — не открытый прокси по чужому Location
+        if ($rmv2_loc !~ "^https://www\.sports\.ru/dynamic_images/[A-Za-z0-9._~/-]{1,400}\.(?:jpe?g|png|webp)$") {
+            return 404;
+        }
+        proxy_pass $rmv2_loc;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_set_header Host www.sports.ru;
+        proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+        proxy_set_header Cookie "";
+        proxy_set_header Referer "";
+        proxy_set_header Accept "image/avif,image/webp,image/png,image/*;q=0.8";
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Vary;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Location;
+        proxy_ignore_headers Set-Cookie Cache-Control Expires Vary X-Accel-Expires;
+        proxy_cache rmv2img;
+        proxy_cache_key $rmv2_loc;
+        proxy_cache_valid 200 7d;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
+        add_header Cache-Control "public, max-age=604800" always;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
     location @rmv2_blank {
         root {{IMGROOT}};
         try_files /blank.png =404;
