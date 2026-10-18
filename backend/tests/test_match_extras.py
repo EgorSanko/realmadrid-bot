@@ -405,6 +405,27 @@ def test_extra_not_found_is_no_data(tmp_db, monkeypatch):
     run(c.close())
 
 
+def test_empty_answer_backs_off_not_every_tick(tmp_db, monkeypatch):
+    """18.10 на проде: тура ЛЧ у FotMob нет, снимка нет — интервал 0, запрос каждую секунду.
+    Пустой ответ — повтор не раньше EXTRA_EMPTY_BACKOFF."""
+    from app.sources.base import NotFound
+    conn = store.connect()
+    c = _collector(conn)
+    calls = []
+
+    async def fetch(url, params):
+        calls.append(url)
+        raise NotFound("нет тура")
+
+    monkeypatch.setattr(c.fx, "_fetch", fetch)
+    key = f"round:test:{MID}"
+    now = 1000.0
+    assert run(c.refresh_extra("round", MID, key, now)) is False
+    assert c.extra_fail[key] >= now + config.EXTRA_EMPTY_BACKOFF
+    assert len(calls) == 1
+    run(c.close())
+
+
 def test_no_extras_without_fotmob_meta(tmp_db):
     conn = store.connect()
     c = _collector(conn)

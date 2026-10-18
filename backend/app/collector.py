@@ -1105,6 +1105,7 @@ class Collector:
             else:
                 return None
         except NotFound:
+            self._empty_backoff(kind, fid, key, now)
             return False
         except SourceError as e:
             self.extra_fail[key] = now + config.EXTRA_FAIL_BACKOFF
@@ -1116,11 +1117,19 @@ class Collector:
             return None
         self.extra_fail.pop(key, None)
         if not data:
+            self._empty_backoff(kind, fid, key, now)
             return False
         if kind == "round":
             data["match_ids"] = [r["id"] for r in data["matches"] if r.get("id")]
         store.put(self.conn, key, "fotmob", data, fetched_at=now)
         return True
+
+    def _empty_backoff(self, kind: str, fid: str, key: str, now: float) -> None:
+        """Данных у FotMob пока нет — повтор не раньше EXTRA_EMPTY_BACKOFF (без снимка интервал был бы 0 —
+        запрос каждую секунду). Трансляция идущего матча — через обычный LTC_INTERVAL: лента вот-вот начнётся."""
+        snap = store.get(self.conn, f"match:{fid}")
+        live = bool(snap and snap["data"]["status"]["live"])
+        self.extra_fail[key] = now + (config.LTC_INTERVAL if kind == "ltc" and live else config.EXTRA_EMPTY_BACKOFF)
 
     async def tick_extras(self, now: float, win: list[str] | None = None) -> list[tuple[str, str, bool | None]]:
         """Не больше EXTRA_PER_TICK запросов за такт; в лайве — фоновой задачей, лайв-цикл не ждёт."""

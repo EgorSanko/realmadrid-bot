@@ -83,6 +83,7 @@ LTC_INTERVAL = _int("LTC_INTERVAL", 30)                           # тексто
 LTC_PRE_INTERVAL = _int("LTC_PRE_INTERVAL", 600)                  # в окне до начала (составы, превью): 10 мин
 EXTRA_FINAL_DELAY = _int("EXTRA_FINAL_DELAY", 120)                # финальный снимок — через 2 мин после «завершён»
 EXTRA_FAIL_BACKOFF = _int("EXTRA_FAIL_BACKOFF", 600)              # эндпоинт не ответил — повтор не раньше чем через 10 мин
+EXTRA_EMPTY_BACKOFF = _int("EXTRA_EMPTY_BACKOFF", 600)            # у FotMob пока нет данных (404/пусто) — тоже не чаще раза в 10 мин
 EXTRA_PER_TICK = _int("EXTRA_PER_TICK", 2)                        # не больше N таких запросов за такт
 # «Кто победит?»: наш агрегат исходов из прогнозов показываем, когда прогнозов не меньше N
 POLL_MIN_PREDICTIONS = _int("POLL_MIN_PREDICTIONS", 10)
