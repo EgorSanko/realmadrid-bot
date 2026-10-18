@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Badge, Chip } from './base';
 import {
   cx,
@@ -14,6 +14,7 @@ import {
 import { FlipScore, FlipText } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { PlayerInline, type PlayerLinkProps } from './playerLink';
+import { useInViewOnce } from './reveal';
 
 export interface TeamRef {
   /** id для /img/team/{id}.png; нет — эмблема не показывается */
@@ -518,14 +519,76 @@ export interface StandingsTableProps {
   zones?: StandingZone[];
   /** хвост подписи под таблицей: «вся таблица — по нажатию» */
   footnote?: string;
+  /**
+   * ключ localStorage для прошлого места подсвеченной команды: место сменилось с прошлого раза —
+   * строка переезжает со старого места на новое (FLIP) и показывает стрелку ↑/↓
+   */
+  rememberKey?: string;
   className?: string;
 }
 
-export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, className }: StandingsTableProps) {
+const MAX_SLIDE_ROWS = 4;
+
+/** Прошлое место из хранилища; сразу записывает новое. null — первый раз или без хранилища. */
+function swapStoredPos(key: string, pos: number): number | null {
+  try {
+    const prev = Number(localStorage.getItem(key));
+    localStorage.setItem(key, String(pos));
+    return Number.isInteger(prev) && prev > 0 ? prev : null;
+  } catch {
+    return null;
+  }
+}
+
+export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, rememberKey, className }: StandingsTableProps) {
   const zoneOf = (pos: number) => zones.find((z) => pos >= z.from && pos <= z.to);
+  const myPos = highlightTeamId != null ? rows.find((r) => r.team.id === highlightTeamId)?.pos : undefined;
+  const [moved, setMoved] = useState<{ from: number; to: number } | null>(null);
+  const [ref, seen] = useInViewOnce<HTMLTableElement>(0.5);
+  const body = useRef<HTMLTableSectionElement>(null);
+  const played = useRef<string | null>(null);
+
+  // смена места запоминается при отрисовке, а переезд играется, когда таблица впервые в кадре
+  useLayoutEffect(() => {
+    if (!rememberKey || myPos == null) return;
+    const prev = swapStoredPos(rememberKey, myPos);
+    if (prev != null && prev !== myPos) setMoved({ from: prev, to: myPos });
+  }, [rememberKey, myPos]);
+
+  useLayoutEffect(() => {
+    const tb = body.current;
+    if (!moved || !seen || !tb || played.current === `${moved.from}>${moved.to}`) return;
+    played.current = `${moved.from}>${moved.to}`;
+    if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const trs = Array.from(tb.rows);
+    const me = trs.find((tr) => tr.classList.contains('is-me'));
+    if (!me || typeof me.animate !== 'function') return;
+    const h = me.getBoundingClientRect().height;
+    const up = moved.to < moved.from; // поднялись: были ниже
+    const steps = Math.min(Math.abs(moved.from - moved.to), MAX_SLIDE_ROWS);
+    const opts = { duration: 760, delay: 250, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'backwards' as const };
+    me.animate([{ transform: `translateY(${(up ? 1 : -1) * steps * h}px)` }, { transform: 'none' }], opts);
+    // кого обогнали (или кто обогнал) — сдвигаются на строку в обратную сторону
+    const lo = Math.min(moved.from, moved.to);
+    const hi = Math.max(moved.from, moved.to);
+    trs.forEach((tr) => {
+      const pos = Number(tr.dataset.pos);
+      if (tr === me || !(pos >= lo && pos <= hi)) return;
+      // под проезжающей строкой обойдённые притухают — наложение читается как обгон, а не как каша
+      tr.animate(
+        [
+          { transform: `translateY(${(up ? -1 : 1) * h}px)`, opacity: 1 },
+          { opacity: 0.25, offset: 0.45 },
+          { transform: 'none', opacity: 1 },
+        ],
+        opts,
+      );
+    });
+  }, [moved, seen]);
+
   return (
     <div className={className}>
-      <table className="ui-table">
+      <table ref={ref} className="ui-table">
         <thead>
           <tr>
             <th className="ui-table__pos">#</th>
@@ -535,14 +598,23 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, cl
             <th className="ui-table__pts">О</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody ref={body}>
           {rows.map((r) => {
             const z = zoneOf(r.pos);
             const me = highlightTeamId != null && r.team.id === highlightTeamId;
+            const mv = me && moved ? (moved.to < moved.from ? 'up' : 'down') : null;
             return (
-              <tr key={r.pos} className={cx(me && 'is-me')} aria-current={me || undefined}>
+              <tr key={r.pos} data-pos={r.pos} className={cx(me && 'is-me', mv && seen && 'is-moved')} aria-current={me || undefined}>
                 <td className="ui-table__pos" style={{ borderLeftColor: z ? z.color : 'transparent' }}>
                   {r.pos}
+                  {mv && seen && (
+                    <span
+                      className={`ui-table__mv ui-table__mv--${mv}`}
+                      aria-label={mv === 'up' ? `поднялись с ${moved!.from}-го места` : `опустились с ${moved!.from}-го места`}
+                    >
+                      {mv === 'up' ? '↑' : '↓'}
+                    </span>
+                  )}
                 </td>
                 <td className="ui-table__team">
                   <span className="ui-table__tm">

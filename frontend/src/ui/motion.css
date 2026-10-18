@@ -174,3 +174,14 @@
 @keyframes ui-mom { from { transform: scaleY(0); } to { transform: none; } }
 @keyframes ui-shot { from { opacity: 0; transform: translateY(-14px) scale(.4); } to { opacity: 1; transform: none; } }
 @keyframes ui-shot-goal { from { opacity: 0; transform: translateY(-18px) scale(.3); } 50% { opacity: 1; } to { opacity: 1; transform: none; } }
+
+/* ---------- турнирная таблица (ui/match.tsx StandingsTable): место Реала сменилось ---------- */
+.ui-table tr.is-me { position: relative; z-index: 1; }
+.ui-table td.ui-table__pos { position: relative; }
+.ui-table__mv { position: absolute; right: -2px; top: 50%; margin-top: -8px; font-size: 11px; font-weight: 800; line-height: 16px; }
+.ui-table__mv--up { color: #4FD18B; }
+.ui-table__mv--down { color: #FF7A70; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-table tr.is-moved .ui-table__mv { animation: ui-mv .5s var(--ease-spring) .95s both; }
+}
+@keyframes ui-mv { from { transform: translateY(6px) scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
