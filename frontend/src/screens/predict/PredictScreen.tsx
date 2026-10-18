@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { FormEvent, RefObject } from 'react';
+import type { CSSProperties, FormEvent, RefObject } from 'react';
 import { GamesTabs } from '../../components/GamesTabs';
 import { LoginButton } from '../../components/LoginButton';
 import { useDesktop } from '../../lib/shell';
@@ -283,7 +283,7 @@ function Board({
   } else if (view) {
     body = (
       <div className="pd-board__rows">
-        {view.rows.map((r) => (
+        {view.rows.map((r, i) => (
           <LeaderboardRow
             key={`${r.rank}-${r.name}`}
             rank={r.rank}
@@ -292,10 +292,14 @@ function Board({
             avatarUrl={r.avatar ?? undefined}
             isMe={r.is_me}
             silhouette
+            rankFrom={r.is_me && lb.kind === 'ok' ? lb.data.total : undefined}
+            style={{ '--i': i } as CSSProperties}
           />
         ))}
         {view.meRow && (
           <LeaderboardRow
+            rankFrom={lb.kind === 'ok' ? lb.data.total : undefined}
+            style={{ '--i': view.rows.length } as CSSProperties}
             rank={view.meRow.rank}
             name={`${view.meRow.name} · ты`}
             points={view.meRow.points}

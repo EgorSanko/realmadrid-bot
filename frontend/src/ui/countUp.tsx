@@ -12,16 +12,20 @@ const ease = (t: number) => 1 - Math.pow(1 - t, 4);
 export interface CountUpProps {
   value: number;
   fromZero?: boolean;
+  /** при появлении считать от этого числа (например, место «с конца» к своему) */
+  from?: number;
   /** мс */
   duration?: number;
+  /** пауза перед счётом, мс (пока строка въезжает) */
+  delay?: number;
   className?: string;
   /** вызов, когда счёт дошёл до конца (для «отклика» плитки) */
   onDone?: () => void;
 }
 
-export function CountUp({ value, fromZero, duration = 750, className, onDone }: CountUpProps) {
+export function CountUp({ value, fromZero, from: start, duration = 750, delay = 0, className, onDone }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const shown = useRef<number | null>(fromZero ? 0 : null);
+  const shown = useRef<number | null>(start ?? (fromZero ? 0 : null));
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
 
@@ -36,9 +40,9 @@ export function CountUp({ value, fromZero, duration = 750, className, onDone }: 
       return;
     }
     let raf = 0;
-    const t0 = performance.now();
+    const t0 = performance.now() + delay;
     const step = (now: number) => {
-      const k = Math.min(1, (now - t0) / duration);
+      const k = Math.max(0, Math.min(1, (now - t0) / duration));
       const v = Math.round(from + (value - from) * ease(k));
       el.textContent = String(v);
       shown.current = v;
@@ -48,6 +52,7 @@ export function CountUp({ value, fromZero, duration = 750, className, onDone }: 
     el.textContent = String(from);
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, duration]);
 
   // текст ставит только эффект (до первой отрисовки): React не держит здесь своих текстовых узлов

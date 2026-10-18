@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
+import { CountUp } from './countUp';
 import { Chip } from './base';
 import { cx } from './format';
 
@@ -203,15 +204,20 @@ export interface LeaderboardRowProps {
   silhouette?: boolean;
   /** серая подпись под именем («точных: 2») */
   sub?: string;
+  /** место «отсчитывается» при появлении — от этого числа к rank (своя строка) */
+  rankFrom?: number;
   className?: string;
+  style?: CSSProperties;
 }
 
-export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, className }: LeaderboardRowProps) {
+export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, rankFrom, className, style }: LeaderboardRowProps) {
   const [imgOk, setImgOk] = useState(true);
   const letter = (isMe ? 'Я' : name.trim()[0] ?? '?').toUpperCase();
   return (
-    <div className={cx('ui-lb', isMe && 'is-me', className)}>
-      <span className={cx('ui-lb__rank', rank <= 3 && 'is-top')}>{rank}</span>
+    <div className={cx('ui-lb', isMe && 'is-me', rank <= 3 && 'is-top', className)} style={style}>
+      <span className={cx('ui-lb__rank', rank <= 3 && 'is-top')}>
+        {rankFrom != null && rankFrom > rank ? <CountUp value={rank} from={rankFrom} duration={900} delay={450} /> : rank}
+      </span>
       <span className="ui-lb__av" aria-hidden="true">
         {avatarUrl && imgOk ? (
           <img src={avatarUrl} alt="" width={36} height={36} loading="lazy" decoding="async" onError={() => setImgOk(false)} />
