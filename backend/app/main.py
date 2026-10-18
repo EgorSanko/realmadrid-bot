@@ -201,7 +201,9 @@ def match(match_id: str) -> JSONResponse:
             return _resp({"error": "not_found", "detail": "матча нет ни в снимках, ни в календаре"}, 30, 404)
         store.ask(conn, match_id)
         body = {**f, "events": [], "lineups": None, "stats": None, "shots": [], "momentum": [], "potm": None,
-                "highlights": None, "h2h": None, "form": None, "venue": None, "available": [], "pending": True,
+                "highlights": None, "h2h": None, "form": None, "venue": None, "weather": None, "referee_info": None,
+                "zones": None,
+                "available": [], "pending": True,
                 **_meta(fx, STALE_AFTER["fixtures"])}
         return _resp(body, 5)
     finally:

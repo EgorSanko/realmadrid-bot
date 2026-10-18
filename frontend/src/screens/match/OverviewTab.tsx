@@ -8,7 +8,6 @@ import {
   Card,
   EmptyState,
   FixtureRow,
-  Flag,
   FormStrip,
   PlayerInline,
   RatingChip,
@@ -19,6 +18,7 @@ import {
   formatDayShort,
   type PlayerLinkProps,
 } from '../../ui';
+import { MatchInfo } from './MatchInfo';
 import {
   aboutRows,
   bestOfSide,
@@ -123,19 +123,8 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
         </Card>
       )}
 
-      {about.length > 0 && (
-        <Card ariaLabel="О матче" className="mt-about">
-          {about.map(([k, v, iso]) => (
-            <div key={k} className="mt-about__row">
-              <span className="mt-about__k">{k}</span>
-              <span className="mt-about__v">
-                {iso && <Flag iso2={iso} name="" width={20} />}
-                <span>{v}</span>
-              </span>
-            </div>
-          ))}
-        </Card>
-      )}
+      {/* стадион, погода, судья: в лайве — одной строкой, по нажатию раскрывается */}
+      {about.length > 0 && <MatchInfo match={match} compact={live} />}
 
       {nothing && (
         <EmptyState

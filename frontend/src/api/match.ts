@@ -11,7 +11,11 @@ export type SourceName = 'fotmob' | 'sofascore' | 'espn' | 'livescore';
 export type AvailableKey =
   | 'events' | 'assists' | 'lineups' | 'lineup_positions' | 'ratings' | 'stats' | 'stats_periods'
   | 'xg' | 'shotmap' | 'shot_xg' | 'momentum' | 'potm' | 'highlights' | 'h2h' | 'form' | 'venue' | 'referee'
-  | 'player_photos';
+  | 'player_photos'
+  /* только FotMob (matchDetails): вместимость/покрытие, погода, статистика судьи, зоны атак */
+  | 'venue_details' | 'weather' | 'referee_stats' | 'zones'
+  /* отдельные снимки сборщика: факты, тур, «Кто победит?», текстовая трансляция */
+  | 'insights' | 'round' | 'poll' | 'commentary';
 
 export interface ApiStatus {
   state: MatchState;
@@ -127,6 +131,99 @@ export interface ApiStat {
   group: string;
   home: number | null;
   away: number | null;
+  /** точность «273 (90%)» — у передач, единоборств, обводок */
+  home_pct?: number | null;
+  away_pct?: number | null;
+}
+
+export interface ApiWeather {
+  temp: number;
+  /** weather_condition_cloudy… — словарь FotMob, по-русски на фронте */
+  key: string | null;
+  text: string | null;
+  humidity: number | null;
+  cloud: number | null;
+  precip: number | null;
+  icon: number | null;
+  at: string | null;
+}
+
+export interface ApiRefScale {
+  per_match: number;
+  avg: number | null;
+  total: number | null;
+  level: 'above' | 'average' | 'below' | null;
+  /** позиция значения и среднего на шкале, 0..100 (как рисует FotMob) */
+  fill: number | null;
+  avg_fill: number | null;
+}
+
+export interface ApiRefereeInfo {
+  id: number | null;
+  photo: string | null;
+  matches: number | null;
+  league: { id: number | null; name: string | null } | null;
+  yellow: ApiRefScale | null;
+  fouls: ApiRefScale | null;
+  red: number | null;
+  pens: number | null;
+}
+
+export interface ApiZone {
+  left: number;
+  center: number;
+  right: number;
+}
+export type ApiZonesPeriod = { home: ApiZone; away: ApiZone };
+
+export interface ApiInsights {
+  lang: string;
+  /** «главный факт» (FotMob: bettingInsight; ставочные формулировки отсеяны сервером) */
+  main: string | null;
+  teams: Array<{ team_id: number | null; items: string[] }>;
+  updated_at?: string | null;
+}
+
+export interface ApiRoundMatch {
+  id: number | null;
+  kickoff: string | null;
+  home: { id: number | null; name: string | null; score: number | null; logo: string | null };
+  away: { id: number | null; name: string | null; score: number | null; logo: string | null };
+  status: ApiStatus;
+  is_ours: boolean;
+}
+
+export interface ApiRound {
+  league: { id: number | null; name: string | null; logo: string | null };
+  round: string | null;
+  season?: string | null;
+  matches: ApiRoundMatch[];
+  live: number;
+  finished: number;
+  updated_at?: string | null;
+}
+
+export interface ApiOutcomes {
+  home: number;
+  draw: number;
+  away: number;
+  total: number;
+}
+
+export interface ApiPoll {
+  /** голоса пользователей FotMob (только 1X2) */
+  fotmob: ApiOutcomes | null;
+  /** наш агрегат прогнозов счёта; null, пока прогнозов меньше threshold */
+  ours: ApiOutcomes | null;
+  ours_count: number;
+  threshold: number;
+  updated_at?: string | null;
+}
+
+export interface ApiCommentaryInfo {
+  count: number;
+  lang: string;
+  updated_at: string | null;
 }
 
 export interface ApiShot {
@@ -170,8 +267,23 @@ export interface ApiMatch {
   status: ApiStatus;
   tournament: { id: number | null; name: string | null; round: string | null; logo: string | null };
   /** country/flag — флаг страны стадиона (/img/flag/{iso2}.svg), если источник её дал */
-  venue: { name: string | null; city: string | null; country?: string | null; flag?: string | null } | null;
+  venue: {
+    name: string | null;
+    city: string | null;
+    country?: string | null;
+    flag?: string | null;
+    capacity?: number | null;
+    /** grass / artificial */
+    surface?: string | null;
+  } | null;
   referee: string | null;
+  referee_info?: ApiRefereeInfo | null;
+  weather?: ApiWeather | null;
+  zones?: { all?: ApiZonesPeriod; first_half?: ApiZonesPeriod; second_half?: ApiZonesPeriod } | null;
+  insights?: ApiInsights | null;
+  round?: ApiRound | null;
+  poll?: ApiPoll | null;
+  commentary?: ApiCommentaryInfo | null;
   referee_country?: { code: string | null; name: string | null; flag: string | null } | null;
   attendance: number | null;
   home: ApiTeam;
@@ -242,6 +354,13 @@ export function normalizeMatch(m: ApiMatch): ApiMatch {
     form: m.form ?? null,
     referee: m.referee ?? null,
     referee_country: m.referee_country ?? null,
+    referee_info: m.referee_info ?? null,
+    weather: m.weather ?? null,
+    zones: m.zones ?? null,
+    insights: m.insights ?? null,
+    round: m.round && Array.isArray(m.round.matches) ? m.round : null,
+    poll: m.poll ?? null,
+    commentary: m.commentary ?? null,
     attendance: m.attendance ?? null,
   };
 }
@@ -273,6 +392,35 @@ export async function fetchMatch(id: string | number, signal?: AbortSignal, fetc
 export function matchFingerprint(m: ApiMatch): string {
   const { age_s, updated_at, stale, ...rest } = m;
   return JSON.stringify(rest);
+}
+
+/* ---------- текстовая трансляция: /api/match/{id}/commentary ---------- */
+
+export type CommentaryType =
+  | 'goal' | 'own_goal' | 'assist' | 'yellow' | 'second_yellow' | 'red' | 'sub' | 'var' | 'chance' | 'comment'
+  | 'team_news' | 'summary' | 'penalty_missed' | 'penalty_saved' | 'penalty_goal';
+
+export interface ApiCommentaryItem {
+  id: string;
+  minute: number | null;
+  added: number | null;
+  type: CommentaryType;
+  side: Side | null;
+  /** оригинал Opta (английский) */
+  text: string;
+  players: Array<{ id: number | null; name: string; photo: string | null }>;
+}
+
+export interface ApiCommentary {
+  items: ApiCommentaryItem[];
+  lang: string | null;
+  attribution: string | null;
+  available: string[];
+  updated_at?: string;
+}
+
+export function commentaryUrl(id: string | number): string {
+  return `/api/match/${encodeURIComponent(String(id))}/commentary`;
 }
 
 /* ---------- когда опрашивать ---------- */

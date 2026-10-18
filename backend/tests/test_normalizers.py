@@ -82,14 +82,19 @@ def test_same_structure(matches):
         if m["shots"]:
             assert set(m["shots"][0]) == set(matches["fotmob"]["shots"][0]), name
         for it in m["stats"]["all"]:
-            assert set(it) == {"key", "group", "home", "away"}
+            # точность «273 (90%)» — необязательная пара home_pct / away_pct
+            assert {"key", "group", "home", "away"} <= set(it) <= {"key", "group", "home", "away", "home_pct", "away_pct"}
 
 
 def test_available_is_honest(matches):
     a = {n: set(m["available"]) for n, m in matches.items()}
     full = {"events", "assists", "lineups", "lineup_positions", "ratings", "stats", "stats_periods", "xg",
-            "shotmap", "shot_xg", "momentum", "potm", "highlights", "h2h", "form", "venue", "referee", "player_photos"}
+            "shotmap", "shot_xg", "momentum", "potm", "highlights", "h2h", "form", "venue", "referee", "player_photos",
+            "venue_details", "weather", "referee_stats", "zones"}
     assert a["fotmob"] == full
+    # блоки только FotMob: у резервов их нет — экран их прячет
+    for n in ("sofascore", "espn", "livescore"):
+        assert not a[n] & {"venue_details", "weather", "referee_stats", "zones"}, n
     assert {"ratings", "shotmap", "momentum", "potm", "xg", "stats_periods"} <= a["sofascore"]
     for k in ("ratings", "xg", "shotmap", "momentum", "potm", "lineup_positions"):
         assert k not in a["espn"], k
@@ -205,7 +210,8 @@ def test_flags_cover_all_codes():
 def test_images_for_venue_referee_and_form(matches):
     """Картинки, которые источник уже отдаёт: флаг страны стадиона и судьи, id соперников в форме."""
     fm = matches["fotmob"]
-    assert fm["venue"] == {"name": "Stadio Olimpico", "city": "Roma", "country": "Italy", "flag": "/img/flag/it.svg"}
+    assert fm["venue"] == {"name": "Stadio Olimpico", "city": "Roma", "country": "Italy", "flag": "/img/flag/it.svg",
+                           "capacity": 70634, "surface": "grass"}
     assert fm["referee"] == "François Letexier"
     assert fm["referee_country"] == {"code": "FRA", "name": "France", "flag": "/img/flag/fr.svg"}
     # форма: соперник — та команда, что не isOurTeam; id FotMob → /img/team/{id}.png

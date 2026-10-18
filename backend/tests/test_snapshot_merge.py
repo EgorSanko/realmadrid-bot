@@ -36,17 +36,17 @@ def _live(m, minute=60):
 # ---------- завершённый матч ----------
 
 def test_finished_full_snapshot_not_replaced_by_poorer(tmp_db, monkeypatch):
-    """FotMob дал 18 пунктов, потом FotMob выключен и ESPN приносит 6 — в базе остаётся FotMob."""
+    """FotMob дал 22 пункта, потом FotMob выключен и ESPN приносит 6 — в базе остаётся FotMob."""
     conn = store.connect()
     c, calls = _fake_collector(conn, monkeypatch)
     m = run(c.refresh_match("6106274"))
-    assert m["source"] == "fotmob" and len(m["available"]) == 18
+    assert m["source"] == "fotmob" and len(m["available"]) == 22
     (tmp_db / "disabled_sources").write_text("fotmob,sofascore")
     got = run(c.refresh_match("6106274"))
     assert calls["espn"] == 1                       # ESPN спросили, но его снимок беднее
     assert got["source"] == "fotmob"
     snap = store.get(conn, "match:6106274")
-    assert snap["source"] == "fotmob" and len(snap["data"]["available"]) == 18
+    assert snap["source"] == "fotmob" and len(snap["data"]["available"]) == 22
     run(c.close())
 
 

@@ -711,7 +711,11 @@ const STAT_LABEL: Record<string, string> = {
   shots_total: 'Удары',
   shots_on_target: 'В створ',
   big_chances: 'Голевые моменты',
+  big_chances_missed: 'Упущенные голевые',
   corners: 'Угловые',
+  xg_open_play: 'xG с игры',
+  xg_set_play: 'xG со стандартов',
+  xg_non_penalty: 'xG без пенальти',
   shots_off_target: 'Мимо ворот',
   shots_blocked: 'Заблокированные',
   shots_woodwork: 'В каркас ворот',
@@ -720,29 +724,55 @@ const STAT_LABEL: Record<string, string> = {
   xg_on_target: 'xG в створ (xGOT)',
   passes_total: 'Передачи',
   passes_accurate: 'Точные передачи',
+  passes_own_half: 'На своей половине',
+  passes_opp_half: 'На чужой половине',
   long_balls_accurate: 'Точные длинные',
   crosses_accurate: 'Точные навесы',
+  throws: 'Вбрасывания',
   touches_opp_box: 'Касания в штрафной',
   tackles: 'Отборы',
   interceptions: 'Перехваты',
+  blocks: 'Блоки',
   clearances: 'Выносы',
   saves: 'Сейвы',
+  duels_won: 'Выиграно единоборств',
+  ground_duels_won: 'На земле',
+  aerials_won: 'Верховые',
+  dribbles: 'Удачные обводки',
   fouls: 'Фолы',
   offsides: 'Офсайды',
   yellow_cards: 'Жёлтые карточки',
   red_cards: 'Красные карточки',
 };
 
+/** Все показатели, которые умеет экран (37 у FotMob): подпись по-русски есть у каждого. */
+export const STAT_KEYS = Object.keys(STAT_LABEL);
+export const statLabel = (key: string): string => STAT_LABEL[key] ?? key;
+
 /** порядок «Главного» — как в a-match-stats.html */
 const MAIN = ['possession', 'xg', 'shots_total', 'shots_on_target', 'big_chances', 'touches_opp_box', 'passes_accurate', 'corners', 'yellow_cards'];
-const GROUPS: Array<[string, string[]]> = [
-  ['Главное', MAIN],
-  ['Удары', ['shots_off_target', 'shots_blocked', 'shots_woodwork', 'shots_inside_box', 'shots_outside_box', 'xg_on_target']],
-  ['Передачи', ['passes_total', 'long_balls_accurate', 'crosses_accurate']],
-  ['Оборона', ['tackles', 'interceptions', 'clearances', 'saves']],
-  ['Дисциплина', ['fouls', 'offsides', 'red_cards']],
-];
-const NO_COMPARE = new Set(['yellow_cards', 'red_cards', 'fouls', 'offsides']);
+/** детали xG есть только у FotMob: тогда — своя группа «xG», иначе xGOT и упущенные — в «Ударах» */
+const XG_DETAIL = ['xg_open_play', 'xg_set_play', 'xg_non_penalty'];
+const XG_GROUP = ['xg', 'xg_open_play', 'xg_set_play', 'xg_non_penalty', 'xg_on_target', 'big_chances_missed'];
+const SHOTS = ['shots_off_target', 'shots_blocked', 'shots_woodwork', 'shots_inside_box', 'shots_outside_box'];
+
+function statGroups(by: Map<string, ApiStat>): Array<[string, string[]]> {
+  const xg = XG_DETAIL.some((k) => by.has(k));
+  return [
+    ['Главное', MAIN],
+    ...(xg ? ([['xG', XG_GROUP]] as Array<[string, string[]]>) : []),
+    ['Удары', xg ? SHOTS : [...SHOTS, 'xg_on_target', 'big_chances_missed']],
+    ['Передачи', ['passes_total', 'passes_accurate', 'passes_own_half', 'passes_opp_half', 'long_balls_accurate', 'crosses_accurate', 'throws']],
+    ['Единоборства', ['duels_won', 'ground_duels_won', 'aerials_won', 'dribbles']],
+    ['Оборона', ['tackles', 'interceptions', 'blocks', 'clearances', 'saves']],
+    ['Дисциплина', ['fouls', 'offsides', 'red_cards']],
+  ];
+}
+const NO_COMPARE = new Set(['yellow_cards', 'red_cards', 'fouls', 'offsides', 'throws']);
+/** «меньше — лучше»: упущенные моменты */
+const LOWER_BETTER = new Set(['big_chances_missed']);
+/** полоса под строкой: владение и всё, где есть точность / единоборства */
+const BAR = new Set(['possession', 'duels_won']);
 
 export interface StatRowView {
   key: string;
@@ -770,36 +800,41 @@ const fmtNum = (v: number, key: string) => (key.startsWith('xg') ? v.toFixed(2) 
 export function statsView(m: ApiMatch, period: PeriodKey): Array<{ title: string; rows: StatRowView[] }> {
   const list: ApiStat[] = (m.stats?.[period] as ApiStat[] | undefined) ?? [];
   const by = new Map(list.map((s) => [s.key, s]));
-  const row = (key: string): StatRowView | null => {
+  const row = (key: string, main: boolean): StatRowView | null => {
     const s = by.get(key);
     if (!s || (s.home == null && s.away == null)) return null;
     const h = s.home ?? 0;
     const a = s.away ?? 0;
     let home = fmtNum(h, key);
     let away = fmtNum(a, key);
+    const withPct = s.home_pct != null || s.away_pct != null;
     if (key === 'possession') {
       home = `${h}%`;
       away = `${a}%`;
-    }
-    if (key === 'passes_accurate') {
+    } else if (withPct) {
+      // точность — как у источника: «17 (52%)»
+      if (s.home_pct != null) home = `${h} (${s.home_pct}%)`;
+      if (s.away_pct != null) away = `${a} (${s.away_pct}%)`;
+    } else if (key === 'passes_accurate') {
       const tot = by.get('passes_total');
       if (tot?.home) home = `${h} (${Math.round((h / tot.home) * 100)}%)`;
       if (tot?.away) away = `${a} (${Math.round((a / tot.away) * 100)}%)`;
     }
     return {
       key,
-      label: STAT_LABEL[key] ?? key,
+      label: statLabel(key),
       home,
       away,
       homeValue: h,
       awayValue: a,
-      better: NO_COMPARE.has(key) ? 'none' : 'higher',
-      bar: key === 'possession' || undefined,
+      better: NO_COMPARE.has(key) ? 'none' : LOWER_BETTER.has(key) ? 'lower' : 'higher',
+      // в «Главном» полоса только у владения — как раньше; в группах — у всех строк с точностью
+      bar: BAR.has(key) || (withPct && !main) || undefined,
     };
   };
-  return GROUPS.map(([title, keys]) => ({ title, rows: keys.map(row).filter((r): r is StatRowView => r != null) })).filter(
-    (g) => g.rows.length > 0,
-  );
+  return statGroups(by)
+    .map(([title, keys], i) => ({ title, rows: keys.map((k) => row(k, i === 0)).filter((r): r is StatRowView => r != null) }))
+    .filter((g) => g.rows.length > 0);
 }
 
 /* ---------- удары и давление ---------- */

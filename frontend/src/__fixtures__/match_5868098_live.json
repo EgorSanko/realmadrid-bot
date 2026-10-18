@@ -1,0 +1,2502 @@
+{
+ "id": 5868098,
+ "ids": {
+  "fotmob": 5868098,
+  "sofascore": null,
+  "espn": null,
+  "livescore": null
+ },
+ "kickoff": "2026-10-18T19:55:36Z",
+ "status": {
+  "state": "live",
+  "live": true,
+  "finished": false,
+  "minute": 46,
+  "added": null,
+  "label": "45:24"
+ },
+ "tournament": {
+  "id": 87,
+  "name": "LaLiga",
+  "round": "9",
+  "logo": "/img/league/87.png"
+ },
+ "venue": {
+  "name": "Estadio Bernabéu",
+  "city": "Madrid",
+  "country": "Spain",
+  "flag": "/img/flag/es.svg",
+  "capacity": 83186,
+  "surface": "grass"
+ },
+ "referee": "Mateo Busquets Ferrer",
+ "referee_country": {
+  "code": "ESP",
+  "name": "Spain",
+  "flag": "/img/flag/es.svg"
+ },
+ "attendance": null,
+ "home": {
+  "id": 8633,
+  "name": "Real Madrid",
+  "short": "Real Madrid",
+  "score": 2,
+  "ht_score": 2,
+  "logo": "/img/team/8633.png"
+ },
+ "away": {
+  "id": 8302,
+  "name": "Sevilla",
+  "short": "Sevilla",
+  "score": 0,
+  "ht_score": 0,
+  "logo": "/img/team/8302.png"
+ },
+ "events": [
+  {
+   "type": "card",
+   "minute": 23,
+   "added": null,
+   "side": "home",
+   "card": "yellow",
+   "player": {
+    "id": 1367619,
+    "name": "Dean Huijsen",
+    "photo": "/img/player/1367619.png"
+   },
+   "reason": "Dissent"
+  },
+  {
+   "type": "card",
+   "minute": 23,
+   "added": null,
+   "side": "away",
+   "card": "yellow",
+   "player": {
+    "id": 942358,
+    "name": "Félix Correia",
+    "photo": "/img/player/942358.png"
+   },
+   "reason": "Dissent"
+  },
+  {
+   "type": "goal",
+   "minute": 30,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1253890,
+    "name": "Arda Güler",
+    "photo": "/img/player/1253890.png"
+   },
+   "assist": {
+    "id": 1735453,
+    "name": "Yan Diomande",
+    "photo": "/img/player/1735453.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    1,
+    0
+   ]
+  },
+  {
+   "type": "goal",
+   "minute": 37,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "assist": {
+    "id": 1077894,
+    "name": "Jude Bellingham",
+    "photo": "/img/player/1077894.png"
+   },
+   "own_goal": false,
+   "penalty": false,
+   "shootout": false,
+   "score": [
+    2,
+    0
+   ]
+  },
+  {
+   "type": "added_time",
+   "minute": 45,
+   "added": null,
+   "side": null,
+   "minutes": 4
+  },
+  {
+   "type": "period",
+   "minute": 45,
+   "added": null,
+   "side": null,
+   "label": "HT",
+   "score": [
+    2,
+    0
+   ]
+  },
+  {
+   "type": "sub",
+   "minute": 46,
+   "added": null,
+   "side": "away",
+   "player_in": {
+    "id": "837270",
+    "name": "Chidera Ejuke",
+    "photo": "/img/player/837270.png"
+   },
+   "player_out": {
+    "id": "860752",
+    "name": "Rubén Vargas",
+    "photo": "/img/player/860752.png"
+   },
+   "injury": false
+  }
+ ],
+ "lineups": {
+  "confirmed": true,
+  "home": {
+   "team_id": 8633,
+   "formation": "4-2-3-1",
+   "rating": 7.2,
+   "coach": {
+    "id": 78719,
+    "name": "José Mourinho"
+   },
+   "starters": [
+    {
+     "id": 170323,
+     "source_id": 170323,
+     "name": "Thibaut Courtois",
+     "number": 1,
+     "position": "GK",
+     "rating": 7.0,
+     "x": 0.5,
+     "y": 0.1,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/170323.png"
+    },
+    {
+     "id": 743533,
+     "source_id": 743533,
+     "name": "Federico Valverde",
+     "number": 8,
+     "position": "MF",
+     "rating": 7.0,
+     "x": 0.125,
+     "y": 0.292,
+     "captain": true,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/743533.png"
+    },
+    {
+     "id": 820140,
+     "source_id": 820140,
+     "name": "Ibrahima Konaté",
+     "number": 16,
+     "position": "DF",
+     "rating": 6.5,
+     "x": 0.375,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/820140.png"
+    },
+    {
+     "id": 1367619,
+     "source_id": 1367619,
+     "name": "Dean Huijsen",
+     "number": 4,
+     "position": "DF",
+     "rating": 7.0,
+     "x": 0.625,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1367619.png"
+    },
+    {
+     "id": 873289,
+     "source_id": 873289,
+     "name": "Marc Cucurella",
+     "number": 17,
+     "position": "DF",
+     "rating": 6.8,
+     "x": 0.875,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/873289.png"
+    },
+    {
+     "id": 1253890,
+     "source_id": 1253890,
+     "name": "Arda Güler",
+     "number": 15,
+     "position": "MF",
+     "rating": 8.3,
+     "x": 0.3,
+     "y": 0.485,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1253890.png"
+    },
+    {
+     "id": 914458,
+     "source_id": 914458,
+     "name": "Aurélien Tchouaméni",
+     "number": 14,
+     "position": "MF",
+     "rating": 7.0,
+     "x": 0.7,
+     "y": 0.485,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/914458.png"
+    },
+    {
+     "id": 1406729,
+     "source_id": 1406729,
+     "name": "Endrick",
+     "number": 9,
+     "position": "FW",
+     "rating": 6.5,
+     "x": 0.162,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1406729.png"
+    },
+    {
+     "id": 1077894,
+     "source_id": 1077894,
+     "name": "Jude Bellingham",
+     "number": 5,
+     "position": "MF",
+     "rating": 7.8,
+     "x": 0.5,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1077894.png"
+    },
+    {
+     "id": 1735453,
+     "source_id": 1735453,
+     "name": "Yan Diomande",
+     "number": 25,
+     "position": "FW",
+     "rating": 7.4,
+     "x": 0.837,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1735453.png"
+    },
+    {
+     "id": 701154,
+     "source_id": 701154,
+     "name": "Kylian Mbappé",
+     "number": 10,
+     "position": "FW",
+     "rating": 7.9,
+     "x": 0.5,
+     "y": 0.87,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/701154.png"
+    }
+   ],
+   "subs": [
+    {
+     "id": 800882,
+     "source_id": 800882,
+     "name": "Andriy Lunin",
+     "number": 13,
+     "position": "GK",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/800882.png"
+    },
+    {
+     "id": 1820340,
+     "source_id": 1820340,
+     "name": "Javi Navarro",
+     "number": 31,
+     "position": "GK",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1820340.png"
+    },
+    {
+     "id": 1190025,
+     "source_id": 1190025,
+     "name": "Alvaro Carreras",
+     "number": 18,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1190025.png"
+    },
+    {
+     "id": 276738,
+     "source_id": 276738,
+     "name": "Antonio Rüdiger",
+     "number": 22,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/276738.png"
+    },
+    {
+     "id": 593118,
+     "source_id": 593118,
+     "name": "Denzel Dumfries",
+     "number": 24,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/593118.png"
+    },
+    {
+     "id": 844415,
+     "source_id": 844415,
+     "name": "Éder Militao",
+     "number": 3,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/844415.png"
+    },
+    {
+     "id": 760712,
+     "source_id": 760712,
+     "name": "Trent Alexander-Arnold",
+     "number": 12,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/760712.png"
+    },
+    {
+     "id": 488139,
+     "source_id": 488139,
+     "name": "Bernardo Silva",
+     "number": 20,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/488139.png"
+    },
+    {
+     "id": 1015185,
+     "source_id": 1015185,
+     "name": "Eduardo Camavinga",
+     "number": 6,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1015185.png"
+    },
+    {
+     "id": 1796908,
+     "source_id": 1796908,
+     "name": "Thiago Pitarch",
+     "number": 27,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1796908.png"
+    },
+    {
+     "id": 750027,
+     "source_id": 750027,
+     "name": "Brahim Díaz",
+     "number": 21,
+     "position": "FW",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/750027.png"
+    },
+    {
+     "id": 1610744,
+     "source_id": 1610744,
+     "name": "Carlos Espí",
+     "number": 19,
+     "position": "FW",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1610744.png"
+    }
+   ],
+   "unavailable": [
+    {
+     "id": 623537,
+     "name": "Ferland Mendy",
+     "photo": "/img/player/623537.png",
+     "type": "injury",
+     "expected_return": "Back in training"
+    },
+    {
+     "id": 1580528,
+     "name": "Raúl Asencio",
+     "photo": "/img/player/1580528.png",
+     "type": "injury",
+     "expected_return": "Early January 2027"
+    },
+    {
+     "id": 895362,
+     "name": "Rodrygo",
+     "photo": "/img/player/895362.png",
+     "type": "injury",
+     "expected_return": "Late December 2026"
+    },
+    {
+     "id": 846033,
+     "name": "Vinícius Júnior",
+     "photo": "/img/player/846033.png",
+     "type": "suspension",
+     "expected_return": "Early November 2026"
+    }
+   ]
+  },
+  "away": {
+   "team_id": 8302,
+   "formation": "4-2-3-1",
+   "rating": 5.9,
+   "coach": {
+    "id": 242474,
+    "name": "Luis García"
+   },
+   "starters": [
+    {
+     "id": 304355,
+     "source_id": 304355,
+     "name": "Odysseas Vlachodimos",
+     "number": 1,
+     "position": "GK",
+     "rating": 5.6,
+     "x": 0.5,
+     "y": 0.1,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/304355.png"
+    },
+    {
+     "id": 1102289,
+     "source_id": 1102289,
+     "name": "Juan Iglesias",
+     "number": 2,
+     "position": "DF",
+     "rating": 5.9,
+     "x": 0.125,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1102289.png"
+    },
+    {
+     "id": 1334767,
+     "source_id": 1334767,
+     "name": "Andrés Lopez",
+     "number": 5,
+     "position": "DF",
+     "rating": 5.8,
+     "x": 0.375,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1334767.png"
+    },
+    {
+     "id": 1327489,
+     "source_id": 1327489,
+     "name": "Kike Salas",
+     "number": 4,
+     "position": "DF",
+     "rating": 5.9,
+     "x": 0.625,
+     "y": 0.292,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1327489.png"
+    },
+    {
+     "id": 659490,
+     "source_id": 659490,
+     "name": "Gabriel Suazo",
+     "number": 17,
+     "position": "DF",
+     "rating": 6.2,
+     "x": 0.875,
+     "y": 0.292,
+     "captain": true,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/659490.png"
+    },
+    {
+     "id": 971790,
+     "source_id": 971790,
+     "name": "Lucien Agoumé",
+     "number": 6,
+     "position": "MF",
+     "rating": 5.9,
+     "x": 0.3,
+     "y": 0.485,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/971790.png"
+    },
+    {
+     "id": 954621,
+     "source_id": 954621,
+     "name": "Youssouf Fofana",
+     "number": 24,
+     "position": "MF",
+     "rating": 6.1,
+     "x": 0.7,
+     "y": 0.485,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/954621.png"
+    },
+    {
+     "id": 860752,
+     "source_id": 860752,
+     "name": "Rubén Vargas",
+     "number": 11,
+     "position": "FW",
+     "rating": 6.0,
+     "x": 0.162,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": 46,
+     "photo": "/img/player/860752.png"
+    },
+    {
+     "id": 1132607,
+     "source_id": 1132607,
+     "name": "Peque Fernández",
+     "number": 10,
+     "position": "MF",
+     "rating": 5.7,
+     "x": 0.5,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1132607.png"
+    },
+    {
+     "id": 942358,
+     "source_id": 942358,
+     "name": "Félix Correia",
+     "number": 20,
+     "position": "FW",
+     "rating": 6.0,
+     "x": 0.837,
+     "y": 0.678,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/942358.png"
+    },
+    {
+     "id": 1399218,
+     "source_id": 1399218,
+     "name": "Robbie Ure",
+     "number": 9,
+     "position": "FW",
+     "rating": 5.8,
+     "x": 0.5,
+     "y": 0.87,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1399218.png"
+    }
+   ],
+   "subs": [
+    {
+     "id": 837270,
+     "source_id": 837270,
+     "name": "Chidera Ejuke",
+     "number": 21,
+     "position": "FW",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": 46,
+     "sub_out": null,
+     "photo": "/img/player/837270.png"
+    },
+    {
+     "id": 1484851,
+     "source_id": 1484851,
+     "name": "Fran González",
+     "number": 13,
+     "position": "GK",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1484851.png"
+    },
+    {
+     "id": 1203891,
+     "source_id": 1203891,
+     "name": "Rafa Romero",
+     "number": 33,
+     "position": "GK",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1203891.png"
+    },
+    {
+     "id": 1244272,
+     "source_id": 1244272,
+     "name": "Arouna Sangante",
+     "number": 12,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1244272.png"
+    },
+    {
+     "id": 361751,
+     "source_id": 361751,
+     "name": "Fábio Cardoso",
+     "number": 15,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/361751.png"
+    },
+    {
+     "id": 1281461,
+     "source_id": 1281461,
+     "name": "José Ángel Carmona",
+     "number": 22,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1281461.png"
+    },
+    {
+     "id": 1447089,
+     "source_id": 1447089,
+     "name": "Julio Díaz",
+     "number": 3,
+     "position": "DF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1447089.png"
+    },
+    {
+     "id": 2387654,
+     "source_id": 2387654,
+     "name": "Jesus Cruz",
+     "number": 29,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/2387654.png"
+    },
+    {
+     "id": 1428849,
+     "source_id": 1428849,
+     "name": "Manu Bueno",
+     "number": 14,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1428849.png"
+    },
+    {
+     "id": 1783498,
+     "source_id": 1783498,
+     "name": "Nico Guillen",
+     "number": 27,
+     "position": "MF",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1783498.png"
+    },
+    {
+     "id": 926643,
+     "source_id": 926643,
+     "name": "Alfon González",
+     "number": 7,
+     "position": "FW",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/926643.png"
+    },
+    {
+     "id": 1398377,
+     "source_id": 1398377,
+     "name": "Lucas Stassin",
+     "number": 19,
+     "position": "FW",
+     "rating": null,
+     "x": null,
+     "y": null,
+     "captain": false,
+     "sub_in": null,
+     "sub_out": null,
+     "photo": "/img/player/1398377.png"
+    }
+   ],
+   "unavailable": [
+    {
+     "id": 678192,
+     "name": "Jon Guridi",
+     "photo": "/img/player/678192.png",
+     "type": "injury",
+     "expected_return": "Back in training"
+    },
+    {
+     "id": 953958,
+     "name": "Giorgi Kochorashvili",
+     "photo": "/img/player/953958.png",
+     "type": "injury",
+     "expected_return": "Back in training"
+    },
+    {
+     "id": 753593,
+     "name": "Marcão",
+     "photo": "/img/player/753593.png",
+     "type": "injury",
+     "expected_return": "Late October 2026"
+    },
+    {
+     "id": 1130991,
+     "name": "Isaac Romero",
+     "photo": "/img/player/1130991.png",
+     "type": "suspension",
+     "expected_return": "Mid October 2026"
+    },
+    {
+     "id": 1797904,
+     "name": "Miguel Sierra",
+     "photo": "/img/player/1797904.png",
+     "type": "injury",
+     "expected_return": "Early December 2026"
+    }
+   ]
+  }
+ },
+ "stats": {
+  "all": [
+   {
+    "key": "possession",
+    "group": "top",
+    "home": 61,
+    "away": 39
+   },
+   {
+    "key": "xg",
+    "group": "top",
+    "home": 1.49,
+    "away": 0.21
+   },
+   {
+    "key": "shots_total",
+    "group": "top",
+    "home": 11,
+    "away": 4
+   },
+   {
+    "key": "shots_on_target",
+    "group": "top",
+    "home": 5,
+    "away": 2
+   },
+   {
+    "key": "big_chances",
+    "group": "top",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "big_chances_missed",
+    "group": "top",
+    "home": 0,
+    "away": 1
+   },
+   {
+    "key": "corners",
+    "group": "top",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "xg_open_play",
+    "group": "xg",
+    "home": 1.46,
+    "away": 0.21
+   },
+   {
+    "key": "xg_set_play",
+    "group": "xg",
+    "home": 0.03,
+    "away": 0.0
+   },
+   {
+    "key": "xg_non_penalty",
+    "group": "xg",
+    "home": 1.49,
+    "away": 0.21
+   },
+   {
+    "key": "shots_off_target",
+    "group": "shots",
+    "home": 4,
+    "away": 2
+   },
+   {
+    "key": "shots_blocked",
+    "group": "shots",
+    "home": 2,
+    "away": 0
+   },
+   {
+    "key": "shots_woodwork",
+    "group": "shots",
+    "home": 0,
+    "away": 0
+   },
+   {
+    "key": "shots_inside_box",
+    "group": "shots",
+    "home": 8,
+    "away": 4
+   },
+   {
+    "key": "shots_outside_box",
+    "group": "shots",
+    "home": 3,
+    "away": 0
+   },
+   {
+    "key": "xg_on_target",
+    "group": "shots",
+    "home": 1.7,
+    "away": 0.55
+   },
+   {
+    "key": "passes_total",
+    "group": "passes",
+    "home": 305,
+    "away": 189
+   },
+   {
+    "key": "passes_accurate",
+    "group": "passes",
+    "home": 273,
+    "away": 156,
+    "home_pct": 90,
+    "away_pct": 83
+   },
+   {
+    "key": "passes_own_half",
+    "group": "passes",
+    "home": 155,
+    "away": 63
+   },
+   {
+    "key": "passes_opp_half",
+    "group": "passes",
+    "home": 118,
+    "away": 93
+   },
+   {
+    "key": "long_balls_accurate",
+    "group": "passes",
+    "home": 20,
+    "away": 9,
+    "home_pct": 69,
+    "away_pct": 41
+   },
+   {
+    "key": "crosses_accurate",
+    "group": "passes",
+    "home": 1,
+    "away": 3,
+    "home_pct": 25,
+    "away_pct": 30
+   },
+   {
+    "key": "throws",
+    "group": "passes",
+    "home": 8,
+    "away": 5
+   },
+   {
+    "key": "touches_opp_box",
+    "group": "passes",
+    "home": 25,
+    "away": 12
+   },
+   {
+    "key": "tackles",
+    "group": "defence",
+    "home": 8,
+    "away": 8
+   },
+   {
+    "key": "interceptions",
+    "group": "defence",
+    "home": 3,
+    "away": 4
+   },
+   {
+    "key": "blocks",
+    "group": "defence",
+    "home": 0,
+    "away": 2
+   },
+   {
+    "key": "clearances",
+    "group": "defence",
+    "home": 13,
+    "away": 8
+   },
+   {
+    "key": "saves",
+    "group": "defence",
+    "home": 2,
+    "away": 2
+   },
+   {
+    "key": "duels_won",
+    "group": "duels",
+    "home": 22,
+    "away": 20
+   },
+   {
+    "key": "ground_duels_won",
+    "group": "duels",
+    "home": 17,
+    "away": 16,
+    "home_pct": 52,
+    "away_pct": 48
+   },
+   {
+    "key": "aerials_won",
+    "group": "duels",
+    "home": 5,
+    "away": 4,
+    "home_pct": 56,
+    "away_pct": 44
+   },
+   {
+    "key": "dribbles",
+    "group": "duels",
+    "home": 6,
+    "away": 5,
+    "home_pct": 60,
+    "away_pct": 63
+   },
+   {
+    "key": "fouls",
+    "group": "discipline",
+    "home": 3,
+    "away": 5
+   },
+   {
+    "key": "offsides",
+    "group": "discipline",
+    "home": 0,
+    "away": 0
+   },
+   {
+    "key": "yellow_cards",
+    "group": "discipline",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "red_cards",
+    "group": "discipline",
+    "home": 0,
+    "away": 0
+   }
+  ],
+  "first_half": [
+   {
+    "key": "possession",
+    "group": "top",
+    "home": 61,
+    "away": 39
+   },
+   {
+    "key": "xg",
+    "group": "top",
+    "home": 1.49,
+    "away": 0.21
+   },
+   {
+    "key": "shots_total",
+    "group": "top",
+    "home": 11,
+    "away": 4
+   },
+   {
+    "key": "shots_on_target",
+    "group": "top",
+    "home": 5,
+    "away": 2
+   },
+   {
+    "key": "big_chances",
+    "group": "top",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "big_chances_missed",
+    "group": "top",
+    "home": 0,
+    "away": 1
+   },
+   {
+    "key": "corners",
+    "group": "top",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "xg_open_play",
+    "group": "xg",
+    "home": 1.46,
+    "away": 0.21
+   },
+   {
+    "key": "xg_set_play",
+    "group": "xg",
+    "home": 0.03,
+    "away": 0.0
+   },
+   {
+    "key": "xg_non_penalty",
+    "group": "xg",
+    "home": 1.49,
+    "away": 0.21
+   },
+   {
+    "key": "shots_off_target",
+    "group": "shots",
+    "home": 4,
+    "away": 2
+   },
+   {
+    "key": "shots_blocked",
+    "group": "shots",
+    "home": 2,
+    "away": 0
+   },
+   {
+    "key": "shots_woodwork",
+    "group": "shots",
+    "home": 0,
+    "away": 0
+   },
+   {
+    "key": "shots_inside_box",
+    "group": "shots",
+    "home": 8,
+    "away": 4
+   },
+   {
+    "key": "shots_outside_box",
+    "group": "shots",
+    "home": 3,
+    "away": 0
+   },
+   {
+    "key": "xg_on_target",
+    "group": "shots",
+    "home": 1.7,
+    "away": 0.55
+   },
+   {
+    "key": "passes_total",
+    "group": "passes",
+    "home": 305,
+    "away": 189
+   },
+   {
+    "key": "passes_accurate",
+    "group": "passes",
+    "home": 273,
+    "away": 156,
+    "home_pct": 90,
+    "away_pct": 83
+   },
+   {
+    "key": "passes_own_half",
+    "group": "passes",
+    "home": 155,
+    "away": 63
+   },
+   {
+    "key": "passes_opp_half",
+    "group": "passes",
+    "home": 118,
+    "away": 93
+   },
+   {
+    "key": "long_balls_accurate",
+    "group": "passes",
+    "home": 20,
+    "away": 9,
+    "home_pct": 69,
+    "away_pct": 41
+   },
+   {
+    "key": "crosses_accurate",
+    "group": "passes",
+    "home": 1,
+    "away": 3,
+    "home_pct": 25,
+    "away_pct": 30
+   },
+   {
+    "key": "throws",
+    "group": "passes",
+    "home": 8,
+    "away": 5
+   },
+   {
+    "key": "touches_opp_box",
+    "group": "passes",
+    "home": 25,
+    "away": 12
+   },
+   {
+    "key": "tackles",
+    "group": "defence",
+    "home": 8,
+    "away": 8
+   },
+   {
+    "key": "interceptions",
+    "group": "defence",
+    "home": 3,
+    "away": 4
+   },
+   {
+    "key": "blocks",
+    "group": "defence",
+    "home": 0,
+    "away": 2
+   },
+   {
+    "key": "clearances",
+    "group": "defence",
+    "home": 13,
+    "away": 8
+   },
+   {
+    "key": "saves",
+    "group": "defence",
+    "home": 2,
+    "away": 2
+   },
+   {
+    "key": "duels_won",
+    "group": "duels",
+    "home": 22,
+    "away": 20
+   },
+   {
+    "key": "ground_duels_won",
+    "group": "duels",
+    "home": 17,
+    "away": 16,
+    "home_pct": 52,
+    "away_pct": 48
+   },
+   {
+    "key": "aerials_won",
+    "group": "duels",
+    "home": 5,
+    "away": 4,
+    "home_pct": 56,
+    "away_pct": 44
+   },
+   {
+    "key": "dribbles",
+    "group": "duels",
+    "home": 6,
+    "away": 5,
+    "home_pct": 60,
+    "away_pct": 63
+   },
+   {
+    "key": "fouls",
+    "group": "discipline",
+    "home": 3,
+    "away": 5
+   },
+   {
+    "key": "offsides",
+    "group": "discipline",
+    "home": 0,
+    "away": 0
+   },
+   {
+    "key": "yellow_cards",
+    "group": "discipline",
+    "home": 1,
+    "away": 1
+   },
+   {
+    "key": "red_cards",
+    "group": "discipline",
+    "home": 0,
+    "away": 0
+   }
+  ],
+  "second_half": []
+ },
+ "shots": [
+  {
+   "x": 90.8,
+   "y": 45.1,
+   "minute": 3,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 1399218,
+    "name": "Robbie Ure",
+    "photo": "/img/player/1399218.png"
+   },
+   "outcome": "saved",
+   "own_goal": false,
+   "xg": 0.014,
+   "xgot": 0.013,
+   "situation": "RegularPlay",
+   "body": "OtherBodyParts",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 82.0,
+   "y": 63.3,
+   "minute": 4,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.061,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 93.1,
+   "y": 69.1,
+   "minute": 6,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1406729,
+    "name": "Endrick",
+    "photo": "/img/player/1406729.png"
+   },
+   "outcome": "blocked",
+   "own_goal": false,
+   "xg": 0.036,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 93.9,
+   "y": 74.2,
+   "minute": 7,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1735453,
+    "name": "Yan Diomande",
+    "photo": "/img/player/1735453.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.055,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 88.6,
+   "y": 66.6,
+   "minute": 16,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 860752,
+    "name": "Rubén Vargas",
+    "photo": "/img/player/860752.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.04,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 80.3,
+   "y": 41.6,
+   "minute": 17,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 743533,
+    "name": "Federico Valverde",
+    "photo": "/img/player/743533.png"
+   },
+   "outcome": "saved",
+   "own_goal": false,
+   "xg": 0.062,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 70.2,
+   "y": 48.3,
+   "minute": 21,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1406729,
+    "name": "Endrick",
+    "photo": "/img/player/1406729.png"
+   },
+   "outcome": "saved",
+   "own_goal": false,
+   "xg": 0.012,
+   "xgot": 0.015,
+   "situation": "RegularPlay",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 92.8,
+   "y": 73.2,
+   "minute": 22,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1735453,
+    "name": "Yan Diomande",
+    "photo": "/img/player/1735453.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.017,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 85.1,
+   "y": 67.9,
+   "minute": 30,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 1253890,
+    "name": "Arda Güler",
+    "photo": "/img/player/1253890.png"
+   },
+   "outcome": "goal",
+   "own_goal": false,
+   "xg": 0.057,
+   "xgot": 0.463,
+   "situation": "FastBreak",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 89.0,
+   "y": 34.5,
+   "minute": 33,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "outcome": "saved",
+   "own_goal": false,
+   "xg": 0.175,
+   "xgot": 0.231,
+   "situation": "FastBreak",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 95.0,
+   "y": 55.6,
+   "minute": 37,
+   "added": null,
+   "side": "home",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "outcome": "goal",
+   "own_goal": false,
+   "xg": 0.946,
+   "xgot": 0.995,
+   "situation": "RegularPlay",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 88.6,
+   "y": 53.4,
+   "minute": 43,
+   "added": null,
+   "side": "away",
+   "player": {
+    "id": 1327489,
+    "name": "Kike Salas",
+    "photo": "/img/player/1327489.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.026,
+   "xgot": null,
+   "situation": "RegularPlay",
+   "body": "Header",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 86.8,
+   "y": 54.3,
+   "minute": 45,
+   "added": 2,
+   "side": "away",
+   "player": {
+    "id": 971790,
+    "name": "Lucien Agoumé",
+    "photo": "/img/player/971790.png"
+   },
+   "outcome": "saved",
+   "own_goal": false,
+   "xg": 0.131,
+   "xgot": 0.537,
+   "situation": "RegularPlay",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 87.8,
+   "y": 74.4,
+   "minute": 45,
+   "added": 3,
+   "side": "home",
+   "player": {
+    "id": 701154,
+    "name": "Kylian Mbappé",
+    "photo": "/img/player/701154.png"
+   },
+   "outcome": "blocked",
+   "own_goal": false,
+   "xg": 0.043,
+   "xgot": null,
+   "situation": "FastBreak",
+   "body": "RightFoot",
+   "period": "FirstHalf"
+  },
+  {
+   "x": 87.3,
+   "y": 65.9,
+   "minute": 45,
+   "added": 3,
+   "side": "home",
+   "player": {
+    "id": 1406729,
+    "name": "Endrick",
+    "photo": "/img/player/1406729.png"
+   },
+   "outcome": "miss",
+   "own_goal": false,
+   "xg": 0.026,
+   "xgot": null,
+   "situation": "FromCorner",
+   "body": "LeftFoot",
+   "period": "FirstHalf"
+  }
+ ],
+ "momentum": [
+  {
+   "minute": 0,
+   "value": 0
+  },
+  {
+   "minute": 1,
+   "value": -3
+  },
+  {
+   "minute": 2,
+   "value": 3
+  },
+  {
+   "minute": 3,
+   "value": -52
+  },
+  {
+   "minute": 4,
+   "value": -22
+  },
+  {
+   "minute": 5,
+   "value": -27
+  },
+  {
+   "minute": 6,
+   "value": 71
+  },
+  {
+   "minute": 7,
+   "value": 62
+  },
+  {
+   "minute": 8,
+   "value": 95
+  },
+  {
+   "minute": 9,
+   "value": 33
+  },
+  {
+   "minute": 10,
+   "value": 19
+  },
+  {
+   "minute": 11,
+   "value": 3
+  },
+  {
+   "minute": 12,
+   "value": 33
+  },
+  {
+   "minute": 13,
+   "value": 38
+  },
+  {
+   "minute": 14,
+   "value": 16
+  },
+  {
+   "minute": 15,
+   "value": -16
+  },
+  {
+   "minute": 16,
+   "value": -24
+  },
+  {
+   "minute": 17,
+   "value": 3
+  },
+  {
+   "minute": 18,
+   "value": 62
+  },
+  {
+   "minute": 19,
+   "value": 60
+  },
+  {
+   "minute": 20,
+   "value": 62
+  },
+  {
+   "minute": 21,
+   "value": 30
+  },
+  {
+   "minute": 22,
+   "value": 57
+  },
+  {
+   "minute": 23,
+   "value": 33
+  },
+  {
+   "minute": 24,
+   "value": 27
+  },
+  {
+   "minute": 25,
+   "value": 0
+  },
+  {
+   "minute": 26,
+   "value": 33
+  },
+  {
+   "minute": 27,
+   "value": 33
+  },
+  {
+   "minute": 28,
+   "value": 54
+  },
+  {
+   "minute": 29,
+   "value": 11
+  },
+  {
+   "minute": 30,
+   "value": 33
+  },
+  {
+   "minute": 31,
+   "value": 11
+  },
+  {
+   "minute": 32,
+   "value": 11
+  },
+  {
+   "minute": 33,
+   "value": 5
+  },
+  {
+   "minute": 34,
+   "value": 27
+  },
+  {
+   "minute": 35,
+   "value": 54
+  },
+  {
+   "minute": 36,
+   "value": 100
+  },
+  {
+   "minute": 37,
+   "value": 100
+  },
+  {
+   "minute": 38,
+   "value": 100
+  },
+  {
+   "minute": 39,
+   "value": 100
+  },
+  {
+   "minute": 40,
+   "value": 8
+  },
+  {
+   "minute": 41,
+   "value": -14
+  },
+  {
+   "minute": 42,
+   "value": -33
+  },
+  {
+   "minute": 43,
+   "value": -92
+  },
+  {
+   "minute": 44,
+   "value": -71
+  },
+  {
+   "minute": 45,
+   "value": -54
+  },
+  {
+   "minute": 45.5,
+   "value": -19
+  }
+ ],
+ "potm": null,
+ "highlights": null,
+ "h2h": {
+  "summary": {
+   "home_wins": 29,
+   "draws": 3,
+   "away_wins": 6
+  },
+  "matches": [
+   {
+    "kickoff": "2027-02-21T14:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": null,
+    "finished": false
+   },
+   {
+    "kickoff": "2026-05-17T17:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": "0 - 1",
+    "finished": true
+   },
+   {
+    "kickoff": "2025-12-20T20:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "away": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "score": "2 - 0",
+    "finished": true
+   },
+   {
+    "kickoff": "2025-05-18T17:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": "0 - 2",
+    "finished": true
+   },
+   {
+    "kickoff": "2024-12-22T15:15:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "away": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "score": "4 - 2",
+    "finished": true
+   },
+   {
+    "kickoff": "2024-02-25T20:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "away": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "score": "1 - 0",
+    "finished": true
+   },
+   {
+    "kickoff": "2023-10-21T16:30:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": "1 - 1",
+    "finished": true
+   },
+   {
+    "kickoff": "2023-05-27T17:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": "1 - 2",
+    "finished": true
+   },
+   {
+    "kickoff": "2022-10-22T19:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "away": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "score": "3 - 1",
+    "finished": true
+   },
+   {
+    "kickoff": "2022-04-17T19:00:00Z",
+    "tournament": "LaLiga",
+    "home": {
+     "id": 8302,
+     "name": "Sevilla"
+    },
+    "away": {
+     "id": 8633,
+     "name": "Real Madrid"
+    },
+    "score": "2 - 3",
+    "finished": true
+   }
+  ]
+ },
+ "form": {
+  "home": [
+   {
+    "result": "W",
+    "score": "4 - 1",
+    "kickoff": "2026-09-12T19:00:00Z",
+    "opponent": {
+     "id": 8370,
+     "name": "Rayo Vallecano"
+    }
+   },
+   {
+    "result": "W",
+    "score": "2 - 3",
+    "kickoff": "2026-09-15T19:30:00Z",
+    "opponent": {
+     "id": 10268,
+     "name": "Elche"
+    }
+   },
+   {
+    "result": "L",
+    "score": "2 - 1",
+    "kickoff": "2026-09-20T14:15:00Z",
+    "opponent": {
+     "id": 9906,
+     "name": "Atlético Madrid"
+    }
+   },
+   {
+    "result": "W",
+    "score": "1 - 0",
+    "kickoff": "2026-10-10T19:00:00Z",
+    "opponent": {
+     "id": 10205,
+     "name": "Villarreal"
+    }
+   },
+   {
+    "result": "W",
+    "score": "3 - 4",
+    "kickoff": "2026-10-14T19:00:00Z",
+    "opponent": {
+     "id": 8686,
+     "name": "Roma"
+    }
+   }
+  ],
+  "away": [
+   {
+    "result": "W",
+    "score": "1 - 0",
+    "kickoff": "2026-09-11T19:00:00Z",
+    "opponent": {
+     "id": 10267,
+     "name": "Valencia"
+    }
+   },
+   {
+    "result": "W",
+    "score": "0 - 1",
+    "kickoff": "2026-09-16T17:00:00Z",
+    "opponent": {
+     "id": 9783,
+     "name": "Deportivo A Coruña"
+    }
+   },
+   {
+    "result": "L",
+    "score": "1 - 3",
+    "kickoff": "2026-09-19T19:00:00Z",
+    "opponent": {
+     "id": 8634,
+     "name": "Barcelona"
+    }
+   },
+   {
+    "result": "L",
+    "score": "1 - 3",
+    "kickoff": "2026-10-02T18:30:00Z",
+    "opponent": {
+     "id": 10252,
+     "name": "Aston Villa"
+    }
+   },
+   {
+    "result": "D",
+    "score": "3 - 3",
+    "kickoff": "2026-10-12T19:00:00Z",
+    "opponent": {
+     "id": 8581,
+     "name": "Levante"
+    }
+   }
+  ]
+ },
+ "weather": {
+  "temp": 10,
+  "key": "weather_condition_cloudy",
+  "text": "Cloudy",
+  "humidity": 78,
+  "cloud": 92,
+  "precip": 0,
+  "icon": 26,
+  "at": "2026-10-18T20:00:00Z"
+ },
+ "referee_info": {
+  "id": 1001070988,
+  "photo": "/img/player/1001070988.png",
+  "matches": 37,
+  "league": {
+   "id": 87,
+   "name": "LaLiga"
+  },
+  "yellow": {
+   "per_match": 5.51,
+   "avg": 4.46,
+   "total": 204,
+   "level": "above",
+   "fill": 100,
+   "avg_fill": 50
+  },
+  "fouls": {
+   "per_match": 24.65,
+   "avg": 24.99,
+   "total": 838,
+   "level": "average",
+   "fill": 44.88,
+   "avg_fill": 50
+  },
+  "red": 8,
+  "pens": 10
+ },
+ "zones": {
+  "all": {
+   "home": {
+    "left": 59,
+    "center": 21,
+    "right": 20
+   },
+   "away": {
+    "left": 42,
+    "center": 24,
+    "right": 34
+   }
+  },
+  "first_half": {
+   "home": {
+    "left": 59,
+    "center": 21,
+    "right": 20
+   },
+   "away": {
+    "left": 42,
+    "center": 24,
+    "right": 34
+   }
+  }
+ },
+ "source": "fotmob",
+ "available": [
+  "events",
+  "assists",
+  "lineups",
+  "lineup_positions",
+  "ratings",
+  "player_photos",
+  "stats",
+  "xg",
+  "stats_periods",
+  "shotmap",
+  "shot_xg",
+  "momentum",
+  "h2h",
+  "form",
+  "venue",
+  "referee",
+  "venue_details",
+  "weather",
+  "referee_stats",
+  "zones",
+  "insights",
+  "round",
+  "poll",
+  "commentary"
+ ],
+ "insights": {
+  "lang": "ru",
+  "main": "Real Madrid выиграл 19 из 20 домашних матчей против Sevilla и ни разу не проиграл на Bernabéu",
+  "teams": [
+   {
+    "team_id": 8633,
+    "items": [
+     "Vinícius Jr начинает отбывать четырёхматчевую дисквалификацию в LaLiga и также пропустит Clásico против Barcelona",
+     "Real Madrid забил 13 голов в последних пяти матчах",
+     "В среду Real Madrid забил три гола в заключительные 10 минут и победил Roma со счётом 4-3, причём все три мяча забили вышедшие на замену игроки"
+    ]
+   },
+   {
+    "team_id": 8302,
+    "items": [
+     "Sevilla занимает третье место в LaLiga по результатам на выезде в этом сезоне",
+     "Sevilla не проиграл ни в одном из первых четырёх выездных матчей LaLiga — это лучший старт клуба с сезона 2011-12",
+     "После восьми матчей Sevilla занимает пятое место, отставая от Real Madrid всего на четыре очка"
+    ]
+   }
+  ],
+  "updated_at": "2026-10-18T20:50:36Z"
+ },
+ "round": {
+  "league": {
+   "id": 87,
+   "name": "LaLiga",
+   "logo": "/img/league/87.png"
+  },
+  "round": "9",
+  "season": "2026/2027",
+  "matches": [
+   {
+    "id": 5868093,
+    "kickoff": "2026-10-16T19:00:00Z",
+    "home": {
+     "id": 9783,
+     "name": "Deportivo A Coruña",
+     "score": 1,
+     "logo": "/img/team/9783.png"
+    },
+    "away": {
+     "id": 8581,
+     "name": "Levante",
+     "score": 1,
+     "logo": "/img/team/8581.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868094,
+    "kickoff": "2026-10-17T12:00:00Z",
+    "home": {
+     "id": 8558,
+     "name": "Espanyol",
+     "score": 0,
+     "logo": "/img/team/8558.png"
+    },
+    "away": {
+     "id": 9906,
+     "name": "Atlético Madrid",
+     "score": 1,
+     "logo": "/img/team/9906.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868100,
+    "kickoff": "2026-10-17T14:15:00Z",
+    "home": {
+     "id": 10205,
+     "name": "Villarreal",
+     "score": 0,
+     "logo": "/img/team/10205.png"
+    },
+    "away": {
+     "id": 10268,
+     "name": "Elche",
+     "score": 0,
+     "logo": "/img/team/10268.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868091,
+    "kickoff": "2026-10-17T16:30:00Z",
+    "home": {
+     "id": 8603,
+     "name": "Real Betis",
+     "score": 2,
+     "logo": "/img/team/8603.png"
+    },
+    "away": {
+     "id": 8634,
+     "name": "Barcelona",
+     "score": 5,
+     "logo": "/img/team/8634.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868099,
+    "kickoff": "2026-10-17T19:00:00Z",
+    "home": {
+     "id": 10267,
+     "name": "Valencia",
+     "score": 0,
+     "logo": "/img/team/10267.png"
+    },
+    "away": {
+     "id": 8315,
+     "name": "Athletic Club",
+     "score": 0,
+     "logo": "/img/team/8315.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868097,
+    "kickoff": "2026-10-18T12:00:00Z",
+    "home": {
+     "id": 8371,
+     "name": "Osasuna",
+     "score": 2,
+     "logo": "/img/team/8371.png"
+    },
+    "away": {
+     "id": 8696,
+     "name": "Racing Santander",
+     "score": 0,
+     "logo": "/img/team/8696.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868092,
+    "kickoff": "2026-10-18T14:15:00Z",
+    "home": {
+     "id": 9910,
+     "name": "Celta Vigo",
+     "score": 2,
+     "logo": "/img/team/9910.png"
+    },
+    "away": {
+     "id": 9866,
+     "name": "Deportivo Alavés",
+     "score": 1,
+     "logo": "/img/team/9866.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868096,
+    "kickoff": "2026-10-18T16:30:00Z",
+    "home": {
+     "id": 9864,
+     "name": "Málaga",
+     "score": 2,
+     "logo": "/img/team/9864.png"
+    },
+    "away": {
+     "id": 8560,
+     "name": "Real Sociedad",
+     "score": 5,
+     "logo": "/img/team/8560.png"
+    },
+    "status": {
+     "state": "finished",
+     "live": false,
+     "finished": true,
+     "minute": null,
+     "added": null,
+     "label": "FT"
+    },
+    "is_ours": false
+   },
+   {
+    "id": 5868098,
+    "kickoff": "2026-10-18T19:00:00Z",
+    "home": {
+     "id": 8633,
+     "name": "Real Madrid",
+     "score": 2,
+     "logo": "/img/team/8633.png"
+    },
+    "away": {
+     "id": 8302,
+     "name": "Sevilla",
+     "score": 0,
+     "logo": "/img/team/8302.png"
+    },
+    "status": {
+     "state": "live",
+     "live": true,
+     "finished": false,
+     "minute": 46,
+     "added": null,
+     "label": "45:32"
+    },
+    "is_ours": true
+   },
+   {
+    "id": 5868095,
+    "kickoff": "2026-10-19T19:00:00Z",
+    "home": {
+     "id": 8305,
+     "name": "Getafe",
+     "score": null,
+     "logo": "/img/team/8305.png"
+    },
+    "away": {
+     "id": 8370,
+     "name": "Rayo Vallecano",
+     "score": null,
+     "logo": "/img/team/8370.png"
+    },
+    "status": {
+     "state": "scheduled",
+     "live": false,
+     "finished": false,
+     "minute": null,
+     "added": null,
+     "label": null
+    },
+    "is_ours": false
+   }
+  ],
+  "live": 1,
+  "finished": 8,
+  "updated_at": "2026-10-18T20:50:36Z"
+ },
+ "poll": {
+  "fotmob": {
+   "home": 176727,
+   "draw": 49376,
+   "away": 37025,
+   "total": 263128
+  },
+  "ours": {
+   "home": 84,
+   "draw": 23,
+   "away": 17,
+   "total": 124
+  },
+  "ours_count": 124,
+  "threshold": 10,
+  "updated_at": "2026-10-18T20:50:36Z"
+ },
+ "commentary": {
+  "count": 50,
+  "lang": "en",
+  "updated_at": "2026-10-18T20:50:36Z"
+ }
+}

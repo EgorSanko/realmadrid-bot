@@ -80,6 +80,12 @@ _STATS = {
     "touches_opp_box": "touches_opp_box", "matchstats.headers.tackles": "tackles",
     "interceptions": "interceptions", "clearances": "clearances", "keeper_saves": "saves",
     "fouls": "fouls", "Offsides": "offsides", "yellow_cards": "yellow_cards", "red_cards": "red_cards",
+    # группа xG, «Единоборства» и прочее, что раньше отбрасывали
+    "big_chance_missed_title": "big_chances_missed", "expected_goals_open_play": "xg_open_play",
+    "expected_goals_set_play": "xg_set_play", "expected_goals_non_penalty": "xg_non_penalty",
+    "own_half_passes": "passes_own_half", "opposition_half_passes": "passes_opp_half",
+    "player_throws": "throws", "shot_blocks": "blocks", "duel_won": "duels_won",
+    "ground_duels_won": "ground_duels_won", "aerials_won": "aerials_won", "dribbles_succeeded": "dribbles",
 }
 _PERIODS = {"All": "all", "FirstHalf": "first_half", "SecondHalf": "second_half"}
 _SHOT = {"Goal": "goal", "AttemptSaved": "saved", "Miss": "miss", "Post": "post"}
@@ -99,6 +105,67 @@ def _stats(periods: dict) -> dict | None:
                     pairs[k] = (vals[0], vals[1])
         out[our] = stat_list(pairs)
     return out if out.get("all") else None
+
+
+_ZONE_PERIODS = {"total": "all", "firstHalf": "first_half", "secondHalf": "second_half"}
+
+
+def _zones(raw: dict | None) -> dict | None:
+    """content.attackingZones: доля атак по флангам (%), {период: {home: {left, center, right}, away: ...}}."""
+    if not isinstance(raw, dict):
+        return None
+    out = {}
+    for src, our in _ZONE_PERIODS.items():
+        per = {}
+        for side in ("home", "away"):
+            z = ((raw.get(side) or {}).get(src)) or {}
+            vals = {k: num(z.get(k)) for k in ("left", "center", "right")}
+            if all(isinstance(v, (int, float)) for v in vals.values()) and sum(vals.values()) > 0:
+                per[side] = vals
+        if len(per) == 2:
+            out[our] = per
+    return out if out.get("all") else None
+
+
+def _weather(w: dict | None) -> dict | None:
+    """content.weather: °C, ключ описания (weather_condition_*), влажность, облачность, осадки.
+    Ветер не берём: единицы в ответе не указаны."""
+    if not isinstance(w, dict) or num(w.get("temperature")) is None:
+        return None
+    return {"temp": num(w.get("temperature")), "key": w.get("localizedKey") or None,
+            "text": w.get("description") or w.get("defaultTitle") or None,
+            "humidity": num(w.get("relativeHumidity")), "cloud": num(w.get("cloudCover")),
+            "precip": num(w.get("precipitation")), "icon": num(w.get("iconCode")),
+            "at": iso_utc(w.get("lastUpdated")) if w.get("lastUpdated") else None}
+
+
+_LEVEL = {"above": "above", "average": "average", "below": "below"}
+
+
+def _ref_scale(s: dict | None) -> dict | None:
+    """Шкала судьи «ЖК / матч», «Фолы / матч»: значение, среднее по лиге, метка и позиции на шкале (FotMob)."""
+    if not s or num(s.get("value")) is None:
+        return None
+    return {"per_match": num(s.get("value")), "avg": num(s.get("average")), "total": num(s.get("total")),
+            "level": _LEVEL.get(str(s.get("averageType") or "").lower()),
+            "fill": num(s.get("fillPercentage")), "avg_fill": num(s.get("averagePercentage"))}
+
+
+def _referee_info(ref: dict) -> dict | None:
+    """infoBox.Referee: id (фото — /img/player/<id>.png), матчи в лиге, ЖК и фолы за матч со средним по лиге."""
+    rid = _int(ref.get("id"))
+    stats = {s.get("type"): s for s in ref.get("stats") or [] if isinstance(s, dict)}
+    if not rid and not stats:
+        return None
+
+    def total(k):
+        return num((stats.get(k) or {}).get("value"))
+
+    lid = _int(ref.get("leagueId"))
+    return {"id": rid, "photo": img_player(rid), "matches": total("matches"),
+            "league": {"id": lid, "name": ref.get("leagueName")} if lid or ref.get("leagueName") else None,
+            "yellow": _ref_scale(stats.get("yellowCards")), "fouls": _ref_scale(stats.get("fouls")),
+            "red": total("redCards"), "pens": total("penalties")}
 
 
 def _events(raw_events: list, home_id) -> tuple[list, list | None]:
@@ -197,11 +264,14 @@ def normalize_match(raw: dict) -> dict:
     m["tournament"] = {"id": lid, "name": g.get("leagueName"), "round": g.get("leagueRoundName") or None,
                        "logo": img_league(lid)}
     stadium = info.get("Stadium") or {}
-    m["venue"] = venue_ref(stadium.get("name"), stadium.get("city"), stadium.get("country"))
+    m["venue"] = venue_ref(stadium.get("name"), stadium.get("city"), stadium.get("country"),
+                           capacity=stadium.get("capacity"), surface=stadium.get("surface"))
     ref = info.get("Referee") or {}
     m["referee"] = ref.get("text") or None
     if m["referee"]:
         m["referee_country"] = country_ref(ref.get("countryCode"), ref.get("country"))
+        m["referee_info"] = _referee_info(ref)
+    m["weather"] = _weather(c.get("weather"))
     m["attendance"] = info.get("Attendance")
     for i, key in enumerate(("home", "away")):
         t = teams[i]
@@ -222,6 +292,7 @@ def normalize_match(raw: dict) -> dict:
         }
 
     m["stats"] = _stats((c.get("stats") or {}).get("Periods") or {})
+    m["zones"] = _zones(c.get("attackingZones"))
 
     for s in (c.get("shotmap") or {}).get("shots") or []:
         outcome = "blocked" if s.get("isBlocked") else _SHOT.get(s.get("eventType"), "miss")

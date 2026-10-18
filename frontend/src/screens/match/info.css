@@ -1,0 +1,93 @@
+/* «О матче» (стадион, погода, судья) и зоны атак. Токены — styles/tokens.css, карточки — ui/ui.css. */
+
+.mi .mt-h2 { margin-bottom: 14px; }
+.mi-title { margin: 0; font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.25; letter-spacing: -.01em; }
+.mi-place { display: flex; align-items: center; gap: 8px; margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+.mi-place > .ui-img, .mi-ref__meta > .ui-img { flex: none; border-radius: 2px; }
+
+/* плитки «Вместимость / Покрытие / Зрители», «Жёлтых всего / Красных / Пенальти» */
+.mi-tiles { display: grid; gap: 8px; margin-top: 16px; }
+.mi-tile { min-width: 0; padding: 10px 12px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line); }
+.mi-tile__k { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--muted); }
+.mi-tile__v { display: block; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--display); font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+
+/* погода — нижняя строка карточки стадиона */
+.mi-weather { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.mi-wx { flex: none; color: var(--text); }
+.mi-wx__sun { color: var(--gold); stroke: var(--gold); }
+.mi-wx__bolt { stroke: var(--gold); }
+.mi-weather__body { min-width: 0; }
+.mi-weather__main { margin: 0; font-weight: 700; font-size: 15px; }
+.mi-weather__sub { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+
+/* судья */
+.mi-ref { display: flex; align-items: center; gap: 12px; }
+.mi-ref__photo { flex: none; border: 1px solid var(--line); }
+.mi-ref__body { min-width: 0; }
+.mi-ref__name { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: 16px; }
+.mi-ref__meta { display: flex; align-items: center; gap: 7px; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.mi-ref__meta > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.mi-scale { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.mi-scale__row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.mi-scale__title { font-size: 13px; color: var(--muted); }
+.mi-scale__val { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.mi-scale__val b { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--text); font-variant-numeric: tabular-nums; }
+.mi-scale__row--sub { align-items: center; margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+.mi-bar { position: relative; height: 6px; margin-top: 10px; border-radius: 3px; background: var(--surface-2); }
+.mi-bar__fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--ui-sep); transform-origin: 0 50%; }
+.mi-bar--hot .mi-bar__fill { background: var(--gold-grad); }
+/* среднее по лиге — светлая засечка поверх шкалы */
+.mi-bar__avg { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text); opacity: .85; }
+
+.mi-level { flex: none; padding: 3px 8px; border-radius: 7px; font-size: 11px; font-weight: 600; white-space: nowrap; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); }
+.mi-level--above { background: var(--gold-tint); border-color: var(--gold-edge); color: var(--gold-light); }
+.mi-level--below { color: #9FB4E6; border-color: rgba(91, 139, 255, .28); background: rgba(91, 139, 255, .08); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .mi-scale.mo-reveal .mi-bar__fill { transform: scaleX(0); }
+  .mi-scale.mo-reveal .mi-bar__avg { opacity: 0; }
+  .mi-scale.mo-reveal.is-in .mi-bar__fill { animation: ui-bar .8s var(--ease-out) .05s both; }
+  .mi-scale.mo-reveal.is-in .mi-bar__avg { animation: mi-fade .4s ease-out .55s both; }
+}
+@keyframes mi-fade { from { opacity: 0; } to { opacity: .85; } }
+
+/* лайв: «О матче» свёрнуто в одну строку */
+.mi-fold { display: flex; align-items: center; gap: 10px; width: calc(100% - 32px); padding: 14px 16px; text-align: left; font: inherit; color: var(--text); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mi-fold__cap { flex: none; font-size: 12px; font-weight: 600; color: var(--muted); }
+.mi-fold__line { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; }
+.mi-fold__chev { flex: none; color: var(--muted); transition: transform .25s var(--ease-out); }
+.mi-fold.is-open .mi-fold__chev { transform: rotate(180deg); }
+.mi-fold:hover { border-color: var(--gold-edge); }
+.mi-fold:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .mi-fold__body > * { animation: mi-in .32s var(--ease-out) both; }
+  .mi-fold__body > *:nth-child(2) { animation-delay: 50ms; }
+}
+@keyframes mi-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- зоны атак (StatsTab): две половинки поля, атака вверх ---------- */
+.mz-pitches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.mz-team { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.mz-team > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mz-team > .ui-img { flex: none; }
+.mz-pitch { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); height: 132px; overflow: hidden; border-radius: 14px; border: 1px solid #24324F; background: #0A1220; }
+/* разметка: штрафная и «полукруг» у верхнего края — куда идёт атака */
+.mz-pitch::before { content: ""; position: absolute; left: 22%; right: 22%; top: -1px; height: 28px; border: 1px solid #24324F; border-top: 0; pointer-events: none; }
+.mz-pitch::after { content: ""; position: absolute; left: 50%; bottom: -26px; width: 52px; height: 52px; margin-left: -26px; border: 1px solid #24324F; border-radius: 50%; pointer-events: none; }
+.mz-lane { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 12px; border-right: 1px dashed rgba(36, 50, 79, .9); }
+.mz-lane:last-child { border-right: 0; }
+.mz-lane__heat { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 1) 100%); transform-origin: 50% 100%; }
+.mz-lane__pct { position: relative; z-index: 1; font-family: var(--display); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+.mz-lane__lbl { position: relative; z-index: 1; margin-top: 2px; font-size: 10px; color: var(--muted); }
+.mz-lane.is-hot .mz-lane__pct { color: var(--gold-light); }
+.mz-lane.is-hot .mz-lane__lbl { color: var(--text); }
+.mz-arrow { position: absolute; left: 50%; top: 36px; z-index: 1; margin-left: -7px; color: rgba(238, 240, 245, .35); }
+.mz-note { margin: 12px 0 0; font-size: 12px; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .mz-pitches.mo-reveal .mz-lane__heat { transform: scaleY(0); }
+  .mz-pitches.mo-reveal.is-in .mz-lane__heat { animation: ui-mom .7s var(--ease-out) var(--d, 0ms) both; }
+}
+
+html.desk .mi-fold { width: 100%; }

@@ -894,6 +894,7 @@ class Collector:
                          prev["source"], len(m.get("available") or []), len(prev["data"].get("available") or []))
                 return prev["data"]
             borrow_live_blocks(prev, m, now)
+            borrow_static_blocks(prev, m, now)
             # новый или исправленный итог — очки прогнозов пересчитать в этом же такте
             if m["status"]["finished"] and _result_of(m) != _result_of((prev or {}).get("data")):
                 self.settle_due = True
@@ -1210,7 +1211,7 @@ def keep_fuller(prev: dict | None, new: dict, now: float) -> bool:
 
 
 # блоки, которые в лайве берём из прошлого снимка, если в свежем их нет: ключ available → поле
-LIVE_BLOCKS = ("ratings", "xg", "stats", "momentum", "shotmap")
+LIVE_BLOCKS = ("ratings", "xg", "stats", "momentum", "shotmap", "zones")
 
 
 def _block_at(prev: dict, block: str) -> float:
@@ -1285,6 +1286,9 @@ def borrow_live_blocks(prev: dict | None, m: dict, now: float) -> list[str]:
         elif block == "shotmap":
             m["shots"] = old.get("shots") or []
             ok = bool(m["shots"])
+        elif block == "zones":
+            m["zones"] = old.get("zones")
+            ok = bool(m["zones"])
         if ok:
             borrowed[block] = {"source": src, "at": at}
     if borrowed:
@@ -1294,6 +1298,46 @@ def borrow_live_blocks(prev: dict | None, m: dict, now: float) -> list[str]:
             borrowed.setdefault("xg", borrowed["stats"])
         m["borrowed"] = borrowed
     return list(borrowed)
+
+
+# блоки, которые есть только у FotMob и почти не меняются (стадион, судья, погода): при смене источника
+# в любом состоянии матча берём из прошлого снимка того же матча; погоду — если ей не больше WEATHER_BORROW_MAX_AGE
+STATIC_BLOCKS = ("venue_details", "referee_stats", "weather")
+WEATHER_BORROW_MAX_AGE = 6 * 3600
+
+
+def borrow_static_blocks(prev: dict | None, m: dict, now: float) -> list[str]:
+    """Как borrow_live_blocks, но для справочных блоков FotMob; дописывает m["borrowed"]."""
+    if not prev:
+        return []
+    old = prev["data"]
+    have, had = set(m.get("available") or []), set(old.get("available") or [])
+    borrowed = dict(m.get("borrowed") or {})
+    for block in STATIC_BLOCKS:
+        if block in have or block not in had:
+            continue
+        at = _block_at(prev, block)
+        src = ((old.get("borrowed") or {}).get(block) or {}).get("source") or prev["source"]
+        ok = False
+        if block == "venue_details" and old.get("venue"):
+            # название и город — тоже FotMob: у резервов стадион пишется по-своему («Santiago Bernabéu»)
+            m["venue"] = {**(m.get("venue") or {}), **old["venue"]}
+            ok = True
+        elif block == "referee_stats" and old.get("referee_info"):
+            if not m.get("referee") or same_person(m["referee"], old.get("referee")):
+                m["referee"] = old.get("referee")
+                m["referee_country"] = m.get("referee_country") or old.get("referee_country")
+                m["referee_info"] = old["referee_info"]
+                ok = True
+        elif block == "weather" and old.get("weather") and now - at <= WEATHER_BORROW_MAX_AGE:
+            m["weather"] = old["weather"]
+            ok = True
+        if ok:
+            borrowed[block] = {"source": src, "at": at}
+    if len(borrowed) > len(m.get("borrowed") or {}):
+        m["available"] = compute_available(m)
+        m["borrowed"] = borrowed
+    return [b for b in borrowed if b in STATIC_BLOCKS]
 
 
 # ================= CLI =================

@@ -13,7 +13,7 @@ from curl_cffi.requests import AsyncSession
 from .. import config
 from ..model import (country_ref, venue as venue_ref, ROLE_BY_POS, age_on, ctx_team, empty_match, empty_player, event, finish_match,
                      finish_player, formation_layout, img_flag, img_league, img_player, img_team, iso_utc,
-                     lineup_player, person, resolve_player, result_for, stat_list, status)
+                     lineup_player, pct, person, resolve_player, result_for, stat_list, status)
 from .base import NotFound, Source
 
 BASE = "https://www.sofascore.com/api/v1"
@@ -133,6 +133,9 @@ _STATS = {
     "accurateCross": "crosses_accurate", "touchesInOppBox": "touches_opp_box", "totalTackle": "tackles",
     "interceptionWon": "interceptions", "totalClearance": "clearances", "goalkeeperSaves": "saves",
     "fouls": "fouls", "offsides": "offsides", "yellowCards": "yellow_cards", "redCards": "red_cards",
+    # те же показатели, что FotMob отдаёт в группах «xG» / «Единоборства» (точность — из «26/68 (38%)»)
+    "bigChanceMissed": "big_chances_missed", "throwIns": "throws", "groundDuelsPercentage": "ground_duels_won",
+    "aerialDuelsPercentage": "aerials_won", "dribblesPercentage": "dribbles",
 }
 _PERIODS = {"ALL": "all", "1ST": "first_half", "2ND": "second_half"}
 _SHOT = {"goal": "goal", "save": "saved", "miss": "miss", "block": "blocked", "post": "post"}
@@ -148,13 +151,16 @@ def _stats(raw: dict | None) -> dict | None:
         our = _PERIODS.get(per.get("period"))
         if not our:
             continue
-        pairs = {}
+        pairs, pcts = {}, {}
         for g in per.get("groups") or []:
             for it in g.get("statisticsItems") or []:
                 k = _STATS.get(it.get("key"))
                 if k and k not in pairs:
                     pairs[k] = (it.get("homeValue", it.get("home")), it.get("awayValue", it.get("away")))
-        out[our] = stat_list(pairs)
+                    hp, ap = pct(it.get("home")), pct(it.get("away"))
+                    if hp is not None or ap is not None:
+                        pcts[k] = (hp, ap)
+        out[our] = stat_list(pairs, pcts)
     return out if out.get("all") else None
 
 

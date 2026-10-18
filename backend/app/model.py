@@ -128,12 +128,19 @@ def country_ref(code=None, name=None) -> dict | None:
     return {"code": code or None, "name": name or None, "flag": f"/img/flag/{iso}.svg" if iso else None}
 
 
-def venue(name, city=None, country=None, code=None) -> dict | None:
-    """Стадион: {name, city, country, flag}; flag — /img/flag/{iso2}.svg, если страну удалось узнать."""
+def venue(name, city=None, country=None, code=None, capacity=None, surface=None) -> dict | None:
+    """Стадион: {name, city, country, flag}; flag — /img/flag/{iso2}.svg, если страну удалось узнать.
+    Вместимость и покрытие (grass / artificial) — только если источник их дал (FotMob)."""
     if not name:
         return None
     c = country_ref(code, country)
-    return {"name": name, "city": city or None, "country": (c or {}).get("name"), "flag": (c or {}).get("flag")}
+    v = {"name": name, "city": city or None, "country": (c or {}).get("name"), "flag": (c or {}).get("flag")}
+    cap = num(capacity)
+    if isinstance(cap, int) and cap > 0:
+        v["capacity"] = cap
+    if surface and isinstance(surface, str):
+        v["surface"] = surface.strip().lower()
+    return v
 
 
 # ---------- время и статусы ----------
@@ -254,29 +261,45 @@ def num(v):
 
 # ---------- статистика: общий каталог ключей ----------
 
-# (ключ, группа). Подписи по-русски делает фронт.
+# (ключ, группа). Подписи по-русски делает фронт. 37 показателей FotMob (content.stats.Periods).
 STAT_CATALOG = [
     ("possession", "top"), ("xg", "top"), ("shots_total", "top"), ("shots_on_target", "top"),
-    ("big_chances", "top"), ("corners", "top"),
+    ("big_chances", "top"), ("big_chances_missed", "top"), ("corners", "top"),
+    ("xg_open_play", "xg"), ("xg_set_play", "xg"), ("xg_non_penalty", "xg"),
     ("shots_off_target", "shots"), ("shots_blocked", "shots"), ("shots_woodwork", "shots"),
     ("shots_inside_box", "shots"), ("shots_outside_box", "shots"), ("xg_on_target", "shots"),
-    ("passes_total", "passes"), ("passes_accurate", "passes"), ("long_balls_accurate", "passes"),
-    ("crosses_accurate", "passes"), ("touches_opp_box", "passes"),
-    ("tackles", "defence"), ("interceptions", "defence"), ("clearances", "defence"), ("saves", "defence"),
+    ("passes_total", "passes"), ("passes_accurate", "passes"), ("passes_own_half", "passes"),
+    ("passes_opp_half", "passes"), ("long_balls_accurate", "passes"),
+    ("crosses_accurate", "passes"), ("throws", "passes"), ("touches_opp_box", "passes"),
+    ("tackles", "defence"), ("interceptions", "defence"), ("blocks", "defence"), ("clearances", "defence"),
+    ("saves", "defence"),
+    ("duels_won", "duels"), ("ground_duels_won", "duels"), ("aerials_won", "duels"), ("dribbles", "duels"),
     ("fouls", "discipline"), ("offsides", "discipline"), ("yellow_cards", "discipline"),
     ("red_cards", "discipline"),
 ]
 _STAT_ORDER = {k: i for i, (k, _) in enumerate(STAT_CATALOG)}
 _STAT_GROUP = dict(STAT_CATALOG)
+_PCT_RE = re.compile(r"\((\d+(?:\.\d+)?)\s*%\)")
 
 
-def stat_list(pairs: dict) -> list:
-    """{key: (home, away)} → упорядоченный список по каталогу; чужие ключи отбрасываются."""
+def pct(v) -> int | None:
+    """'17 (52%)' / '32/52 (62%)' → 52; без процента в скобках — None."""
+    m = _PCT_RE.search(str(v)) if isinstance(v, str) else None
+    return round(float(m.group(1))) if m else None
+
+
+def stat_list(pairs: dict, pcts: dict | None = None) -> list:
+    """{key: (home, away)} → упорядоченный список по каталогу; чужие ключи отбрасываются.
+    Процент точности («273 (90%)») — в home_pct/away_pct: из самих значений или из pcts {key: (h, a)}."""
     out = []
     for k, (h, a) in pairs.items():
         if k not in _STAT_ORDER or (h is None and a is None):
             continue
-        out.append({"key": k, "group": _STAT_GROUP[k], "home": num(h), "away": num(a)})
+        row = {"key": k, "group": _STAT_GROUP[k], "home": num(h), "away": num(a)}
+        hp, ap = (pcts or {}).get(k) or (pct(h), pct(a))
+        if hp is not None or ap is not None:
+            row["home_pct"], row["away_pct"] = hp, ap
+        out.append(row)
     out.sort(key=lambda x: _STAT_ORDER[x["key"]])
     return out
 
@@ -287,6 +310,8 @@ AVAILABLE_KEYS = (
     "events", "assists", "lineups", "lineup_positions", "ratings", "stats", "stats_periods",
     "xg", "shotmap", "shot_xg", "momentum", "potm", "highlights", "h2h", "form", "venue", "referee",
     "player_photos",
+    # блоки FotMob без отдельных запросов (matchDetails): вместимость/покрытие, погода, статистика судьи, зоны атак
+    "venue_details", "weather", "referee_stats", "zones",
 )
 
 
@@ -313,6 +338,9 @@ def empty_match() -> dict:
         "highlights": None,
         "h2h": None,
         "form": None,       # {"home": [{result, score, kickoff, opponent: {id, name} | None}], "away": [...]}
+        "weather": None,    # {"temp", "key", "text", "humidity", "cloud", "precip", "icon", "at"} — только FotMob
+        "referee_info": None,  # {"id", "photo", "matches", "league", "yellow": {...}, "fouls": {...}, "red", "pens"}
+        "zones": None,      # зоны атак, %: {"all": {"home": {left, center, right}, "away": {...}}, "first_half": ...}
     }
 
 
@@ -417,6 +445,16 @@ def compute_available(m: dict) -> list[str]:
     for k in ("potm", "highlights", "h2h", "form", "venue", "referee"):
         if m.get(k):
             a.append(k)
+    v = m.get("venue") or {}
+    if v.get("capacity") or v.get("surface"):
+        a.append("venue_details")
+    if (m.get("weather") or {}).get("temp") is not None:
+        a.append("weather")
+    ri = m.get("referee_info") or {}
+    if ri.get("yellow") or ri.get("fouls") or ri.get("matches"):
+        a.append("referee_stats")
+    if (m.get("zones") or {}).get("all"):
+        a.append("zones")
     return a
 
 

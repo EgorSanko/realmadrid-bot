@@ -1,7 +1,10 @@
-import { Fragment, useState } from 'react';
-import type { ApiMatch } from '../../api/match';
-import { Card, EmptyState, MomentumChart, ShotMap, StatRow, Tabs, TeamCrest } from '../../ui';
+import { Fragment, useState, type CSSProperties } from 'react';
+import type { ApiMatch, ApiZone } from '../../api/match';
+import { Card, EmptyState, MomentumChart, ShotMap, StatRow, Tabs, TeamCrest, useInViewOnce } from '../../ui';
+import { cx } from '../../ui/format';
+import { zoneHeat, zonesView, type ZonesView } from './info';
 import { momentumView, realSide, shortTeam, shotsView, statPeriods, statsView, teamRef, type PeriodKey, type Phase } from './view';
+import './info.css';
 
 const PERIOD_LABEL: Record<PeriodKey, string> = { all: 'Матч', first_half: '1-й тайм', second_half: '2-й тайм' };
 
@@ -16,6 +19,7 @@ export function StatsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
   const accent = rs;
   const home = teamRef(match, 'home');
   const away = teamRef(match, 'away');
+  const zones = zonesView(match, p);
 
   const shotCard = shots && (
     <Card ariaLabel="Карта ударов">
@@ -27,7 +31,7 @@ export function StatsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
     </Card>
   );
 
-  if (!mom && !groups.length && !shots) {
+  if (!mom && !groups.length && !shots && !zones) {
     const before = phase === 'scheduled' || phase === 'postponed' || phase === 'cancelled';
     return <EmptyState className="mt-state" title={before ? 'Статистика появится по ходу матча' : 'Статистики пока нет'} />;
   }
@@ -89,6 +93,52 @@ export function StatsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
         </Fragment>
       ))}
       {groups.length === 0 && shotCard}
+      {zones && <ZonesCard match={match} zones={zones} />}
     </>
+  );
+}
+
+const LANES: Array<[keyof ApiZone, string]> = [
+  ['left', 'левый'],
+  ['center', 'центр'],
+  ['right', 'правый'],
+];
+
+/** Зоны атак: у каждой команды — половина поля (атака вверх), три фланга с долей атак; горячая зона — золото. */
+function ZonesCard({ match, zones }: { match: ApiMatch; zones: ZonesView }) {
+  const [ref, seen] = useInViewOnce<HTMLDivElement>(0.4);
+  const side = (s: 'home' | 'away') => {
+    const t = teamRef(match, s);
+    const z = zones[s];
+    return (
+      <div key={s} className="mz-side">
+        <div className="mz-team">
+          {t.id != null && <TeamCrest id={t.id} name="" size={20} />}
+          <span>{shortTeam(match[s].name)}</span>
+        </div>
+        <div className="mz-pitch" role="img" aria-label={`${t.name}: левый фланг ${z.left}%, центр ${z.center}%, правый фланг ${z.right}%`}>
+          {LANES.map(([k, label], i) => (
+            <div key={k} className={cx('mz-lane', zones.hot[s] === k && 'is-hot')}>
+              <span className="mz-lane__heat" style={{ opacity: zoneHeat(z[k]), '--d': `${(s === 'away' ? 3 : 0) * 60 + i * 60}ms` } as CSSProperties} />
+              <span className="mz-lane__pct">{z[k]}%</span>
+              <span className="mz-lane__lbl">{label}</span>
+            </div>
+          ))}
+          <svg className="mz-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <path d="M12 19V5M6 11l6-6 6 6" />
+          </svg>
+        </div>
+      </div>
+    );
+  };
+  return (
+    <Card ariaLabel="Зоны атак">
+      <h2 className="mt-h2">Зоны атак</h2>
+      <div ref={ref} className={cx('mz-pitches', 'mo-reveal', seen && 'is-in')}>
+        {side('home')}
+        {side('away')}
+      </div>
+      <p className="mz-note">Доля атак по флангам, направление — вверх</p>
+    </Card>
   );
 }
