@@ -13,7 +13,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from . import auth_api, config, store
-from .model import ts
+from .model import result_for, ts
 from .games import api as games_api
 from .predictions import api as predict_api
 from .predictions.snapshot_provider import SnapshotProvider
@@ -145,15 +145,25 @@ def home() -> JSONResponse:
                     and f["status"]["state"] not in ("cancelled", "postponed")
                     and (ts(f["kickoff"]) or 0) > now - 4 * 3600]
         done = [f for f in fixtures if f["status"]["finished"]]
-        nxt = (live or upcoming or [None])[0]
-        last = done[-1] if done else None
+        # календарь обновляется раз в 12 мин: матч, который по лайв-снимку уже завершён, — «последний»,
+        # а «следующим» становится следующий за ним (иначе до обновления висел бы как live со старой минутой)
+        picked: dict[str, tuple[dict, dict | None]] = {}
+        for f in [*live, *[f for f in upcoming if f not in live]]:
+            f2, extra = _match_overlay(conn, f)
+            if not f2["status"]["finished"]:
+                picked["next"] = (f2, extra)
+                break
+            if "last" not in picked:
+                f2["result"] = f2.get("result") or result_for(config.TEAM_ID, f2["home"].get("id"),
+                                                               f2["home"].get("score"), f2["away"].get("score"))
+                picked["last"] = (f2, extra)
+        if "last" not in picked and done:
+            picked["last"] = _match_overlay(conn, done[-1])
         sources = {"fixtures": _meta(fx, STALE_AFTER["fixtures"])}
         body = {"next": None, "last": None}
-        for key, f in (("next", nxt), ("last", last)):
-            if f:
-                f2, extra = _match_overlay(conn, f)
-                if f2["status"]["finished"] and key == "next":  # следующий успел завершиться
-                    f2, extra = f, None
+        for key in ("next", "last"):
+            if key in picked:
+                f2, extra = picked[key]
                 body[key] = _brief(f2, extra)
                 if extra:
                     sources[f"{key}_match"] = {"source": extra["source"], "updated_at": extra["updated_at"]}
@@ -172,7 +182,8 @@ def home() -> JSONResponse:
                           "leader_pts": t["rows"][0]["pts"] if t["rows"] else None}
         body.update(form=form, laliga=laliga, round=None)
         # идёт матч Реала — компактная лента его тура (снимок round:<турнир>:<тур> сборщика)
-        if body["next"] and body["next"]["status"]["live"] and nxt["tournament"].get("id") in config.ROUND_LEAGUES:
+        nxt = picked["next"][0] if "next" in picked else None
+        if nxt and body["next"]["status"]["live"] and nxt["tournament"].get("id") in config.ROUND_LEAGUES:
             msnap = store.get(conn, f"match:{nxt['id']}")
             rk = _round_snapshot_key(conn, str(nxt["id"]), (msnap or {}).get("data") or nxt)
             rs = store.get(conn, rk) if rk else None

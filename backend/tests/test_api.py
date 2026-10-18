@@ -114,3 +114,21 @@ def test_fixtures_take_live_status_from_match_snapshot(client):
     # прошлый матч далеко от «сейчас» — как в календаре, снимок не подмешиваем
     old = next(x for x in r.json()["matches"] if x["id"] == 6106274)
     assert old["status"] == next(x for x in fx if x["id"] == 6106274)["status"]
+
+
+def test_home_finished_by_live_snapshot_moves_to_last(client):
+    """Календарь ещё считает матч идущим, а лайв-снимок — завершённым: на главной он «последний»."""
+    c, conn = client
+    fx = store.get(conn, "fixtures")["data"]
+    f = next(x for x in fx if x["id"] == 5868098)
+    f["kickoff"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 2 * 3600))
+    f["status"] = {"state": "live", "live": True, "finished": False, "minute": 88, "added": None, "label": "88'"}
+    store.put(conn, "fixtures", "fotmob", fx)
+    m = store.get(conn, "match:6106274")["data"]
+    m["status"] = {"state": "finished", "live": False, "finished": True, "minute": None, "added": None, "label": "FT"}
+    m["home"] = {**m["home"], "score": 4}
+    m["away"] = {**m["away"], "score": 1}
+    store.put(conn, "match:5868098", "fotmob", m)
+    b = c.get("/api/home").json()
+    assert b["last"]["id"] == 5868098 and b["last"]["status"]["finished"] and b["last"]["result"] == "W"
+    assert b["next"]["id"] != 5868098 and not b["next"]["status"]["live"]
