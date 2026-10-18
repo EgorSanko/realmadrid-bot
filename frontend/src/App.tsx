@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
 import { GoalLayer } from './components/GoalLayer';
@@ -9,6 +9,9 @@ import { StartParamHandler } from './components/StartParamHandler';
 import { Toaster } from './components/Toaster';
 import { backgroundOf } from './lib/playerNav';
 import { useDesktop } from './lib/shell';
+import { rememberRects } from './lib/flipOrigin';
+import { reducedMotion } from './lib/motion';
+import { SECTIONS, sectionActive } from './sections';
 import HomeScreen from './screens/HomeScreen';
 import MatchesScreen from './screens/MatchesScreen';
 
@@ -37,6 +40,51 @@ const PenaltyScreen = lazy(() => import('./screens/games/PenaltyScreen'));
 const LegalScreen = lazy(() => import('./screens/legal/LegalScreen'));
 // неизвестный адрес — страница «не найдено» (раньше молча уводили на главную)
 const NotFoundScreen = lazy(() => import('./screens/NotFoundScreen'));
+
+/** Индекс раздела нижнего меню для адреса (−1 — не раздел: матч, игрок, новость…). */
+function sectionIndex(pathname: string): number {
+  return SECTIONS.findIndex((s) => (s.path === '/' ? pathname === '/' : sectionActive(s, pathname)));
+}
+
+/**
+ * Моушен переходов:
+ *  — между разделами меню содержимое въезжает сдвигом со стороны выбранной вкладки и проявляется;
+ *  — нажатие на матч (любая ссылка /match/…) запоминает, где стояли эмблемы команд: экран матча
+ *    проиграет их полёт в свою шапку (lib/flipOrigin.ts).
+ * Навигацию, «назад», прокрутку и прямые ссылки не трогает — только transform/opacity контейнера.
+ */
+function useRouteMotion(pathname: string, app: React.RefObject<HTMLDivElement | null>) {
+  const prev = useRef(sectionIndex(pathname));
+  useLayoutEffect(() => {
+    const i = sectionIndex(pathname);
+    const was = prev.current;
+    prev.current = i;
+    const el = app.current;
+    if (!el || i < 0 || was < 0 || i === was || typeof el.animate !== 'function') return;
+    const rm = reducedMotion();
+    el.animate(
+      rm
+        ? [{ opacity: 0.4 }, { opacity: 1 }]
+        : [
+            { opacity: 0, transform: `translateX(${i > was ? 22 : -22}px)` },
+            { opacity: 1, transform: 'none' },
+          ],
+      { duration: rm ? 160 : 300, easing: 'cubic-bezier(.22,1,.36,1)' },
+    );
+  }, [pathname, app]);
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.('a[href^="/match/"]');
+      if (!a) return;
+      const id = a.getAttribute('href')!.split('/')[2];
+      const crests = Array.from(a.querySelectorAll('img.ui-crest'));
+      if (crests.length >= 2) rememberRects(`match:${id}`, crests.slice(0, 2).map((c) => c.getBoundingClientRect()));
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
+}
 
 function ScrollToTop({ pathname }: { pathname: string }) {
   useEffect(() => {
@@ -72,13 +120,15 @@ function AppRoutes() {
   // Сайт на компьютере: игрок, новость и видео — обычные страницы между шапкой и подвалом, без слоя.
   const bg = desktop ? undefined : backgroundOf(location);
   const shown = bg ?? location;
+  const app = useRef<HTMLDivElement>(null);
+  useRouteMotion(shown.pathname, app);
   return (
     <>
       <ScrollToTop pathname={shown.pathname} />
       <StartParamHandler />
       <RouteMeta />
       {desktop && <SiteHeader />}
-      <div className="app">
+      <div className="app" ref={app}>
         <Routes location={shown}>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/matches" element={<MatchesScreen />} />
