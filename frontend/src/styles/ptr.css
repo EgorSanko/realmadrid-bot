@@ -3,7 +3,8 @@
 .ptr {
   position: fixed;
   z-index: 30;
-  top: var(--safe-top);
+  /* выезжает из-под шапки (бренд-строка ~64 px), а не поверх названия */
+  top: calc(var(--safe-top) + 60px);
   left: 50%;
   width: 36px;
   height: 36px;
