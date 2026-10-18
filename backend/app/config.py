@@ -64,6 +64,10 @@ PLAYER_RATE_PER_MIN = _int("PLAYER_RATE_PER_MIN", 10)   # не больше N и
 AVATAR_INTERVAL = _int("AVATAR_INTERVAL", 5)            # как часто смотреть очередь аватаров
 SETTLE_INTERVAL = _int("SETTLE_INTERVAL", 600)          # фоновый проход начисления очков прогнозов: 10 мин
 PLAYER_FAIL_RETRY = _int("PLAYER_FAIL_RETRY", 600)      # не нашли / все упали — повтор не раньше чем через 10 мин
+# прогрев кэша эмблем nginx (app/crests.py): запросы идут на наш же сайт
+CREST_WARM_BASE = os.environ.get("CREST_WARM_BASE", "https://realmadridfan.ru")
+CREST_REWARM = _int("CREST_REWARM", 7 * 86400)  # уже прогретую — раз в неделю (кэш nginx 30 дн.)
+CREST_RETRY = _int("CREST_RETRY", 3600)         # FotMob не отдал — повтор через час
 WINDOW_BEFORE = 75 * 60        # окно матча открывается за 75 мин до начала
 WINDOW_AFTER_START = 150 * 60  # ~2,5 ч после старта, если «завершён» ещё не видели
 WINDOW_AFTER_FINISH = 30 * 60  # после «завершён» — ещё 30 мин на добор оценок и статистики

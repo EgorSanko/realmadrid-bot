@@ -13,6 +13,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
   python -m app.collector once settle           # начислить очки прогнозов за сыгранные матчи
   python -m app.collector once cleanup          # суточная очистка (старые тексты статей, аватары, чужие игроки)
+  python -m app.collector once crests           # прогреть кэш nginx эмблемами команд из таблиц и календаря
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -31,7 +32,7 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, bot, cleanup, config, store
+from . import avatars, bot, cleanup, config, crests, store
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
@@ -79,6 +80,10 @@ class Collector:
         self._avatar_fetch = None                  # curl_cffi через SOCKS-туннель, создаётся при первой заявке
         self._avatar_close = None
         self._avatar_task: asyncio.Task | None = None
+        # прогрев кэша эмблем nginx — фоновой задачей, вне окна матча (app/crests.py)
+        self.crests = crests.CrestWarmer()
+        self.last_crests = 0.0
+        self._crest_task: asyncio.Task | None = None
         # бот: long polling getUpdates — своя asyncio-задача, лайв-такт не ждёт (app/bot.py)
         self.bot = bot.TelegramBot()
         self._bot_task: asyncio.Task | None = None
@@ -91,7 +96,7 @@ class Collector:
     async def close(self):
         for s in (*self.sources.values(), *self.media.values()):
             await s.close()
-        for task in (self._avatar_task, self._bot_task):
+        for task in (self._avatar_task, self._bot_task, self._crest_task):
             if task is not None and not task.done():
                 task.cancel()
                 try:
@@ -100,6 +105,7 @@ class Collector:
                     pass
         if self._avatar_close is not None:
             await self._avatar_close()
+        await self.crests.close()
         await self.bot.close()
 
     # ================= аватары пользователей (заявки API при входе) =================
@@ -132,6 +138,24 @@ class Collector:
         finally:
             conn.close()
         return done
+
+    # ================= прогрев эмблем =================
+
+    async def tick_crests(self, now: float) -> dict | None:
+        """Раз в минуту: эмблемы команд из таблиц и календаря, которых ещё нет в кэше nginx."""
+        if now - self.last_crests < 60:
+            return None
+        self.last_crests = now
+        try:
+            res = await self.crests.warm(crests.team_ids(self.conn), now)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("crests: ошибка (продолжаю)")
+            return None
+        if res["warmed"] or res["failed"]:
+            log.info("crests: %s", res)
+        return res
 
     # ================= суточная очистка =================
 
@@ -1086,6 +1110,9 @@ class Collector:
                 # суточная очистка — вне окна матча (в окне откладывается до его конца)
                 if not win:
                     self.tick_cleanup(now)
+                # эмблемы — фоновой задачей и только вне окна матча
+                if not win and (self._crest_task is None or self._crest_task.done()):
+                    self._crest_task = asyncio.create_task(self.tick_crests(now))
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
@@ -1320,6 +1347,8 @@ async def _cli(args) -> int:
                 print(json.dumps([r for r in res if r["result"] != "unchanged"], ensure_ascii=False))
             elif args.what == "cleanup":
                 print(json.dumps(c.tick_cleanup(time.time(), force=True), ensure_ascii=False))
+            elif args.what == "crests":
+                print(json.dumps(await c.tick_crests(time.time()), ensure_ascii=False))
             elif args.what == "avatars":
                 c.last_avatars = 0.0
                 print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
@@ -1366,7 +1395,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
     o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle",
-                                    "cleanup"])
+                                    "cleanup", "crests"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
     lv.add_argument("id")
