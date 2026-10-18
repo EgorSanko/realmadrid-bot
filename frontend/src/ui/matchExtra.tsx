@@ -165,7 +165,7 @@ export interface MatchRowProps {
   home: TeamRef;
   away: TeamRef;
   competition: CompetitionRef;
-  /** result: счёт [хозяева, гости] */
+  /** result: счёт [хозяева, гости]; upcoming, идёт — текущий счёт */
   score?: [number, number];
   /** result: исход для Реала */
   result?: Outcome;
@@ -186,12 +186,14 @@ export interface MatchRowProps {
 export function MatchRow(p: MatchRowProps) {
   const { kind, kickoff, home, away, competition: c, score, result, href, onClick, className } = p;
   const done = kind === 'result' && score != null;
+  // идущий матч — голы напротив команд, как у сыгранного, но без «проигравшей» серости
+  const goals = done || (!!p.live && score != null);
   const win = done ? (score![0] === score![1] ? null : score![0] > score![1] ? 0 : 1) : null;
   const team = (t: TeamRef, i: 0 | 1) => (
     <div className={cx('mrow__team', done && win !== null && win !== i && 'mrow__team--lost')}>
       {t.id != null ? <TeamCrest id={t.id} name={t.name} size={24} /> : <span className="mrow__crest-gap" aria-hidden="true" />}
       <span className="mrow__name">{t.name}</span>
-      {done && <b className="mrow__goals">{score![i]}</b>}
+      {goals && <b className="mrow__goals">{score![i]}</b>}
     </div>
   );
   const inner = (
@@ -224,7 +226,7 @@ export function MatchRow(p: MatchRowProps) {
       </div>
     </>
   );
-  const label = done ? `${home.name} ${score![0]}:${score![1]} ${away.name}, ${c.name}` : `${home.name} — ${away.name}, ${c.name}`;
+  const label = goals ? `${home.name} ${score![0]}:${score![1]} ${away.name}, ${c.name}` : `${home.name} — ${away.name}, ${c.name}`;
   const cls = cx('mrow', p.highlighted && 'mrow--next', className);
   return href != null ? (
     <a className={cls} href={href} onClick={onClick} aria-label={label}>

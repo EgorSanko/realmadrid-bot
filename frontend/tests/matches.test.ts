@@ -129,3 +129,18 @@ test('таблица ЛЧ есть в ответе — общий этап, 36 �
   assert.equal(zonesFor(t)[0].label, 'выход в 1/8 финала');
   assert.equal(tableFor([], UCL_ID), null);
 });
+
+test('идущий матч в календаре: LIVE, «Перерыв» в перерыве и текущий счёт', () => {
+  const live = structuredClone(FX.matches);
+  const f = live.find((m) => m.id === 5868098)!;
+  f.status = { state: 'halftime', live: true, finished: false, minute: 45, added: null, label: 'HT' };
+  f.home = { ...f.home, score: 2 };
+  f.away = { ...f.away, score: 0 };
+  const first = splitFixtures(live, 'all').upcoming[0];
+  assert.equal(first.live, 'Перерыв');
+  assert.deepEqual(first.score, [2, 0]);
+  f.status = { state: 'live', live: true, finished: false, minute: 67, added: null, label: "67'" };
+  assert.equal(splitFixtures(live, 'all').upcoming[0].live, '67′');
+  // будущие — без счёта
+  assert.equal(splitFixtures(live, 'all').upcoming[1].score, undefined);
+});

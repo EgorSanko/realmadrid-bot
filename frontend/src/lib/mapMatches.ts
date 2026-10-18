@@ -244,6 +244,8 @@ export interface CalendarItem {
   note?: string;
   /** идёт: «67′» */
   live?: string;
+  /** идёт: текущий счёт [хозяева, гости] */
+  score?: [number, number];
   highlighted?: boolean;
 }
 
@@ -286,6 +288,7 @@ export function splitFixtures(matches: ApiFixture[], tab: CompTab): { upcoming: 
         competition: competitionOf(f.tournament),
         note: noteOf(f),
         live: live ? (minuteText(f.status) ?? 'идёт') : undefined,
+        score: live ? scoreOf(f) : undefined,
         highlighted: i === 0,
       };
     });

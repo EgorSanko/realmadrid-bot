@@ -233,3 +233,14 @@ def test_country_by_name_unknown_gives_no_flag():
     assert country_ref(None, None) is None
     assert country_ref("ESP", None)["flag"] == "/img/flag/es.svg"
     assert country_ref(None, "England")["flag"] == "/img/flag/gb-eng.svg"
+
+
+def test_fotmob_halftime_from_live_time():
+    """Перерыв FotMob отдаёт в liveTime (short «HT»), reason пустой — это «перерыв», а не live без минуты."""
+    from app.sources.fotmob import _status
+    st = {"started": True, "finished": False, "cancelled": False, "ongoing": True,
+          "liveTime": {"short": "HT", "shortKey": "halftime_short", "long": "Half-Time", "longKey": "pause_match"}}
+    s = _status(st)
+    assert s["state"] == "halftime" and s["live"] is True and s["minute"] == 45
+    s = _status({"started": True, "liveTime": {"short": "67’", "long": "66:12"}})
+    assert s["state"] == "live" and s["minute"] == 67

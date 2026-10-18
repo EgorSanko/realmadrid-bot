@@ -58,10 +58,11 @@ def _status(st: dict) -> dict:
             return status("abandoned", label=reason)
         return status("finished", label=reason or "FT")
     if st.get("started"):
-        if reason.upper() == "HT":
-            return status("halftime", 45, label="HT")
-        mi, add = _minute(st.get("liveTime"))
         lt = st.get("liveTime") or {}
+        # перерыв FotMob отдаёт в liveTime (short «HT», shortKey «halftime_short»), а не в reason
+        if reason.upper() == "HT" or str(lt.get("short") or "").upper() == "HT" or lt.get("shortKey") == "halftime_short":
+            return status("halftime", 45, label="HT")
+        mi, add = _minute(lt)
         return status("live", mi, add, label=re.sub(r"[^\d+:’']", "", lt.get("long") or lt.get("short") or ""))
     return status("scheduled")
 
