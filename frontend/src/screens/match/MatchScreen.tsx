@@ -198,7 +198,7 @@ function Header({ match, onKickoff }: { match: ApiMatch; onKickoff: () => void }
         statusText={h.statusText}
         scorers={h.scorers}
       />
-      {h.countdown && match.kickoff && <Countdown to={match.kickoff} className="mt-cd" onEnd={onKickoff} />}
+      {h.countdown && match.kickoff && <Countdown to={match.kickoff} className="mt-cd" onEnd={onKickoff} liveOnEnd />}
       {h.countdown && match.kickoff && canAddToCalendar() && <CalendarButton match={match} />}
     </>
   );

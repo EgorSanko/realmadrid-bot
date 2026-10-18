@@ -42,3 +42,59 @@
 .cf-p--strip { left: -2px; top: -8px; width: 4px; height: 16px; border-radius: 2px; }
 .cf-p--dot { left: -3.5px; top: -3.5px; width: 7px; height: 7px; border-radius: 50%; }
 .cf-p--diamond { left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 1px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+/* ---------- отсчёт до матча (ui/match.tsx Countdown) ---------- */
+/* последние 10 минут: карточка мягко дышит золотом — рамка-слой поверх, меняется только opacity */
+.hero-mc { position: relative; }
+.hero-mc::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(244, 213, 122, .75);
+  box-shadow: 0 0 22px rgba(212, 175, 55, .28), inset 0 0 28px rgba(212, 175, 55, .10);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-mc:has(.ui-cd--soon)::after { animation: ui-breathe 2.6s cubic-bezier(.45, 0, .55, 1) infinite; }
+  /* старт: отсчёт превращается в LIVE */
+  .ui-cd--live .ui-cd__go { animation: ui-go .55s var(--ease-spring) both; }
+  .ui-cd--live .ui-cd__go::before { animation: ui-go-ring .9s var(--ease-out) .1s both; }
+  /* карточка, ставшая лайвом на глазах: счёт и команды входят снизу */
+  .hero-mc--started > :not(:first-child) { animation: ui-rise .45s var(--ease-out) both; }
+  .hero-mc--started > :nth-child(3) { animation-delay: 80ms; }
+  .hero-mc--started .ui-mc__score { animation: ui-go .6s var(--ease-spring) .12s both; }
+}
+@keyframes ui-breathe { 0%, 100% { opacity: .15; } 50% { opacity: 1; } }
+.ui-cd__go { position: relative; display: inline-flex; align-items: center; gap: 10px; }
+.ui-cd__go::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin-top: -28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 90, 78, .6);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes ui-go { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes ui-go-ring { from { transform: scale(.3); opacity: .9; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes ui-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* точка LIVE — спокойная волна от точки (сама точка не мигает) */
+.ui-badge__dot { position: relative; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-badge__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--live);
+    animation: ui-dot 1.8s var(--ease-out) infinite;
+  }
+}
+@keyframes ui-dot { from { transform: scale(1); opacity: .55; } to { transform: scale(2.6); opacity: 0; } }

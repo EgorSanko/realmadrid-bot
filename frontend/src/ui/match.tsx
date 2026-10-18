@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { Chip } from './base';
+import { Badge, Chip } from './base';
 import {
   cx,
   formatDayShort,
@@ -11,7 +11,7 @@ import {
   toMs,
   type DateInput,
 } from './format';
-import { FlipScore } from './flip';
+import { FlipScore, FlipText } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { PlayerInline, type PlayerLinkProps } from './playerLink';
 
@@ -47,11 +47,16 @@ export interface CountdownProps {
   to: DateInput;
   /** что показать, когда время вышло */
   endedLabel?: ReactNode;
+  /** отсчёт до начала матча: в конце он превращается в «LIVE · Матч начинается» */
+  liveOnEnd?: boolean;
   onEnd?: () => void;
   className?: string;
 }
 
-function useMinuteClock(target: number): number {
+const SOON_MS = 10 * 60_000;
+
+/** Часы табло: в последний час — посекундно (видно перелистывание), раньше — раз в минуту. */
+function useCountdownClock(target: number): number {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     let timer = 0;
@@ -60,8 +65,9 @@ function useMinuteClock(target: number): number {
       setNow(t);
       const left = target - t;
       if (left <= 0) return;
-      // следующее срабатывание — ровно когда сменится минута на табло
-      timer = window.setTimeout(schedule, (left % 60_000) + 30);
+      // следующее срабатывание — ровно когда сменится цифра на табло
+      const step = left <= 3_600_000 ? 1000 : 60_000;
+      timer = window.setTimeout(schedule, (left % step) + 30);
     };
     schedule();
     // фоновые вкладки и свёрнутый Telegram тормозят таймеры — сверяемся при возврате
@@ -82,10 +88,32 @@ function useMinuteClock(target: number): number {
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
-/** Обратный отсчёт «дни : часы : минуты» до начала матча. Тикает сам. */
-export function Countdown({ to, endedLabel = 'Матч начинается', onEnd, className }: CountdownProps) {
+/** Части табло: дни : часы : минуты, а в последний час — часы : минуты : секунды. */
+export function countdownUnits(left: number): Array<[number, [string, string, string]]> {
+  if (left <= 3_600_000) {
+    const s = Math.ceil(left / 1000);
+    return [
+      [Math.floor(s / 3600), ['час', 'часа', 'часов']],
+      [Math.floor((s % 3600) / 60), ['минута', 'минуты', 'минут']],
+      [s % 60, ['секунда', 'секунды', 'секунд']],
+    ];
+  }
+  const totalMin = Math.floor(left / 60_000);
+  return [
+    [Math.floor(totalMin / 1440), ['день', 'дня', 'дней']],
+    [Math.floor((totalMin % 1440) / 60), ['час', 'часа', 'часов']],
+    [totalMin % 60, ['минута', 'минуты', 'минут']],
+  ];
+}
+
+/**
+ * Обратный отсчёт до начала матча. Тикает сам; цифры перелистываются, как на табло.
+ * За 10 минут до старта — класс ui-cd--soon (карточка мягко пульсирует золотом),
+ * в момент старта (liveOnEnd) — «LIVE · Матч начинается» с переходом.
+ */
+export function Countdown({ to, endedLabel = 'Матч начинается', liveOnEnd, onEnd, className }: CountdownProps) {
   const target = toMs(to);
-  const now = useMinuteClock(target);
+  const now = useCountdownClock(target);
   const left = Math.max(0, target - now);
   const ended = left === 0;
 
@@ -93,19 +121,27 @@ export function Countdown({ to, endedLabel = 'Матч начинается', on
     if (ended) onEnd?.();
   }, [ended, onEnd]);
 
-  if (ended) return <div className={cx('ui-cd', 'ui-cd--ended', className)}>{endedLabel}</div>;
+  if (ended)
+    return (
+      <div className={cx('ui-cd', 'ui-cd--ended', liveOnEnd && 'ui-cd--live', className)} role="status">
+        {liveOnEnd ? (
+          <span className="ui-cd__go">
+            <Badge tone="live" />
+            <span>{endedLabel}</span>
+          </span>
+        ) : (
+          endedLabel
+        )}
+      </div>
+    );
 
-  const totalMin = Math.floor(left / 60_000);
-  const d = Math.floor(totalMin / 1440);
-  const h = Math.floor((totalMin % 1440) / 60);
-  const m = totalMin % 60;
-  const units: Array<[number, string]> = [
-    [d, plural(d, ['день', 'дня', 'дней'])],
-    [h, plural(h, ['час', 'часа', 'часов'])],
-    [m, plural(m, ['минута', 'минуты', 'минут'])],
-  ];
+  const units = countdownUnits(left).map(([n, f]) => [n, plural(n, f)] as const);
   return (
-    <div className={cx('ui-cd', className)} role="timer" aria-label={`До начала: ${units.map(([n, w]) => `${n} ${w}`).join(' ')}`}>
+    <div
+      className={cx('ui-cd', left <= SOON_MS && 'ui-cd--soon', className)}
+      role="timer"
+      aria-label={`До начала: ${units.map(([n, w]) => `${n} ${w}`).join(' ')}`}
+    >
       {units.map(([n, w], i) => (
         <Fragment key={i}>
           {i > 0 && (
@@ -114,7 +150,7 @@ export function Countdown({ to, endedLabel = 'Матч начинается', on
             </span>
           )}
           <span className="ui-cd__unit" aria-hidden="true">
-            <span className="ui-cd__num">{pad2(n)}</span>
+            <FlipText value={pad2(n)} className="ui-cd__num" stagger={70} />
             <span className="ui-cd__lbl">{w}</span>
           </span>
         </Fragment>
