@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { celebrateGoal, noteLive, type GoalCelebration } from './celebrate';
+import { celebrateGoals, noteLive, type GoalCelebration } from './celebrate';
 import { createGoalWatcher, storedSeen, type FreshGoal, type GoalSide } from './goalWatch';
 
 export interface GoalWatchInput {
@@ -22,8 +22,8 @@ function storage(): Storage | null {
 
 /**
  * Следит за счётом лайва и празднует гол Реала, которого человек ещё не видел — в том числе забитый,
- * пока приложение было закрыто (lib/goalWatch.ts — правила). Несколько пропущенных — плашка последнего.
- * Гол соперника в ворота Реала — сдержанная плашка «пропустили» (если среди непоказанных нет гола Реала).
+ * пока приложение было закрыто (lib/goalWatch.ts — правила). Гол соперника в ворота Реала — сдержанная
+ * плашка «пропустили». Пропущено несколько — все по ходу матча, по очереди (порядок наводит GoalLayer).
  * details — подробности гола (автор, минута), если экран их знает.
  */
 export function useGoalWatch(
@@ -47,15 +47,12 @@ export function useGoalWatch(
     watch.current ??= createGoalWatcher(storedSeen(storage()));
     const fresh = watch.current({ id, score: h != null && a != null ? [h, a] : null, live });
     if (!real) return;
-    const ours = fresh.filter((g) => g.side === real);
-    const g = ours[ours.length - 1];
-    if (g) {
-      celebrateGoal({ matchId: id, side: g.side, n: g.n, ...detailsRef.current?.(g) });
-      return;
-    }
-    // пропущенный гол — только если гола Реала среди новых нет (пачка «забили и пропустили» — праздник)
-    const theirs = fresh.filter((x) => x.side !== real);
-    const t = theirs[theirs.length - 1];
-    if (t) celebrateGoal({ matchId: id, side: t.side, n: t.n, against: true, rival: rivalRef.current, ...detailsRef.current?.(t) });
+    celebrateGoals(
+      fresh.map((g) =>
+        g.side === real
+          ? { matchId: id, side: g.side, n: g.n, ...detailsRef.current?.(g) }
+          : { matchId: id, side: g.side, n: g.n, against: true, rival: rivalRef.current, ...detailsRef.current?.(g) },
+      ),
+    );
   }, [id, h, a, live, real]);
 }

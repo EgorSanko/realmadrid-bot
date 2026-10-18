@@ -109,3 +109,26 @@ export function observeScore(snap: ScoreSnapshot, seen: SeenStore): FreshGoal[] 
 export function createGoalWatcher(seen: SeenStore) {
   return (snap: ScoreSnapshot): FreshGoal[] => observeScore(snap, seen);
 }
+
+/** Гол на ленте матча: сторона в порядке событий (screens/match/view.ts goals()). */
+export interface TimelineGoal {
+  side: GoalSide;
+}
+
+/**
+ * Пачка пропущенных голов → порядок показа: по ходу матча (n-й гол стороны — его место на ленте),
+ * не больше max последних. Ленты нет или гол на ней не найден — порядок прихода, такие — в конце.
+ */
+export function orderBatch<T extends { side: GoalSide; n: number }>(batch: T[], timeline: TimelineGoal[] | null, max = 3): T[] {
+  const pos = (g: T): number => {
+    if (!timeline) return Infinity;
+    let k = 0;
+    for (let i = 0; i < timeline.length; i++) if (timeline[i].side === g.side && ++k === g.n) return i;
+    return Infinity;
+  };
+  return batch
+    .map((g, i) => ({ g, i, p: pos(g) }))
+    .sort((a, b) => a.p - b.p || a.i - b.i)
+    .map((x) => x.g)
+    .slice(-max);
+}

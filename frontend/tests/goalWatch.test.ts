@@ -83,3 +83,19 @@ test('без хранилища (приватный режим) — работа
   assert.equal(w({ id: 1, score: [0, 1], live: true }).length, 1);
   assert.deepEqual(w({ id: 1, score: [0, 1], live: true }), []);
 });
+
+test('пачка пропущенных голов — по ходу матча, не больше трёх последних', async () => {
+  const { orderBatch } = await import('../src/lib/goalWatch.ts');
+  // лента: гость 1-й, хозяева 1-й, хозяева 2-й, гость 2-й
+  const tl = [{ side: 'away' as const }, { side: 'home' as const }, { side: 'home' as const }, { side: 'away' as const }];
+  const batch = [
+    { side: 'home' as const, n: 2 },
+    { side: 'away' as const, n: 2 },
+    { side: 'home' as const, n: 1 },
+  ];
+  assert.deepEqual(orderBatch(batch, tl).map((g) => `${g.side}${g.n}`), ['home1', 'home2', 'away2']);
+  const all = [...batch, { side: 'away' as const, n: 1 }];
+  assert.deepEqual(orderBatch(all, tl).map((g) => `${g.side}${g.n}`), ['home1', 'home2', 'away2']);
+  // ленты нет — порядок прихода, последние три
+  assert.deepEqual(orderBatch(all, null).map((g) => `${g.side}${g.n}`), ['away2', 'home1', 'away1']);
+});

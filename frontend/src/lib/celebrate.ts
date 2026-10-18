@@ -23,11 +23,16 @@ export interface GoalCelebration {
   rival?: { id?: number; name: string };
 }
 
-type Listener = (c: GoalCelebration) => void;
+/** Пачка голов одного матча: слой сам расставит их по ходу матча и покажет по очереди. */
+type Listener = (goals: GoalCelebration[]) => void;
 const listeners = new Set<Listener>();
 
 export function celebrateGoal(c: GoalCelebration): void {
-  listeners.forEach((l) => l(c));
+  celebrateGoals([c]);
+}
+
+export function celebrateGoals(goals: GoalCelebration[]): void {
+  if (goals.length) listeners.forEach((l) => l(goals));
 }
 
 export function onGoal(l: Listener): () => void {

@@ -22,17 +22,32 @@ function useFullscreenHost(): Element | null {
   return host;
 }
 
-/** Слой праздника над всеми экранами (App). Пока гола нет — ничего не рисует и не грузит. */
+let seq = 0;
+
+/** Слой праздника над всеми экранами (App). Пока гола нет — ничего не рисует и не грузит.
+ *  Голы — очередью: пропустил «забили и пропустили» — обе плашки по ходу матча, одна за другой. */
 export function GoalLayer() {
-  const [cur, setCur] = useState<{ goal: GoalCelebration; n: number } | null>(null);
+  const [queue, setQueue] = useState<Array<{ goal: GoalCelebration; n: number }>>([]);
   const fsHost = useFullscreenHost();
   useEffect(() => onLive(() => void loadBurst().catch(() => undefined)), []);
-  useEffect(() => onGoal((goal) => setCur((p) => ({ goal, n: (p?.n ?? 0) + 1 }))), []);
+  useEffect(
+    () =>
+      onGoal((batch) => {
+        const push = (list: GoalCelebration[]) => setQueue((q) => [...q, ...list.map((goal) => ({ goal, n: ++seq }))]);
+        if (batch.length === 1) push(batch);
+        else
+          void import('./goalOrder')
+            .then(({ orderGoals }) => orderGoals(batch))
+            .then(push, () => push(batch.slice(-3)));
+      }),
+    [],
+  );
+  const cur = queue[0];
   if (!cur) return null;
   const n = cur.n;
   const layer = (
     <Suspense fallback={null}>
-      <GoalBurst key={n} goal={cur.goal} onDone={() => setCur((p) => (p?.n === n ? null : p))} />
+      <GoalBurst key={n} goal={cur.goal} onDone={() => setQueue((q) => (q[0]?.n === n ? q.slice(1) : q))} />
     </Suspense>
   );
   return fsHost ? createPortal(layer, fsHost) : layer;
