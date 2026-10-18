@@ -74,9 +74,18 @@
 
 /* ---------- Skeleton ---------- */
 .ui-skel { display: block; flex: none; max-width: 100%; border-radius: 6px; background: var(--surface-2); position: relative; overflow: hidden; }
-.ui-skel::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(238, 241, 247, .05), transparent); animation: ui-shimmer 1.4s ease-in-out infinite; }
-@keyframes ui-shimmer { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { .ui-skel::after { animation: none; } }
+/* золотистый блик: псевдоэлемент едет transform'ом (без анимации background-position — та перерисовывает
+   каждый кадр); узкий яркий центр и мягкие края; после прохода — пауза, чтобы не рябило */
+.ui-skel::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(100deg, transparent 20%, rgba(212, 175, 55, .07) 38%, rgba(244, 213, 122, .16) 50%, rgba(212, 175, 55, .07) 62%, transparent 80%);
+  animation: ui-shimmer 1.8s cubic-bezier(.45, 0, .25, 1) infinite;
+}
+@keyframes ui-shimmer { 0% { transform: translateX(-100%); } 70%, 100% { transform: translateX(100%); } }
+/* reduced motion — без бегущего блика, ровный лёгкий золотистый тон */
+@media (prefers-reduced-motion: reduce) {
+  .ui-skel::after { animation: none; transform: none; background: rgba(212, 175, 55, .05); }
+}
 .ui-skel-card .ui-skel { background: var(--surface-2); }
 .ui-skel-row { display: flex; justify-content: space-between; align-items: center; }
 .ui-skel-li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
