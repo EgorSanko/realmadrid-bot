@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { LIVE_POLL_MS, fetchMatch, matchFingerprint, shouldPoll, type ApiMatch, type MatchResult } from '../../api/match';
 import { DEBUG_GOAL_DELAY, debugGoalMatch, debugGoalMode } from '../../dev/debugGoal';
+import { onRefresh } from '../../lib/refresh';
 
 export type MatchLoad =
   | { kind: 'loading' }
@@ -83,10 +84,12 @@ export function useMatch(id: string): { state: MatchLoad; reload: () => void } {
 
     void load();
     document.addEventListener('visibilitychange', onVisible);
+    const off = onRefresh(() => load());
     let dbg = 0;
     if (import.meta.env.DEV && debugGoalMode()) dbg = window.setTimeout(() => alive && void load(), DEBUG_GOAL_DELAY + 100);
     return () => {
       alive = false;
+      off();
       window.clearTimeout(dbg);
       window.clearTimeout(timer.current);
       ctrl.current?.abort();

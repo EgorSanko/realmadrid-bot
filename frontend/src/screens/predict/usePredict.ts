@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthFetchError, authFetch, useAuth } from '../../lib/auth';
+import { useRefreshBump } from '../../lib/refresh';
 import type { MatchesResponse, PredictionView } from '../../lib/predict';
 
 export type Load<T> =
@@ -17,6 +18,8 @@ export function useAuthedGet<T>(path: string | null, deps: unknown[] = []): [Loa
   const auth = useAuth();
   const [state, setState] = useState<Load<T>>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  const reload = useCallback(() => setAttempt((a) => a + 1), []);
+  const settle = useRefreshBump(reload);
   const who = auth.status === 'user' ? auth.user?.id ?? 0 : auth.status;
   useEffect(() => {
     if (auth.status === 'loading' || path == null) return;
@@ -29,11 +32,13 @@ export function useAuthedGet<T>(path: string | null, deps: unknown[] = []): [Loa
         setState((s) =>
           s.kind === 'ok' && fe?.status === 0 ? s : { kind: 'error', status: fe?.status ?? 0, code: fe?.code ?? null, message: e.message },
         );
+      })
+      .finally(() => {
+        if (!ctl.signal.aborted) settle();
       });
     return () => ctl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, who, attempt, ...deps]);
-  const reload = useCallback(() => setAttempt((a) => a + 1), []);
   const patch = useCallback((f: (d: T) => T) => setState((s) => (s.kind === 'ok' ? { kind: 'ok', data: f(s.data) } : s)), []);
   return [state, reload, patch];
 }

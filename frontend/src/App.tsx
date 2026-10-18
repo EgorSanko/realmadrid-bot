@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useLayoutEffect, useRef } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
 import { GoalLayer } from './components/GoalLayer';
+import { PullToRefresh } from './components/PullToRefresh';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { RouteMeta } from './components/RouteMeta';
@@ -240,6 +241,7 @@ function AppRoutes() {
       {desktop ? <SiteFooter /> : <BottomNav />}
       <Toaster />
       <GoalLayer />
+      {!desktop && <PullToRefresh />}
       {bg && (
         <Routes>
           <Route path="/player/:id" element={player} />

@@ -8,6 +8,12 @@ import {
 } from '@tma.js/sdk-react';
 
 const BG = '#06070B';
+
+/**
+ * Свайп вниз в мини-аппе больше не сворачивает его (disableVertical сработал) — тогда можно
+ * pull-to-refresh. Старые клиенты Telegram без этой настройки — без PTR, чтобы не спорить с закрытием.
+ */
+export let verticalSwipesOff = false;
 const NAV_BG = '#0B0D14';
 
 /**
@@ -30,6 +36,11 @@ export async function initTelegram(): Promise<boolean> {
     // чтобы вертикальный скролл не сворачивал мини-апп
     swipeBehavior.mount.ifAvailable();
     swipeBehavior.disableVertical.ifAvailable();
+    try {
+      verticalSwipesOff = swipeBehavior.isMounted() && !swipeBehavior.isVerticalEnabled();
+    } catch {
+      verticalSwipesOff = false;
+    }
 
     if (viewport.mount.isAvailable()) {
       await viewport.mount();
