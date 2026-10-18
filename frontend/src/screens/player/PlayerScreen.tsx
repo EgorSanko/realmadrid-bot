@@ -95,30 +95,23 @@ export default function PlayerScreen() {
     ref.current?.scrollTo(0, 0);
   }, [id]);
 
-  // открыли нажатием на игрока: карточка раскрывается кругом из его кружка, фото перелетает на место (FLIP)
+  // открыли нажатием на игрока: карточка вырастает из его кружка и проявляется. Только transform/opacity —
+  // их считает видеокарта; круглая маска (clip-path) перерисовывала весь экран каждый кадр и рвалась на телефоне.
+  // Класс pc--flip не снимаем: иначе обычное появление (.pc, pc-in) запустилось бы заново и карточка «мигнула».
   useLayoutEffect(() => {
     const el = ref.current;
     const from = takePlayerOrigin(Number(id));
     if (!el || !from || page || !overlay || reducedMotion() || typeof el.animate !== 'function') return;
     el.classList.add('pc--flip');
-    const cx = from.left + from.width / 2;
-    const cy = from.top + from.height / 2;
-    const R = Math.hypot(Math.max(cx, window.innerWidth - cx), Math.max(cy, window.innerHeight - cy));
-    const reveal = el.animate(
-      [{ clipPath: `circle(${from.width / 2}px at ${cx}px ${cy}px)` }, { clipPath: `circle(${R}px at ${cx}px ${cy}px)` }],
-      { duration: 460, easing: 'cubic-bezier(.4,0,.2,1)' },
+    el.style.transformOrigin = `${from.left + from.width / 2}px ${from.top + from.height / 2}px`;
+    el.animate(
+      [
+        { opacity: 0, transform: 'scale(.86)' },
+        { opacity: 1, offset: 0.55 },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 380, easing: 'cubic-bezier(.22,1,.36,1)' },
     );
-    reveal.finished.finally(() => el.classList.remove('pc--flip')).catch(() => undefined);
-    const photo = el.querySelector<HTMLElement>('.pc-hero__photo .ui-photo');
-    if (!photo) return;
-    const to = photo.getBoundingClientRect();
-    if (!to.width) return;
-    const dx = cx - (to.left + to.width / 2);
-    const dy = cy - (to.top + to.height / 2);
-    photo.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${from.width / to.width})` }, { transform: 'none' }], {
-      duration: 520,
-      easing: 'cubic-bezier(.3,1.2,.4,1)',
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
