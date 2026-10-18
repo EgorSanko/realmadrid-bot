@@ -12,9 +12,13 @@ import './goalBurst.css';
  * буквы «ГОЛ!» впечатываются по очереди, по плашке проходит блик, из неё бьёт золотое конфетти,
  * счёт на экране «подпрыгивает». Всё ≈1,5 с, плашка держится ~3,2 с и уезжает вверх (тап — сразу).
  * Плашка не мешает: нажимается только она сама, остальной экран живёт как обычно.
+ *
+ * Пропустили (goal.against): та же плашка, но сдержанная — холодный стальной тон, «Пропустили», автор и
+ * эмблема соперника, табло коротко «оседает», лёгкая вибрация-предупреждение; без конфетти, блика и зарева.
  */
 
 const HOLD_MS = 3200;
+const HOLD_AGAINST_MS = 2600;
 const EXIT_MS = 320;
 const DETAILS_TIMEOUT = 1500;
 const PHOTO_TIMEOUT = 250;
@@ -67,8 +71,9 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
     let alive = true;
     void (async () => {
       const d = goal.scorer !== undefined ? { scorer: goal.scorer, minute: goal.minute } : await lookupScorer(goal);
-      const photo = d.scorer?.id != null ? imageUrl.player(d.scorer.id) : imageUrl.team(REAL_ID);
-      await preload(photo);
+      const crestId = goal.against ? goal.rival?.id : REAL_ID;
+      const photo = d.scorer?.id != null ? imageUrl.player(d.scorer.id) : crestId != null ? imageUrl.team(crestId) : null;
+      if (photo) await preload(photo);
       if (alive) setInfo({ scorer: d.scorer, minute: d.minute ?? goal.minute });
     })();
     return () => {
@@ -106,6 +111,24 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
     if (board && root.current) root.current.style.setProperty('--gb-top', `${Math.round(board.bottom + 8)}px`);
     const rm = reduced();
     const timers: number[] = [];
+    if (goal.against) {
+      if (!rm) {
+        try {
+          hapticFeedback.notificationOccurred.ifAvailable('warning');
+        } catch {
+          /* не в Telegram */
+        }
+        // табло «оседает»: короткое сжатие вниз без отскока
+        document.querySelectorAll<HTMLElement>('.ui-flip-score').forEach((s) => {
+          s.animate?.(
+            [{ transform: 'none' }, { transform: 'translateY(3px) scale(.92)', offset: 0.4 }, { transform: 'none' }],
+            { duration: 700, delay: 120, easing: 'cubic-bezier(.33,0,.2,1)' },
+          );
+        });
+      }
+      timers.push(window.setTimeout(leave, HOLD_AGAINST_MS));
+      return () => timers.forEach((t) => window.clearTimeout(t));
+    }
     if (!rm) {
       try {
         hapticFeedback.notificationOccurred.ifAvailable('success');
@@ -137,6 +160,34 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
   }, [info]);
 
   if (!info) return null;
+  if (goal.against) {
+    const rival = goal.rival;
+    const by = info.scorer?.name ?? rival?.name ?? 'Соперник';
+    return (
+      <div ref={root} className="gb gb--against" role="status" aria-live="polite" aria-label={`Пропустили: ${by}${info.minute ? `, ${info.minute}` : ''}`}>
+        <div className="gb__dim" aria-hidden="true" />
+        <div ref={card} className="gb__card" onClick={leave} aria-hidden="true">
+          <span className="gb__ph">
+            {info.scorer?.id != null ? (
+              <PlayerPhoto id={info.scorer.id} name={by} size={60} className="gb__photo" />
+            ) : rival?.id != null ? (
+              <span className="gb__crest-only">
+                <TeamCrest id={rival.id} name="" size={52} />
+              </span>
+            ) : null}
+          </span>
+          <span className="gb__txt">
+            <span className="gb__miss">Пропустили</span>
+            <span className="gb__who">
+              <b>{by}</b>
+              {info.minute && <em>{info.minute}</em>}
+            </span>
+          </span>
+          {info.scorer?.id != null && rival?.id != null && <TeamCrest id={rival.id} name="" size={36} className="gb__club" />}
+        </div>
+      </div>
+    );
+  }
   const who = info.scorer?.name ?? 'Реал Мадрид';
   const label = `Гол! ${who}${info.minute ? `, ${info.minute}` : ''}`;
   return (

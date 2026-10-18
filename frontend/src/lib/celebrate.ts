@@ -17,6 +17,10 @@ export interface GoalCelebration {
   minute?: string;
   /** автор, если уже известен; нет — слой сам спросит /api/match/{id} */
   scorer?: GoalScorer | null;
+  /** пропустили: гол соперника — плашка сдержанная, без конфетти */
+  against?: boolean;
+  /** команда, забившая гол против Реала (эмблема на плашке) */
+  rival?: { id?: number; name: string };
 }
 
 type Listener = (c: GoalCelebration) => void;

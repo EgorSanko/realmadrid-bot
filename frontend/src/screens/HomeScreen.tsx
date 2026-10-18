@@ -92,6 +92,7 @@ export default function HomeScreen() {
           score: hero.score,
           live: hero.status === 'live',
           real: hero.home.id === RM_ID ? 'home' : hero.away.id === RM_ID ? 'away' : null,
+          rival: hero.home.id === RM_ID ? hero.away : hero.home,
         }
       : null,
     () => ({ minute: hero?.minute }),

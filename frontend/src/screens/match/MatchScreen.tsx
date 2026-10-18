@@ -83,7 +83,15 @@ export default function MatchScreen() {
   // новый гол в лайве: Реал — праздник (плашка, конфетти), соперник — только перелистывание табло
   const hasReal = !!match && (match.home.id === REAL_ID || match.away.id === REAL_ID);
   useGoalWatch(
-    match && head ? { id: match.id ?? id, score: head.score, live: head.live, real: hasReal ? realSide(match) : null } : null,
+    match && head
+      ? {
+          id: match.id ?? id,
+          score: head.score,
+          live: head.live,
+          real: hasReal ? realSide(match) : null,
+          rival: hasReal ? teamRef(match, realSide(match) === 'home' ? 'away' : 'home') : undefined,
+        }
+      : null,
     (g) => {
       const ev = match ? goals(match).filter((x) => x.side === g.side)[g.n - 1]?.ev : undefined;
       const pid = Number(ev?.player?.id);
