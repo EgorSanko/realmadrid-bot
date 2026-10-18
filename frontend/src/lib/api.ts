@@ -2,6 +2,7 @@
  * Клиент нашего API (только чтение) и формы ответов — по backend/app/model.py и main.py.
  * Клиент ходит только по относительным путям /api/*; внешних запросов нет.
  */
+import type { ApiRound } from '../api/match';
 
 /** Общие поля каждого ответа: откуда и когда снимок. */
 export interface ApiMeta {
@@ -81,6 +82,8 @@ export interface ApiHome extends ApiMeta {
   /** от нового к старому */
   form: ApiFormItem[];
   laliga: ApiLaliga | null;
+  /** идёт матч Реала — матчи его тура (Ла Лига, ЛЧ); иначе null */
+  round?: ApiRound | null;
 }
 
 export interface ApiFixtures extends ApiMeta {

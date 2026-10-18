@@ -18,7 +18,9 @@ import {
   formatDayShort,
   type PlayerLinkProps,
 } from '../../ui';
+import { InsightsCard, PollCard, RoundCard } from './ExtraCards';
 import { MatchInfo } from './MatchInfo';
+import { insightsView, pollView, roundView } from './extras';
 import {
   aboutRows,
   bestOfSide,
@@ -48,7 +50,13 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
   const live = phase === 'live' || phase === 'halftime';
   const links = usePlayerLinks();
 
-  const nothing = !hl && !best && !potm && !tl?.items.length && !about.length && !h2h && !form && !live;
+  const finished = phase === 'finished';
+  // карточки из отдельных снимков: факты — до матча и (свёрнуто) в лайве; тур и «Кто победит?» — всегда
+  const facts = (before || live) && insightsView(match) ? <InsightsCard match={match} collapsed={live} /> : null;
+  const poll = pollView(match) || before ? <PollCard match={match} phase={phase} /> : null;
+  const round = roundView(match) ? <RoundCard match={match} /> : null;
+
+  const nothing = !hl && !best && !potm && !tl?.items.length && !about.length && !h2h && !form && !live && !facts && !round && !pollView(match);
 
   return (
     <>
@@ -74,6 +82,9 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
           </Card>
         )
       )}
+
+      {(before || live || finished) && poll}
+      {facts}
 
       {h2h && (
         <Card ariaLabel="Личные встречи">
@@ -124,7 +135,9 @@ export function OverviewTab({ match, phase }: { match: ApiMatch; phase: Phase })
       )}
 
       {/* стадион, погода, судья: в лайве — одной строкой, по нажатию раскрывается */}
+      {live && round}
       {about.length > 0 && <MatchInfo match={match} compact={live} />}
+      {!live && round}
 
       {nothing && (
         <EmptyState

@@ -17,7 +17,7 @@ from .model import ts
 from .games import api as games_api
 from .predictions import api as predict_api
 from .predictions.snapshot_provider import SnapshotProvider
-from .sources import article, media
+from .sources import article, fotmob, media
 from .stream import router as stream_router
 
 VERSION = "0.2.0"
@@ -170,8 +170,15 @@ def home() -> JSONResponse:
                 laliga = {"league": t["league"], "pos": row["pos"], "pts": row["pts"], "played": row["played"],
                           "w": row["w"], "d": row["d"], "l": row["l"], "gd": row["gd"],
                           "leader_pts": t["rows"][0]["pts"] if t["rows"] else None}
-        body.update(form=form, laliga=laliga)
-        avail = [k for k in ("next", "last", "form", "laliga") if body.get(k)]
+        body.update(form=form, laliga=laliga, round=None)
+        # идёт матч Реала — компактная лента его тура (снимок round:<турнир>:<тур> сборщика)
+        if body["next"] and body["next"]["status"]["live"] and nxt["tournament"].get("id") in config.ROUND_LEAGUES:
+            msnap = store.get(conn, f"match:{nxt['id']}")
+            rk = _round_snapshot_key(conn, str(nxt["id"]), (msnap or {}).get("data") or nxt)
+            rs = store.get(conn, rk) if rk else None
+            if rs and rs["data"].get("matches"):
+                body["round"] = {k: rs["data"].get(k) for k in ("league", "round", "matches", "live", "finished")}
+        avail = [k for k in ("next", "last", "form", "laliga", "round") if body.get(k)]
         if body["next"] and body["next"].get("venue"):
             avail.append("venue")
         live_now = bool(body["next"] and body["next"]["status"]["live"])
@@ -183,6 +190,61 @@ def home() -> JSONResponse:
 
 # ---------- матч ----------
 
+_POLL_CACHE: dict[str, tuple[float, dict | None]] = {}
+POLL_TTL = 60  # агрегат прогнозов считаем не чаще раза в минуту на матч (/api/match опрашивают раз в 10 с)
+
+
+def _our_outcomes(match_id: str) -> dict | None:
+    """Исходы 1/X/2 из прогнозов счёта (база прогнозов). Нет сервиса или база недоступна — None."""
+    now = time.monotonic()
+    hit = _POLL_CACHE.get(match_id)
+    if hit and now - hit[0] < POLL_TTL:
+        return hit[1]
+    svc = predict_api._service
+    value = None
+    if svc is not None:
+        try:
+            value = svc.outcome_counts(match_id)
+        except Exception:  # «Кто победит?» не должен ронять экран матча
+            value = None
+    if len(_POLL_CACHE) > 500:
+        _POLL_CACHE.clear()
+    _POLL_CACHE[match_id] = (now, value)
+    return value
+
+
+def _round_snapshot_key(conn, match_id: str, m: dict) -> str | None:
+    ctx = store.get(conn, f"ctx:fm:{match_id}")
+    if ctx and ctx["data"].get("round_key"):
+        return ctx["data"]["round_key"]
+    t = m.get("tournament") or {}
+    return fotmob.round_key(t.get("id"), t.get("round"))
+
+
+def _match_extras(conn, match_id: str, m: dict) -> dict:
+    """Факты, тур и «Кто победит?» — из отдельных снимков сборщика (в источники не ходим).
+    Нет снимка — поле null, пункта в available нет: экран просто прячет блок."""
+    out = {"insights": None, "round": None, "poll": None}
+    ins = store.get(conn, f"insights:{match_id}")
+    if ins:
+        out["insights"] = {**ins["data"], "updated_at": _iso(ins["fetched_at"])}
+    if (m.get("tournament") or {}).get("id") in config.ROUND_LEAGUES:
+        rk = _round_snapshot_key(conn, match_id, m)
+        rs = store.get(conn, rk) if rk else None
+        if rs and rs["data"].get("matches"):
+            out["round"] = {**{k: v for k, v in rs["data"].items() if k != "match_ids"},
+                            "updated_at": _iso(rs["fetched_at"])}
+    vote = store.get(conn, f"vote:{match_id}")
+    ours = _our_outcomes(match_id)
+    n = (ours or {}).get("total") or 0
+    fm_votes = vote["data"] if vote and vote["data"].get("total") else None
+    if fm_votes or n:
+        out["poll"] = {"fotmob": fm_votes, "ours": ours if n >= config.POLL_MIN_PREDICTIONS else None,
+                       "ours_count": n, "threshold": config.POLL_MIN_PREDICTIONS,
+                       "updated_at": _iso(vote["fetched_at"]) if vote else None}
+    return out
+
+
 @app.get("/api/match/{match_id}")
 def match(match_id: str) -> JSONResponse:
     conn = _db()
@@ -193,7 +255,10 @@ def match(match_id: str) -> JSONResponse:
             live = m["status"]["live"]
             meta = _meta(snap, STALE_AFTER["match_live" if live else "match_idle"])
             m.pop("finished_seen_at", None)
-            return _resp({**m, **meta}, 5 if live else (60 if m["status"]["finished"] else 30))
+            extras = _match_extras(conn, match_id, m)
+            avail = list(m.get("available") or []) + [k for k, v in extras.items() if v]
+            return _resp({**m, **extras, **meta, "available": avail},
+                         5 if live else (60 if m["status"]["finished"] else 30))
         # матча нет в снимках: если он есть в календаре — отдаём заголовок и просим сборщика подтянуть
         fx = store.get(conn, "fixtures")
         f = next((f for f in (fx["data"] if fx else []) if str(f["id"]) == match_id), None)
@@ -202,7 +267,7 @@ def match(match_id: str) -> JSONResponse:
         store.ask(conn, match_id)
         body = {**f, "events": [], "lineups": None, "stats": None, "shots": [], "momentum": [], "potm": None,
                 "highlights": None, "h2h": None, "form": None, "venue": None, "weather": None, "referee_info": None,
-                "zones": None,
+                "zones": None, "insights": None, "round": None, "poll": None, "commentary": None,
                 "available": [], "pending": True,
                 **_meta(fx, STALE_AFTER["fixtures"])}
         return _resp(body, 5)
@@ -473,6 +538,8 @@ def health_sources() -> JSONResponse:
                       "sources": [states[n] for n in config.SOURCE_ORDER if n in states],
                       # медиа — отдельный список: в цепочку данных матча они не входят
                       "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
+                      # редкие запросы экрана матча (факты, тур, голоса, трансляция): свой breaker
+                      "extra_sources": [states[n] for n in ("fotmob_extra",) if n in states],
                       # бот входа по коду (long polling в сборщике): breaker, офсет, счётчики без личных данных
                       "bot": states.get("telegram_bot"),
                       "snapshots": snaps, "players": players, "articles": articles,

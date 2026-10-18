@@ -1,0 +1,425 @@
+{
+ "leagueName": "LaLiga",
+ "playoff": null,
+ "matchesInRound": [
+  {
+   "id": "5868098",
+   "roundName": "9",
+   "home": {
+    "id": "8633",
+    "name": "Real Madrid",
+    "shortName": "Real Madrid"
+   },
+   "away": {
+    "id": "8302",
+    "name": "Sevilla",
+    "shortName": "Sevilla"
+   },
+   "homeScore": 2,
+   "awayScore": 0,
+   "matchDate": "202610181900",
+   "utcTime": "2026-10-18T19:00:00Z",
+   "liveStatus": {
+    "utcTime": "2026-10-18T19:00:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 21:04:18",
+     "secondHalfStarted": "18.10.2026 22:13:10"
+    },
+    "periodLength": 45,
+    "finished": false,
+    "started": true,
+    "cancelled": false,
+    "ongoing": true,
+    "scoreStr": "2 - 0",
+    "liveTime": {
+     "short": "46‎’‎",
+     "shortKey": "",
+     "long": "45:32",
+     "longKey": "",
+     "maxTime": 90,
+     "basePeriod": 90,
+     "addedTime": 0
+    }
+   },
+   "status": {
+    "utcTime": "2026-10-18T19:00:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 21:04:18",
+     "secondHalfStarted": "18.10.2026 22:13:10"
+    },
+    "periodLength": 45,
+    "finished": false,
+    "started": true,
+    "cancelled": false,
+    "ongoing": true,
+    "scoreStr": "2 - 0",
+    "liveTime": {
+     "short": "46‎’‎",
+     "shortKey": "",
+     "long": "45:32",
+     "longKey": "",
+     "maxTime": 90,
+     "basePeriod": 90,
+     "addedTime": 0
+    }
+   }
+  },
+  {
+   "id": "5868093",
+   "roundName": "9",
+   "home": {
+    "id": "9783",
+    "name": "Deportivo A Coruña",
+    "shortName": "Deportivo A Coruña"
+   },
+   "away": {
+    "id": "8581",
+    "name": "Levante",
+    "shortName": "Levante"
+   },
+   "homeScore": 1,
+   "awayScore": 1,
+   "matchDate": "202610161900",
+   "utcTime": "2026-10-16T19:00:00Z",
+   "status": {
+    "utcTime": "2026-10-16T19:00:00Z",
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "1 - 1",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868094",
+   "roundName": "9",
+   "home": {
+    "id": "8558",
+    "name": "Espanyol",
+    "shortName": "Espanyol"
+   },
+   "away": {
+    "id": "9906",
+    "name": "Atlético Madrid",
+    "shortName": "Atlético Madrid"
+   },
+   "homeScore": 0,
+   "awayScore": 1,
+   "matchDate": "202610171200",
+   "utcTime": "2026-10-17T12:00:00Z",
+   "status": {
+    "utcTime": "2026-10-17T12:00:00Z",
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "0 - 1",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868100",
+   "roundName": "9",
+   "home": {
+    "id": "10205",
+    "name": "Villarreal",
+    "shortName": "Villarreal"
+   },
+   "away": {
+    "id": "10268",
+    "name": "Elche",
+    "shortName": "Elche"
+   },
+   "homeScore": 0,
+   "awayScore": 0,
+   "matchDate": "202610171415",
+   "utcTime": "2026-10-17T14:15:00Z",
+   "status": {
+    "utcTime": "2026-10-17T14:15:00Z",
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "0 - 0",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868091",
+   "roundName": "9",
+   "home": {
+    "id": "8603",
+    "name": "Real Betis",
+    "shortName": "Real Betis"
+   },
+   "away": {
+    "id": "8634",
+    "name": "Barcelona",
+    "shortName": "Barcelona"
+   },
+   "homeScore": 2,
+   "awayScore": 5,
+   "matchDate": "202610171630",
+   "utcTime": "2026-10-17T16:30:00Z",
+   "status": {
+    "utcTime": "2026-10-17T16:30:00Z",
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 5",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868099",
+   "roundName": "9",
+   "home": {
+    "id": "10267",
+    "name": "Valencia",
+    "shortName": "Valencia"
+   },
+   "away": {
+    "id": "8315",
+    "name": "Athletic Club",
+    "shortName": "Athletic Club"
+   },
+   "homeScore": 0,
+   "awayScore": 0,
+   "matchDate": "202610171900",
+   "utcTime": "2026-10-17T19:00:00Z",
+   "status": {
+    "utcTime": "2026-10-17T19:00:00Z",
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "0 - 0",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868097",
+   "roundName": "9",
+   "home": {
+    "id": "8371",
+    "name": "Osasuna",
+    "shortName": "Osasuna"
+   },
+   "away": {
+    "id": "8696",
+    "name": "Racing Santander",
+    "shortName": "Racing Santander"
+   },
+   "homeScore": 2,
+   "awayScore": 0,
+   "matchDate": "202610181200",
+   "utcTime": "2026-10-18T12:00:00Z",
+   "liveStatus": {
+    "utcTime": "2026-10-18T12:00:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 14:00:13",
+     "secondHalfStarted": "18.10.2026 15:05:22"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 0",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   },
+   "status": {
+    "utcTime": "2026-10-18T12:00:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 14:00:13",
+     "secondHalfStarted": "18.10.2026 15:05:22"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 0",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868092",
+   "roundName": "9",
+   "home": {
+    "id": "9910",
+    "name": "Celta Vigo",
+    "shortName": "Celta Vigo"
+   },
+   "away": {
+    "id": "9866",
+    "name": "Deportivo Alavés",
+    "shortName": "Deportivo Alavés"
+   },
+   "homeScore": 2,
+   "awayScore": 1,
+   "matchDate": "202610181415",
+   "utcTime": "2026-10-18T14:15:00Z",
+   "liveStatus": {
+    "utcTime": "2026-10-18T14:15:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 16:17:10",
+     "secondHalfStarted": "18.10.2026 17:17:49"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 1",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   },
+   "status": {
+    "utcTime": "2026-10-18T14:15:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 16:17:10",
+     "secondHalfStarted": "18.10.2026 17:17:49"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 1",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868096",
+   "roundName": "9",
+   "home": {
+    "id": "9864",
+    "name": "Málaga",
+    "shortName": "Málaga"
+   },
+   "away": {
+    "id": "8560",
+    "name": "Real Sociedad",
+    "shortName": "Real Sociedad"
+   },
+   "homeScore": 2,
+   "awayScore": 5,
+   "matchDate": "202610181630",
+   "utcTime": "2026-10-18T16:30:00Z",
+   "liveStatus": {
+    "utcTime": "2026-10-18T16:30:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 18:30:52",
+     "secondHalfStarted": "18.10.2026 19:33:00"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 5",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   },
+   "status": {
+    "utcTime": "2026-10-18T16:30:00.000Z",
+    "halfs": {
+     "firstHalfStarted": "18.10.2026 18:30:52",
+     "secondHalfStarted": "18.10.2026 19:33:00"
+    },
+    "periodLength": 45,
+    "finished": true,
+    "started": true,
+    "cancelled": false,
+    "awarded": false,
+    "scoreStr": "2 - 5",
+    "reason": {
+     "short": "FT",
+     "shortKey": "fulltime_short",
+     "long": "Full-Time",
+     "longKey": "finished"
+    }
+   }
+  },
+  {
+   "id": "5868095",
+   "roundName": "9",
+   "home": {
+    "id": "8305",
+    "name": "Getafe",
+    "shortName": "Getafe"
+   },
+   "away": {
+    "id": "8370",
+    "name": "Rayo Vallecano",
+    "shortName": "Rayo Vallecano"
+   },
+   "homeScore": 0,
+   "awayScore": 0,
+   "matchDate": "202610191900",
+   "utcTime": "2026-10-19T19:00:00Z",
+   "status": {
+    "utcTime": "2026-10-19T19:00:00Z",
+    "started": false,
+    "cancelled": false,
+    "finished": false
+   }
+  }
+ ],
+ "seasonName": "2026/2027",
+ "isCurrentSeason": true,
+ "tableUrl": "https://data.fotmob.com/historic/87/season/38843/table.fot.gz",
+ "currentRound": "9",
+ "hasFixtureDifficulty": true
+}

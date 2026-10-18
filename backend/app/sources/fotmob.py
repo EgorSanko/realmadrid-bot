@@ -13,6 +13,7 @@ from ..model import (country_ref, venue as venue_ref, ROLE_BY_POS, age_on, empty
 from .base import HttpxSource, NotFound
 
 BASE = "https://www.fotmob.com/api/data"
+API = "https://www.fotmob.com/api"
 
 
 class FotMob(HttpxSource):
@@ -27,12 +28,44 @@ class FotMob(HttpxSource):
     async def matches_on(self, yyyymmdd: str) -> dict:
         return await self.get(f"{BASE}/matches", {"date": yyyymmdd}, kind="matches_by_date")
 
+    # --- редкие дополнительные запросы экрана матча (сборщик: tick_extras) ---
+
+    async def insights(self, match_id, url_template: str, languages: list[str] | None = None) -> dict:
+        """«Интересные факты» сразу по-русски: FotMob сам берёт файл по urlTemplate (из matchDetails)."""
+        params = {"matchId": match_id, "language": "ru", "urlTemplate": url_template}
+        if languages:
+            params["languages"] = ",".join(languages)
+        return await self.get(f"{API}/matchInsights", params, kind="insights")
+
+    async def round(self, match_id, league_id) -> dict:
+        """Все матчи тура со статусами и счётом (тот же запрос рисует блок тура на fotmob.com)."""
+        return await self.get(f"{BASE}/leagueDataForMatch", {"matchId": match_id, "leagueId": league_id}, kind="round")
+
+    async def vote(self, match_id) -> dict:
+        """Голоса пользователей FotMob «Кто победит?» — только чтение."""
+        return await self.get(f"{BASE}/vote", {"matchId": match_id}, kind="vote")
+
     async def player(self, player_id) -> dict:
         raw = await self.get(f"{BASE}/playerData", {"id": player_id}, kind="player")
         # на несуществующий id FotMob отвечает 200 без игрока — это «нет такого», а не поломка
         if not isinstance(raw, dict) or not raw.get("id") or not raw.get("name"):
             raise NotFound(f"playerData {player_id}: пустой ответ")
         return raw
+
+
+class FotMobExtra(FotMob):
+    """Тот же клиент FotMob (User-Agent, таймауты, breaker, счётчики) для редких запросов экрана матча:
+    факты, тур, голоса, трансляция. Свой breaker — если с сервера эти эндпоинты не отвечают,
+    основной matchDetails не страдает. Выключается вместе с «fotmob» или отдельно: DISABLED_SOURCES=fotmob_extra;
+    отдельная фича — fotmob_insights / fotmob_round / fotmob_vote / fotmob_ltc."""
+    name = "fotmob_extra"
+
+    def disabled(self) -> bool:
+        return super().disabled() or "fotmob" in config.disabled_sources()
+
+    @staticmethod
+    def feature_disabled(kind: str) -> bool:
+        return f"fotmob_{kind}" in config.disabled_sources()
 
 
 # ---------- статусы ----------
@@ -344,6 +377,111 @@ def normalize_match(raw: dict) -> dict:
                           "opponent": _form_opponent(f)} for f in side]
                      for k, side in zip(("home", "away"), tf)}
     return finish_match(m, "fotmob")
+
+
+def match_meta(raw: dict) -> dict:
+    """Что нужно сборщику для редких запросов по матчу (факты, тур, трансляция) — из того же matchDetails.
+    Пишется в ctx:fm:<id>; в ответ API не попадает."""
+    g = raw.get("general") or {}
+    c = raw.get("content") or {}
+    ic = (c.get("matchFacts") or {}).get("matchInsightsConfig") or {}
+    lt = c.get("liveticker") or {}
+    langs = [x.split("_")[0] for x in str(lt.get("langs") or "").split(",") if x]
+    parent = _int(g.get("parentLeagueId")) or _int(g.get("leagueId"))
+    rnd = g.get("leagueRoundName") or g.get("matchRound") or None
+    return {
+        "league_id": _int(g.get("leagueId")) or parent,
+        "parent_league_id": parent,
+        "round": str(rnd) if rnd not in (None, "") else None,
+        "round_key": round_key(parent, rnd),
+        "insights_url": ic.get("urlTemplate") or None,
+        "insights_languages": ic.get("languages") or None,
+        "ltc_langs": langs,
+        "ltc_teams": [t for t in (lt.get("teams") or []) if isinstance(t, str)],
+        "home_id": _int((g.get("homeTeam") or {}).get("id")),
+        "away_id": _int((g.get("awayTeam") or {}).get("id")),
+    }
+
+
+def round_key(league_id, rnd) -> str | None:
+    """Ключ снимка тура: round:<турнир>:<тур>."""
+    if not league_id or rnd in (None, ""):
+        return None
+    return f"round:{league_id}:{str(rnd).strip()}"
+
+
+# ---------- «Интересные факты», тур, голоса, трансляция ----------
+
+# предохранитель: «главный факт» FotMob называет bettingInsight; по сути это статистика,
+# но строку со ставочными словами не показываем никогда
+_BETTING_RE = re.compile(r"коэфф|ставк|букмекер|\bodds\b|\bbet", re.I)
+INSIGHTS_PER_TEAM = 5
+
+
+def normalize_insights(raw, home_id=None, away_id=None) -> dict | None:
+    """/api/matchInsights?language=ru → {lang, main, teams: [{team_id, items}]} (хозяева первыми)."""
+    if not isinstance(raw, dict):
+        return None
+    ti = raw.get("teamInsights") or {}
+    if not isinstance(ti, dict):
+        ti = {}
+    order = [str(x) for x in (home_id, away_id) if x] + [str(k) for k in ti]
+    teams = []
+    for tid in dict.fromkeys(order):
+        items = [t.strip() for t in ti.get(tid) or [] if isinstance(t, str) and t.strip()
+                 and not _BETTING_RE.search(t)]
+        if items:
+            teams.append({"team_id": _int(tid), "items": items[:INSIGHTS_PER_TEAM]})
+    main = raw.get("bettingInsight")
+    main = main.strip() if isinstance(main, str) and main.strip() and not _BETTING_RE.search(main) else None
+    if not teams and not main:
+        return None
+    return {"lang": "ru", "main": main, "teams": teams}
+
+
+def _round_row(x: dict) -> dict:
+    st = x.get("status") or x.get("liveStatus") or {}
+    s = _status(st)
+    home, away = x.get("home") or {}, x.get("away") or {}
+    started = s["state"] not in ("scheduled", "postponed", "cancelled")
+    hid, aid = _int(home.get("id")), _int(away.get("id"))
+    return {
+        "id": _int(x.get("id")),
+        "kickoff": iso_utc(x.get("utcTime") or st.get("utcTime")),
+        "home": {"id": hid, "name": home.get("shortName") or home.get("name"),
+                 "score": x.get("homeScore") if started else None, "logo": img_team(hid)},
+        "away": {"id": aid, "name": away.get("shortName") or away.get("name"),
+                 "score": x.get("awayScore") if started else None, "logo": img_team(aid)},
+        "status": s,
+        "is_ours": config.TEAM_ID in (hid, aid),
+    }
+
+
+def normalize_round(raw, league_id=None) -> dict | None:
+    """/api/data/leagueDataForMatch → матчи тура по времени начала. Нет matchesInRound (плей-офф) — None."""
+    if not isinstance(raw, dict):
+        return None
+    src = [x for x in raw.get("matchesInRound") or [] if isinstance(x, dict) and x.get("id")]
+    rows = [_round_row(x) for x in src]
+    if not rows:
+        return None
+    rows.sort(key=lambda r: (r["kickoff"] or "", r["id"] or 0))
+    rnd = raw.get("currentRound") or next((x.get("roundName") for x in src if x.get("roundName")), None)
+    return {"league": {"id": _int(league_id), "name": raw.get("leagueName"), "logo": img_league(league_id)},
+            "round": str(rnd) if rnd not in (None, "") else None, "season": raw.get("seasonName"),
+            "matches": rows,
+            "live": sum(1 for r in rows if r["status"]["live"]),
+            "finished": sum(1 for r in rows if r["status"]["finished"])}
+
+
+def normalize_vote(raw) -> dict | None:
+    """/api/data/vote → только исход 1/X/2 (bts / ou / dc — ставочные рынки, не берём)."""
+    if not isinstance(raw, dict):
+        return None
+    v = next((x.get("Votes") for x in raw.get("Votes") or [] if isinstance(x, dict) and x.get("Name") == "1x2"), None)
+    if not isinstance(v, list) or len(v) != 3 or not all(isinstance(n, int) and n >= 0 for n in v) or not sum(v):
+        return None
+    return {"home": v[0], "draw": v[1], "away": v[2], "total": sum(v)}
 
 
 def _form_opponent(f: dict) -> dict | None:

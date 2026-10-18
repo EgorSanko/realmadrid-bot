@@ -386,6 +386,14 @@ class PredictionService:
             out_recent.append(v)
         return {"server_time": iso_short(self.now()), "next": out_next, "recent": out_recent}
 
+    def outcome_counts(self, match_id: str) -> dict[str, int]:
+        """Исходы 1 / X / 2 по прогнозам счёта на матч — агрегат для «Кто победит?» (без личных данных)."""
+        with self.conn() as c:
+            r = c.execute("SELECT COUNT(*), SUM(home > away), SUM(home = away), SUM(home < away) "
+                          "FROM predictions WHERE match_id=?", (str(match_id),)).fetchone()
+        n, h, d, a = (int(x or 0) for x in r)
+        return {"home": h, "draw": d, "away": a, "total": n}
+
     # --- приём прогноза ---
 
     def put_prediction(self, user_id: int, match_id: str, home: Any, away: Any,

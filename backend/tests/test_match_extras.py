@@ -1,12 +1,26 @@
-"""Экран матча, новые блоки: «О матче» (стадион, погода, судья), расширенная статистика и зоны атак —
-нормализаторы на сырых ответах FotMob (fixtures), смена источника и отсутствие данных."""
+"""Экран матча, новые блоки: «О матче» (стадион, погода, судья), расширенная статистика и зоны атак,
+«Интересные факты», матчи тура, «Кто победит?» — нормализаторы на сырых ответах
+FotMob (fixtures), расписание сборщика, API и отсутствие данных."""
+import asyncio
+import copy
 import time
 
-from app.collector import borrow_static_blocks
-from app.model import STAT_CATALOG, status
+import pytest
+from fastapi.testclient import TestClient
+
+from app import config, store
+from app.collector import Collector, borrow_static_blocks
+from app.model import STAT_CATALOG, status, ts
 from app.sources import espn, fotmob, sofascore
 
 from .conftest import load, sofa_bundle
+
+MID = "5868098"           # Real Madrid — Sevilla, Ла Лига, 9-й тур (лайв, 46′)
+KICKOFF = ts("2026-10-18T19:00:00Z")
+
+
+def run(coro):
+    return asyncio.run(coro)
 
 
 def _live_raw():
@@ -81,7 +95,63 @@ def test_sofascore_stats_duels_with_percentages():
     assert "home_pct" not in by["possession"]          # «54%» без скобок — это не точность
 
 
-# ================= смена источника не теряет блоки =================
+def test_match_meta_urls():
+    meta = fotmob.match_meta(_live_raw())
+    assert meta["round_key"] == "round:87:9" and meta["league_id"] == 87 and meta["round"] == "9"
+    assert meta["insights_url"] == "https://data.fotmob.com/generated-match-insights/87/5868098/matchinsights_{lang}.json"
+    assert "en" in meta["ltc_langs"] and "ru" not in meta["ltc_langs"]
+    assert meta["ltc_teams"] == ["Real Madrid", "Sevilla"] and (meta["home_id"], meta["away_id"]) == (8633, 8302)
+    # ЛЧ: файл фактов — по родительскому турниру (42)
+    cl = fotmob.match_meta(load("fotmob_match_6106274.json"))
+    assert "/42/6106274/" in cl["insights_url"] and cl["round_key"].startswith("round:42:")
+
+
+def test_insights_ru():
+    ins = fotmob.normalize_insights(load("fotmob_insights_5868098_ru.json"), 8633, 8302)
+    assert ins["lang"] == "ru" and ins["main"].startswith("Real Madrid выиграл 19 из 20")
+    assert [t["team_id"] for t in ins["teams"]] == [8633, 8302]
+    assert ins["teams"][0]["items"][1] == "Real Madrid забил 13 голов в последних пяти матчах"
+    # чужой матч: хозяева первыми, даже если в ответе гости идут раньше
+    other = fotmob.normalize_insights(load("fotmob_insights_5868095_ru.json"), 8305, 8370)
+    assert [t["team_id"] for t in other["teams"]] == [8305, 8370] and other["main"]
+
+
+def test_insights_betting_words_and_empty():
+    raw = {"teamInsights": {"8633": ["Коэффициент на победу 1.5", "Обычный факт"]},
+           "bettingInsight": "Лучшая ставка — обе забьют"}
+    ins = fotmob.normalize_insights(raw, 8633, 8302)
+    assert ins["main"] is None and ins["teams"] == [{"team_id": 8633, "items": ["Обычный факт"]}]
+    assert fotmob.normalize_insights(None) is None
+    assert fotmob.normalize_insights({"teamInsights": {}, "bettingInsight": None}) is None
+
+
+def test_round_matches():
+    r = fotmob.normalize_round(load("fotmob_round_87_9.json"), 87)
+    assert r["league"] == {"id": 87, "name": "LaLiga", "logo": "/img/league/87.png"}
+    assert r["round"] == "9" and r["season"] == "2026/2027"
+    assert len(r["matches"]) == 10 and r["live"] == 1 and r["finished"] == 8
+    kick = [x["kickoff"] for x in r["matches"]]
+    assert kick == sorted(kick)
+    ours = [x for x in r["matches"] if x["is_ours"]]
+    assert len(ours) == 1 and ours[0]["id"] == 5868098 and ours[0]["status"]["state"] == "live"
+    assert ours[0]["status"]["minute"] == 46 and (ours[0]["home"]["score"], ours[0]["away"]["score"]) == (2, 0)
+    last = r["matches"][-1]                              # Getafe — Rayo, ещё не начался
+    assert last["status"]["state"] == "scheduled" and last["home"]["score"] is None
+    assert last["home"]["logo"] == "/img/team/8305.png"
+    assert fotmob.normalize_round({"matchesInRound": [], "playoff": {"rounds": []}}, 42) is None
+
+
+def test_vote_only_1x2():
+    v = fotmob.normalize_vote(load("fotmob_vote_5868098.json"))
+    assert v == {"home": 176727, "draw": 49376, "away": 37025, "total": 263128}
+    assert fotmob.normalize_vote(load("fotmob_vote_5868095.json"))["total"] == 9257
+    assert fotmob.normalize_vote({"Votes": [{"Name": "bts", "Votes": [77, 19]}]}) is None
+    assert fotmob.normalize_vote({"Votes": [{"Name": "1x2", "Votes": [0, 0, 0]}]}) is None
+    assert fotmob.normalize_vote(None) is None
+
+
+
+# ================= сборщик: смена источника не теряет блоки =================
 
 def test_static_blocks_survive_fallback_source():
     now = time.time()
@@ -106,3 +176,345 @@ def test_zones_borrowed_in_live():
     ss = sofascore.normalize_match(sofa_bundle(), {})
     ss["status"] = status("live", 47)
     assert "zones" in borrow_live_blocks(prev, ss, now) and ss["zones"] == fm["zones"]
+
+
+# ================= сборщик: расписание редких запросов =================
+
+def _collector(conn, live_state="live", minute=46):
+    c = Collector(conn)
+    team = load("fotmob_team_8633.json")
+    store.put(conn, "fixtures", "fotmob", fotmob.normalize_fixtures(team))
+    raw = _live_raw()
+    m = fotmob.normalize_match(raw)
+    if live_state != "live":
+        m["status"] = status(live_state, None)
+    m["finished_seen_at"] = None
+    store.put(conn, f"match:{MID}", "fotmob", m)
+    store.put(conn, f"ctx:fm:{MID}", "fotmob", fotmob.match_meta(raw))
+    return c
+
+
+def _set_status(conn, state, fin_seen=None):
+    s = store.get(conn, f"match:{MID}")
+    s["data"]["status"] = status(state, 60 if state == "live" else None)
+    s["data"]["finished_seen_at"] = fin_seen
+    store.put(conn, f"match:{MID}", s["source"], s["data"], fetched_at=s["fetched_at"])
+
+
+def _kinds(plan, fid=MID):
+    return sorted(k for k, f, _ in plan if f == fid)
+
+
+def _put_at(conn, key, data, at):
+    store.put(conn, key, "fotmob", data, fetched_at=at)
+
+
+def test_plan_live_frequencies(tmp_db):
+    conn = store.connect()
+    c = _collector(conn)
+    now = KICKOFF + 50 * 60
+    assert _kinds(c.extras_plan(now)) == ["insights", "round", "vote"]
+    # всё только что скачано — ничего не пора
+    rnd = fotmob.normalize_round(load("fotmob_round_87_9.json"), 87)
+    for key, data in ((f"insights:{MID}", {"main": "x"}), (f"vote:{MID}", {"total": 1}),
+                      ("round:87:9", rnd)):
+        _put_at(conn, key, data, now)
+    assert c.extras_plan(now + 10) == []
+    # тур (есть live) — раз в минуту, голоса — 5 мин, факты — час
+    assert _kinds(c.extras_plan(now + config.ROUND_LIVE_INTERVAL + 1)) == ["round"]
+    assert _kinds(c.extras_plan(now + config.VOTE_LIVE_INTERVAL + 1)) == ["round", "vote"]
+    assert _kinds(c.extras_plan(now + config.INSIGHTS_LIVE_INTERVAL + 1)) == ["insights", "round", "vote"]
+    conn.close()
+
+
+def test_plan_round_idle_and_finished_round(tmp_db):
+    c = Collector(store.connect())
+    rnd = fotmob.normalize_round(load("fotmob_round_87_9.json"), 87)
+    snap = {"data": rnd, "fetched_at": 0}
+    now = KICKOFF + 50 * 60
+    assert c.round_interval(snap, now) == config.ROUND_LIVE_INTERVAL     # наш матч идёт
+    idle = copy.deepcopy(rnd)
+    for r in idle["matches"]:
+        if r["status"]["live"]:
+            r["status"] = status("finished")
+    # следующий матч тура (Getafe — Rayo) только завтра в 22:00 МСК — раз в 2 ч
+    assert c.round_interval({"data": idle}, now + 3600) == config.ROUND_IDLE_INTERVAL
+    getafe = ts(idle["matches"][-1]["kickoff"])
+    assert c.round_interval({"data": idle}, getafe - 30 * 60) == config.ROUND_LIVE_INTERVAL
+    done = copy.deepcopy(idle)
+    for r in done["matches"]:
+        r["status"] = status("finished")
+    assert c.round_interval({"data": done}, now) is None              # тур доигран — больше не ходим
+    assert c.round_interval(None, now) == 0
+    c.conn.close()
+
+
+def test_plan_before_match(tmp_db):
+    conn = store.connect()
+    c = _collector(conn, live_state="scheduled")
+    # за сутки до матча: факты, голоса, тур
+    assert _kinds(c.extras_plan(KICKOFF - 24 * 3600)) == ["insights", "round", "vote"]
+    # за двое суток: фактов ещё нет — не ходим; голоса — за 3 дня
+    assert _kinds(c.extras_plan(KICKOFF - 48 * 3600)) == ["round", "vote"]
+    conn.close()
+
+
+def test_plan_after_final_whistle_one_final_snapshot(tmp_db):
+    conn = store.connect()
+    c = _collector(conn)
+    fin = KICKOFF + 115 * 60
+    _set_status(conn, "finished", fin_seen=fin)
+    _put_at(conn, f"vote:{MID}", {"total": 1}, fin - 100)
+    # сразу после свистка — ждём EXTRA_FINAL_DELAY; фактов после матча не качаем
+    assert _kinds(c.extras_plan(fin + 30)) == ["round"]
+    now = fin + config.EXTRA_FINAL_DELAY + 5
+    assert _kinds(c.extras_plan(now)) == ["round", "vote"]
+    _put_at(conn, f"vote:{MID}", {"total": 1}, now)
+    assert _kinds(c.extras_plan(now + 600)) == ["round"]               # дальше — заморозка
+    conn.close()
+
+
+def test_extras_disabled_source_and_feature(tmp_db, monkeypatch):
+    conn = store.connect()
+    c = _collector(conn)
+    calls = []
+
+    async def fetch(url, params):
+        calls.append(url)
+        return {}
+
+    monkeypatch.setattr(c.fx, "_fetch", fetch)
+    now = KICKOFF + 50 * 60
+    (tmp_db / "disabled_sources").write_text("fotmob")
+    assert run(c.tick_extras(now)) == [] and calls == []
+    (tmp_db / "disabled_sources").write_text("fotmob_extra")
+    assert run(c.tick_extras(now)) == [] and calls == []
+    (tmp_db / "disabled_sources").write_text("fotmob_ltc\nfotmob_vote")
+    assert _kinds(c.extras_plan(now)) == ["insights", "round"]
+    conn.close()
+
+
+def _fake_fx(c, monkeypatch, fail=()):
+    calls = []
+
+    async def fetch(url, params):
+        calls.append((url, dict(params or {})))
+        for f in fail:
+            if f in url:
+                raise ConnectionError("403 Forbidden")
+        if "matchInsights" in url:
+            return load("fotmob_insights_5868098_ru.json")
+        if "leagueDataForMatch" in url:
+            return load("fotmob_round_87_9.json")
+        if "/vote" in url:
+            return load("fotmob_vote_5868098.json")
+        raise AssertionError(url)
+
+    monkeypatch.setattr(c.fx, "_fetch", fetch)
+    return calls
+
+
+def test_tick_extras_writes_snapshots(tmp_db, monkeypatch):
+    conn = store.connect()
+    c = _collector(conn)
+    calls = _fake_fx(c, monkeypatch)
+    monkeypatch.setattr(config, "EXTRA_PER_TICK", 10)
+    now = KICKOFF + 50 * 60
+    done = run(c.tick_extras(now))
+    assert sorted(k for k, _, ok in done if ok) == ["insights", "round", "vote"]
+    ins = next(p for u, p in calls if "matchInsights" in u)
+    assert ins["language"] == "ru" and "{lang}" in ins["urlTemplate"] and "ru" in ins["languages"]
+    rnd = next(p for u, p in calls if "leagueDataForMatch" in u)
+    assert rnd == {"matchId": MID, "leagueId": 87}
+    assert store.get(conn, f"insights:{MID}")["data"]["main"]
+    assert store.get(conn, "round:87:9")["data"]["match_ids"][0] == 5868093
+    assert store.get(conn, f"vote:{MID}")["data"]["total"] == 263128
+    # счётчики — у своего клиента, в source_state
+    c.write_state()
+    st = store.source_states(conn)["fotmob_extra"]
+    assert st["requests"] == 3 and st["by_kind"] == {"insights": 1, "round": 1, "vote": 1}
+    # за такт — не больше EXTRA_PER_TICK
+    monkeypatch.setattr(config, "EXTRA_PER_TICK", 2)
+    assert len(run(c.tick_extras(now + 4000))) == 2
+    run(c.close())
+
+
+def test_extra_endpoint_failure_does_not_touch_main_source(tmp_db, monkeypatch):
+    conn = store.connect()
+    c = _collector(conn)
+    _fake_fx(c, monkeypatch, fail=("/vote",))
+    monkeypatch.setattr(config, "EXTRA_PER_TICK", 10)
+    now = KICKOFF + 50 * 60
+    res = {k: ok for k, _, ok in run(c.tick_extras(now))}
+    assert res["vote"] is None and res["round"] is True
+    assert store.get(conn, f"vote:{MID}") is None
+    # основной клиент FotMob (matchDetails) не тронут
+    assert c.fm.errors == 0 and c.fm.state == "closed" and c.fx.errors == 1
+    # не ответил — повтор не раньше EXTRA_FAIL_BACKOFF, даже если по частоте пора
+    assert "vote" not in _kinds(c.extras_plan(now + config.VOTE_LIVE_INTERVAL + 1))
+    assert "vote" in _kinds(c.extras_plan(now + config.EXTRA_FAIL_BACKOFF + 1))
+    run(c.close())
+
+
+def test_extra_not_found_is_no_data(tmp_db, monkeypatch):
+    from app.sources.base import NotFound
+    conn = store.connect()
+    c = _collector(conn)
+
+    async def fetch(url, params):
+        raise NotFound("404")
+
+    monkeypatch.setattr(c.fx, "_fetch", fetch)
+    assert run(c.refresh_extra("insights", MID, f"insights:{MID}")) is False
+    assert store.get(conn, f"insights:{MID}") is None and c.fx.state == "closed"
+    # FotMob ответил null — тоже «нет данных», без ошибки
+    async def null(url, params):
+        return None
+    monkeypatch.setattr(c.fx, "_fetch", null)
+    assert run(c.refresh_extra("vote", MID, f"vote:{MID}")) is False
+    run(c.close())
+
+
+def test_no_extras_without_fotmob_meta(tmp_db):
+    conn = store.connect()
+    c = _collector(conn)
+    conn.execute("DELETE FROM snapshots WHERE key=?", (f"ctx:fm:{MID}",))
+    assert c.extras_plan(KICKOFF + 50 * 60) == []
+    conn.close()
+
+
+def test_collector_writes_fotmob_meta(tmp_db, monkeypatch):
+    conn = store.connect()
+    c = Collector(conn)
+
+    async def fetch(url, params):
+        return _live_raw()
+
+    monkeypatch.setattr(c.fm, "_fetch", fetch)
+    run(c.refresh_match(MID, live=True))
+    assert store.get(conn, f"ctx:fm:{MID}")["data"]["round_key"] == "round:87:9"
+    run(c.close())
+
+
+# ================= API =================
+
+@pytest.fixture()
+def api(tmp_db):
+    from app import main
+    from app.predictions import api as papi
+    from app.predictions.provider import FakeProvider
+    conn = store.connect()
+    store.put(conn, "fixtures", "fotmob", fotmob.normalize_fixtures(load("fotmob_team_8633.json")))
+    raw = _live_raw()
+    m = fotmob.normalize_match(raw)
+    m["finished_seen_at"] = None
+    store.put(conn, f"match:{MID}", "fotmob", m)
+    store.put(conn, f"ctx:fm:{MID}", "fotmob", fotmob.match_meta(raw))
+    prev = papi._service
+    svc = papi.configure(provider=FakeProvider(), db_path=str(tmp_db / "predictions.db"))
+    main._POLL_CACHE.clear()
+    yield TestClient(main.app), conn, svc
+    papi._service = prev
+    main._POLL_CACHE.clear()
+    conn.close()
+
+
+def _predict(svc, n, score=(2, 1), start=1):
+    now = "2026-10-18T10:00:00Z"
+    with svc.conn() as c:
+        c.execute("INSERT OR IGNORE INTO matches(id, kickoff_utc, home_name, away_name, rm_is_home, status, season, "
+                  "month, updated_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                  (MID, "2026-10-18T19:00:00Z", "Real Madrid", "Sevilla", 1, "scheduled", 2026, "2026-10", now))
+        for uid in range(start, start + n):
+            c.execute("INSERT INTO users(id, first_name, created_at, updated_at) VALUES (?,?,?,?)", (uid, "u", now, now))
+            c.execute("INSERT INTO predictions(user_id, match_id, home, away, created_at, updated_at) "
+                      "VALUES (?,?,?,?,?,?)", (uid, MID, score[0], score[1], now, now))
+
+
+def test_api_match_without_extras_hides_blocks(api):
+    c, _, _ = api
+    b = c.get(f"/api/match/{MID}").json()
+    assert b["insights"] is None and b["round"] is None and b["poll"] is None
+    assert not {"insights", "round", "poll"} & set(b["available"])
+    # блоки из matchDetails — на месте
+    assert b["venue"]["capacity"] == 83186 and b["weather"]["temp"] == 10 and b["referee_info"]["matches"] == 37
+    assert b["zones"]["all"]["home"]["left"] == 59 and "zones" in b["available"]
+    assert "finished_seen_at" not in b
+
+
+def test_api_match_with_extras(api):
+    c, conn, _ = api
+    store.put(conn, f"insights:{MID}", "fotmob",
+              fotmob.normalize_insights(load("fotmob_insights_5868098_ru.json"), 8633, 8302))
+    rnd = fotmob.normalize_round(load("fotmob_round_87_9.json"), 87)
+    rnd["match_ids"] = [1]
+    store.put(conn, "round:87:9", "fotmob", rnd)
+    store.put(conn, f"vote:{MID}", "fotmob", fotmob.normalize_vote(load("fotmob_vote_5868098.json")))
+    b = c.get(f"/api/match/{MID}").json()
+    assert {"insights", "round", "poll"} <= set(b["available"])
+    assert b["insights"]["teams"][0]["team_id"] == 8633 and b["insights"]["updated_at"]
+    assert len(b["round"]["matches"]) == 10 and "match_ids" not in b["round"]
+    assert b["poll"]["fotmob"]["total"] == 263128 and b["poll"]["ours"] is None and b["poll"]["ours_count"] == 0
+
+
+def test_api_poll_threshold(api):
+    from app import main
+    c, _, svc = api
+    _predict(svc, config.POLL_MIN_PREDICTIONS - 1, (2, 1))
+    p = c.get(f"/api/match/{MID}").json()["poll"]
+    # ниже порога — без распределения, только число (у FotMob голосов ещё нет)
+    assert p["fotmob"] is None and p["ours"] is None and p["ours_count"] == config.POLL_MIN_PREDICTIONS - 1
+    assert p["threshold"] == config.POLL_MIN_PREDICTIONS
+    _predict(svc, 1, (1, 1), start=100)
+    _predict(svc, 2, (0, 2), start=200)
+    main._POLL_CACHE.clear()
+    p = c.get(f"/api/match/{MID}").json()["poll"]
+    assert p["ours"] == {"home": config.POLL_MIN_PREDICTIONS - 1, "draw": 1, "away": 2,
+                         "total": config.POLL_MIN_PREDICTIONS + 2}
+    # агрегат — без имён и id пользователей
+    assert "user" not in str(p)
+
+
+def test_api_poll_survives_broken_predictions(api, monkeypatch):
+    from app import main
+    c, conn, svc = api
+
+    def boom(_):
+        raise RuntimeError("db locked")
+
+    monkeypatch.setattr(svc, "outcome_counts", boom)
+    store.put(conn, f"vote:{MID}", "fotmob", {"home": 1, "draw": 1, "away": 1, "total": 3})
+    main._POLL_CACHE.clear()
+    r = c.get(f"/api/match/{MID}")
+    assert r.status_code == 200 and r.json()["poll"]["fotmob"]["total"] == 3 and r.json()["poll"]["ours"] is None
+
+
+def test_api_round_only_laliga_and_ucl(api):
+    c, conn, _ = api
+    rnd = fotmob.normalize_round(load("fotmob_round_87_9.json"), 87)
+    store.put(conn, "round:87:9", "fotmob", rnd)
+    s = store.get(conn, f"match:{MID}")
+    s["data"]["tournament"]["id"] = 138                    # Кубок Испании — блока тура нет
+    store.put(conn, f"match:{MID}", "fotmob", s["data"])
+    assert c.get(f"/api/match/{MID}").json()["round"] is None
+
+
+def test_api_home_round_in_live(api):
+    c, conn, _ = api
+    fx = store.get(conn, "fixtures")["data"]
+    for f in fx:
+        if str(f["id"]) == MID:
+            f["status"] = status("live", 46)
+    store.put(conn, "fixtures", "fotmob", fx)
+    assert c.get("/api/home").json()["round"] is None           # снимка тура нет — блока нет
+    store.put(conn, "round:87:9", "fotmob", fotmob.normalize_round(load("fotmob_round_87_9.json"), 87))
+    b = c.get("/api/home").json()
+    assert b["round"]["round"] == "9" and len(b["round"]["matches"]) == 10 and "round" in b["available"]
+
+
+def test_api_pending_match_has_empty_extras(api):
+    c, conn, _ = api
+    conn.execute("DELETE FROM snapshots WHERE key=?", (f"match:{MID}",))
+    b = c.get(f"/api/match/{MID}").json()
+    assert b["pending"] is True and b["poll"] is None and b["weather"] is None and b["available"] == []
+

@@ -68,6 +68,23 @@ PLAYER_FAIL_RETRY = _int("PLAYER_FAIL_RETRY", 600)      # не нашли / вс
 CREST_WARM_BASE = os.environ.get("CREST_WARM_BASE", "https://realmadridfan.ru")
 CREST_REWARM = _int("CREST_REWARM", 7 * 86400)  # уже прогретую — раз в неделю (кэш nginx 30 дн.)
 CREST_RETRY = _int("CREST_RETRY", 3600)         # FotMob не отдал — повтор через час
+# --- экран матча: редкие дополнительные запросы FotMob (сборщик tick_extras, клиент fotmob_extra) ---
+INSIGHTS_INTERVAL = _int("INSIGHTS_INTERVAL", 2 * 3600)          # «Интересные факты» до матча: раз в 2 ч
+INSIGHTS_LIVE_INTERVAL = _int("INSIGHTS_LIVE_INTERVAL", 3600)     # в окне матча — не чаще раза в час
+INSIGHTS_AHEAD = _int("INSIGHTS_AHEAD", 36 * 3600)                # файл появляется примерно за сутки до матча
+ROUND_LIVE_INTERVAL = _int("ROUND_LIVE_INTERVAL", 60)             # матчи тура: раз в минуту, пока тур идёт
+ROUND_IDLE_INTERVAL = _int("ROUND_IDLE_INTERVAL", 2 * 3600)       # иначе — раз в 2 ч
+ROUND_BEFORE = _int("ROUND_BEFORE", 3600)                          # «тур идёт» — за час до ближайшего матча тура
+ROUND_LEAGUES = (87, 42)                                           # только Ла Лига и ЛЧ
+VOTE_INTERVAL = _int("VOTE_INTERVAL", 600)                        # голоса FotMob до матча: 10 мин
+VOTE_LIVE_INTERVAL = _int("VOTE_LIVE_INTERVAL", 300)              # в лайве: 5 мин; после свистка — один финальный
+VOTE_AHEAD = _int("VOTE_AHEAD", 3 * 86400)
+EXTRA_FINAL_DELAY = _int("EXTRA_FINAL_DELAY", 120)                # финальный снимок — через 2 мин после «завершён»
+EXTRA_FAIL_BACKOFF = _int("EXTRA_FAIL_BACKOFF", 600)              # эндпоинт не ответил — повтор не раньше чем через 10 мин
+EXTRA_PER_TICK = _int("EXTRA_PER_TICK", 2)                        # не больше N таких запросов за такт
+# «Кто победит?»: наш агрегат исходов из прогнозов показываем, когда прогнозов не меньше N
+POLL_MIN_PREDICTIONS = _int("POLL_MIN_PREDICTIONS", 10)
+
 WINDOW_BEFORE = 75 * 60        # окно матча открывается за 75 мин до начала
 WINDOW_AFTER_START = 150 * 60  # ~2,5 ч после старта, если «завершён» ещё не видели
 WINDOW_AFTER_FINISH = 30 * 60  # после «завершён» — ещё 30 мин на добор оценок и статистики

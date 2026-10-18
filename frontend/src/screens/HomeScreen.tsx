@@ -24,6 +24,7 @@ import { DEBUG_GOAL_DELAY, debugGoalHome, debugGoalMode } from '../dev/debugGoal
 import { EmptyState, ErrorState, FormStrip, LeagueLogo, Skeleton, plural } from '../ui';
 import { CalendarRow, HeroMatchCard } from '../ui/matchExtra';
 import { HomeDesk } from './home/HomeDesk';
+import { RoundStrip } from './match/ExtraCards';
 import { RecentResults } from './home/RecentResults';
 import { LatestNews } from './media/LatestNews';
 import './screens.css';
@@ -116,6 +117,8 @@ export default function HomeScreen() {
     ) : (
       <EmptyState title="Ближайших матчей нет" text="Расписание появится, как только его опубликуют" />
     );
+  // идёт матч Реала — под ним лента его тура (Ла Лига, ЛЧ); сервер отдаёт round только в лайве
+  const roundBlock = d?.round && d.next?.status?.live ? <RoundStrip round={d.round} matchId={d.next.id} /> : null;
 
   const lastBlock =
     !d && home.loading ? (
@@ -138,7 +141,12 @@ export default function HomeScreen() {
   if (desktop) {
     return (
       <HomeDesk
-        hero={heroBlock}
+        hero={
+          <>
+            {heroBlock}
+            {roundBlock}
+          </>
+        }
         last={lastBlock}
         stream={stream}
         loading={!d && home.loading}
@@ -155,6 +163,7 @@ export default function HomeScreen() {
 
       {/* 1. Ближайший матч / идёт / итог */}
       {heroBlock}
+      {roundBlock}
 
       {/* 2. Трансляция (этап 3) — без изменений */}
       <StreamBlock stream={stream} />

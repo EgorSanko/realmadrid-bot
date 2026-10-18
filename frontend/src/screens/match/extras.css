@@ -1,0 +1,94 @@
+/* «Кто победит?», «Интересные факты», «Матчи тура» (и лента тура на главной). Токены — styles/tokens.css. */
+
+/* ---------- кто победит? ---------- */
+.mp-heads { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 16px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.mp-head { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.mp-head > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mp-head > .ui-img { flex: none; }
+.mp-head--r { flex-direction: row-reverse; text-align: right; }
+.mp-head--x { justify-content: center; }
+.mp-row { margin-top: 14px; }
+.mp-row__cap { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; font-size: 12px; color: var(--muted); }
+.mp-row__cap b { color: var(--text); font-size: 13px; font-weight: 600; }
+.mp-mine { padding: 2px 7px; border-radius: 7px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--gold-light); font-size: 11px; font-weight: 600; }
+.mp-bar { display: flex; gap: 4px; margin-top: 8px; }
+.mp-seg { flex: 1 1 0; min-width: 46px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); transform-origin: 0 50%; }
+.mp-seg b { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mp-seg.is-lead { background: var(--gold-grad); border-color: transparent; }
+.mp-seg.is-lead b { color: var(--gold-ink); }
+.mp-row--ours .mp-seg:not(.is-lead) { background: var(--bg-2); }
+.mp-ours { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.mp-ours__text { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+.mp-ours__text b { color: var(--text); font-weight: 600; }
+.mp-cta { flex: none; display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 12px 0 14px; border-radius: 12px; background: var(--gold-grad); color: var(--gold-ink); font-weight: 700; font-size: 13px; text-decoration: none; }
+.mp-cta:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+.mp-foot { margin: 12px 0 0; font-size: 11px; color: var(--dim); }
+@media (prefers-reduced-motion: no-preference) {
+  .mp-seg { animation: mp-in .6s var(--ease-out) both; }
+}
+@keyframes mp-in { from { opacity: 0; transform: scaleX(.6); } to { opacity: 1; transform: none; } }
+
+/* ---------- интересные факты ---------- */
+.mi-facts > .mt-h2 { margin-bottom: 14px; }
+.mi-main { padding: 14px 16px; border-radius: 16px; background: var(--gold-tint); border: 1px solid var(--gold-edge); }
+.mi-main__cap { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+.mi-main__text { margin: 6px 0 0; font-size: 14px; line-height: 1.45; }
+.mi-team { margin-top: 16px; }
+.mi-team__name { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 700; font-size: 14px; }
+.mi-team__name > .ui-img { flex: none; }
+.mi-list { margin: 6px 0 0; padding: 0; list-style: none; }
+.mi-list li { position: relative; padding: 9px 0 9px 16px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.45; }
+.mi-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+.mi-list li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+.mi-facts--fold { padding: 0; }
+.mi-facts__toggle { display: flex; align-items: center; gap: 10px; width: 100%; padding: 16px 18px; border: 0; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mi-facts__toggle .mt-h2 { font-size: 16px; }
+.mi-facts__n { min-width: 22px; padding: 2px 7px; border-radius: 8px; background: var(--surface-2); font-size: 12px; font-weight: 700; color: var(--muted); text-align: center; }
+.mi-facts__toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 22px; }
+.mi-facts__body { padding: 0 18px 18px; }
+.mx-chev { flex: none; margin-left: auto; color: var(--muted); transition: transform .25s var(--ease-out); }
+[aria-expanded="true"] > .mx-chev { transform: rotate(180deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .mi-facts__body { animation: mx-in .32s var(--ease-out) both; }
+}
+@keyframes mx-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- матчи тура ---------- */
+.mr-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mr-title > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mr-title > .ui-img { flex: none; }
+.mr-day { margin-top: 14px; }
+.mr-day__cap { margin: 0 0 4px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+.mr-row { display: flex; align-items: center; gap: 12px; padding: 9px 10px; margin: 0 -10px; border-radius: 14px; border: 1px solid transparent; color: inherit; text-decoration: none; }
+.mr-row + .mr-row { border-top-color: var(--line); border-top-left-radius: 0; border-top-right-radius: 0; }
+.mr-row.is-ours { border-color: var(--gold-edge); background: var(--gold-tint); border-radius: 14px; }
+.mr-row.is-ours + .mr-row { border-top-color: transparent; }
+a.mr-row:hover { border-color: var(--gold-edge); }
+.mr-teams { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.mr-team { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; color: var(--muted); }
+.mr-team > .ui-img, .mr-team__gap { flex: none; width: 20px; height: 20px; }
+.mr-team__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mr-team__sc { flex: none; min-width: 16px; text-align: right; font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
+.mr-team__sc.is-live { color: var(--gold-light); }
+.mr-team.is-win { color: var(--text); font-weight: 600; }
+.mr-row.is-ours .mr-team { color: var(--text); }
+.mr-st { flex: none; width: 72px; display: flex; justify-content: flex-end; font-size: 12px; color: var(--muted); }
+.mr-time { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--text); }
+.mr-live { font-size: 11px; }
+.mr-more { display: block; width: 100%; height: 40px; margin-top: 12px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--gold); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.mr-more:hover { border-color: var(--gold-edge); }
+
+/* главная во время матча Реала */
+.mr-strip__title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 15px; font-weight: 700; min-width: 0; }
+.mr-strip__title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mr-strip__list { display: flex; gap: 8px; margin: 12px -18px 0; padding: 0 18px 2px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+.mr-strip__list::-webkit-scrollbar { display: none; }
+.mr-mini { flex: none; width: 74px; padding: 10px 10px 8px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line); scroll-snap-align: start; }
+.mr-mini.is-ours { border-color: var(--gold-edge); background: var(--gold-tint); }
+.mr-mini__t { display: flex; align-items: center; justify-content: space-between; gap: 6px; height: 24px; color: var(--muted); }
+.mr-mini__t b { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
+.mr-mini__t.is-win b { color: var(--gold-light); }
+.mr-mini__st { display: block; margin-top: 6px; text-align: center; font-size: 11px; font-weight: 600; color: var(--muted); }
+.mr-mini__st.is-live { color: var(--ui-live-ink); }
+
+html.desk .mr-strip__list { flex-wrap: wrap; overflow: visible; margin: 12px 0 0; padding: 0; }

@@ -8,6 +8,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once news|videos      # один цикл новостей (RSS) / видео (YouTube)
   python -m app.collector once articles         # тексты статей для новостей из снимка (до ARTICLE_PER_CYCLE)
   python -m app.collector once match <id>       # один цикл матча (цепочка источников)
+  python -m app.collector once extras <id>      # факты, тур, голоса, трансляция матча — по одному запросу
   python -m app.collector once player <id>      # карточка игрока (FotMob → SofaScore)
   python -m app.collector once players          # все игроки состава Реала (с лимитом в минуту)
   python -m app.collector once avatars          # заявки на аватары пользователей (t.me через туннель)
@@ -67,6 +68,11 @@ class Collector:
         self.ls_by_date: dict[str, dict] = {}
         # медиа — свои HTTP-клиенты (breaker и счётчики у каждого сайта), в цепочку матча не входят
         self.media = media.make_sources()
+        # редкие запросы экрана матча (факты, тур, голоса, трансляция) — свой breaker, в цепочку матча не входят
+        self.fx = fotmob.FotMobExtra()
+        self.extra_tried: dict[str, float] = {}   # ключ снимка → когда последний раз ходили (удачно или нет)
+        self.extra_fail: dict[str, float] = {}    # ключ снимка → не раньше этого времени (эндпоинт не ответил)
+        self._extra_task: asyncio.Task | None = None
         self.cycles = {"team": 0, "mapping": 0, "match": 0, "match_failed": 0, "news": 0, "videos": 0,
                        "player": 0, "player_failed": 0, "article": 0, "article_failed": 0}
         self.player_req: deque = deque()          # время запросов карточек игроков (лимит в минуту)
@@ -94,9 +100,9 @@ class Collector:
         self._predict: PredictionService | None = None
 
     async def close(self):
-        for s in (*self.sources.values(), *self.media.values()):
+        for s in (*self.sources.values(), *self.media.values(), self.fx):
             await s.close()
-        for task in (self._avatar_task, self._bot_task, self._crest_task):
+        for task in (self._avatar_task, self._bot_task, self._crest_task, self._extra_task):
             if task is not None and not task.done():
                 task.cancel()
                 try:
@@ -914,6 +920,11 @@ class Collector:
         m = fotmob.normalize_match(raw)
         if m.get("lineups"):
             store.put(self.conn, f"ctx:match:{fid}", "fotmob", _ctx_from_match(m))
+        # адреса редких запросов (факты, тур, трансляция) — из того же ответа; для tick_extras и API
+        meta = fotmob.match_meta(raw)
+        old = store.get(self.conn, f"ctx:fm:{fid}")
+        if not old or old["data"] != meta:
+            store.put(self.conn, f"ctx:fm:{fid}", "fotmob", meta)
         return m
 
     async def _match_sofascore(self, fid, full):
@@ -972,6 +983,156 @@ class Collector:
                     self.parts[k] = {}
             b[part] = self.parts[k]
         return livescore.normalize_match(b, self._ctx("livescore", fid))
+
+    # ================= экран матча: факты, тур, голоса, трансляция =================
+    # Редкие запросы FotMob (клиент fotmob_extra). Каждый пишет свой снимок; не вышло — снимок не трогаем,
+    # повтор не раньше EXTRA_FAIL_BACKOFF. Частоты — config (INSIGHTS_*, ROUND_*, VOTE_*, LTC_*).
+
+    def _extra_last(self, key: str) -> float:
+        """Когда последний раз ходили за этим снимком: удачный снимок в базе или попытка в памяти."""
+        row = self.conn.execute("SELECT fetched_at FROM snapshots WHERE key=?", (key,)).fetchone()
+        return max(row[0] if row else 0.0, self.extra_tried.get(key, 0.0))
+
+    def _final_due(self, key: str, fin_seen: float | None, now: float) -> bool:
+        """После «завершён» — один финальный снимок (через EXTRA_FINAL_DELAY), дальше заморозка."""
+        if not fin_seen:
+            return False
+        at = fin_seen + config.EXTRA_FINAL_DELAY
+        return now >= at and self._extra_last(key) < at
+
+    def round_interval(self, snap: dict | None, now: float) -> int | None:
+        """Тур идёт (есть live) или до ближайшего несыгранного матча меньше часа — раз в минуту;
+        все матчи сыграны — больше не ходим (None); иначе — раз в ROUND_IDLE_INTERVAL."""
+        if not snap:
+            return 0
+        rows = snap["data"].get("matches") or []
+        if any(r["status"]["live"] for r in rows):
+            return config.ROUND_LIVE_INTERVAL
+        todo = [r for r in rows if not r["status"]["finished"]
+                and r["status"]["state"] not in ("postponed", "cancelled", "abandoned")]
+        if not todo:
+            return None
+        for r in todo:
+            ko = ts(r.get("kickoff"))
+            # началось по расписанию, а статус ещё «до начала» — тоже считаем идущим (до 3 ч)
+            if ko is not None and ko - config.ROUND_BEFORE <= now <= ko + 3 * 3600:
+                return config.ROUND_LIVE_INTERVAL
+        return config.ROUND_IDLE_INTERVAL
+
+    def extras_plan(self, now: float, win: list[str] | None = None) -> list[tuple[str, str, str]]:
+        """Что пора скачать: [(вид, id матча, ключ снимка)]. Только матчи Реала: в окне, ближайший и
+        последний сыгранный (у него — только тур, пока тур не доигран)."""
+        win = self.window(now) if win is None else win
+        ln = self.last_next(now)
+        upcoming = [f for f in ln if f not in win and not self._is_finished(f)]
+        last = [f for f in ln if f not in win and self._is_finished(f)]
+        plan, seen = [], set()
+
+        def add(kind, fid, key, interval, final=False, fin_seen=None):
+            if key in seen or (interval is None and not final) or self.fx.feature_disabled(kind):
+                return
+            if now < self.extra_fail.get(key, 0):
+                return
+            if final:
+                if not self._final_due(key, fin_seen, now):
+                    return
+            elif now - self._extra_last(key) < interval:
+                return
+            seen.add(key)
+            plan.append((kind, fid, key))
+
+        for fid in dict.fromkeys([*win, *upcoming, *last]):
+            meta = store.get(self.conn, f"ctx:fm:{fid}")
+            snap = store.get(self.conn, f"match:{fid}")
+            if not meta or not snap:
+                continue                           # без matchDetails FotMob адресов запросов не знаем
+            meta, m = meta["data"], snap["data"]
+            st = m["status"]
+            ko = ts(m.get("kickoff"))
+            fin_seen = m.get("finished_seen_at")
+            in_win = fid in win
+            ahead = ko - now if ko is not None else None
+            # тур — Ла Лига и ЛЧ; для сыгранного матча — пока тур не доигран
+            rk = meta.get("round_key")
+            if rk and meta.get("parent_league_id") in config.ROUND_LEAGUES:
+                add("round", fid, rk, self.round_interval(store.get(self.conn, rk), now))
+            if fid in last:
+                continue
+            # интересные факты: до матча и в лайве; после свистка не нужны
+            if meta.get("insights_url") and not st["finished"] and (in_win or (ahead is not None and ahead <= config.INSIGHTS_AHEAD)):
+                add("insights", fid, f"insights:{fid}", config.INSIGHTS_LIVE_INTERVAL if in_win else config.INSIGHTS_INTERVAL)
+            # голоса: до матча раз в 10 мин, в лайве — 5, после свистка — один финальный снимок
+            if st["finished"]:
+                add("vote", fid, f"vote:{fid}", 0, final=True, fin_seen=fin_seen)
+            elif st["live"]:
+                add("vote", fid, f"vote:{fid}", config.VOTE_LIVE_INTERVAL)
+            elif ahead is not None and ahead <= config.VOTE_AHEAD:
+                add("vote", fid, f"vote:{fid}", config.VOTE_INTERVAL)
+        return plan
+
+    def _is_finished(self, fid: str) -> bool:
+        s = store.get(self.conn, f"match:{fid}")
+        if s:
+            return bool(s["data"]["status"]["finished"])
+        f = next((f for f in self._fixtures() if str(f.get("id")) == str(fid)), None)
+        return bool(f and f["status"]["finished"])
+
+    async def refresh_extra(self, kind: str, fid: str, key: str, now: float | None = None) -> bool | None:
+        """Один запрос. True — снимок записан, False — у FotMob пока нет данных (404 / пусто), None — ошибка."""
+        now = time.time() if now is None else now
+        self.extra_tried[key] = now
+        meta = (store.get(self.conn, f"ctx:fm:{fid}") or {}).get("data") or {}
+        try:
+            if kind == "insights":
+                data = fotmob.normalize_insights(
+                    await self.fx.insights(fid, meta["insights_url"], meta.get("insights_languages")),
+                    meta.get("home_id"), meta.get("away_id"))
+            elif kind == "round":
+                data = fotmob.normalize_round(await self.fx.round(fid, meta.get("league_id")),
+                                              meta.get("parent_league_id"))
+            elif kind == "vote":
+                data = fotmob.normalize_vote(await self.fx.vote(fid))
+            else:
+                return None
+        except NotFound:
+            return False
+        except SourceError as e:
+            self.extra_fail[key] = now + config.EXTRA_FAIL_BACKOFF
+            log.info("extra %s %s: %s", kind, fid, e)
+            return None
+        except Exception:  # нормализатор не роняет такт
+            self.extra_fail[key] = now + config.EXTRA_FAIL_BACKOFF
+            log.exception("extra %s %s: нормализатор упал", kind, fid)
+            return None
+        self.extra_fail.pop(key, None)
+        if not data:
+            return False
+        if kind == "round":
+            data["match_ids"] = [r["id"] for r in data["matches"] if r.get("id")]
+        store.put(self.conn, key, "fotmob", data, fetched_at=now)
+        return True
+
+    async def tick_extras(self, now: float, win: list[str] | None = None) -> list[tuple[str, str, bool | None]]:
+        """Не больше EXTRA_PER_TICK запросов за такт; в лайве — фоновой задачей, лайв-цикл не ждёт."""
+        if not self.fx.available():
+            return []
+        done = []
+        for kind, fid, key in self.extras_plan(now, win)[:config.EXTRA_PER_TICK]:
+            if not self.fx.available():
+                break
+            res = await self.refresh_extra(kind, fid, key, now)
+            done.append((kind, fid, res))
+            if res is not None:
+                log.info("extra %s %s → %s", kind, fid, "ok" if res else "нет данных")
+        return done
+
+    async def _extras_bg(self, now: float, win: list[str]):
+        try:
+            await self.tick_extras(now, win)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("extras: ошибка (продолжаю)")
 
     # ================= расписание =================
 
@@ -1051,7 +1212,7 @@ class Collector:
 
     def write_state(self):
         with self.conn:
-            for name, s in (*self.sources.items(), *self.media.items()):
+            for name, s in (*self.sources.items(), *self.media.items(), (self.fx.name, self.fx)):
                 store.put_source_state(self.conn, name, s.snapshot())
             store.put_source_state(self.conn, self.bot.name, self.bot.snapshot())
             store.put_source_state(self.conn, "_collector", {
@@ -1105,6 +1266,9 @@ class Collector:
                         self.match_due[fid] = now + config.IDLE_MATCH_INTERVAL
                         m = await self.refresh_match(fid)
                         log.info("idle %s → %s", fid, m and m["source"])
+                # факты, тур, голоса, трансляция — фоновой задачей: медленный эндпоинт не задерживает лайв
+                if self._extra_task is None or self._extra_task.done():
+                    self._extra_task = asyncio.create_task(self._extras_bg(now, win))
                 # заранее собрать все сыгранные матчи сезона и 3 ближайших — открываются мгновенно
                 if not win:
                     await self.tick_backfill(now)
@@ -1387,6 +1551,17 @@ async def _cli(args) -> int:
                 c.write_state()
             elif args.what == "match":
                 print(_summary(await c.refresh_match(args.id)))
+            elif args.what == "extras":
+                if not store.get(conn, f"ctx:fm:{args.id}"):
+                    await c.refresh_match(args.id)
+                meta = (store.get(conn, f"ctx:fm:{args.id}") or {}).get("data") or {}
+                out = {}
+                for kind, key in (("insights", f"insights:{args.id}"), ("round", meta.get("round_key")),
+                                  ("vote", f"vote:{args.id}"), ("ltc", f"ltc:{args.id}")):
+                    if key and (kind != "insights" or meta.get("insights_url")):
+                        out[kind] = await c.refresh_extra(kind, str(args.id), key)
+                print(json.dumps(out, ensure_ascii=False))
+                c.write_state()
             elif args.what == "player":
                 p = await c.refresh_player(args.id)
                 print(json.dumps({k: p.get(k) for k in ("id", "name", "source", "available")} if p else None,
@@ -1444,7 +1619,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "news", "videos", "articles", "player", "players", "avatars", "settle",
+    o.add_argument("what", choices=["team", "mapping", "match", "extras", "news", "videos", "articles", "player", "players", "avatars", "settle",
                                     "cleanup", "crests"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")
