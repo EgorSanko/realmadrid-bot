@@ -152,3 +152,25 @@
 }
 @media (prefers-reduced-motion: reduce) { .bottom-nav__ind { transition: opacity .2s ease; } }
 @keyframes nav-pop { 0% { transform: scale(.8) translateY(2px); } 100% { transform: none; } }
+
+/* ---------- статистика матча (ui/stats.tsx): оживает, когда впервые попала в кадр ---------- */
+/* .mo-reveal ставит React; пока блок не в кадре — исходное положение, .is-in — запуск. Без JS классов нет */
+@media (prefers-reduced-motion: no-preference) {
+  .ui-st.mo-reveal .ui-st__bar span { transform: scaleX(0); }
+  .ui-st.mo-reveal .ui-st__bar span:first-child { transform-origin: 100% 50%; }
+  .ui-st.mo-reveal .ui-st__bar span:last-child { transform-origin: 0 50%; }
+  .ui-st.mo-reveal.is-in .ui-st__bar span { animation: ui-bar .8s var(--ease-out) .05s both; }
+
+  .ui-mom.mo-reveal b { transform: scaleY(0); }
+  .ui-mom.mo-reveal .ui-mom__up b { transform-origin: 50% 100%; }
+  .ui-mom.mo-reveal .ui-mom__dn b { transform-origin: 50% 0; }
+  .ui-mom.mo-reveal.is-in b { animation: ui-mom .45s var(--ease-snap) var(--d, 0ms) both; }
+
+  .ui-shots.mo-reveal .ui-shot { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+  .ui-shots.mo-reveal.is-in .ui-shot { animation: ui-shot .42s var(--ease-out) calc(var(--d, 0ms) + 80ms) both; }
+  .ui-shots.mo-reveal.is-in .ui-shot--goal { animation: ui-shot-goal .55s var(--ease-spring) calc(var(--d, 0ms) + 80ms) both; }
+}
+@keyframes ui-bar { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes ui-mom { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes ui-shot { from { opacity: 0; transform: translateY(-14px) scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes ui-shot-goal { from { opacity: 0; transform: translateY(-18px) scale(.3); } 50% { opacity: 1; } to { opacity: 1; transform: none; } }

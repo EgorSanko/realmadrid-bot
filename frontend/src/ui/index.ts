@@ -11,6 +11,7 @@ export * from './media';
 export * from './playerLink';
 export * from './flip';
 export * from './countUp';
+export * from './reveal';
 export {
   formatKickoff,
   formatTime,

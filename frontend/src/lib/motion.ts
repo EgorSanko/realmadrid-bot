@@ -99,3 +99,4 @@ export function spark(from: Element | DOMRect | null | undefined, to: Element | 
   });
   return Promise.all(done.map((p) => p.catch(() => undefined))).then(() => undefined);
 }
+
