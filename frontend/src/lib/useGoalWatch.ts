@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { celebrateGoal, noteLive, type GoalCelebration } from './celebrate';
-import { createGoalWatcher, sessionSeen, type FreshGoal, type GoalSide } from './goalWatch';
+import { createGoalWatcher, storedSeen, type FreshGoal, type GoalSide } from './goalWatch';
 
 export interface GoalWatchInput {
   id: number | string;
@@ -12,14 +12,15 @@ export interface GoalWatchInput {
 
 function storage(): Storage | null {
   try {
-    return window.sessionStorage;
+    return window.localStorage;
   } catch {
     return null;
   }
 }
 
 /**
- * Следит за счётом лайва и празднует новый гол Реала (lib/goalWatch.ts — правила).
+ * Следит за счётом лайва и празднует гол Реала, которого человек ещё не видел — в том числе забитый,
+ * пока приложение было закрыто (lib/goalWatch.ts — правила). Несколько пропущенных — плашка последнего.
  * Гол соперника — без праздника: счёт сам перелистнётся на табло.
  * details — подробности гола (автор, минута), если экран их знает.
  */
@@ -39,7 +40,7 @@ export function useGoalWatch(
   useEffect(() => {
     if (id == null) return;
     if (live && real) noteLive();
-    watch.current ??= createGoalWatcher(sessionSeen(storage()));
+    watch.current ??= createGoalWatcher(storedSeen(storage()));
     const fresh = watch.current({ id, score: h != null && a != null ? [h, a] : null, live });
     const ours = fresh.filter((g) => g.side === real);
     const g = ours[ours.length - 1];

@@ -1,7 +1,7 @@
 /* Праздник гола (GoalBurst.tsx). Всё движение — transform/opacity; тени и градиенты статичны. */
 .gb {
   position: fixed;
-  z-index: 70;
+  z-index: 110; /* выше плеера во весь экран (.player--css-fs — 100): гол виден и во время трансляции */
   top: 0;
   left: 0;
   right: 0;

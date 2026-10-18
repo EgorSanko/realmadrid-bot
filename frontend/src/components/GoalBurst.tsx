@@ -96,8 +96,10 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
   // 2. запуск: конфетти и «подскок» табло — из JS (случайные траектории), остальное — CSS
   useLayoutEffect(() => {
     if (!info) return;
-    // табло в верхней части экрана — плашка встаёт сразу под ним: перелистывание счёта остаётся на виду
-    const board = Array.from(document.querySelectorAll<HTMLElement>('.ui-flip-score'))
+    // табло в верхней части экрана — плашка встаёт сразу под ним: перелистывание счёта остаётся на виду.
+    // Трансляция во весь экран — табло не видно, плашка сверху поверх видео
+    const fullscreen = !!document.fullscreenElement || !!document.querySelector('.player--css-fs');
+    const board = fullscreen ? undefined : Array.from(document.querySelectorAll<HTMLElement>('.ui-flip-score'))
       .map((s) => s.closest<HTMLElement>('.ui-score-head, .ui-mc') ?? s)
       .map((el) => el.getBoundingClientRect())
       .find((r) => r.height > 0 && r.top >= 0 && r.bottom < window.innerHeight * 0.55);

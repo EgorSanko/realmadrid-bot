@@ -2,14 +2,15 @@
  * Новые голы во время лайва: что праздновать, а что уже показано.
  *
  * Гол определяется по счёту: «матч 123, хозяева, 2-й гол» → ключ `123:home:2`. Так один и тот же гол
- * узнаётся и на главной (там есть только счёт), и на экране матча (счёт + события), и в другой вкладке
- * той же сессии. Показанные ключи — в sessionStorage (rmGoalsSeen).
+ * узнаётся и на главной (там есть только счёт), и на экране матча (счёт + события), и при следующем
+ * открытии приложения. Показанные ключи — в localStorage (rmGoalsSeen): переживают закрытие мини-аппа.
  *
  * Правила:
- *  — первый взгляд на матч (открыли экран, а голы уже забиты) — всё помечаем показанным, без анимации;
- *  — праздник только пока матч идёт; после свистка новые цифры просто помечаем;
- *  — счёт уменьшился (VAR отменил гол) — снимаем пометку с «лишних» ключей: перебитый гол отпразднуем;
- *  — пришло сразу больше двух голов (вкладка спала) — не празднуем, это уже не новость.
+ *  — гол, которого человек ещё не видел, празднуем, пока матч идёт — даже если он забит, пока приложение
+ *    было закрыто (смотрел при 0:0, открыл снова после гола; или впервые открыл на 35-й минуте);
+ *    экран празднует только последний непоказанный гол — одна плашка, не очередь;
+ *  — после свистка новые цифры просто помечаем показанными;
+ *  — счёт уменьшился (VAR отменил гол) — снимаем пометку с «лишних» ключей: перебитый гол отпразднуем.
  *
  * Модуль без рантайм-импортов — его напрямую гоняет `node --test`.
  */
@@ -31,7 +32,6 @@ export interface FreshGoal {
 
 export const SEEN_KEY = 'rmGoalsSeen';
 const SEEN_CAP = 200;
-const MAX_FRESH = 2;
 
 export function goalKeyOf(id: number | string, side: GoalSide, n: number): string {
   return `${id}:${side}:${n}`;
@@ -52,8 +52,8 @@ export interface SeenStore {
   remove(keys: string[]): void;
 }
 
-/** Множество показанных голов поверх sessionStorage; без хранилища — просто в памяти. */
-export function sessionSeen(storage: Pick<Storage, 'getItem' | 'setItem'> | null): SeenStore {
+/** Множество показанных голов поверх хранилища (localStorage); без хранилища — просто в памяти. */
+export function storedSeen(storage: Pick<Storage, 'getItem' | 'setItem'> | null): SeenStore {
   let mem: string[] = [];
   const read = (): string[] => {
     if (!storage) return mem;
@@ -89,10 +89,9 @@ export function sessionSeen(storage: Pick<Storage, 'getItem' | 'setItem'> | null
 }
 
 /**
- * Один шаг наблюдения. first — первый взгляд на этот матч в этом экране.
- * Возвращает голы, которые надо отпраздновать (по порядку), и сам обновляет seen.
+ * Один шаг наблюдения. Возвращает непоказанные голы (по порядку), если матч идёт, и сам обновляет seen.
  */
-export function observeScore(snap: ScoreSnapshot, seen: SeenStore, first: boolean): FreshGoal[] {
+export function observeScore(snap: ScoreSnapshot, seen: SeenStore): FreshGoal[] {
   if (!snap.score) return [];
   const keys = scoreKeys(snap.id, snap.score);
   // VAR: счёт стал меньше — ключи выше текущего счёта больше не «показаны»
@@ -103,17 +102,10 @@ export function observeScore(snap: ScoreSnapshot, seen: SeenStore, first: boolea
   seen.remove(stale);
   const fresh = keys.filter((k) => !seen.has(k.key));
   seen.add(fresh.map((k) => k.key));
-  if (first || !snap.live || fresh.length === 0 || fresh.length > MAX_FRESH) return [];
-  return fresh;
+  return snap.live ? fresh : [];
 }
 
-/** Прогон наблюдателя для одного экрана: помнит, видел ли он уже этот матч. */
+/** Наблюдатель для экрана: тот же observeScore поверх общего хранилища показанных голов. */
 export function createGoalWatcher(seen: SeenStore) {
-  const looked = new Set<string>();
-  return (snap: ScoreSnapshot): FreshGoal[] => {
-    const id = String(snap.id);
-    const first = !looked.has(id);
-    if (snap.score) looked.add(id);
-    return observeScore(snap, seen, first);
-  };
+  return (snap: ScoreSnapshot): FreshGoal[] => observeScore(snap, seen);
 }

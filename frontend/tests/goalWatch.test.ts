@@ -1,7 +1,7 @@
 // Праздник гола: что считается новым голом, а что уже показано. Запуск: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SEEN_KEY, createGoalWatcher, observeScore, scoreKeys, sessionSeen } from '../src/lib/goalWatch.ts';
+import { SEEN_KEY, createGoalWatcher, observeScore, scoreKeys, storedSeen } from '../src/lib/goalWatch.ts';
 
 function memStorage() {
   const m = new Map<string, string>();
@@ -15,57 +15,70 @@ test('ключи голов — по счёту: матч, сторона, но�
   );
 });
 
-test('открыли экран с уже забитыми голами — без праздника', () => {
-  const w = createGoalWatcher(sessionSeen(memStorage()));
-  assert.deepEqual(w({ id: 1, score: [2, 1], live: true }), []);
-  // повторный ответ с тем же счётом — тоже ничего
-  assert.deepEqual(w({ id: 1, score: [2, 1], live: true }), []);
+test('впервые открыли на 35-й минуте при 1:0 — гол празднуем, повтор того же счёта — нет', () => {
+  const w = createGoalWatcher(storedSeen(memStorage()));
+  assert.deepEqual(w({ id: 1, score: [1, 0], live: true }), [{ key: '1:home:1', side: 'home', n: 1 }]);
+  assert.deepEqual(w({ id: 1, score: [1, 0], live: true }), []);
+});
+
+test('смотрел при 0:0, закрыл, открыл снова после гола — праздник пропущенного гола', () => {
+  const st = memStorage();
+  createGoalWatcher(storedSeen(st))({ id: 9, score: [0, 0], live: true });
+  // новое открытие приложения: новый экран, то же хранилище
+  const again = createGoalWatcher(storedSeen(st));
+  assert.deepEqual(again({ id: 9, score: [1, 0], live: true }), [{ key: '9:home:1', side: 'home', n: 1 }]);
+  // и ещё одно открытие — уже показанный гол не повторяется
+  assert.deepEqual(createGoalWatcher(storedSeen(st))({ id: 9, score: [1, 0], live: true }), []);
 });
 
 test('новый гол во время лайва — один праздник', () => {
-  const w = createGoalWatcher(sessionSeen(memStorage()));
+  const w = createGoalWatcher(storedSeen(memStorage()));
   w({ id: 1, score: [0, 0], live: true });
   assert.deepEqual(w({ id: 1, score: [1, 0], live: true }), [{ key: '1:home:1', side: 'home', n: 1 }]);
   assert.deepEqual(w({ id: 1, score: [1, 0], live: true }), []);
   assert.deepEqual(w({ id: 1, score: [1, 1], live: true }), [{ key: '1:away:1', side: 'away', n: 1 }]);
 });
 
-test('до начала счёта нет — первый взгляд наступает со стартом матча', () => {
-  const w = createGoalWatcher(sessionSeen(memStorage()));
+test('пропустил несколько голов — все непоказанные по порядку (экран берёт последний)', () => {
+  const w = createGoalWatcher(storedSeen(memStorage()));
+  w({ id: 1, score: [0, 0], live: true });
+  assert.deepEqual(
+    w({ id: 1, score: [2, 1], live: true }).map((g) => g.key),
+    ['1:home:1', '1:home:2', '1:away:1'],
+  );
+});
+
+test('до начала счёта нет; после свистка — не празднуем, но помечаем', () => {
+  const st = memStorage();
+  const w = createGoalWatcher(storedSeen(st));
   assert.deepEqual(w({ id: 1, score: null, live: false }), []);
   assert.deepEqual(w({ id: 1, score: [0, 0], live: true }), []);
-  assert.equal(w({ id: 1, score: [0, 1], live: true }).length, 1);
+  assert.deepEqual(w({ id: 1, score: [2, 0], live: false }), []);
+  assert.ok(JSON.parse(st.m.get(SEEN_KEY)!).includes('1:home:2'));
 });
 
-test('после свистка и при пачке голов (вкладка спала) — не празднуем', () => {
-  const w = createGoalWatcher(sessionSeen(memStorage()));
-  w({ id: 1, score: [0, 0], live: true });
-  assert.deepEqual(w({ id: 1, score: [3, 0], live: true }), []);
-  assert.deepEqual(w({ id: 1, score: [3, 1], live: false }), []);
-});
-
-test('показанный гол не повторяется на другом экране той же сессии', () => {
+test('показанный гол не повторяется на другом экране', () => {
   const st = memStorage();
-  const home = createGoalWatcher(sessionSeen(st));
+  const home = createGoalWatcher(storedSeen(st));
   home({ id: 5, score: [0, 0], live: true });
   assert.equal(home({ id: 5, score: [1, 0], live: true }).length, 1);
   assert.ok(JSON.parse(st.m.get(SEEN_KEY)!).includes('5:home:1'));
   // экран матча открылся позже и видит уже следующий опрос
-  const match = createGoalWatcher(sessionSeen(st));
+  const match = createGoalWatcher(storedSeen(st));
   assert.deepEqual(match({ id: 5, score: [1, 0], live: true }), []);
-  assert.deepEqual(observeScore({ id: 5, score: [1, 0], live: true }, sessionSeen(st), false), []);
+  assert.deepEqual(observeScore({ id: 5, score: [1, 0], live: true }, storedSeen(st)), []);
 });
 
 test('VAR отменил гол — перебитый гол снова праздник', () => {
-  const w = createGoalWatcher(sessionSeen(memStorage()));
+  const w = createGoalWatcher(storedSeen(memStorage()));
   w({ id: 1, score: [0, 0], live: true });
   assert.equal(w({ id: 1, score: [1, 0], live: true }).length, 1);
   assert.deepEqual(w({ id: 1, score: [0, 0], live: true }), []);
   assert.equal(w({ id: 1, score: [1, 0], live: true }).length, 1);
 });
 
-test('без sessionStorage (приватный режим) — работает в памяти', () => {
-  const w = createGoalWatcher(sessionSeen(null));
+test('без хранилища (приватный режим) — работает в памяти', () => {
+  const w = createGoalWatcher(storedSeen(null));
   w({ id: 1, score: [0, 0], live: true });
   assert.equal(w({ id: 1, score: [0, 1], live: true }).length, 1);
   assert.deepEqual(w({ id: 1, score: [0, 1], live: true }), []);
