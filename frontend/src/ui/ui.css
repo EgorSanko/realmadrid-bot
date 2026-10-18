@@ -64,7 +64,8 @@
 .ui-badge--injury { padding: 3px 8px; border-radius: 7px; background: var(--ui-live-bg); color: var(--ui-live-ink); font-size: 12px; font-weight: 600; }
 
 /* ---------- Button ---------- */
-.ui-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; border: 0; border-radius: 14px; font: inherit; cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; transition: background-color .15s ease; }
+.ui-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; border: 0; border-radius: 14px; font: inherit; cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; transition: background-color .15s ease, transform .1s ease; }
+.ui-btn:active:not(:disabled) { transform: scale(.98); }
 .ui-btn:disabled { opacity: .45; cursor: default; }
 .ui-btn--block { display: flex; width: 100%; }
 .ui-btn--primary { height: 50px; background: var(--gold-grad); color: var(--gold-ink); font-weight: 700; font-size: 15px; box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22); }
@@ -118,6 +119,7 @@
 .ui-ptap { color: inherit; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 10px; }
 .ui-ptap:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 @media (hover: hover) { .ui-ptap:hover .ui-pin__name, a.ui-ptap.ui-pl__tap:hover .ui-pl__nm { color: var(--gold-light); } }
+.ui-ptap:active { opacity: .78; }
 /* фото + имя в одну строку; имя режется многоточием, фото фиксированного размера */
 .ui-pin { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; vertical-align: middle; }
 .ui-pin__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

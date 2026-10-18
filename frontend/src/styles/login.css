@@ -32,8 +32,12 @@
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(212, 175, 55, 0.22);
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease, opacity 0.15s ease;
 }
 
+.tg-login__btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
 
 .tg-login__btn:disabled {
   opacity: 0.7;

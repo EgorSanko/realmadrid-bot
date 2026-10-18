@@ -38,8 +38,12 @@
   margin: -3px -3px -3px 0;
   border-radius: 50%;
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease;
 }
 
+.avatar-btn:active {
+  transform: scale(0.94);
+}
 
 .avatar-btn:focus-visible {
   outline: 2px solid var(--gold);

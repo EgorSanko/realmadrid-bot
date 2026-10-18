@@ -120,7 +120,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
 
   const label =
     status === 'live' ? `Идёт матч: ${home.name} — ${away.name}` : status === 'finished' ? 'Матч завершён' : 'Ближайший матч';
-  const cls = cx('ui-mc', status === 'live' && 'ui-mc--live', 'hero-mc', `hero-mc--${status}`, started.current && 'hero-mc--started', href != null && 'ui-press-soft', className);
+  const cls = cx('ui-mc', status === 'live' && 'ui-mc--live', 'hero-mc', `hero-mc--${status}`, started.current && 'hero-mc--started', className);
   return (
     <section className="hero-wrap" aria-label={label}>
       {href != null ? (
@@ -225,7 +225,7 @@ export function MatchRow(p: MatchRowProps) {
     </>
   );
   const label = done ? `${home.name} ${score![0]}:${score![1]} ${away.name}, ${c.name}` : `${home.name} — ${away.name}, ${c.name}`;
-  const cls = cx('mrow', 'ui-press-soft', p.highlighted && 'mrow--next', className);
+  const cls = cx('mrow', p.highlighted && 'mrow--next', className);
   return href != null ? (
     <a className={cls} href={href} onClick={onClick} aria-label={label}>
       {inner}

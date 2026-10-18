@@ -30,7 +30,7 @@ export function PlayerTap({ player, playerHref, onPlayerClick, children, classNa
   if (id == null || !playerHref) return <span className={className}>{children}</span>;
   return (
     <a
-      className={cx('ui-ptap', 'ui-press-soft', className)}
+      className={cx('ui-ptap', className)}
       href={playerHref(id)}
       aria-label={label ?? `${player.name} — карточка игрока`}
       onClick={onPlayerClick ? (e) => onPlayerClick({ id, name: player.name }, e) : undefined}

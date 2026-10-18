@@ -53,7 +53,7 @@ export function NewsItem({ title, source, time, href, imageUrl, variant = 'row',
   const [noImg, setNoImg] = useState(!imageUrl);
   const Tag = href != null ? 'a' : 'article';
   return (
-    <Tag className={cx('ui-news', `ui-news--${variant}`, href != null && 'ui-press-soft', className)} href={href}>
+    <Tag className={cx('ui-news', `ui-news--${variant}`, className)} href={href}>
       {!noImg && imageUrl && (
         <span className="ui-news__thumb">
           <Thumb src={imageUrl} className="ui-news__img" onFail={() => setNoImg(true)} />
@@ -109,7 +109,7 @@ export function VideoCard({
   const Tag = href != null ? 'a' : 'article';
   if (variant === 'tile') {
     return (
-      <Tag className={cx('ui-vtile', href != null && 'ui-press-soft', className)} href={href}>
+      <Tag className={cx('ui-vtile', className)} href={href}>
         <span className="ui-vtile__screen">
           {thumbnailUrl && <Thumb src={thumbnailUrl} className="ui-video__img" />}
           <span className="ui-vtile__play">{PLAY(16)}</span>
@@ -120,7 +120,7 @@ export function VideoCard({
     );
   }
   return (
-    <Tag className={cx('ui-card', 'ui-card--bleed', 'ui-video', href != null && 'ui-press-soft', className)} href={href}>
+    <Tag className={cx('ui-card', 'ui-card--bleed', 'ui-video', className)} href={href}>
       <span className="ui-video__screen" style={{ height }}>
         {thumbnailUrl && <Thumb src={thumbnailUrl} className="ui-video__img" />}
         <span className="ui-video__play">{PLAY(22)}</span>
@@ -154,7 +154,7 @@ export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, dis
     <div className={cx('ui-stepper', className)} role="group" aria-label={`Голы — ${teamName}`}>
       <button
         type="button"
-        className="ui-stepper__btn ui-stepper__btn--minus ui-press"
+        className="ui-stepper__btn ui-stepper__btn--minus"
         aria-label={`Меньше голов — ${teamName}`}
         disabled={disabled || value <= min}
         onClick={() => onChange(Math.max(min, value - 1))}
@@ -166,7 +166,7 @@ export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, dis
       </span>
       <button
         type="button"
-        className="ui-stepper__btn ui-press"
+        className="ui-stepper__btn"
         aria-label={`Больше голов — ${teamName}`}
         disabled={disabled || value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
