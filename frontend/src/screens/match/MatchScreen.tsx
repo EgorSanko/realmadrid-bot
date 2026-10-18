@@ -9,7 +9,8 @@ import { OverviewTab } from './OverviewTab';
 import { StatsTab } from './StatsTab';
 import { useMatch } from './useMatch';
 import { useScrollAnchorFallback } from './useScrollAnchor';
-import { compactTitle, headerView, teamRef, tournamentLine } from './view';
+import { REAL_ID, compactTitle, goals, headerView, minuteText, realSide, shortName, teamRef, tournamentLine } from './view';
+import { useGoalWatch } from '../../lib/useGoalWatch';
 import { addMatchToCalendar, canAddToCalendar } from '../../lib/nativeBridge';
 import './match.css';
 
@@ -54,6 +55,20 @@ export default function MatchScreen() {
   const match = state.kind === 'ok' ? state.match : null;
   const head = useMemo(() => (match ? headerView(match) : null), [match]);
   useScrollAnchorFallback(match);
+
+  // новый гол в лайве: Реал — праздник (плашка, конфетти), соперник — только перелистывание табло
+  const hasReal = !!match && (match.home.id === REAL_ID || match.away.id === REAL_ID);
+  useGoalWatch(
+    match && head ? { id: match.id ?? id, score: head.score, live: head.live, real: hasReal ? realSide(match) : null } : null,
+    (g) => {
+      const ev = match ? goals(match).filter((x) => x.side === g.side)[g.n - 1]?.ev : undefined;
+      const pid = Number(ev?.player?.id);
+      return {
+        minute: ev ? minuteText(ev.minute, ev.added) : head?.minute,
+        scorer: ev?.player?.name ? { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name: shortName(ev.player.name) } : null,
+      };
+    },
+  );
 
   useEffect(() => {
     document.title = match ? `${compactTitle(match)} — Мадридиста` : 'Матч — Мадридиста';

@@ -1,0 +1,44 @@
+/* Общий моушен интерфейса. Правила: только transform и opacity (+ статичный clip-path),
+   появления — expo-out, пружина — только там, где есть «удар». prefers-reduced-motion — без движения. */
+:root {
+  --ease-out: cubic-bezier(.22, 1, .36, 1);      /* expo-out: появления */
+  --ease-in: cubic-bezier(.55, 0, .75, .2);      /* уход, падение */
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1); /* пружина с перелётом */
+  --ease-snap: cubic-bezier(.3, 1.35, .5, 1);     /* мягкий отскок в конце */
+}
+
+/* ---------- табло с перелистыванием (ui/flip.tsx) ---------- */
+.ui-flip { display: inline-flex; white-space: pre; }
+.ui-flip__c { position: relative; display: inline-block; }
+.ui-flip__fx { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ui-flip__c.is-flip > .ui-flip__b { visibility: hidden; }
+  .ui-flip__fx { position: absolute; inset: 0; display: block; pointer-events: none; }
+  .ui-flip__fx > span { position: absolute; inset: 0; text-align: center; backface-visibility: hidden; }
+  /* сверху — новая цифра (её открывает падающая старая), снизу — старая (её накрывает новая) */
+  .ui-flip__nt, .ui-flip__ft { clip-path: inset(0 0 50% 0); }
+  .ui-flip__ob, .ui-flip__fb { clip-path: inset(50% 0 0 0); }
+  .ui-flip__ft { transform-origin: 50% 50%; animation: ui-flip-top .26s var(--ease-in) var(--flip-d, 0ms) both; }
+  .ui-flip__fb { transform-origin: 50% 50%; animation: ui-flip-bot .3s var(--ease-snap) calc(var(--flip-d, 0ms) + .25s) both; }
+  .ui-flip__ob { animation: ui-flip-ob .18s ease-out calc(var(--flip-d, 0ms) + .3s) both; }
+  .ui-flip__nt { animation: ui-flip-nt .26s ease-out var(--flip-d, 0ms) both; }
+}
+@keyframes ui-flip-top {
+  from { transform: perspective(220px) rotateX(0); }
+  to { transform: perspective(220px) rotateX(-90deg); opacity: .55; }
+}
+@keyframes ui-flip-bot {
+  from { transform: perspective(220px) rotateX(90deg); opacity: .55; }
+  to { transform: perspective(220px) rotateX(0); opacity: 1; }
+}
+@keyframes ui-flip-ob { to { opacity: 0; } }
+@keyframes ui-flip-nt { from { opacity: .35; } }
+
+/* ---------- конфетти (lib/confetti.ts): геометрия, без картинок ---------- */
+.cf-x { position: absolute; left: 0; top: 0; display: block; }
+.cf-p { position: absolute; display: block; left: -4px; top: -6px; width: 8px; height: 12px; border-radius: 1.5px; }
+.cf-p--strip { left: -2px; top: -8px; width: 4px; height: 16px; border-radius: 2px; }
+.cf-p--dot { left: -3.5px; top: -3.5px; width: 7px; height: 7px; border-radius: 50%; }
+.cf-p--diamond { left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 1px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }

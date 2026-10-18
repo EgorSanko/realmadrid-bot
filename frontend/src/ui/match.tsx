@@ -11,6 +11,7 @@ import {
   toMs,
   type DateInput,
 } from './format';
+import { FlipScore } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { PlayerInline, type PlayerLinkProps } from './playerLink';
 
@@ -217,7 +218,9 @@ export function MatchCard(props: MatchCardProps) {
             <span className="ui-mc__name">{home.name}</span>
           </div>
           <div className="ui-mc__mid">
-            <div className="ui-mc__score">{score ? `${score[0]} : ${score[1]}` : '0 : 0'}</div>
+            <div className="ui-mc__score">
+              <FlipScore score={score ?? [0, 0]} />
+            </div>
             {props.minute && <div className="ui-mc__minute">{props.minute}</div>}
           </div>
           <div className="ui-mc__team">
@@ -295,7 +298,9 @@ export function ScoreHeader({ home, away, status, score, kickoff, minute, status
           {status === 'upcoming' ? (
             <div className="ui-mc__vs">VS</div>
           ) : (
-            <div className="ui-score-head__score">{score ? `${score[0]} : ${score[1]}` : '0 : 0'}</div>
+            <div className="ui-score-head__score">
+              <FlipScore score={score ?? [0, 0]} />
+            </div>
           )}
           {status === 'live' && minute ? (
             <div className="ui-mc__minute">{minute}</div>

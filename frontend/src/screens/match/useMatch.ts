@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { LIVE_POLL_MS, fetchMatch, matchFingerprint, shouldPoll, type ApiMatch, type MatchResult } from '../../api/match';
+import { DEBUG_GOAL_DELAY, debugGoalMatch, debugGoalMode } from '../../dev/debugGoal';
 
 export type MatchLoad =
   | { kind: 'loading' }
@@ -60,7 +61,9 @@ export function useMatch(id: string): { state: MatchLoad; reload: () => void } {
       const c = new AbortController();
       ctrl.current = c;
       try {
-        const r = await fetchMatch(id, c.signal);
+        let r = await fetchMatch(id, c.signal);
+        // dev: ?debugGoal=1 — симуляция гола (в прод-сборку не попадает)
+        if (import.meta.env.DEV && r.kind === 'ok') r = { kind: 'ok', match: debugGoalMatch(r.match) };
         if (alive && !c.signal.aborted) apply(r);
       } catch (e) {
         if ((e as Error).name !== 'AbortError' && alive) apply({ kind: 'error', message: String(e) });
@@ -80,8 +83,11 @@ export function useMatch(id: string): { state: MatchLoad; reload: () => void } {
 
     void load();
     document.addEventListener('visibilitychange', onVisible);
+    let dbg = 0;
+    if (import.meta.env.DEV && debugGoalMode()) dbg = window.setTimeout(() => alive && void load(), DEBUG_GOAL_DELAY + 100);
     return () => {
       alive = false;
+      window.clearTimeout(dbg);
       window.clearTimeout(timer.current);
       ctrl.current?.abort();
       document.removeEventListener('visibilitychange', onVisible);

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
+import { GoalLayer } from './components/GoalLayer';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { RouteMeta } from './components/RouteMeta';
@@ -188,6 +189,7 @@ function AppRoutes() {
       </div>
       {desktop ? <SiteFooter /> : <BottomNav />}
       <Toaster />
+      <GoalLayer />
       {bg && (
         <Routes>
           <Route path="/player/:id" element={player} />

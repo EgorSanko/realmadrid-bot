@@ -7,6 +7,7 @@
 import type { MouseEventHandler, ReactNode } from 'react';
 import { Badge, Chip } from './base';
 import { cx, formatKickoff, formatTime, formatWeekdayShort, formatDayShort, type DateInput } from './format';
+import { FlipScore } from './flip';
 import { LeagueLogo, TeamCrest } from './images';
 import { Countdown, OutcomeBadge, type CompetitionRef, type MatchStatus, type Outcome, type TeamRef } from './match';
 import './matchExtra.css';
@@ -95,7 +96,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
             <span className="ui-mc__name">{home.name}</span>
           </div>
           <div className="ui-mc__mid">
-            <div className="ui-mc__score">{sc}</div>
+            <div className="ui-mc__score">{live && score ? <FlipScore score={score} /> : sc}</div>
             {live && props.minute && <div className="ui-mc__minute">{props.minute}</div>}
             {!live && <div className="hero-mc__final">Финальный свисток</div>}
           </div>
