@@ -11,7 +11,7 @@ import { useMatch } from './useMatch';
 import { useScrollAnchorFallback } from './useScrollAnchor';
 import { REAL_ID, compactTitle, goals, headerView, minuteText, realSide, shortName, teamRef, tournamentLine } from './view';
 import { useGoalWatch } from '../../lib/useGoalWatch';
-import { flyFrom, takeRects } from '../../lib/flipOrigin';
+import { takeRects } from '../../lib/flipOrigin';
 import { reducedMotion } from '../../lib/motion';
 import { addMatchToCalendar, canAddToCalendar } from '../../lib/nativeBridge';
 import './match.css';
@@ -58,20 +58,24 @@ export default function MatchScreen() {
   const head = useMemo(() => (match ? headerView(match) : null), [match]);
   useScrollAnchorFallback(match);
 
-  // пришли с карточки матча: эмблемы команд перелетают из неё в шапку (lib/flipOrigin.ts)
+  // пришли с карточки матча: шапка собирается — эмблемы проявляются с лёгким ростом, следом счёт/«vs».
+  // Перелёт эмблем из списка (FLIP) убран: строка списка стоит там же, где в шапке цифры отсчёта, и
+  // эмблемы ползли поперёк них — выглядело как сбой.
   const ready = !!head;
   useLayoutEffect(() => {
     if (!ready) return;
-    // только если шапка появилась почти сразу: после скелетона (данные шли дольше) списка с эмблемами уже
-    // давно нет на экране, и полёт «из пустоты» поперёк отсчёта выглядел как сбой
-    const from = takeRects(`match:${id}`, 450);
-    if (!from || reducedMotion()) return;
+    if (!takeRects(`match:${id}`) || reducedMotion()) return;
     const crests = document.querySelectorAll<HTMLElement>('.mt .ui-score-head .ui-crest, .mt .mt-top__title .ui-crest');
-    if (crests.length < 2) return;
-    flyFrom(crests[0], from[0]);
-    flyFrom(crests[1], from[1]);
-    document.querySelector<HTMLElement>('.mt .ui-score-head__score, .mt .ui-score-head .ui-mc__vs')?.animate(
-      [{ opacity: 0, transform: 'scale(.85)' }, { opacity: 1, transform: 'none' }],
+    crests.forEach((c, i) =>
+      c.animate?.([{ opacity: 0, transform: 'scale(.82)' }, { opacity: 1, transform: 'none' }], {
+        duration: 420,
+        delay: i * 60,
+        easing: 'cubic-bezier(.22,1,.36,1)',
+        fill: 'backwards',
+      }),
+    );
+    document.querySelector<HTMLElement>('.mt .ui-score-head__score, .mt .ui-score-head .ui-mc__vs')?.animate?.(
+      [{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }],
       { duration: 380, delay: 120, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' },
     );
   }, [ready, id]);
