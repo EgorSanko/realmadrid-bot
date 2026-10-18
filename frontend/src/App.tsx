@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useRef } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, type ComponentType } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router';
 import { BottomNav } from './components/BottomNav';
 import { GoalLayer } from './components/GoalLayer';
@@ -28,12 +28,30 @@ const chunks = {
   penalty: () => import('./screens/games/PenaltyScreen'),
 };
 
+/**
+ * lazy() с подгрузкой заранее: пока чанк не загружен — обычный lazy (Suspense), после загрузки
+ * экран рисуется сразу. Простой lazy даже по готовому чанку показывает пустой fallback минимум ~300 мс.
+ */
+function preloadable<P extends object>(load: () => Promise<{ default: ComponentType<P> }>) {
+  let Ready: ComponentType<P> | null = null;
+  const get = () =>
+    load().then((m) => {
+      Ready = m.default;
+      return m;
+    });
+  const Lazy = lazy(get);
+  function Screen(props: P) {
+    return Ready ? <Ready {...props} /> : <Lazy {...props} />;
+  }
+  return Object.assign(Screen, { preload: get });
+}
+
 function usePreloadScreens() {
   useEffect(() => {
     const idle = (window as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
     const run = () => {
       // по одному, чтобы не отнимать сеть у данных текущего экрана
-      Object.values(chunks).reduce<Promise<unknown>>((q, load) => q.then(load).catch(() => {}), Promise.resolve());
+      SCREENS.reduce<Promise<unknown>>((q, s) => q.then(s.preload).catch(() => {}), Promise.resolve());
     };
     const t = window.setTimeout(() => (idle ? idle(run, { timeout: 2000 }) : run()), 1200);
     return () => window.clearTimeout(t);
@@ -47,20 +65,22 @@ const AdminScreen = lazy(() => import('./screens/AdminScreen'));
 const UiKitPage =
   import.meta.env.DEV || import.meta.env.VITE_UIKIT === '1' ? lazy(() => import('./dev/UiKitPage')) : null;
 // экран матча, «Команда», «Медиа» и карточка игрока — свои ленивые чанки
-const MatchScreen = lazy(chunks.match);
-const TeamScreen = lazy(chunks.team);
-const MediaScreen = lazy(chunks.media);
-const PlayerScreen = lazy(chunks.player);
+const MatchScreen = preloadable(chunks.match);
+const TeamScreen = preloadable(chunks.team);
+const MediaScreen = preloadable(chunks.media);
+const PlayerScreen = preloadable(chunks.player);
 // чтение новости и просмотр видео внутри приложения — свои ленивые чанки (iframe YouTube — только там)
 const NewsScreen = lazy(() => import('./screens/media/NewsScreen'));
 const VideoScreen = lazy(() => import('./screens/media/VideoScreen'));
 // профиль и вход — свой ленивый чанк
 const ProfileScreen = lazy(() => import('./screens/profile/ProfileScreen'));
 // прогнозы — свой ленивый чанк (общая часть с блоком на главной — отдельный чанк)
-const PredictScreen = lazy(chunks.predict);
+const PredictScreen = preloadable(chunks.predict);
 // игры раздела «Игры» — викторина и пенальти, каждая своим ленивым чанком
-const QuizScreen = lazy(chunks.quiz);
-const PenaltyScreen = lazy(chunks.penalty);
+const QuizScreen = preloadable(chunks.quiz);
+const PenaltyScreen = preloadable(chunks.penalty);
+// порядок фоновой подгрузки: сначала вкладки меню, потом матч и игрок
+const SCREENS = [TeamScreen, MediaScreen, PredictScreen, QuizScreen, MatchScreen, PlayerScreen, PenaltyScreen];
 // политика конфиденциальности и условия — свой ленивый чанк
 const LegalScreen = lazy(() => import('./screens/legal/LegalScreen'));
 // неизвестный адрес — страница «не найдено» (раньше молча уводили на главную)
