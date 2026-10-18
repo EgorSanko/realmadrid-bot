@@ -53,6 +53,8 @@ const PITCH_H = 470;
 
 /** Поле с расстановкой (a-match-lineup): фото, оценка, номер, фамилия. */
 export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый состав на поле', className, playerHref, onPlayerClick }: PitchProps) {
+  // выход на поле: линиями от вратаря к нападающим (по y), внутри линии — от края к краю
+  const lines = Array.from(new Set(players.map((p) => Math.round(p.y * 20)))).sort((a, b) => a - b);
   return (
     <section className={cx('ui-pitch', className)} aria-label={ariaLabel}>
       <svg className="ui-pitch__lines" viewBox={`0 0 ${PITCH_W} ${PITCH_H}`} aria-hidden="true" preserveAspectRatio="none">
@@ -70,7 +72,8 @@ export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый
         {players.map((p, i) => {
           const left = (mirrorX ? 1 - p.x : p.x) * 100;
           const top = (1 - p.y) * 100;
-          const style: CSSProperties = { left: `${left}%`, top: `${top}%` };
+          const line = lines.indexOf(Math.round(p.y * 20));
+          const style = { left: `${left}%`, top: `${top}%`, '--pl-d': `${line * 85 + Math.round(left * 0.6)}ms` } as CSSProperties;
           const body = (
             <>
               <span className="ui-pl__shirt">

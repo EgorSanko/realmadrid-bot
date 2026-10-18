@@ -107,3 +107,18 @@
   background: radial-gradient(circle, #FFFDF2 0 20%, #F8DF8E 32%, rgba(244, 213, 122, .7) 44%, rgba(212, 175, 55, .25) 60%, transparent 72%);
 }
 .mo-spark__dot--tail { background: radial-gradient(circle, #F4D57A 0 25%, rgba(212, 175, 55, .4) 55%, transparent 72%); }
+
+/* ---------- состав на поле (ui/stats.tsx Pitch): игроки выбегают линиями от вратаря к атаке ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .ui-pl { animation: ui-pl-in .5s var(--ease-snap) var(--pl-d, 0ms) both; }
+  .ui-pitch__lines { animation: ui-fade .5s ease-out both; }
+}
+@keyframes ui-pl-in {
+  from { transform: translateY(34px) scale(.55); opacity: 0; }
+  45% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes ui-fade { from { opacity: 0; } }
+
+/* карточка игрока раскрывается из кружка: пока идёт переход, обычное появление выключено */
+.pc.pc--flip { animation: none; }
