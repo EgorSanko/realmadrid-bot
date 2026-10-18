@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { MouseEvent } from 'react';
+import type { MouseEvent, RefObject } from 'react';
 import { LoginButton } from '../../components/LoginButton';
 import { AuthFetchError, authFetch, inMiniApp, useAuth } from '../../lib/auth';
 import { competitionOf } from '../../lib/mapMatches';
 import { livePoints, predictError, rmGoals, scorerName, shortName, teamIdOf } from '../../lib/predict';
 import type { NextMatch, PredictionView, SquadPlayer } from '../../lib/predict';
+import { pop, spark, stamp } from '../../lib/motion';
 import { Badge, Button, Chip, Countdown, PlayerPhoto, ScorePicker, ScoreStepper, TeamCrest, formatKickoff, formatTime, formatWeekdayShort } from '../../ui';
 
 type Msg = { tone: 'ok' | 'err'; text: string } | null;
@@ -16,7 +17,7 @@ interface SaveState {
 }
 
 /** Сохранение прогноза: PUT /api/predict/matches/{id}; ошибки — по-русски (lib/predict.predictError). */
-function useSave(match: NextMatch, onSaved: (p: PredictionView) => void, onClosed: () => void) {
+function useSave(match: NextMatch, onSaved: (p: PredictionView) => void, onClosed: () => void, card?: RefObject<HTMLElement | null>) {
   const [st, setSt] = useState<SaveState>({ busy: false, msg: null, needLogin: false });
   useEffect(() => {
     if (!st.msg || st.msg.tone !== 'ok') return;
@@ -32,6 +33,7 @@ function useSave(match: NextMatch, onSaved: (p: PredictionView) => void, onClose
         method: 'PUT',
         body,
       });
+      celebrateSave(card?.current ?? null);
       onSaved({ home: r.home, away: r.away, first_scorer_id: r.first_scorer_id, updated_at: r.updated_at, revisions: r.revisions });
       setSt({ busy: false, msg: { tone: 'ok', text: 'Прогноз сохранён' }, needLogin: false });
     } catch (e) {
@@ -42,6 +44,30 @@ function useSave(match: NextMatch, onSaved: (p: PredictionView) => void, onClose
     }
   };
   return { ...st, save };
+}
+
+/**
+ * Прогноз принят: карточка «штампуется» (вдавливается и пружинит, по контуру — золотое кольцо),
+ * от кнопки к плитке «Очки» пролетает искра, плитка откликается. Положение кнопки снимаем до
+ * перерисовки — на главной после сохранения кнопка исчезает.
+ */
+function celebrateSave(card: HTMLElement | null) {
+  if (!card) return;
+  const btn = card.querySelector('.pd-save, .hp-save');
+  const tile = document.querySelector('.pd-tile');
+  stamp(card);
+  if (btn && tile) {
+    void spark(btn.getBoundingClientRect(), tile).then(() => pop(tile, 1.06));
+  }
+}
+
+/** Галочка «сохранён»: сразу после сохранения рисуется штрихом, в остальное время просто стоит. */
+function SavedCheck({ draw }: { draw: boolean }) {
+  return (
+    <svg className={`pd-check${draw ? ' pd-check--draw' : ''}`} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12.5l4.5 4.5L19 7.5" pathLength={1} />
+    </svg>
+  );
 }
 
 function initial(m: NextMatch): [number, number, string | null] {
@@ -198,7 +224,8 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
   const [[home, away, scorerRaw], setVals] = useState(() => initial(match));
   const savedKey = `${match.id}:${match.my_prediction?.updated_at ?? ''}`;
   useEffect(() => setVals(initial(match)), [savedKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const s = useSave(match, onSaved, onClosed);
+  const card = useRef<HTMLElement>(null);
+  const s = useSave(match, onSaved, onClosed, card);
   const comp = competitionOf(match.tournament ?? null);
   const realGoals = rmGoals(home, away, match.rm_side);
   const scorer = realGoals > 0 ? scorerRaw : null;
@@ -208,7 +235,7 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
   const squad = useMemo(() => match.rm_squad, [match.rm_squad]);
 
   return (
-    <section className="ui-card pd-match" aria-label="Прогноз на матч">
+    <section ref={card} className="ui-card pd-match" aria-label="Прогноз на матч">
       <div className="pd-match__meta">
         <Chip label={comp.name} tone={comp.tone === 'ucl' ? 'ucl' : 'gold'} leagueId={comp.withLogo ? comp.id : undefined} />
         <span>{formatKickoff(match.kickoff_utc)}</span>
@@ -245,7 +272,18 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
             <p className="pd-muted pd-login">Входим через Telegram…</p>
           ) : (
             <Button className="pd-save" disabled={s.busy || !dirty} onClick={() => void s.save(home, away, scorer)}>
-              {s.busy ? 'Сохраняем…' : !dirty ? 'Прогноз сохранён' : p ? 'Изменить прогноз' : 'Сохранить прогноз'}
+              {s.busy ? (
+                'Сохраняем…'
+              ) : !dirty ? (
+                <>
+                  <SavedCheck draw={s.msg?.tone === 'ok'} />
+                  Прогноз сохранён
+                </>
+              ) : p ? (
+                'Изменить прогноз'
+              ) : (
+                'Сохранить прогноз'
+              )}
             </Button>
           )}
           {s.needLogin && !inMiniApp() && <LoginButton compact />}
@@ -276,7 +314,8 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
     setVals(initial(match));
     setEditing(!match.my_prediction);
   }, [savedKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const s = useSave(match, onSaved, onClosed);
+  const card = useRef<HTMLElement>(null);
+  const s = useSave(match, onSaved, onClosed, card);
   const p = match.my_prediction;
   // бомбардира на главной не меняем: сохраняем выбранного на /predict, если Реал по-прежнему забивает
   const keepScorer = p?.first_scorer_id && rmGoals(home, away, match.rm_side) > 0 ? p.first_scorer_id : null;
@@ -310,7 +349,7 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
     );
   } else if (p && !editing) {
     body = (
-      <div className="hp-line">
+      <div className={`hp-line${s.msg?.tone === 'ok' ? ' hp-line--new' : ''}`}>
         {crests}
         <span className="hp-line__text">
           Твой прогноз <b>{p.home}:{p.away}</b> ·{' '}
@@ -346,7 +385,7 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
   }
 
   return (
-    <section className="ui-card home-predict hp" aria-label="Твой прогноз">
+    <section ref={card} className="ui-card home-predict hp" aria-label="Твой прогноз">
       <div className="home-predict__head">
         <span className="home-predict__title">Твой прогноз</span>
         <a className="hp-more" {...more}>

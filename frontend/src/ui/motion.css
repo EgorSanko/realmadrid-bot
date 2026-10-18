@@ -98,3 +98,12 @@
   }
 }
 @keyframes ui-dot { from { transform: scale(1); opacity: .55; } to { transform: scale(2.6); opacity: 0; } }
+
+/* ---------- прогноз сохранён (lib/motion.ts stamp/spark) ---------- */
+.mo-ring { position: fixed; z-index: 65; pointer-events: none; border: 2px solid rgba(244, 213, 122, .9); box-shadow: 0 0 18px rgba(212, 175, 55, .35); }
+.mo-spark { position: fixed; z-index: 66; width: 0; height: 0; pointer-events: none; }
+.mo-spark__dot {
+  position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle, #FFFDF2 0 20%, #F8DF8E 32%, rgba(244, 213, 122, .7) 44%, rgba(212, 175, 55, .25) 60%, transparent 72%);
+}
+.mo-spark__dot--tail { background: radial-gradient(circle, #F4D57A 0 25%, rgba(212, 175, 55, .4) 55%, transparent 72%); }

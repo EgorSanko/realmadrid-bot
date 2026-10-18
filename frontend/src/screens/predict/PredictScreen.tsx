@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { FormEvent, RefObject } from 'react';
 import { GamesTabs } from '../../components/GamesTabs';
 import { LoginButton } from '../../components/LoginButton';
 import { useDesktop } from '../../lib/shell';
 import { AuthFetchError, BOT_USERNAME, authFetch, inMiniApp, useAuth } from '../../lib/auth';
-import { RULE_LINES, boardView, historyItem, predictError, summaryTiles } from '../../lib/predict';
-import type { Leaderboard, MeHistoryEntry } from '../../lib/predict';
+import { EXACT_SEEN_KEY, RULE_LINES, boardView, exactToCelebrate, historyItem, predictError, summaryTiles } from '../../lib/predict';
+import { reducedMotion } from '../../lib/motion';
+import type { HistoryItem, Leaderboard, MeHistoryEntry } from '../../lib/predict';
 import type { League, PredictMe } from '../../lib/profile';
 import { copyText, shareLink } from '../../lib/share';
 import { inviteLink } from '../../lib/startParam';
 import { useSpaLink } from '../../lib/spaLink';
 import {
+  CountUp,
   EmptyState,
   ErrorState,
   LeaderboardRow,
@@ -71,7 +73,7 @@ export default function PredictScreen() {
             {summaryTiles(me.data.season).map((t) => (
               <div key={t.label} className="pd-tile">
                 <span className="pd-tile__label">{t.label}</span>
-                <span className={`pd-tile__value${t.gold ? ' is-gold' : ''}`}>{t.value}</span>
+                <TileValue value={t.value} gold={t.gold} />
               </div>
             ))}
           </section>
@@ -163,7 +165,7 @@ export default function PredictScreen() {
             {summaryTiles(me.data.season).map((t) => (
               <div key={t.label} className="pd-tile">
                 <span className="pd-tile__label">{t.label}</span>
-                <span className={`pd-tile__value${t.gold ? ' is-gold' : ''}`}>{t.value}</span>
+                <TileValue value={t.value} gold={t.gold} />
               </div>
             ))}
           </section>
@@ -344,7 +346,66 @@ function Board({
   );
 }
 
+/* ---------- итоги ---------- */
+
+/** Число плитки отсчитывается от нуля при появлении и к новому значению при изменении. */
+function TileValue({ value, gold }: { value: string; gold?: boolean }) {
+  const n = Number(value);
+  const cls = `pd-tile__value${gold ? ' is-gold' : ''}`;
+  return /^\d+$/.test(value) ? <CountUp value={n} fromZero className={cls} /> : <span className={cls}>{value}</span>;
+}
+
 /* ---------- мои прогнозы ---------- */
+
+function readSeen(): string[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(EXACT_SEEN_KEY) || '[]');
+    return Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Угаданный точный счёт — праздник один раз: когда строка впервые попадает на экран, по ней проходит
+ * золотой блик, «+5» впечатывается, из него бьёт конфетти. Показанные — в localStorage (rmExactSeen).
+ */
+function useExactCelebration(items: HistoryItem[], list: RefObject<HTMLUListElement | null>) {
+  useEffect(() => {
+    const ids = exactToCelebrate(items, readSeen());
+    const root = list.current;
+    if (!ids.length || !root || typeof IntersectionObserver !== 'function') return;
+    const rows = ids.map((id) => root.querySelector<HTMLElement>(`li[data-mid="${CSS.escape(id)}"]`)).filter((x): x is HTMLElement => !!x);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          io.unobserve(e.target);
+          const li = e.target as HTMLElement;
+          const id = li.dataset.mid!;
+          try {
+            localStorage.setItem(EXACT_SEEN_KEY, JSON.stringify([...readSeen(), id].slice(-100)));
+          } catch {
+            /* приватный режим */
+          }
+          if (reducedMotion()) continue;
+          li.classList.add('is-exact-new');
+          {
+            const host = document.createElement('i');
+            host.className = 'pd-hist__burst';
+            li.appendChild(host);
+            void import('../../lib/confetti').then(({ burst }) =>
+              burst(host, { count: 22, delay: 180, spread: 80, speed: [240, 460], duration: [900, 1250], gravity: 900, jitter: 8 }).then(() => host.remove()),
+            );
+          }
+        }
+      },
+      { threshold: 0.9 },
+    );
+    rows.forEach((r) => io.observe(r));
+    return () => io.disconnect();
+  }, [items, list]);
+}
 
 function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => void }) {
   const link = useSpaLink();
@@ -352,6 +413,8 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
     () => (me.kind === 'ok' ? (me.data.history as unknown as MeHistoryEntry[]).slice(0, 10).map(historyItem) : []),
     [me],
   );
+  const list = useRef<HTMLUListElement>(null);
+  useExactCelebration(items, list);
   return (
     <section className="ui-card pd-mine" aria-label="Мои прогнозы">
       <h2 className="pd-h2">Мои прогнозы</h2>
@@ -362,9 +425,9 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
       ) : items.length === 0 ? (
         <p className="pd-muted">Прогнозов пока нет — начни с ближайшего матча.</p>
       ) : (
-        <ul className="pd-hist">
+        <ul className="pd-hist" ref={list}>
           {items.map((h) => (
-            <li key={h.id}>
+            <li key={h.id} data-mid={h.id}>
               <a className="pd-hist__row" {...link(`/match/${encodeURIComponent(h.id)}`)}>
                 <span className="pd-hist__date">{formatDayShort(h.kickoff)}</span>
                 <span className="pd-hist__teams">

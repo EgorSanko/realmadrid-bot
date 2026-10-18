@@ -10,6 +10,7 @@ export * from './stats';
 export * from './media';
 export * from './playerLink';
 export * from './flip';
+export * from './countUp';
 export {
   formatKickoff,
   formatTime,
