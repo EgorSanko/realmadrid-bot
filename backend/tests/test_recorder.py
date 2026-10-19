@@ -1,0 +1,41 @@
+import json
+import sqlite3
+
+from app import recorder
+
+
+def _db(tmp_path, events, live=True):
+    conn = sqlite3.connect(tmp_path / "rm.sqlite3")
+    conn.execute("CREATE TABLE IF NOT EXISTS snapshots(key TEXT PRIMARY KEY, source TEXT, fetched_at REAL, data TEXT)")
+    fx = [{"id": 1, "status": {"live": live}}]
+    m = {"id": 1, "home": {"name": "Real Madrid", "score": 1}, "away": {"name": "Sevilla", "score": 0},
+         "events": events}
+    for k, v in (("fixtures", fx), ("match:1", m)):
+        conn.execute("INSERT OR REPLACE INTO snapshots VALUES (?,?,?,?)", (k, "t", 0, json.dumps(v)))
+    conn.commit()
+    conn.close()
+
+
+def _goal(minute, name, side="home", **kw):
+    return {"type": "goal", "minute": minute, "side": side, "player": {"id": minute, "name": name}, **kw}
+
+
+def test_only_new_goals_make_clips(tmp_path, monkeypatch):
+    monkeypatch.setattr(recorder, "DATA", tmp_path)
+    _db(tmp_path, [_goal(10, "Mbappe")])
+    g = recorder.Goals()
+    assert g.poll() == []                                    # гол до запуска — без ролика
+    _db(tmp_path, [_goal(10, "Mbappe"), {"type": "yellow", "minute": 20}, _goal(23, "Vinicius", added=2)])
+    new = g.poll()
+    assert [x["label"] for x in new] == ["23+2' Vinicius"]
+    assert new[0]["home"] == "Real Madrid"
+    assert g.poll() == []                                    # повторно тот же гол не ловим
+
+
+def test_finished_match_ignored(tmp_path, monkeypatch):
+    monkeypatch.setattr(recorder, "DATA", tmp_path)
+    _db(tmp_path, [], live=False)
+    g = recorder.Goals()
+    g.poll()
+    _db(tmp_path, [_goal(5, "X")], live=False)
+    assert g.poll() == []

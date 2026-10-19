@@ -73,3 +73,20 @@ services:
       retries: 3
       start_period: 60s
     logging: *logging
+
+  # пока идёт эфир — пишет его в data/rec (последние 10 мин, без звука), на каждый гол — 2-минутный mp4
+  # в data/clips (+ .json: кто, минута, счёт). Ручной ролик: docker exec rm-v2-recorder python -m app.recorder clip
+  recorder:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.recorder
+    image: rm-v2-recorder:latest
+    container_name: rm-v2-recorder
+    restart: unless-stopped
+    mem_limit: 192m
+    environment:
+      - TZ=UTC
+      - DATA_DIR=/data
+    volumes:
+      - ./data:/data
+    logging: *logging

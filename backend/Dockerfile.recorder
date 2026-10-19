@@ -1,0 +1,15 @@
+# Запись эфира и ролики голов (app/recorder.py): только stdlib + ffmpeg
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DATA_DIR=/data
+
+WORKDIR /srv
+COPY app/recorder.py ./app/recorder.py
+RUN touch app/__init__.py && useradd --system --uid 10001 app
+USER app
+
+CMD ["python", "-m", "app.recorder"]
