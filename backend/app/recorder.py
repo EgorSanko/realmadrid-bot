@@ -180,9 +180,12 @@ def _goal_meta(m: dict, e: dict) -> dict:
     home, away = m.get("home") or {}, m.get("away") or {}
     minute = f"{e.get('minute')}" + (f"+{e['added']}" if e.get("added") else "")
     score = e.get("score") or [home.get("score"), away.get("score")]
-    player = (e.get("player") or {}).get("name") or ""
+    pl = e.get("player") or {}
+    player = pl.get("name") or ""
     return {
         "match_id": m.get("id"), "home": home.get("name"), "away": away.get("name"),
+        # ключ карточки гола в «Мадридиста · Клипы» (goalpick.goal_identity) — ролик сам ляжет в свою карточку
+        "goal_key": f"{m.get('id')}:{e.get('side')}:{e.get('minute')}:{e.get('added') or 0}:{pl.get('id') or pl.get('name')}",
         "minute": minute, "side": e.get("side"), "player": player,
         "own_goal": bool(e.get("own_goal")), "penalty": bool(e.get("penalty")), "score": score,
         "label": f"{minute}' {player}".strip(),

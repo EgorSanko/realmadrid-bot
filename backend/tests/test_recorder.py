@@ -29,6 +29,7 @@ def test_only_new_goals_make_clips(tmp_path, monkeypatch):
     new = g.poll()
     assert [x["label"] for x in new] == ["23+2' Vinicius"]
     assert new[0]["home"] == "Real Madrid"
+    assert new[0]["goal_key"] == "1:home:23:2:23"
     assert g.poll() == []                                    # повторно тот же гол не ловим
 
 
