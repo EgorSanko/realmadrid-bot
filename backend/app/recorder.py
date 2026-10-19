@@ -1,7 +1,9 @@
 """Запись эфира и ролики голов.
 
 Пока в DATA_DIR/stream.json эфир включён, ffmpeg пишет поток кусками по 4 с без перекодирования и без звука
-в DATA_DIR/rec/<unix-время начала>.ts; хранятся последние REC_KEEP секунд, старое стирается.
+в DATA_DIR/rec/<номер>.ts; время куска — время записи файла (mtime). Имя по времени не годится:
+ffmpeg получает эфир пачками по 5 с и режет их мгновенно, два куска в одну секунду затирали друг друга
+(терялась пятая часть эфира). Номера начинаются с unix-времени запуска — после перезапуска не повторяются. Хранятся последние REC_KEEP секунд, старое стирается.
 Сборщик кладёт снимки идущего матча в rm.sqlite3 — новый гол в них (или ручной запрос) ставит ролик
 в очередь: окно [момент обнаружения − CLIP_BEFORE, + CLIP_AFTER], склейка тех же кусков в mp4
 (без перекодирования) после того, как окно дописалось. Рядом с mp4 — .json: кто, минута, счёт, матч.
@@ -83,7 +85,7 @@ class Recorder:
                  "-rw_timeout", "15000000", "-i", url,
                  "-map", "0:v:0", "-an", "-c", "copy",   # без звука — так попросил владелец
                  "-f", "segment", "-segment_time", str(SEGMENT), "-reset_timestamps", "1",
-                 "-strftime", "1", str(REC / "%s.ts")])
+                 "-segment_start_number", str(int(_now())), str(REC / "%d.ts")])
             log.info("запись эфира: старт")
 
     def stop(self) -> None:
@@ -97,12 +99,16 @@ class Recorder:
         self.proc = None
 
 
-def _segments() -> list[tuple[int, Path]]:
+def _segments() -> list[tuple[float, Path]]:
+    """(время окончания записи, файл) по порядку номеров."""
     out = []
     for p in REC.glob("*.ts"):
         if p.stem.isdigit():
-            out.append((int(p.stem), p))
-    return sorted(out)
+            try:
+                out.append((int(p.stem), p.stat().st_mtime, p))
+            except OSError:
+                pass
+    return [(t, p) for _, t, p in sorted(out)]
 
 
 def _prune(now: float) -> None:
@@ -217,7 +223,7 @@ def _take_requests() -> list[dict]:
 
 def _cut(job: dict) -> Path | None:
     start, end = job["at"] - CLIP_BEFORE, job["at"] + CLIP_AFTER
-    parts = [p for t, p in _segments() if start - 2 * SEGMENT <= t <= end]  # куски бывают по 7-8 с
+    parts = [p for t, p in _segments()[:-1] if start <= t <= end + 2 * SEGMENT]  # t — конец куска; последний ещё пишется
     if not parts:
         log.warning("ролик %s: в буфере нет эфира за это время", job.get("label"))
         return None
