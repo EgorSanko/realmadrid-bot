@@ -143,9 +143,14 @@ def _live_matches(conn) -> list[dict]:
     return out
 
 
-def _goal_key(e: dict) -> tuple:
-    return (e.get("minute"), e.get("added"), e.get("side"), (e.get("player") or {}).get("id"),
-            bool(e.get("own_goal")))
+def _goal_key(e: dict, goals: list[dict]) -> tuple:
+    """Гол = счёт после него. Автор (и иногда минута) приходят через ~30 с после самого гола —
+    по ним тот же гол выглядел бы новым и давал второй ролик. Нет счёта — номер гола этой стороны."""
+    sc = e.get("score")
+    if isinstance(sc, (list, tuple)) and len(sc) == 2 and None not in sc:
+        return tuple(sc)
+    side = e.get("side")
+    return (side, sum(1 for g in goals[:goals.index(e) + 1] if g.get("side") == side))
 
 
 class Goals:
@@ -171,15 +176,34 @@ class Goals:
         for m in matches:
             mid = str(m.get("id"))
             goals = [e for e in m.get("events") or [] if e.get("type") == "goal" and not e.get("shootout")]
-            keys = {_goal_key(e) for e in goals}
+            keys = {_goal_key(e, goals) for e in goals}
             if mid not in self.seen:
                 self.seen[mid] = keys
                 continue
             for e in goals:
-                if _goal_key(e) not in self.seen[mid]:
+                if _goal_key(e, goals) not in self.seen[mid]:
                     new.append(_goal_meta(m, e))
             self.seen[mid] |= keys
         return new
+
+
+def _refresh(job: dict) -> dict:
+    """К моменту нарезки (через ~минуту) автор гола обычно уже известен — берём свежие данные."""
+    if not job.get("match_id") or not job.get("score"):
+        return job
+    try:
+        conn = _db()
+        try:
+            m = _snap(conn, f"match:{job['match_id']}")
+        finally:
+            conn.close()
+    except (sqlite3.Error, ValueError):
+        return job
+    goals = [e for e in (m or {}).get("events") or [] if e.get("type") == "goal" and not e.get("shootout")]
+    for e in goals:
+        if list(_goal_key(e, goals)) == list(job["score"]):
+            return {**job, **_goal_meta(m, e)}
+    return job
 
 
 def _goal_meta(m: dict, e: dict) -> dict:
@@ -190,7 +214,8 @@ def _goal_meta(m: dict, e: dict) -> dict:
     player = pl.get("name") or ""
     return {
         "match_id": m.get("id"), "home": home.get("name"), "away": away.get("name"),
-        # ключ карточки гола в «Мадридиста · Клипы» (goalpick.goal_identity) — ролик сам ляжет в свою карточку
+        # ключ карточки в «Мадридиста · Клипы» (goalpick.goal_identity); клипы ищут карточку и по счёту —
+        # ключ меняется, когда приходит автор
         "goal_key": f"{m.get('id')}:{e.get('side')}:{e.get('minute')}:{e.get('added') or 0}:{pl.get('id') or pl.get('name')}",
         "minute": minute, "side": e.get("side"), "player": player,
         "own_goal": bool(e.get("own_goal")), "penalty": bool(e.get("penalty")), "score": score,
@@ -222,6 +247,7 @@ def _take_requests() -> list[dict]:
 
 
 def _cut(job: dict) -> Path | None:
+    job = _refresh(job)
     start, end = job["at"] - CLIP_BEFORE, job["at"] + CLIP_AFTER
     parts = [p for t, p in _segments()[:-1] if start <= t <= end + 2 * SEGMENT]  # t — конец куска; последний ещё пишется
     if not parts:
