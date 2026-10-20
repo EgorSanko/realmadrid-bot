@@ -106,6 +106,7 @@ CLEANUP_INTERVAL = _int("CLEANUP_INTERVAL", 24 * 3600)
 ARTICLE_TEXT_TTL_DAYS = _int("ARTICLE_TEXT_TTL_DAYS", 90)     # тексты статей; сами новости в ленте остаются
 AVATAR_TTL_DAYS = _int("AVATAR_TTL_DAYS", 180)                 # аватар пользователя, который давно не заходил
 FOREIGN_PLAYER_TTL_DAYS = _int("FOREIGN_PLAYER_TTL_DAYS", 30)  # снимки карточек чужих игроков
+VISIT_DAYS_TTL_DAYS = _int("VISIT_DAYS_TTL_DAYS", 400)        # посещения по дням (visit_days, app/visits.py)
 
 # --- надёжность источников ---
 HTTP_TIMEOUT = float(os.environ.get("HTTP_TIMEOUT", "10"))

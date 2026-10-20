@@ -170,6 +170,27 @@ MIGRATIONS: list[str] = [
         value  TEXT NOT NULL
     );
     """,
+    # v6 — счётчик посещений без входа (app/visits.py): сколько новых людей приходит каждый день.
+    # device — SHA-256 от случайного id устройства (localStorage) с солью сервера; ни IP, ни User-Agent
+    # не храним. Дни — по МСК, 'YYYY-MM-DD'.
+    """
+    CREATE TABLE visitors (
+        device     TEXT PRIMARY KEY,
+        first_day  TEXT NOT NULL,
+        last_day   TEXT NOT NULL,
+        platform   TEXT NOT NULL CHECK (platform IN ('tg', 'android', 'web')),   -- где пришёл впервые
+        user_id    INTEGER                                -- вошёл ли с этого устройства (без FK: аноним важнее)
+    );
+    CREATE INDEX visitors_first_day ON visitors(first_day);
+
+    -- одна строка на устройство в день — она же защита от повторного счёта; хранится VISIT_DAYS_TTL дней
+    CREATE TABLE visit_days (
+        day       TEXT NOT NULL,
+        device    TEXT NOT NULL,
+        platform  TEXT NOT NULL CHECK (platform IN ('tg', 'android', 'web')),
+        PRIMARY KEY (day, device)
+    );
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

@@ -7,7 +7,8 @@
   * аватары пользователей, которых не было AVATAR_TTL_DAYS: файл удаляем, avatar_src/avatar_at
     сбрасываем — вернётся человек, при входе аватар скачается заново;
   * снимки карточек чужих игроков (не из состава Реала) старше FOREIGN_PLAYER_TTL_DAYS и старые
-    `player_fail:*`. Свои игроки обновляются раз в 6 ч и сюда не попадают.
+    `player_fail:*`. Свои игроки обновляются раз в 6 ч и сюда не попадают;
+  * посещения по дням (visit_days) старше VISIT_DAYS_TTL_DAYS — app/visits.py.
 """
 import json
 import logging
@@ -105,9 +106,22 @@ def stale_avatars(pconn: sqlite3.Connection, now: datetime | None = None) -> dic
     return {"avatars": n, "avatar_orphans": orphans}
 
 
+MSK = timezone(timedelta(hours=3))
+
+
+def visit_days(pconn: sqlite3.Connection, now: datetime | None = None) -> dict:
+    """Посещения по дням (app/visits.py) старше VISIT_DAYS_TTL_DAYS. Таблица visitors (первый день и платформа
+    устройства) остаётся — по ней итог «всего людей»."""
+    now = now or datetime.now(timezone.utc)
+    cutoff = (now.astimezone(MSK).date() - timedelta(days=config.VISIT_DAYS_TTL_DAYS)).isoformat()
+    return {"visit_days": pconn.execute("DELETE FROM visit_days WHERE day < ?", (cutoff,)).rowcount}
+
+
 def run(conn: sqlite3.Connection, pconn: sqlite3.Connection | None, now: float | None = None) -> dict:
     now = now or time.time()
     res = {**articles(conn, now), **foreign_players(conn, now)}
     if pconn is not None:
-        res.update(stale_avatars(pconn, datetime.fromtimestamp(now, timezone.utc)))
+        when = datetime.fromtimestamp(now, timezone.utc)
+        res.update(stale_avatars(pconn, when))
+        res.update(visit_days(pconn, when))
     return res

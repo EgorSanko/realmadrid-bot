@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from . import auth_api, config, store
+from . import auth_api, config, store, visits
 from .model import result_for, ts
 from .games import api as games_api
 from .predictions import api as predict_api
@@ -30,6 +30,7 @@ app.include_router(stream_router)
 predict_api.install(app)  # /api/predict/* — этап 10
 auth_api.install(app)     # /api/auth/* — вход через Telegram и сессия
 games_api.install(app)    # /api/games/* — викторина и пенальти (отдельный рейтинг, без очков прогнозов)
+visits.install(app)       # /api/visit и /api/admin/stats — счётчик людей без входа (хеш id устройства)
 
 # прогнозы читают матчи из снимков сборщика (rm.sqlite3); тесты и проверки подставляют свой сервис сами
 if predict_api._service is None:

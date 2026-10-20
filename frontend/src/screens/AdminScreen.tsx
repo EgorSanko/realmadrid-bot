@@ -8,6 +8,7 @@ import { ApiError, adminRequest } from '../lib/stream';
 import type { AdminStreamState } from '../lib/stream';
 import { describeExpiry, formatMsk } from '../lib/linkExpiry';
 import { isMixedContent, linkError } from '../lib/linkCheck';
+import { AdminStats } from './AdminStats';
 import '../styles/admin.css';
 
 const TOKEN_KEY = 'rm-admin-token';
@@ -259,6 +260,9 @@ export default function AdminScreen() {
           </button>
         )}
       </header>
+
+      {/* статистика — только по входу через Telegram (initData или сессия), не по админ-токену */}
+      <AdminStats canFetch={!!initData || sessionAdmin} />
 
       <section className="admin-card admin-status" aria-live="polite">
         {state.live ? (

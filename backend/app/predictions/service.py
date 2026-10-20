@@ -246,6 +246,7 @@ class PredictionService:
         Рейтинг (standings) — по строкам пользователей, места остальных сдвигаются сами."""
         with self.tx() as c:
             c.execute("DELETE FROM login_codes WHERE user_id=?", (user_id,))
+            c.execute("UPDATE visitors SET user_id=NULL WHERE user_id=?", (user_id,))  # счёт остаётся анонимным
             cur = c.execute("DELETE FROM users WHERE id=?", (user_id,))
             gone = cur.rowcount > 0
         try:
