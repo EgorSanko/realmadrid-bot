@@ -178,7 +178,7 @@ export default function AdminScreen() {
     return (
       <main className="admin">
         <header className="topbar">
-          <h1 className="topbar__title">Эфир</h1>
+          <h1 className="topbar__title">Админка</h1>
         </header>
         <p className="admin-hint admin-pad">Проверяем доступ…</p>
       </main>
@@ -189,7 +189,7 @@ export default function AdminScreen() {
     return (
       <main className="admin">
         <header className="topbar">
-          <h1 className="topbar__title">Эфир</h1>
+          <h1 className="topbar__title">Админка</h1>
         </header>
         <section className="admin-card">
           {initData ? (
@@ -242,7 +242,7 @@ export default function AdminScreen() {
     return (
       <main className="admin">
         <header className="topbar">
-          <h1 className="topbar__title">Эфир</h1>
+          <h1 className="topbar__title">Админка</h1>
         </header>
         <p className="admin-hint admin-pad">{msg ? msg.text : 'Проверяем доступ…'}</p>
       </main>
@@ -253,7 +253,7 @@ export default function AdminScreen() {
   return (
     <main className="admin">
       <header className="topbar">
-        <h1 className="topbar__title">Эфир</h1>
+        <h1 className="topbar__title">Админка</h1>
         {!initData && token && (
           <button type="button" className="admin-link" onClick={logout}>
             Выйти

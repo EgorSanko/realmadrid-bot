@@ -23,8 +23,10 @@ def client(tmp_db):
     conn.close()
 
 
-def test_home(client):
+def test_home(client, monkeypatch):
     c, _ = client
+    # часы фикстуры: 5868098 (18.10 19:00Z) ещё впереди — иначе тест зависит от сегодняшней даты
+    monkeypatch.setattr("app.main._clock", lambda: 1792152000.0)  # 2026-10-16 12:00Z
     r = c.get("/api/home")
     assert r.status_code == 200
     b = r.json()

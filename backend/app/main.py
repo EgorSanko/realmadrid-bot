@@ -131,6 +131,10 @@ def _brief(f: dict, extra: dict | None) -> dict:
     }
 
 
+def _clock() -> float:  # подменяется в тестах: выбор «следующего» матча зависит от текущего времени
+    return time.time()
+
+
 @app.get("/api/home")
 def home() -> JSONResponse:
     conn = _db()
@@ -139,7 +143,7 @@ def home() -> JSONResponse:
         if not fx:
             return _no_data("fixtures")
         tb = store.get(conn, "tables")
-        now = time.time()
+        now = _clock()
         fixtures = fx["data"]
         live = [f for f in fixtures if f["status"]["live"]]
         upcoming = [f for f in fixtures if not f["status"]["finished"]
