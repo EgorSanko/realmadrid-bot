@@ -893,6 +893,8 @@ class Collector:
             for other in ("sofascore", "espn", "livescore"):
                 m["ids"][other] = m["ids"].get(other) or store.from_fotmob(self.conn, "match", other, fid)
             m["fallback_errors"] = errors or None
+            if name == "fotmob":
+                await self._fill_goals(fid, m)
             now = time.time()
             if keep_fuller(prev, m, now):
                 # завершённый матч, счёт и статус те же, а старый снимок полнее — его и оставляем
@@ -914,6 +916,34 @@ class Collector:
         self.cycles["match_failed"] += 1
         log.warning("match %s: все источники недоступны: %s", fid, errors)
         return None
+
+    async def _fill_goals(self, fid, m) -> None:
+        """FotMob бывает отдаёт счёт, а событий голов нет (Реал — Лейпциг 21.10: 1:0, в events только перерыв).
+        Тогда голы — у резерва с тем же счётом и полным числом голов; остальные события остаются от FotMob."""
+        hs, as_ = m["home"].get("score"), m["away"].get("score")
+        if hs is None or as_ is None or m["status"]["state"] == "scheduled":
+            return
+        mine = [e for e in m["events"] if e["type"] == "goal" and not e.get("shootout")]
+        if len(mine) >= hs + as_:
+            return
+        for name in ("espn", "sofascore"):
+            if not self.sources[name].available():
+                continue
+            try:
+                o = await getattr(self, f"_match_{name}")(fid, False)
+            except Exception as e:  # noqa: BLE001 — резерв для голов, не повод ронять снимок FotMob
+                log.info("match %s: голы у %s не взял: %s", fid, name, str(e)[:120])
+                continue
+            if not o or (o["home"].get("score"), o["away"].get("score")) != (hs, as_):
+                continue
+            goals = [e for e in o["events"] if e["type"] == "goal" and not e.get("shootout")]
+            if len(goals) != hs + as_:
+                continue
+            rest = [e for e in m["events"] if not (e["type"] == "goal" and not e.get("shootout"))]
+            m["events"] = sorted(rest + goals, key=lambda e: (e.get("minute") or 0, e.get("added") or 0))
+            m["goals_from"] = name
+            log.info("match %s: голы FotMob %d < счёта %d:%d — взял у %s", fid, len(mine), hs, as_, name)
+            return
 
     async def _match_fotmob(self, fid, full):
         raw = await self.fm.match(fid)
