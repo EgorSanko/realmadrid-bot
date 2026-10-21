@@ -158,6 +158,7 @@ class Goals:
 
     def __init__(self):
         self.seen: dict[str, set] = {}
+        self.score: dict[str, tuple] = {}
 
     def poll(self) -> list[dict]:
         try:
@@ -177,13 +178,25 @@ class Goals:
             mid = str(m.get("id"))
             goals = [e for e in m.get("events") or [] if e.get("type") == "goal" and not e.get("shootout")]
             keys = {_goal_key(e, goals) for e in goals}
+            score = (m.get("home") or {}).get("score"), (m.get("away") or {}).get("score")
+            score = score if None not in score else None
             if mid not in self.seen:
-                self.seen[mid] = keys
+                self.seen[mid] = keys | ({score} if score else set())
+                if score:
+                    self.score[mid] = score
                 continue
             for e in goals:
-                if _goal_key(e, goals) not in self.seen[mid]:
+                k = _goal_key(e, goals)
+                if k not in self.seen[mid]:
                     new.append(_goal_meta(m, e))
-            self.seen[mid] |= keys
+                    self.seen[mid].add(k)
+            # FotMob бывает отдаёт счёт, а событий голов нет совсем (Реал — Лейпциг 21.10: events пусты весь тайм) —
+            # новый счёт сам по себе гол; автора подтянет _refresh, если события появятся к нарезке
+            if score and sum(score) and score not in self.seen[mid]:
+                new.append(_score_meta(m, score, self.score.get(mid)))
+                self.seen[mid].add(score)
+            if score:
+                self.score[mid] = score
         return new
 
 
@@ -204,6 +217,20 @@ def _refresh(job: dict) -> dict:
         if list(_goal_key(e, goals)) == list(job["score"]):
             return {**job, **_goal_meta(m, e)}
     return job
+
+
+def _score_meta(m: dict, score: tuple, prev: tuple | None) -> dict:
+    st = m.get("status") or {}
+    goals = [e for e in m.get("events") or [] if e.get("type") == "goal" and not e.get("shootout")]
+    for e in goals:   # событие с этим счётом уже есть — берём его
+        if list(_goal_key(e, goals)) == list(score):
+            return _goal_meta(m, e)
+    side = "home" if prev is None or score[0] > prev[0] else "away"
+    home, away = m.get("home") or {}, m.get("away") or {}
+    minute = f"{st.get('minute') or ''}" + (f"+{st['added']}" if st.get("added") else "")
+    return {"match_id": m.get("id"), "home": home.get("name"), "away": away.get("name"), "goal_key": None,
+            "minute": minute, "side": side, "player": "", "own_goal": False, "penalty": False,
+            "score": list(score), "label": f"{minute}' {score[0]}-{score[1]}"}
 
 
 def _goal_meta(m: dict, e: dict) -> dict:
