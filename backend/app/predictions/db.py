@@ -191,6 +191,21 @@ MIGRATIONS: list[str] = [
         PRIMARY KEY (day, device)
     );
     """,
+    # v7 — получатели рассылки голов в личку бота (app/broadcast.py): все, кто писал боту.
+    # notify=0 — отписался (/stop); blocked_at — бот заблокирован / чата нет (Telegram 403/400).
+    """
+    CREATE TABLE bot_chats (
+        chat_id         INTEGER PRIMARY KEY,
+        first_name      TEXT,
+        username        TEXT,
+        source          TEXT NOT NULL,                 -- bot | site | legacy (база старого бота)
+        added_at        TEXT NOT NULL,
+        seen_at         TEXT,
+        notify          INTEGER NOT NULL DEFAULT 1,
+        blocked_at      TEXT,
+        blocked_reason  TEXT
+    );
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

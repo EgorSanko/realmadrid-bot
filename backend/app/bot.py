@@ -4,12 +4,14 @@
 виден SOCKS-туннель (api.telegram.org из России напрямую не открывается), а отдельная задача не
 задерживает лайв-такт матчей — пока идёт long poll, цикл событий свободен.
 
-Что бот делает (и ничего больше — требование владельца: никаких рассылок, пишем только отправителю
-и только в ответ на его личное сообщение):
+Что бот делает в ответ на личное сообщение (пишем только отправителю):
   * `/start login_<token>` или 6 цифр кода → подтверждает заявку входа (app/login_codes.py) и отвечает
     «Вход на сайт выполнен ✅ …» или «Код не найден или устарел …»;
   * `/start` без кода → короткое приветствие с кнопкой мини-аппа (web_app);
+  * `/stop` / `/goals` — не присылать / снова присылать ролики голов;
   * всё остальное (группы, каналы, другие тексты, сообщения старше 10 мин) — молча пропускает.
+Каждый, кто написал боту, попадает в получатели рассылки голов (app/broadcast.py) — её запускает
+владелец кнопкой в «Мадридиста · Клипы» (21.10.2026 владелец разрешил рассылку в личку).
 После подтверждения бот берёт фото профиля (getUserProfilePhotos) и ставит заявку `tg-file:…`
 в avatar_queue — файл скачивает обычный механизм аватаров (app/avatars.py, `resolve_file`).
 
@@ -32,7 +34,7 @@ from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Any, Awaitable, Callable, Optional
 
-from . import avatars, config, login_codes
+from . import avatars, broadcast, config, login_codes
 from .predictions import db as predictions_db
 from .predictions.service import upsert_names
 from .sources.base import Source, SourceError
@@ -53,6 +55,9 @@ MSG_LIMIT = "Слишком много неверных кодов. Подожд
 MSG_HELLO = ("Привет! Это «Мадридиста» — всё о «Реале»: матчи онлайн, новости, прогнозы и игры.\n"
              "Откройте приложение кнопкой ниже.")
 BTN_APP = "Открыть «Мадридисту»"
+MSG_STOP = "Больше не присылаю ролики голов. Вернуть: /goals"
+MSG_GOALS = "Буду присылать ролики голов «Реала». Отключить: /stop"
+CMD_RE = re.compile(r"^/(stop|goals)(?:@[A-Za-z0-9_]+)?\s*$", re.I)
 
 START_RE = re.compile(r"^/start(?:@[A-Za-z0-9_]+)?(?:\s+(\S+))?\s*$")
 TOKEN_SCRUB = re.compile(r"bot\d+:[A-Za-z0-9_-]+")
@@ -311,6 +316,12 @@ class TelegramBot(Source):
             return None, None
         uid = sender["id"]
         text = text.strip()
+        broadcast.record_chat(conn, sender)
+        cm = CMD_RE.match(text)
+        if cm:
+            on = cm.group(1).lower() == "goals"
+            broadcast.set_notify(conn, uid, on)
+            return self._message(uid, MSG_GOALS if on else MSG_STOP), None
         token = code = None
         m = START_RE.match(text)
         if m:

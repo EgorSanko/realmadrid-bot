@@ -19,6 +19,7 @@ from .predictions import api as predict_api
 from .predictions.snapshot_provider import SnapshotProvider
 from .sources import article, fotmob, media
 from .stream import router as stream_router
+from .broadcast import router as broadcast_router
 
 VERSION = "0.2.0"
 # git sha сборки: deploy.sh передаёт GIT_SHA в docker compose build → ARG → ENV BUILD_SHA
@@ -27,6 +28,7 @@ HEARTBEAT_OK_S = 300  # сборщик пишет сердцебиение ра�
 
 app = FastAPI(title="Мадридиста API", version=VERSION, docs_url=None, redoc_url=None, openapi_url=None)
 app.include_router(stream_router)
+app.include_router(broadcast_router)
 predict_api.install(app)  # /api/predict/* — этап 10
 auth_api.install(app)     # /api/auth/* — вход через Telegram и сессия
 games_api.install(app)    # /api/games/* — викторина и пенальти (отдельный рейтинг, без очков прогнозов)

@@ -33,9 +33,9 @@ def rows(svc, sql, *args):
 # ---------- миграция ----------
 
 def test_migration_v6_tables(svc):
-    assert db.SCHEMA_VERSION == 6
+    assert db.SCHEMA_VERSION >= 6   # v7 — bot_chats (рассылка голов)
     with svc.conn() as c:
-        assert c.execute("PRAGMA user_version").fetchone()[0] == 6
+        assert c.execute("PRAGMA user_version").fetchone()[0] == db.SCHEMA_VERSION
         cols = {r[1] for r in c.execute("PRAGMA table_info(visitors)")}
         assert cols == {"device", "first_day", "last_day", "platform", "user_id"}
         cols = {r[1] for r in c.execute("PRAGMA table_info(visit_days)")}
