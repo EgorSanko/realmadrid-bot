@@ -11,7 +11,7 @@ import './info.css';
  * (вместимость, погоду, статистику судьи); иначе — прежние строки «Стадион / Зрители / Судья».
  * compact — лайв: одна строка «Bernabéu · 10° · Busquets Ferrer», по нажатию раскрывается.
  */
-export function MatchInfo({ match, compact }: { match: ApiMatch; compact?: boolean }) {
+export function MatchInfo({ match, compact, dense }: { match: ApiMatch; compact?: boolean; dense?: boolean }) {
   const st = stadiumView(match);
   const w = weatherView(match);
   const ref = refereeView(match);
@@ -39,11 +39,11 @@ export function MatchInfo({ match, compact }: { match: ApiMatch; compact?: boole
 
   const cards = (
     <>
-      {st && <StadiumCard st={st} w={w} />}
-      {ref && <RefereeCard r={ref} />}
+      {st && <StadiumCard st={st} w={w} dense={dense} />}
+      {ref && <RefereeCard r={ref} dense={dense} />}
     </>
   );
-  if (!compact) return cards;
+  if (!compact || dense) return cards;
 
   const line = infoLine(match);
   return (
@@ -70,13 +70,47 @@ export function MatchInfo({ match, compact }: { match: ApiMatch; compact?: boole
   );
 }
 
-function StadiumCard({ st, w }: { st: StadiumView; w: WeatherView | null }) {
+/** dense — обзор на компьютере: название и место строкой, погода — плиткой рядом с вместимостью. */
+function StadiumCard({ st, w, dense }: { st: StadiumView; w: WeatherView | null; dense?: boolean }) {
   const tiles = [
     st.capacity && { k: 'Вместимость', v: st.capacity },
     st.surface && { k: 'Покрытие', v: st.surface },
     st.attendance && { k: 'Зрители', v: st.attendance },
   ].filter((x): x is { k: string; v: string } => !!x);
   const place = [st.city, st.country].filter(Boolean).join(', ');
+  if (dense) {
+    return (
+      <Card ariaLabel="Стадион" className="mi mi--dense">
+        <p className="mi-ref__cap">Стадион</p>
+        <p className="mi-title mi-title--sm">{st.name}</p>
+        {place && (
+          <p className="mi-place">
+            {st.iso && <Flag iso2={st.iso} name="" width={18} />}
+            <span>{place}</span>
+          </p>
+        )}
+        {(tiles.length > 0 || w) && (
+          <div className="mi-tiles" style={{ gridTemplateColumns: `repeat(${tiles.length + (w ? 1 : 0)}, minmax(0, 1fr))` }}>
+            {tiles.map((t) => (
+              <div key={t.k} className="mi-tile">
+                <span className="mi-tile__k">{t.k}</span>
+                <span className="mi-tile__v">{t.v}</span>
+              </div>
+            ))}
+            {w && (
+              <div className="mi-tile mi-tile--wx" title={w.details ?? undefined}>
+                <WeatherGlyph kind={w.icon} />
+                <span className="mi-tile__wx">
+                  <span className="mi-tile__k">{w.text || 'Погода'}</span>
+                  <span className="mi-tile__v">{w.temp}</span>
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
+    );
+  }
   return (
     <Card ariaLabel="Стадион" className="mi">
       <h2 className="mt-h2">Стадион</h2>
@@ -113,8 +147,45 @@ function StadiumCard({ st, w }: { st: StadiumView; w: WeatherView | null }) {
   );
 }
 
-function RefereeCard({ r }: { r: RefereeView }) {
+/** dense — обзор на компьютере: без шкал, средние за матч — плитками рядом с итогами. */
+function RefereeCard({ r, dense }: { r: RefereeView; dense?: boolean }) {
   const meta = [r.country, r.matches].filter(Boolean).join(' · ');
+  if (dense) {
+    const tiles = [
+      r.yellow && { label: 'Жёлтых за матч', value: r.yellow.value },
+      r.fouls && { label: 'Фолов за матч', value: r.fouls.value },
+      ...r.tiles,
+    ]
+      .filter((t): t is { label: string; value: string } => !!t)
+      .slice(0, 3);
+    return (
+      <Card ariaLabel="Судья" className="mi mi--dense">
+        <div className="mi-ref">
+          <PlayerPhoto id={r.id} name={r.name} size={44} className="mi-ref__photo" />
+          <div className="mi-ref__body">
+            <p className="mi-ref__cap">Судья</p>
+            <p className="mi-ref__name">{r.name}</p>
+            {meta && (
+              <p className="mi-ref__meta">
+                {r.iso && <Flag iso2={r.iso} name="" width={18} />}
+                <span>{meta}</span>
+              </p>
+            )}
+          </div>
+        </div>
+        {tiles.length > 0 && (
+          <div className="mi-tiles" style={{ gridTemplateColumns: `repeat(${tiles.length}, minmax(0, 1fr))` }}>
+            {tiles.map((t) => (
+              <div key={t.label} className="mi-tile">
+                <span className="mi-tile__k">{t.label}</span>
+                <span className="mi-tile__v">{t.value}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    );
+  }
   return (
     <Card ariaLabel="Судья" className="mi">
       <h2 className="mt-h2">Судья</h2>

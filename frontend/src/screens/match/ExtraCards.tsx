@@ -193,10 +193,11 @@ function RoundRow({ r, href }: { r: RoundRowView; href?: { href: string; onClick
   );
 }
 
-export function RoundCard({ match }: { match: ApiMatch }) {
+/** expanded — сразу все матчи тура (вкладка «Турнир» на компьютере). */
+export function RoundCard({ match, expanded }: { match: ApiMatch; expanded?: boolean }) {
   const v = roundView(match);
   const link = useSpaLink();
-  const [all, setAll] = useState(false);
+  const [all, setAll] = useState(!!expanded);
   if (!v) return null;
   return <RoundBody v={v} link={link} all={all} onAll={() => setAll(true)} />;
 }

@@ -126,25 +126,117 @@
 .mt-periods { margin-top: 14px; }
 .mt-stats { margin-top: 8px; }
 
-/* ---------- сайт на компьютере (html.desk): шапка на всю ширину, ниже две колонки, без вкладок ---------- */
+/* ---------- сайт на компьютере (html.desk): шапка матча, прилипающие вкладки, вкладка — в экран (как у FotMob) ---------- */
+html.desk { --mt-bar-h: 56px; }
 html.desk .mt-top { min-height: 0; padding: 0 0 8px; }
 html.desk .mt-top__title { font-size: 18px; }
 html.desk .mt-top__back:hover { border-color: var(--gold-edge); color: var(--gold-light); }
 html.desk .mt .ui-score-head {
-  margin: 8px 0 0; padding: 26px 32px 24px; border-radius: 26px;
+  margin: 8px 0 0; padding: 22px 32px 20px; border-radius: 26px;
   background: var(--hero-glow), linear-gradient(180deg, #12151E, #0C0E15); border: 1px solid rgba(212, 175, 55, .2);
 }
-html.desk .mt .ui-score-head__score { font-size: 60px; }
-html.desk .mt .ui-score-head .ui-crest { width: 96px !important; height: 96px !important; }
-html.desk .mt-cd { margin: 18px 0 0; }
+html.desk .mt .ui-score-head__score { font-size: 56px; }
+html.desk .mt .ui-score-head .ui-crest { width: 88px !important; height: 88px !important; }
+html.desk .mt-cd { margin: 16px 0 0; }
 html.desk .mt-state, html.desk .mt-pending, html.desk .mt-loading .ui-skeleton:first-child, html.desk .mt-loading__list { margin-left: 0; margin-right: 0; }
-html.desk .mt-desk { margin-top: 28px; }
-html.desk .mt-desk__sec { display: flex; flex-direction: column; gap: 14px; }
-html.desk .mt-desk__sec > .dk-h2 { margin: 0; }
-html.desk .mt-desk__sec > *, html.desk .mt-desk__col > * { margin-left: 0; margin-right: 0; margin-top: 0; }
-html.desk .mt-desk .mt-stars { margin: 0; }
-html.desk .mt-desk .mt-video > .ui-card { margin: 0; }
-html.desk .mt-desk .mt-video .ui-video__screen { height: auto !important; aspect-ratio: 16 / 9; }
+
+/* вкладки прилипают под шапкой сайта; над ними — свёрнутая шапка матча (видна, когда большая ушла вверх) */
+html.desk .mt-dock-mark { height: 0; margin-top: 14px; }
+html.desk .mt-dock {
+  position: sticky; top: calc(var(--sh-h) + var(--mt-bar-h)); z-index: 20;
+  padding: 10px 0; background: var(--bg);
+}
+html.desk .mt-dock.is-stuck { box-shadow: 0 10px 18px -14px rgba(0, 0, 0, .9); border-bottom: 1px solid var(--line); }
+html.desk .mt-dtabs { gap: 4px; padding: 5px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); overflow: visible; }
+html.desk .mt-dtabs .ui-tabs__tab {
+  height: 40px; padding: 0 20px; border: 0; border-radius: 11px; background: transparent; color: var(--muted);
+  font-size: 14px; font-weight: 600; transition: color .15s, background-color .15s;
+}
+html.desk .mt-dtabs .ui-tabs__tab.is-on { background: var(--gold-tint); color: var(--gold-light); box-shadow: inset 0 0 0 1px var(--gold-edge); }
+html.desk .mt-dtabs .ui-tabs__tab:not(.is-on):hover { color: var(--text); background: rgba(255, 255, 255, .04); }
+html.desk .mt-dtabs .ui-tabs__tab--icon { gap: 8px; }
+.mt-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(255, 90, 78, .18); }
+
+html.desk .mt-bar {
+  position: absolute; left: 0; right: 0; bottom: 100%; height: var(--mt-bar-h);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 18px;
+  padding: 0 120px; border: 0; border-bottom: 1px solid var(--line); background: var(--bg); color: var(--text);
+  font: inherit; text-align: left; cursor: pointer;
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+html.desk .mt-bar.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
+html.desk .mt-bar:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 10px; }
+.mt-bar__team { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: 0; font-weight: 700; font-size: 15px; }
+.mt-bar__team--r { justify-content: flex-start; }
+.mt-bar__team > .ui-img { flex: none; }
+.mt-bar__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-bar__mid { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 96px; }
+.mt-bar__score { font-family: var(--display); font-weight: 700; font-size: 21px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mt-bar__st { font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.mt-bar__st.is-live { color: var(--gold-light); }
+html.desk .mt-bar__live { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
+
+/* содержимое вкладки */
+html.desk .mt-pane { margin-top: 16px; }
+html.desk .mt-pane .ui-card, html.desk .mt-pane .ui-pitch, html.desk .mt-pane .mt-stars, html.desk .mt-pane .mt-video > .ui-card,
+html.desk .mt-pane .mt-lu-head, html.desk .mt-pane .mt-state, html.desk .mt-pane .mi-fold { margin-left: 0; margin-right: 0; }
+html.desk .mt-pane .mt-video .ui-video__screen { height: auto !important; aspect-ratio: 16 / 9; }
+html.desk .mt-pane > .ui-card, html.desk .mt-pane > .mo, html.desk .mt-pane > .mt-state { max-width: 760px; margin: 0 auto; }
+
+/* обзор и очные встречи: две колонки */
+html.desk .mt-ov { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: var(--desk-gap); align-items: start; }
+html.desk .mt-ov--one { grid-template-columns: minmax(0, 760px); justify-content: center; }
+html.desk .mt-ov__col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+html.desk .mt-ov__col > * { margin: 0; }
+html.desk .mt-ov .ui-card { padding: 16px 18px; }
+/* хронология компактнее: событие и «пас / ушёл» — одной строкой (переносится, если не влезает) */
+html.desk .mt-ov .ui-tl__row { min-height: 36px; padding: 2px 0; }
+html.desk .mt-ov .ui-tl__l, html.desk .mt-ov .ui-tl__r { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; min-width: 0; }
+html.desk .mt-ov .ui-tl__l { flex-direction: row-reverse; justify-content: flex-start; }
+html.desk .mt-ov .ui-tl__sub { margin-top: 0; }
+html.desk .mt-ov .ui-tl__half { margin: 4px 0; }
+html.desk .mt-keystats .mt-stats { margin-top: 2px; }
+html.desk .mt-keystats .ui-st { padding: 8px 0; }
+html.desk .mt-keystats .ui-st__bar { margin-top: 6px; }
+.mt-more {
+  display: inline-flex; align-items: center; gap: 4px; margin: 12px 0 0; padding: 0; border: 0; background: none;
+  color: var(--gold); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.mt-more:hover { color: var(--gold-light); }
+.mt-more:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+
+/* составы: поле слева, «Замены» и «Не играли» колонками */
+html.desk .mt-lu-desk { display: grid; gap: var(--desk-gap); align-items: start; }
+/* ширина поля ограничена: иначе на двух колонках оно вырастает выше экрана */
+html.desk .mt-lu-desk--1 { grid-template-columns: minmax(0, 460px); justify-content: center; }
+html.desk .mt-lu-desk--2 { grid-template-columns: minmax(0, 460px) minmax(0, 1fr); }
+html.desk .mt-lu-desk--3 { grid-template-columns: minmax(0, 440px) minmax(0, 1fr) minmax(0, 1fr); }
+html.desk .mt-lu-desk__main, html.desk .mt-lu-desk__col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+html.desk .mt-lu-desk__main > *, html.desk .mt-lu-desk__col > * { margin: 0; }
+html.desk .mt-lu-desk .ui-card { padding: 16px 18px; }
+html.desk .mt-lu-desk .mt-li { padding: 8px 0; }
+html.desk .mt-lu-desk .mt-list > li:not(:last-child) > .mt-li { padding-bottom: 8px; }
+
+/* статистика: группы в две колонки, давление / удары / зоны — колонкой справа */
+html.desk .mt-sg { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--desk-gap); align-items: start; }
+html.desk .mt-sg--one { grid-template-columns: minmax(0, 1fr); }
+html.desk .mt-sg__groups { columns: 2; column-gap: var(--desk-gap); }
+html.desk .mt-sg--one .mt-sg__side { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+html.desk .mt-sg__groups > .ui-card { break-inside: avoid; margin: 0 0 var(--desk-gap); padding: 16px 18px; }
+html.desk .mt-sg__side { display: flex; flex-direction: column; gap: var(--desk-gap); min-width: 0; }
+html.desk .mt-sg__side > .ui-card { margin: 0; padding: 16px 18px; }
+
+/* онлайн: панель по центру, без своей прокрутки — заголовок с фильтром прилипает под вкладками */
+html.desk .mt-pane--online > .mo--panel { max-width: 760px; margin: 0 auto; max-height: none; overflow: visible; }
+html.desk .mt-pane--online > .mo--panel > .mo-top { top: calc(var(--sh-h) + var(--mt-bar-h) + 72px); border-radius: 22px 22px 0 0; }
+/* турнир: матчи тура в две колонки, на всю ширину */
+html.desk .mt-pane--table > .ui-card { max-width: none; }
+html.desk .mt-pane--table .mr-day { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 36px; }
+html.desk .mt-pane--table .mr-day__cap { grid-column: 1 / -1; }
+html.desk .mt-pane--table .mr-row { border-top-color: var(--line); border-radius: 0; }
+html.desk .mt-pane--table .mr-day > .mr-row:nth-child(2), html.desk .mt-pane--table .mr-day > .mr-row:nth-child(3) { border-top-color: transparent; }
+html.desk .mt-pane--table .mr-row.is-ours { border-color: var(--gold-edge); border-radius: 14px; }
 
 /* длинная фамилия у бровки (Alexander-Arnold) не должна обрезаться краем поля */
 .mt .ui-pl__nm { max-width: 80px; overflow: hidden; text-overflow: ellipsis; }

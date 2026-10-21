@@ -6,7 +6,8 @@ import { lineupView, realSide, teamRef, type Phase } from './view';
 
 const LATER = 'Составы появятся примерно за час до матча';
 
-export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
+/** desk — компьютер: поле слева, «Замены» и «Не играли» колонками рядом. */
+export function LineupsTab({ match, phase, desk }: { match: ApiMatch; phase: Phase; desk?: boolean }) {
   const rs = realSide(match);
   const [side, setSide] = useState<Side>(rs);
   const before = phase === 'scheduled' || phase === 'postponed';
@@ -21,7 +22,7 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
   const order: Side[] = rs === 'home' ? ['home', 'away'] : ['away', 'home'];
   const finished = phase === 'finished' || phase === 'abandoned';
 
-  return (
+  const main = (
     <>
       {!view.confirmed && (
         <section className="ui-card mt-note" aria-label="Составы">
@@ -80,6 +81,10 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
         </Card>
       )}
 
+    </>
+  );
+  const subs = (
+    <>
       {view.subs.length > 0 && (
         <Card ariaLabel="Замены">
           <h2 className="mt-h2">Замены</h2>
@@ -115,6 +120,10 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
         </Card>
       )}
 
+    </>
+  );
+  const out = (
+    <>
       {(view.unavailable.length > 0 || view.coach) && (
         <Card ariaLabel={finished ? 'Не играли' : 'Не сыграют'}>
           {view.unavailable.length > 0 && (
@@ -142,6 +151,24 @@ export function LineupsTab({ match, phase }: { match: ApiMatch; phase: Phase }) 
           )}
         </Card>
       )}
+    </>
+  );
+  if (desk) {
+    const n = 1 + (view.subs.length > 0 ? 1 : 0) + (view.unavailable.length > 0 || view.coach ? 1 : 0);
+    return (
+      <div className={`mt-lu-desk mt-lu-desk--${n}`}>
+        <div className="mt-lu-desk__main">{main}</div>
+        {view.subs.length > 0 && <div className="mt-lu-desk__col">{subs}</div>}
+        {(view.unavailable.length > 0 || view.coach) && <div className="mt-lu-desk__col">{out}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {main}
+      {subs}
+      {out}
     </>
   );
 }

@@ -91,3 +91,13 @@
 }
 
 html.desk .mi-fold { width: 100%; }
+
+/* обзор на компьютере: судья одной карточкой без шкал */
+.mi-ref__cap { margin: 0 0 2px; font-size: 12px; color: var(--muted); }
+.mi--dense .mi-tiles { margin-top: 12px; }
+.mi--dense .mi-tile { padding: 8px 10px; }
+.mi-title--sm { font-size: 16px; }
+.mi--dense .mi-place { margin-top: 4px; }
+.mi-tile--wx { display: flex; align-items: center; gap: 8px; }
+.mi-tile--wx > .mi-wx { width: 24px; height: 24px; }
+.mi-tile__wx { min-width: 0; }
