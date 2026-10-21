@@ -1,7 +1,7 @@
 """Запись эфира и ролики голов.
 
 Пока в DATA_DIR/stream.json эфир включён, ffmpeg пишет поток кусками по 4 с без перекодирования и без звука
-в DATA_DIR/rec/<номер>.ts; время куска — время записи файла (mtime). Имя по времени не годится:
+(со звуком) в DATA_DIR/rec/<номер>.ts; время куска — время записи файла (mtime). Имя по времени не годится:
 ffmpeg получает эфир пачками по 5 с и режет их мгновенно, два куска в одну секунду затирали друг друга
 (терялась пятая часть эфира). Номера начинаются с unix-времени запуска — после перезапуска не повторяются. Хранятся последние REC_KEEP секунд, старое стирается.
 Сборщик кладёт снимки идущего матча в rm.sqlite3 — новый гол в них (или ручной запрос) ставит ролик
@@ -83,7 +83,7 @@ class Recorder:
                 ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin",
                  "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5",
                  "-rw_timeout", "15000000", "-i", url,
-                 "-map", "0:v:0", "-an", "-c", "copy",   # без звука — так попросил владелец
+                 "-map", "0:v:0", "-map", "0:a:0?", "-c", "copy",   # со звуком: для Telegram; TikTok-копию программа клипов делает без звука
                  "-f", "segment", "-segment_time", str(SEGMENT), "-reset_timestamps", "1",
                  "-segment_start_number", str(int(_now())), str(REC / "%d.ts")])
             log.info("запись эфира: старт")
@@ -291,7 +291,7 @@ def _cut(job: dict) -> Path | None:
     out, tmp = CLIPS / f"{name}.mp4", CLIPS / f".{name}.mp4"
     r = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
                         "-f", "concat", "-safe", "0", "-i", str(lst),
-                        "-c", "copy", "-an", "-movflags", "+faststart", str(tmp)],
+                        "-c", "copy", "-bsf:a", "aac_adtstoasc", "-movflags", "+faststart", str(tmp)],
                        capture_output=True, text=True, timeout=120)
     lst.unlink(missing_ok=True)
     if r.returncode or not tmp.exists():
