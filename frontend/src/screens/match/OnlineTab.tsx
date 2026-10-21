@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { commentaryUrl, type ApiCommentary, type ApiMatch } from '../../api/match';
 import { usePlayerLinks } from '../../lib/playerNav';
-import { EmptyState, EventIcon, PlayerInline, Skeleton, Tabs, TeamCrest, type MatchEventType } from '../../ui';
+import { Badge, EmptyState, EventIcon, PlayerInline, Skeleton, Tabs, TeamCrest, type MatchEventType } from '../../ui';
 import { cx } from '../../ui/format';
 import { commentaryRows, freshKeys, type CommentaryRow } from './feed';
-import { has, keyFeed, type FeedItem, type Phase } from './view';
+import { feedCounts, filterFeed, has, keyFeed, type FeedFilter, type FeedItem, type Phase } from './view';
 import './online.css';
 
 type Mode = 'key' | 'en';
@@ -58,34 +58,94 @@ function useFresh(keys: string[]): Set<string> {
   }, [sig]);
 }
 
-/** «Онлайн»: «Ключевое» — наша лента по событиям (по-русски); «Все комментарии» — оригинал Opta (EN). */
-export function OnlineTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
+const FILTERS: Array<{ id: FeedFilter; label: string }> = [
+  { id: 'all', label: 'Все' },
+  { id: 'goals', label: 'Голы' },
+  { id: 'cards', label: 'Карточки' },
+  { id: 'subs', label: 'Замены' },
+];
+
+const EMPTY_FILTER: Record<Exclude<FeedFilter, 'all'>, string> = {
+  goals: 'Голов пока нет',
+  cards: 'Карточек пока нет',
+  subs: 'Замен пока нет',
+};
+
+/**
+ * «Онлайн»: «Ключевое» — наша лента по событиям (по-русски), компактными строками, с фильтром;
+ * «Все комментарии» — оригинал Opta (EN).
+ * panel — сайт на компьютере: своя карточка с заголовком, высотой в экран и своей прокруткой; шапка (заголовок,
+ * вкладки, фильтр) прилипает сверху.
+ */
+export function OnlineTab({ match, phase, panel }: { match: ApiMatch; phase: Phase; panel?: boolean }) {
   const en = has(match, 'commentary');
   const [mode, setMode] = useState<Mode>('key');
+  const [filter, setFilter] = useState<FeedFilter>('all');
   const m = en ? mode : 'key';
   const live = phase === 'live' || phase === 'halftime';
+  const items = useMemo(() => keyFeed(match), [match]);
+  const counts = useMemo(() => feedCounts(items), [items]);
+  const chips = m === 'key' && items.length > 0;
+  const top = panel || en || chips;
   return (
-    <section aria-label="Онлайн" className="mo">
-      {en && (
-        <Tabs
-          variant="outline"
-          ariaLabel="Режим трансляции"
-          className="mo-modes"
-          items={[
-            { id: 'key', label: 'Ключевое' },
-            { id: 'en', label: 'Все комментарии (EN)' },
-          ]}
-          value={m}
-          onChange={setMode}
-        />
+    <section aria-label={panel ? 'Онлайн-трансляция' : 'Онлайн'} className={cx('mo', panel && 'mo--panel')}>
+      {top && (
+        <div className="mo-top">
+          {panel && (
+            <h2 className="dk-h2 mo-h">
+              Онлайн
+              {live && <Badge tone="live" className="mo-live" />}
+            </h2>
+          )}
+          {en && (
+            <Tabs
+              variant="outline"
+              ariaLabel="Режим трансляции"
+              className="mo-modes"
+              items={[
+                { id: 'key', label: 'Ключевое' },
+                { id: 'en', label: 'Все комментарии (EN)' },
+              ]}
+              value={m}
+              onChange={setMode}
+            />
+          )}
+          {chips && (
+            <div className="mo-chips" role="group" aria-label="Какие события показать">
+              {FILTERS.map((f) => {
+                const n = f.id === 'all' ? null : counts[f.id];
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    className={cx('mo-chip', filter === f.id && 'is-on')}
+                    aria-pressed={filter === f.id}
+                    disabled={n === 0}
+                    onClick={() => setFilter(f.id)}
+                  >
+                    {f.label}
+                    {n != null && <span className="mo-chip__n">{n}</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
-      {m === 'key' ? <KeyFeed match={match} phase={phase} /> : <Commentary id={match.id ?? ''} live={live} />}
+      {m === 'key' ? <KeyFeed items={items} filter={filter} phase={phase} /> : <Commentary id={match.id ?? ''} live={live} />}
     </section>
   );
 }
 
-function KeyFeed({ match, phase }: { match: ApiMatch; phase: Phase }) {
-  const items = useMemo(() => keyFeed(match), [match]);
+const isGoal = (k: FeedItem['kind']) => k === 'goal' || k === 'own-goal';
+
+/** «Гол!» → «Гол», «Гол с пенальти!» → «Гол с пенальти»: во второй строке, рядом с передачей. */
+const goalWord = (t: string) => t.replace(/!$/, '');
+
+const CARD_NOTE: Partial<Record<FeedItem['kind'], string>> = { 'second-yellow': 'вторая жёлтая — удаление', red: 'удаление' };
+
+function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilter; phase: Phase }) {
+  const shown = useMemo(() => filterFeed(items, filter), [items, filter]);
   const fresh = useFresh(items.map((x) => x.key));
   const links = usePlayerLinks();
   if (!items.length) {
@@ -98,40 +158,89 @@ function KeyFeed({ match, phase }: { match: ApiMatch; phase: Phase }) {
       />
     );
   }
+  if (!shown.length) return <p className="mo-none">{filter === 'all' ? 'Пока без событий' : EMPTY_FILTER[filter]}</p>;
+  const who = (p: FeedItem['players'][number] | undefined, cls?: string) =>
+    p ? <PlayerInline player={{ id: p.id, name: p.name }} size={22} className={cls} {...links} /> : null;
   return (
-    <ol className="mo-list" aria-live="polite">
-      {items.map((it) =>
-        it.divider ? (
-          <li key={it.key} className={cx('mo-div', fresh.has(it.key) && 'is-fresh')}>
-            <span>
-              {it.title}
-              {it.text && <> · {it.text}</>}
-            </span>
-          </li>
-        ) : (
-          <li key={it.key} className={cx('ui-card mo-item', (it.kind === 'goal' || it.kind === 'own-goal') && 'mo-item--goal', fresh.has(it.key) && 'is-fresh')}>
-            <span className="mo-min">{it.minute ?? ''}</span>
-            <div className="mo-body">
-              <p className="mo-title">
-                {ICON[it.kind] ? <EventIcon type={ICON[it.kind]!} /> : WHISTLE}
-                <span>{it.title}</span>
-                {it.team?.id != null && <TeamCrest id={it.team.id} name={it.team.name} size={16} className="mo-crest" />}
-              </p>
-              {it.players.length > 0 && (
-                <div className="mo-players">
-                  {it.players.map((p) => (
-                    <span key={`${p.role ?? ''}${p.name}`} className="mo-player">
-                      {p.role && <span className="mo-role">{p.role}</span>}
-                      <PlayerInline player={{ id: p.id, name: p.name }} size={24} {...links} />
-                    </span>
-                  ))}
-                </div>
+    <ol className="mo-list mo-list--key" aria-live="polite">
+      {shown.map((it) => {
+        if (it.divider)
+          return (
+            <li key={it.key} className={cx('mo-div', fresh.has(it.key) && 'is-fresh')}>
+              <span>
+                {it.title}
+                {it.text && <> · {it.text}</>}
+              </span>
+            </li>
+          );
+        const goal = isGoal(it.kind);
+        const icon = ICON[it.kind] ? <EventIcon type={ICON[it.kind]!} /> : WHISTLE;
+        const crest = it.team?.id != null ? <TeamCrest id={it.team.id} name={it.team.name} size={16} className="mo-crest" /> : null;
+        const main = it.players.find((p) => !p.role || p.role === 'вышел');
+        const assist = it.players.find((p) => p.role === 'пас');
+        const out = it.players.find((p) => p.role === 'ушёл');
+        let body: ReactNode;
+        if (goal) {
+          body = (
+            <>
+              <span className="mo-line">
+                {who(main, 'mo-scorer')}
+                {it.score && (
+                  <b className="mo-score">
+                    {it.score[0]}:{it.score[1]}
+                  </b>
+                )}
+              </span>
+              <span className="mo-line mo-sub">
+                <span>{goalWord(it.title)}</span>
+                {assist && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>пас</span>
+                    {who(assist)}
+                  </>
+                )}
+              </span>
+            </>
+          );
+        } else if (it.kind === 'sub') {
+          body = (
+            <span className="mo-line">
+              <span className="ui-sr">вышел</span>
+              {who(main, 'mo-in')}
+              {out && (
+                <>
+                  <span className="mo-swap" aria-hidden="true">
+                    ↔
+                  </span>
+                  <span className="ui-sr">ушёл</span>
+                  {who(out, 'mo-out')}
+                </>
               )}
-              {it.text && <p className="mo-text">{it.text}</p>}
-            </div>
+              {it.text && <span className="mo-tag">травма</span>}
+            </span>
+          );
+        } else if (it.kind === 'start' || it.kind === 'second') {
+          body = <span className="mo-line mo-phase">{it.title}</span>;
+        } else {
+          // карточки, VAR, незабитый пенальти: игрок, пояснение — приглушённо
+          const note = it.kind === 'var' || it.kind === 'penalty-missed' ? it.title : CARD_NOTE[it.kind];
+          body = (
+            <span className="mo-line">
+              {who(main)}
+              {note && <span className="mo-note">{note}</span>}
+            </span>
+          );
+        }
+        return (
+          <li key={it.key} className={cx('mo-row', goal && 'mo-row--goal', fresh.has(it.key) && 'is-fresh')}>
+            <span className="mo-min">{it.minute ?? ''}</span>
+            <span className="mo-ico">{icon}</span>
+            <span className="mo-main">{body}</span>
+            {crest}
           </li>
-        ),
-      )}
+        );
+      })}
     </ol>
   );
 }

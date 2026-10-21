@@ -1,17 +1,61 @@
 /* «Онлайн»: лента ключевых моментов и текстовая трансляция (EN). Токены — styles/tokens.css. */
 
-.mo-modes { margin: 14px 16px 0; }
+.mo-top { padding: 14px 16px 0; }
+.mo-modes { margin: 0; }
 .mo-list { margin: 0; padding: 0 16px; list-style: none; }
 .mo-list > .ui-card { margin: 10px 0 0; }
 .mo-list > li:first-child { margin-top: 14px; }
 
+/* фильтр «Все · Голы · Карточки · Замены» */
+.mo-chips { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; }
+.mo-chips::-webkit-scrollbar { display: none; }
+.mo-modes + .mo-chips { margin-top: 10px; }
+.mo-top > .mo-chips:first-child { margin-top: 0; }
+.mo-chip { display: inline-flex; align-items: center; gap: 6px; flex: none; height: 30px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: color .15s, border-color .15s, background-color .15s; }
+.mo-chip__n { min-width: 18px; padding: 1px 4px; border-radius: 999px; background: var(--surface-2); color: var(--dim); font-size: 11px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
+.mo-chip.is-on { color: var(--gold-light); border-color: var(--gold-edge); background: var(--gold-tint); }
+.mo-chip.is-on .mo-chip__n { background: rgba(212, 175, 55, .16); color: var(--gold-light); }
+.mo-chip:disabled { opacity: .45; cursor: default; }
+.mo-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (hover: hover) { .mo-chip:not(:disabled):not(.is-on):hover { color: var(--text); border-color: #2C3244; } }
+
+/* «Ключевое»: компактные строки — минута · значок · игроки · эмблема; гол — две строки с золотой полосой */
+.mo-list--key > li:first-child { margin-top: 12px; }
+.mo-row { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 7px 12px 7px 10px; border-bottom: 1px solid var(--line); }
+.mo-list--key > .mo-row:last-child { border-bottom: 0; }
+.mo-row--goal { align-items: flex-start; margin: 4px 0; padding-top: 9px; padding-bottom: 9px; border: 1px solid var(--gold-edge); border-radius: 14px; background: linear-gradient(90deg, rgba(212, 175, 55, .10), transparent 60%), var(--surface); overflow: hidden; }
+.mo-row--goal::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold-grad); }
+.mo-row--goal + .mo-row { border-top: 0; }
+.mo-ico { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 22px; color: var(--muted); }
+.mo-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.mo-line { display: flex; align-items: center; gap: 6px 8px; min-width: 0; font-size: 13.5px; font-weight: 600; }
+.mo-line > .ui-pin { flex: 0 1 auto; min-width: 0; }
+.mo-line > .ui-pin.mo-out { color: var(--muted); font-weight: 500; }
+.mo-swap { flex: none; color: var(--dim); font-size: 13px; font-weight: 500; }
+.mo-note, .mo-tag { flex: none; font-size: 12px; font-weight: 500; color: var(--muted); }
+.mo-tag { padding: 1px 7px; border-radius: 6px; background: var(--surface-2); }
+.mo-phase { color: var(--muted); font-weight: 600; }
+.mo-sub { gap: 5px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.mo-sub > .ui-pin { font-weight: 600; color: var(--text); }
+.mo-row--goal .mo-sub > span:first-child { color: var(--gold-light); font-weight: 700; }
+.mo-scorer { font-size: 14px; font-weight: 700; }
+.mo-score { flex: none; margin-left: auto; padding: 1px 8px; border-radius: 8px; background: var(--gold-tint); border: 1px solid var(--gold-edge); color: var(--gold-light); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.mo-row > .mo-crest { flex: none; align-self: center; }
+.mo-row--goal > .mo-ico, .mo-row--goal > .mo-crest { align-self: flex-start; margin-top: 3px; }
+.mo-row--goal > .mo-crest { margin-top: 4px; }
+.mo-row .mo-min { min-width: 40px; padding: 2px 0; border-radius: 8px; font-size: 11.5px; align-self: center; }
+.mo-row--goal .mo-min { align-self: flex-start; }
+.mo-none { margin: 18px 16px 4px; font-size: 13px; color: var(--muted); text-align: center; }
+
+/* «Все комментарии (EN)»: карточки */
 .mo-item { position: relative; display: flex; gap: 12px; padding: 14px 16px 14px 12px; border-radius: 18px; overflow: hidden; }
 /* гол — золотая полоса слева, как подсветка нового гола в хронологии */
 .mo-item--goal { border-color: var(--gold-edge); background: linear-gradient(90deg, rgba(212, 175, 55, .10), transparent 55%), var(--card-grad); }
 .mo-item--goal::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold-grad); }
 .mo-min { flex: none; align-self: flex-start; min-width: 44px; padding: 4px 0; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--line); text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.mo-min:empty { display: none; }
-.mo-item--goal .mo-min { color: var(--gold-light); border-color: var(--gold-edge); background: var(--gold-tint); }
+.mo-min:empty { visibility: hidden; }
+.mo-item .mo-min:empty { display: none; }
+.mo-item--goal .mo-min, .mo-row--goal .mo-min { color: var(--gold-light); border-color: var(--gold-edge); background: var(--gold-tint); }
 .mo-body { flex: 1; min-width: 0; }
 .mo-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .mo-title { display: flex; align-items: center; gap: 7px; margin: 3px 0 0; font-weight: 700; font-size: 14px; }
@@ -20,12 +64,8 @@
 .mo-whistle { color: var(--muted); }
 .mo-spark { color: var(--gold); }
 .mo-item--goal .mo-title > span { color: var(--gold-light); }
-.mo-crest { margin-left: 2px; }
 .mo-players { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 13px; font-weight: 600; }
 .mo-players--r { margin-top: 0; gap: 6px 10px; font-size: 12px; color: var(--muted); }
-.mo-player { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
-.mo-role { font-size: 12px; font-weight: 500; color: var(--muted); }
-.mo-text { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
 .mo-en { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; color: #C9CDD8; overflow-wrap: anywhere; }
 .mo-head + .mo-en { margin-top: 8px; }
 .mo-body > .mo-en:first-child { margin-top: 2px; }
@@ -36,13 +76,19 @@
 /* перерыв, конец матча — разделитель */
 .mo-div { display: flex; justify-content: center; margin: 14px 0 0; }
 .mo-div > span { padding: 6px 14px; border-radius: 10px; background: var(--surface-2); font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--muted); text-align: center; }
+.mo-list--key > .mo-div { margin: 8px 0; }
+.mo-list--key > .mo-div:first-child { margin-top: 12px; }
+.mo-list--key > .mo-div > span { padding: 4px 12px; font-size: 11.5px; }
 
 .mo-src { margin: 14px 16px 0; font-size: 11px; color: var(--dim); }
 .mo-skel { margin: 14px 16px 0; }
 
+/* мелкие фото в строках: силуэт чуть светлее, чтобы на тёмном не читался как пустой круг */
+.mo .ui-pin__photo .ui-photo__sil { fill: #4A5675; }
+
 @media (prefers-reduced-motion: no-preference) {
   .mo-list > .is-fresh { animation: mo-in .55s var(--ease-out) both; }
-  .mo-item--goal.is-fresh::before { animation: mo-bar .7s var(--ease-out) .15s both; transform-origin: 50% 0; }
+  .mo-item--goal.is-fresh::before, .mo-row--goal.is-fresh::before { animation: mo-bar .7s var(--ease-out) .15s both; transform-origin: 50% 0; }
 }
 @keyframes mo-in { from { opacity: 0; transform: translateY(-10px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes mo-bar { from { transform: scaleY(0); } to { transform: none; } }
@@ -51,6 +97,38 @@
 .mt-tabs--live .ui-tabs__tab:last-child::after { content: ""; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--gold); display: inline-block; vertical-align: middle; }
 
 /* сайт на компьютере: в колонке без внешних отступов */
-html.desk .mo-modes, html.desk .mo-list, html.desk .mo-src, html.desk .mo-skel { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
-html.desk .mo-modes { margin-top: 0; }
+html.desk .mo-top, html.desk .mo-list, html.desk .mo-src, html.desk .mo-skel { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+html.desk .mo-top { padding-top: 0; }
 html.desk .mo .mt-state { margin-left: 0; margin-right: 0; }
+
+/* сайт на компьютере: панель сразу под шапкой матча — высотой в экран, со своей прокруткой; шапка прилипает */
+html.desk .mo--panel {
+  position: relative;
+  max-height: calc(100vh - 160px);
+  min-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #2A3042 transparent;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  padding: 0 14px 14px;
+}
+html.desk .mo--panel > .mo-top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 -14px;
+  padding: 16px 14px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+html.desk .mo-h { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 18px; }
+html.desk .mo--panel .mo-modes .ui-tabs__tab { height: 34px; }
+html.desk .mo--panel .mo-row--goal { background: linear-gradient(90deg, rgba(212, 175, 55, .10), transparent 60%), var(--surface-2); }
+html.desk .mo--panel .mo-list > .ui-card { margin-top: 8px; padding: 10px 14px 10px 10px; border-radius: 14px; }
+html.desk .mo--panel .mo-list > li:first-child { margin-top: 12px; }
+html.desk .mo--panel .mo-en { font-size: 13px; line-height: 1.45; }
+html.desk .mo--panel .mo-src { margin-top: 12px; }
+html.desk .mo--panel .mt-state { margin-top: 14px; }

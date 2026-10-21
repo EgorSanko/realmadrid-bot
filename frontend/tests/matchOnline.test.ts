@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { normalizeMatch, type ApiCommentary, type ApiMatch } from '../src/api/match.ts';
 import { commentaryRows, freshKeys, LONG_TEXT } from '../src/screens/match/feed.ts';
-import { keyFeed } from '../src/screens/match/view.ts';
+import { feedCounts, filterFeed, keyFeed } from '../src/screens/match/view.ts';
 
 const read = (name: string) => JSON.parse(readFileSync(new URL(`../src/__fixtures__/${name}.json`, import.meta.url), 'utf8'));
 const fx = (name: string): ApiMatch => normalizeMatch(read(name));
@@ -89,4 +89,17 @@ test('новые записи: первый показ — без анимаци
   const b = freshKeys(a.seen, ['c', 'b', 'a']);
   assert.deepEqual([...b.fresh], ['c']);
   assert.equal(freshKeys(b.seen, ['c', 'b', 'a']).fresh.size, 0);
+});
+
+test('ключевое: фильтр «Голы · Карточки · Замены» — только свои события, «Все» — вся лента', () => {
+  const f = keyFeed(FIN);
+  assert.equal(filterFeed(f, 'all'), f);
+  const g = filterFeed(f, 'goals');
+  assert.ok(g.length > 0 && g.every((x) => x.kind === 'goal' || x.kind === 'own-goal'));
+  assert.ok(filterFeed(f, 'cards').every((x) => x.kind === 'yellow' || x.kind === 'second-yellow' || x.kind === 'red'));
+  assert.ok(filterFeed(f, 'subs').every((x) => x.kind === 'sub'));
+  assert.ok(filterFeed(f, 'goals').every((x) => !x.divider));
+  const c = feedCounts(f);
+  assert.deepEqual(c, { goals: g.length, cards: filterFeed(f, 'cards').length, subs: filterFeed(f, 'subs').length });
+  assert.equal(g[0].key, f.find((x) => x.kind === 'goal' || x.kind === 'own-goal')!.key, 'новые сверху и в фильтре');
 });

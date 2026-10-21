@@ -22,13 +22,15 @@ interface SafeImgProps {
   style?: CSSProperties;
   /** что показать вместо сломанной картинки; не задано — картинка просто прячется */
   fallback?: ReactNode;
+  /** картинка пришла и не пустая */
+  onReady?: () => void;
 }
 
 function isEmptyImage(img: HTMLImageElement) {
   return img.naturalWidth <= 1 && img.naturalHeight <= 1;
 }
 
-export function SafeImg({ src, alt, width, height, className, style, fallback }: SafeImgProps) {
+export function SafeImg({ src, alt, width, height, className, style, fallback, onReady }: SafeImgProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const ref = useRef<HTMLImageElement>(null);
   const failed = failedSrc === src;
@@ -36,7 +38,10 @@ export function SafeImg({ src, alt, width, height, className, style, fallback }:
   // картинка могла уже загрузиться (или сломаться) до того, как React повесил обработчики
   useEffect(() => {
     const img = ref.current;
-    if (img && img.complete && isEmptyImage(img)) setFailedSrc(src);
+    if (!img || !img.complete) return;
+    if (isEmptyImage(img)) setFailedSrc(src);
+    else onReady?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
 
   if (failed && fallback !== undefined) return <>{fallback}</>;
@@ -56,6 +61,7 @@ export function SafeImg({ src, alt, width, height, className, style, fallback }:
       onError={() => setFailedSrc(src)}
       onLoad={(e) => {
         if (isEmptyImage(e.currentTarget)) setFailedSrc(src);
+        else onReady?.();
       }}
     />
   );
@@ -129,17 +135,25 @@ function Silhouette() {
   );
 }
 
-/** Фото игрока в круглой обрезке. При ошибке — силуэт. */
+/**
+ * Фото игрока в круглой обрезке. Пока фото грузится и при ошибке — силуэт, а не пустой тёмный круг
+ * (фото — вырезка на прозрачном фоне, поэтому силуэт убираем, как только оно пришло).
+ */
 export function PlayerPhoto({ id, name, size = 40, className }: PlayerPhotoProps) {
+  const src = id == null ? null : imageUrl.player(id);
+  const [readySrc, setReadySrc] = useState<string | null>(null);
   return (
     <span className={cx('ui-photo', className)} style={{ width: size, height: size }}>
-      {id == null ? (
+      {src == null ? (
         <>
           <Silhouette />
           <span className="ui-sr">{name}</span>
         </>
       ) : (
-        <SafeImg src={imageUrl.player(id)} alt={name} width={size} height={size} fallback={<Silhouette />} />
+        <>
+          {readySrc !== src && <Silhouette />}
+          <SafeImg src={src} alt={name} width={size} height={size} fallback={<Silhouette />} onReady={() => setReadySrc(src)} />
+        </>
       )}
     </span>
   );

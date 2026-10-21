@@ -1025,3 +1025,24 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
   }
   return out.reverse();
 }
+
+/** Фильтр ленты «Ключевое»: «Все · Голы · Карточки · Замены». */
+export type FeedFilter = 'all' | 'goals' | 'cards' | 'subs';
+
+const FILTER_KINDS: Record<Exclude<FeedFilter, 'all'>, ReadonlySet<FeedKind>> = {
+  goals: new Set<FeedKind>(['goal', 'own-goal']),
+  cards: new Set<FeedKind>(['yellow', 'second-yellow', 'red']),
+  subs: new Set<FeedKind>(['sub']),
+};
+
+/** «Все» — вся лента с разделителями; остальное — только события своего вида. */
+export function filterFeed(items: FeedItem[], f: FeedFilter): FeedItem[] {
+  if (f === 'all') return items;
+  const kinds = FILTER_KINDS[f];
+  return items.filter((x) => kinds.has(x.kind));
+}
+
+/** Сколько событий под каждым фильтром — числа на кнопках. */
+export function feedCounts(items: FeedItem[]): Record<Exclude<FeedFilter, 'all'>, number> {
+  return { goals: filterFeed(items, 'goals').length, cards: filterFeed(items, 'cards').length, subs: filterFeed(items, 'subs').length };
+}

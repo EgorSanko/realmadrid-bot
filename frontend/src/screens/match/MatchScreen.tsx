@@ -110,15 +110,9 @@ export default function MatchScreen() {
   }, [match]);
 
   const title = match ? (tab === 'overview' ? tournamentLine(match) : compactTitle(match)) : '';
-  // компьютер: «Онлайн» — секцией в правой колонке, когда матч начался или есть трансляция
+  // компьютер: «Онлайн» — панелью первой в правой колонке (сразу под шапкой матча), когда матч начался или есть трансляция
   const started = !!head && ['live', 'halftime', 'finished', 'abandoned'].includes(head.phase);
-  const online =
-    match && head && (started || match.available.includes('commentary')) ? (
-      <section className="mt-desk__sec" aria-label="Онлайн-трансляция">
-        <h2 className="dk-h2">Онлайн</h2>
-        <OnlineTab match={match} phase={head.phase} />
-      </section>
-    ) : null;
+  const online = match && head && (started || match.available.includes('commentary')) ? <OnlineTab match={match} phase={head.phase} panel /> : null;
   const setTab = (t: TabId) => {
     const suffix = TABS.find((x) => x.id === t)?.suffix ?? '';
     // вкладки не копят историю: «назад» уводит с матча, а не по вкладкам
@@ -172,8 +166,8 @@ export default function MatchScreen() {
                 <OverviewTab match={match} phase={head.phase} />
               </div>
               <div className="dk-col mt-desk__col">
-                {/* идёт матч — «Онлайн» первым в правой колонке, после матча — в конце */}
-                {head.live && online}
+                {/* «Онлайн» — первым в правой колонке и в лайве, и после матча: события видны без прокрутки страницы */}
+                {online}
                 <section className="mt-desk__sec" aria-label="Составы">
                   <h2 className="dk-h2">Составы</h2>
                   <LineupsTab match={match} phase={head.phase} />
@@ -182,7 +176,6 @@ export default function MatchScreen() {
                   <h2 className="dk-h2">Статистика</h2>
                   <StatsTab match={match} phase={head.phase} />
                 </section>
-                {!head.live && online}
               </div>
             </div>
           )}
