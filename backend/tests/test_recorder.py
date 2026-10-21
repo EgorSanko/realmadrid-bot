@@ -71,3 +71,10 @@ def test_score_without_events(tmp_path, monkeypatch):
     assert [x["side"] for x in g.poll()] == ["away"]
     _db(tmp_path, [_goal(45, "Mbappe", score=[1, 0])], score=(1, 1))
     assert g.poll() == []
+
+
+def test_lag_minutes(tmp_path, monkeypatch):
+    monkeypatch.setattr(recorder, "DATA", tmp_path)
+    m = {"id": 1, "status": {"minute": 55}, "home": {"name": "R", "score": 2}, "away": {"name": "L", "score": 0}}
+    assert recorder._goal_meta(m, _goal(52, "Guler", score=[2, 0]))["lag_min"] == 3
+    assert recorder._goal_meta({**m, "status": {}}, _goal(52, "Guler", score=[2, 0]))["lag_min"] == 0

@@ -247,6 +247,8 @@ def _goal_meta(m: dict, e: dict) -> dict:
         "minute": minute, "side": e.get("side"), "player": player,
         "own_goal": bool(e.get("own_goal")), "penalty": bool(e.get("penalty")), "score": score,
         "label": f"{minute}' {player}".strip(),
+        # на сколько минут матча FotMob опоздал с голом (21.10: гол 52′ пришёл на 55-й) — окно ролика сдвигаем назад
+        "lag_min": max(0, ((m.get("status") or {}).get("minute") or 0) - (e.get("minute") or 0)),
     }
 
 
@@ -315,8 +317,10 @@ def run() -> None:
             if now >= next_goals:
                 next_goals = now + GOALS_EVERY
                 for g in goals.poll():
-                    log.info("гол: %s — ролик в очереди", g["label"])
-                    jobs.append({**g, "at": now})
+                    shift = max(0, (g.get("lag_min") or 0) - 1) * 60
+                    log.info("гол: %s — ролик в очереди (опоздание %s мин, окно раньше на %d с)",
+                             g["label"], g.get("lag_min"), shift)
+                    jobs.append({**g, "at": now - shift, "detected": now})
             jobs += _take_requests()
             ready = [j for j in jobs if now >= j["at"] + CLIP_AFTER + SEGMENT * 2]
             for j in ready:
