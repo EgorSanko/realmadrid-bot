@@ -126,3 +126,10 @@ def test_send_job_uploads_once_then_file_id(admin_env, svc, clock, mono):
     assert all(p["video"] == "FILE1" for m, p in tx.calls if m == "sendVideo")
     assert (done["status"], done["sent"], done["blocked"], done["failed"]) == ("done", 2, 1, 0)
     assert _chats(svc)[TONI["id"]]["blocked_at"] is not None
+
+
+def test_plain_caption_only_to_self(admin_env, svc):
+    client = TestClient(app)
+    assert client.post("/api/admin/broadcast?key=k&plain=1&caption=x", content=VIDEO, headers=H).status_code == 400
+    j = client.post("/api/admin/broadcast?key=k&plain=1&test=1&caption=ГОЛ!%0A%0A%23реал", content=VIDEO, headers=H).json()
+    assert j["caption"] == "ГОЛ!\n\n#реал" and j["test"] is True

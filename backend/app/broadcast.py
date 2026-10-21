@@ -157,11 +157,15 @@ def broadcast_info(who: str = Depends(require_admin)) -> dict:
 
 @router.post("/api/admin/broadcast")
 async def broadcast_create(request: Request, key: str, test: int = 0, caption: str = "",
-                           width: int = 0, height: int = 0, duration: float = 0,
+                           width: int = 0, height: int = 0, duration: float = 0, plain: int = 0,
                            who: str = Depends(require_admin)) -> dict:
+    """plain=1 (только с test=1) — подпись как есть, без строки про бота: TikTok-версия ролика
+    владельцу в личку, чтобы сохранить видео и скопировать подпись прямо с телефона."""
     if not KEY_RE.match(key):
         raise HTTPException(400, "Неверный ключ")
-    text = caption.strip()[: CAPTION_MAX - len(FOOTER)] + FOOTER
+    if plain and not test:
+        raise HTTPException(400, "Подпись без строки про бота — только себе")
+    text = caption.strip()[:CAPTION_MAX] if plain else caption.strip()[: CAPTION_MAX - len(FOOTER)] + FOOTER
     if not test:
         for j in all_jobs():
             if j["key"] == key and not j["test"] and j["status"] != "failed":
