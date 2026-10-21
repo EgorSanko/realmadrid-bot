@@ -38,8 +38,8 @@ REQUESTS = CLIPS / "requests"
 
 SEGMENT = 4                                              # длина куска, с
 REC_KEEP = int(os.environ.get("REC_KEEP", "600"))        # сколько эфира держать на диске, с
-CLIP_BEFORE = int(os.environ.get("CLIP_BEFORE", "100"))  # до обнаружения: FotMob узнаёт о голе через ~2 мин (21.10 гол 43:08 → 45:30)
-CLIP_AFTER = int(os.environ.get("CLIP_AFTER", "35"))     # после, с (итого 2:15)
+CLIP_BEFORE = int(os.environ.get("CLIP_BEFORE", "180"))  # до обнаружения: FotMob узнаёт о голе через ~2 мин (21.10 гол 43:08 → 45:30)
+CLIP_AFTER = int(os.environ.get("CLIP_AFTER", "60"))     # после, с (итого 4 мин — владелец сам обрезает)
 CLIP_KEEP_DAYS = int(os.environ.get("CLIP_KEEP_DAYS", "14"))
 GOALS_EVERY = 5                                          # как часто смотреть снимки матчей, с
 
