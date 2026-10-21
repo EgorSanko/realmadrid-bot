@@ -250,3 +250,22 @@ def test_fotmob_halftime_from_live_time():
     assert s["state"] == "halftime" and s["live"] is True and s["minute"] == 45
     s = _status({"started": True, "liveTime": {"short": "67’", "long": "66:12"}})
     assert s["state"] == "live" and s["minute"] == 67
+
+
+def test_fotmob_goal_missing_from_timeline_is_taken_from_shotmap():
+    """21.10 Реал — Лейпциг: в шапке 1:0, в хронологии только «Перерыв 0:0», гол — лишь на карте ударов."""
+    raw = load("fotmob_match_6106274.json")
+    raw["header"]["teams"][0]["score"], raw["header"]["teams"][1]["score"] = 1, 0
+    raw["content"]["matchFacts"]["events"]["events"] = [
+        {"type": "Half", "time": 45, "halfStrShort": "HT", "homeScore": 0, "awayScore": 0}]
+    home_id = raw["header"]["teams"][0]["id"]
+    raw["content"]["shotmap"]["shots"] = [
+        {"eventType": "Miss", "teamId": home_id, "playerName": "Vinicius Junior", "min": 12, "x": 90, "y": 30},
+        {"eventType": "Goal", "teamId": home_id, "playerName": "Bernardo Silva", "playerId": 1, "min": 43,
+         "x": 95, "y": 34}]
+    m = fotmob.normalize_match(raw)
+    goal, ht = m["events"]
+    assert goal["type"] == "goal" and goal["inferred"] and goal["side"] == "home"
+    assert goal["player"]["name"] == "Bernardo Silva" and goal["minute"] == 43 and goal["score"] == [1, 0]
+    assert ht["type"] == "period" and ht["score"] == [1, 0]
+    assert (m["home"]["ht_score"], m["away"]["ht_score"]) == (1, 0)

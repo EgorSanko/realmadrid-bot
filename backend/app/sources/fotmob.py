@@ -257,6 +257,50 @@ def _events(raw_events: list, home_id) -> tuple[list, list | None]:
     return out, ht
 
 
+def _fill_missing_goals(m: dict) -> None:
+    """В лайве FotMob иногда меняет счёт в шапке раньше, чем кладёт гол в хронологию (гол есть только на
+    карте ударов), а у «Перерыва» остаётся старый счёт — выходило «Перерыв · 0:0» при 1:0 и гол без автора.
+    Недостающие голы достраиваем из карты ударов (inferred=True), счёт периодов пересчитываем."""
+    target = [m["home"].get("score"), m["away"].get("score")]
+    if not all(isinstance(x, int) for x in target):
+        return
+    evs = m["events"]
+    goals = [e for e in evs if e["type"] == "goal" and not e.get("shootout")]
+    have = {"home": 0, "away": 0}
+    for e in goals:
+        have[e["side"]] += 1
+    missing = {"home": target[0] - have["home"], "away": target[1] - have["away"]}
+    if missing["home"] <= 0 and missing["away"] <= 0:
+        return
+    known = {((e.get("player") or {}).get("name"), e.get("minute")) for e in goals}
+    for s in sorted((s for s in m["shots"] if s["outcome"] == "goal"),
+                    key=lambda s: (s.get("minute") or 0, s.get("added") or 0)):
+        name = (s.get("player") or {}).get("name")
+        if (name, s.get("minute")) in known:
+            continue
+        side = s["side"] if not s.get("own_goal") else ("away" if s["side"] == "home" else "home")
+        if missing[side] <= 0:
+            continue
+        missing[side] -= 1
+        g = event("goal", s.get("minute"), s.get("added"), side, player=s.get("player"), assist=None,
+                  own_goal=bool(s.get("own_goal")), penalty=s.get("situation") == "Penalty", shootout=False,
+                  score=None, inferred=True)
+        mi = g["minute"] or 0
+        at = next((i for i, e in enumerate(evs) if (e.get("minute") or 0) > mi
+                   or (e["type"] == "period" and (e.get("minute") or 0) >= mi)), len(evs))
+        evs.insert(at, g)
+    # счёт после каждого гола и у периодов — по порядку хронологии
+    run = [0, 0]
+    for e in evs:
+        if e["type"] == "goal" and not e.get("shootout"):
+            run[0 if e["side"] == "home" else 1] += 1
+            e["score"] = list(run)
+        elif e["type"] == "period":
+            e["score"] = list(run)
+            if e.get("label") == "HT":
+                m["home"]["ht_score"], m["away"]["ht_score"] = run
+
+
 def _lineup_side(s: dict) -> dict:
     def pl(p, starter):
         perf = p.get("performance") or {}
@@ -347,6 +391,8 @@ def normalize_match(raw: dict) -> dict:
             "xgot": round(s["expectedGoalsOnTarget"], 3) if s.get("expectedGoalsOnTarget") else None,
             "situation": s.get("situation"), "body": s.get("shotType"), "period": s.get("period"),
         })
+
+    _fill_missing_goals(m)
 
     # в лайве FotMob заранее кладёт будущие минуты со value=null — отбрасываем
     m["momentum"] = [{"minute": p.get("minute"), "value": p.get("value")}
