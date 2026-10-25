@@ -87,12 +87,12 @@ test('прошлый матч → MatchCard finished', () => {
   assert.equal(l.competition.name, 'Лига чемпионов');
 });
 
-test('форма: 5 матчей, от старого к новому', () => {
+test('форма: 5 матчей, последний слева', () => {
   // API: от нового к старому — W(Roma) W(Villarreal) L(Atlético) W(Elche) W(Rayo)
   assert.deepEqual(formResults(HOME), ['W', 'W', 'L', 'W', 'W']);
   const d = clone(HOME);
   d.form[0].result = 'D';
-  assert.deepEqual(formResults(d), ['W', 'W', 'L', 'W', 'D']);
+  assert.deepEqual(formResults(d), ['D', 'W', 'L', 'W', 'W']);
 });
 
 test('место в Ла Лиге: «4 место · 18 очк., −6 до лидера»', () => {

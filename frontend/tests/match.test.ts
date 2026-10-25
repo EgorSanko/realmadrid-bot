@@ -221,8 +221,8 @@ test('новые поля API: соперники в форме, флаги ст
   m.referee_country = { code: 'FRA', name: 'France', flag: '/img/flag/fr.svg' };
   const f = formView(m)!;
   const roma = f.find((x) => x.side === 'home')!;
-  assert.deepEqual(roma.results, ['W', 'L']);
-  assert.deepEqual(roma.opponents, [{ id: 8524, name: 'Atalanta' }, undefined]);
+  assert.deepEqual(roma.results, ['L', 'W']); // последний матч слева
+  assert.deepEqual(roma.opponents, [undefined, { id: 8524, name: 'Atalanta' }]);
   assert.deepEqual(aboutRows(m), [
     ['Стадион', 'Stadio Olimpico, Roma', 'it'],
     aboutRows(FOTMOB)[1], // «Зрители» — без флага, как было

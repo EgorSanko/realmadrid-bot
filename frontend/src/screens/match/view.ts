@@ -517,7 +517,7 @@ export function formView(
   if (!m.form || !has(m, 'form')) return null;
   const rows = (['home', 'away'] as Side[]).map((side) => {
     const list = [...(m.form?.[side] ?? [])]
-      .sort((a, b) => (a.kickoff ?? '').localeCompare(b.kickoff ?? ''))
+      .sort((a, b) => (b.kickoff ?? '').localeCompare(a.kickoff ?? '')) // последний матч слева
       .filter((f) => f.result === 'W' || f.result === 'D' || f.result === 'L');
     return {
       side,
