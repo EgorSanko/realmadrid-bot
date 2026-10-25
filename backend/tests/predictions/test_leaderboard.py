@@ -39,21 +39,21 @@ def test_tie_breaks_and_order(client, provider, clock, svc):
     assert [r["is_me"] for r in lb["top"]].index(True) == 3
 
 
-def test_shared_places_on_tie(client, provider, clock, svc):
-    """Равные очки и точные — одно место (1, 2, 3, 3, 5, 5); rank — по-прежнему уникальный порядок."""
+def test_places_are_unique_on_tie(client, provider, clock, svc):
+    """Общих мест нет: равные очки и точные — выше тот, кто раньше сделал последний прогноз (1, 2, 3, 4, 5, 6)."""
     _play(client, provider, clock, svc)
     lb = client.get("/api/predict/leaderboard?period=season", headers=tma(20, first_name="U20")).json()
-    assert [(r["rank"], r["place"]) for r in lb["top"]] == [(1, 1), (2, 2), (3, 3), (4, 3), (5, 5), (6, 5)]
-    assert (lb["me"]["rank"], lb["me"]["place"]) == (4, 3)
+    assert [(r["rank"], r["place"]) for r in lb["top"]] == [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]
+    assert (lb["me"]["rank"], lb["me"]["place"]) == (4, 4)
     me = client.get("/api/predict/me", headers=tma(20, first_name="U20")).json()
-    assert (me["season"]["rank"], me["season"]["place"]) == (4, 3)
-    # в лиге — так же: участник без прогнозов делит место с теми, у кого тоже 0
+    assert (me["season"]["rank"], me["season"]["place"]) == (4, 4)
+    # в лиге — так же: у участников без прогнозов тоже свои места
     lg = client.post("/api/predict/leagues", json={"name": "Ничья"}, headers=tma(30, first_name="U30")).json()
     for uid in (20, 777, 778):
         client.post("/api/predict/leagues/join", json={"code": lg["code"]}, headers=tma(uid, first_name=f"U{uid}"))
     r = client.get(f"/api/predict/leaderboard?league={lg['id']}", headers=tma(777, first_name="U777")).json()
     assert [(x["name"], x["rank"], x["place"]) for x in r["top"]] == [
-        ("U30", 1, 1), ("U20", 2, 1), ("U777", 3, 3), ("U778", 4, 3)]
+        ("U30", 1, 1), ("U20", 2, 2), ("U777", 3, 3), ("U778", 4, 4)]
     assert (r["me"]["rank"], r["me"]["place"]) == (3, 3)
 
 
@@ -61,7 +61,7 @@ def test_me_outside_top(client, provider, clock, svc):
     _play(client, provider, clock, svc)
     lb = client.get("/api/predict/leaderboard?period=season&limit=2", headers=tma(11, first_name="U11")).json()
     assert [r["name"] for r in lb["top"]] == ["U50", "U40"]
-    assert lb["me"] == {"rank": 6, "place": 5, "points": 2, "exact": 0, "played": 2}  # общее 5-е с U10
+    assert lb["me"] == {"rank": 6, "place": 6, "points": 2, "exact": 0, "played": 2}
     me = client.get("/api/predict/me", headers=tma(20, first_name="U20")).json()
     assert (me["rank"], me["points"], me["exact"], me["predictions"]) == (4, 3, 0, 2)
     assert len(me["history"]) == 2 and me["history"][0]["match"]["id"] == "2"
@@ -88,7 +88,7 @@ def test_leaderboard_validation(client):
     r = client.get("/api/predict/leaderboard?period=year")
     assert r.status_code == 422 and r.json() == {"error": "validation", "message": "period: season или month"}
     assert client.get("/api/predict/leaderboard?limit=0").status_code == 422
-    assert client.get("/api/predict/leaderboard?limit=101").status_code == 422
+    assert client.get("/api/predict/leaderboard?limit=1001").status_code == 422
 
 
 def test_month_boundary_msk(client, provider, clock, svc):
@@ -124,3 +124,9 @@ def test_season_boundary_msk():
     assert info["label"] == "2026/27" and info["from"] == "2026-06-30T21:00:00Z"
     dec = period_info("month", datetime(2026, 12, 15, tzinfo=timezone.utc))
     assert dec["to"] == "2026-12-31T21:00:00Z"
+
+
+def test_whole_board_in_one_list(client, provider, clock, svc):
+    """Рейтинг отдаётся целиком (до 1000 строк), не только топ-100."""
+    _play(client, provider, clock, svc)
+    assert len(client.get("/api/predict/leaderboard?limit=1000").json()["top"]) == 6

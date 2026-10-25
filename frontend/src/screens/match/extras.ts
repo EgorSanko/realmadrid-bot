@@ -156,6 +156,9 @@ export interface PollView {
   rows: PollRowView[];
   /** у нас прогнозов меньше порога: сколько ещё нужно (строка «Мадридисты» без распределения) */
   need: number | null;
+  /** сколько прогнозов уже есть и порог, с которого показываем распределение («уже 4 из 10») */
+  have: number;
+  of: number;
   /** ссылка «Сделай прогноз»: приём открыт и прогноза у пользователя нет */
   cta: boolean;
   /** прогноз пользователя «2:1», если есть */
@@ -214,5 +217,5 @@ export function pollView(m: ApiMatch, ctx: PollContext = {}): PollView | null {
   const cta = !!ctx.accepting && !ctx.mine;
   // строки «Мадридисты» ещё нет и звать некуда — без голосов FotMob карточка пустая
   if (!rows.length && !cta) return null;
-  return { rows, need: rows.some((r) => r.key === 'ours') ? null : need, cta, mine: ctx.mine ? `${ctx.mine.home}:${ctx.mine.away}` : null };
+  return { rows, need: rows.some((r) => r.key === 'ours') ? null : need, have: p.ours_count || 0, of: p.threshold, cta, mine: ctx.mine ? `${ctx.mine.home}:${ctx.mine.away}` : null };
 }

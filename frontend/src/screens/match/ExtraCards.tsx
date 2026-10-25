@@ -76,7 +76,7 @@ export function PollCard({ match, phase }: { match: ApiMatch; phase: Phase }) {
         <div className="mp-ours">
           {v.need != null && (
             <p className="mp-ours__text">
-              <b>Болельщики Мадридисты</b> — покажем, когда наберётся ещё {v.need} {v.need === 1 ? 'прогноз' : v.need < 5 ? 'прогноза' : 'прогнозов'}
+              <b>Прогнозы Мадридисты: {v.have > 0 ? `уже ${v.have} из ${v.of}` : `пока ни одного из ${v.of}`}.</b> Как наберётся {v.of} — покажем, за кого болельщики.
             </p>
           )}
           {v.cta && (

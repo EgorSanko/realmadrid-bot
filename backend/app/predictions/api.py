@@ -108,7 +108,7 @@ def put_match(match_id: str, body: PredictionIn, user: int = Depends(current_use
 
 @router.get("/leaderboard")
 def get_leaderboard(period: Literal["season", "month"] = "season", league: Optional[int] = None,
-                    limit: int = Query(50, ge=1, le=100), user: Optional[int] = Depends(optional_user),
+                    limit: int = Query(50, ge=1, le=1000), user: Optional[int] = Depends(optional_user),
                     svc: PredictionService = Depends(get_service)):
     return _ok(svc.leaderboard(period, league, limit, user))
 
@@ -164,7 +164,7 @@ _FIELD_MSG = {
     "name": "Название лиги — строка до 40 символов",
     "code": "Введите код приглашения",
     "period": "period: season или month",
-    "limit": "limit: от 1 до 100",
+    "limit": "limit: от 1 до 1000",
     "league": "league: id лиги — число",
     "league_id": "Неверный id лиги",
 }

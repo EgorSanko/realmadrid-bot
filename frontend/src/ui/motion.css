@@ -192,6 +192,8 @@
   /* своя строка подъезжает последней, с пружиной и золотым контуром */
   .pd-board__rows > .ui-lb.is-me { animation: ui-lb-me .62s var(--ease-snap) calc(var(--i, 0) * 32ms + 140ms) both; }
   .pd-board__rows > .ui-lb.is-me::before { animation: ui-lb-ring 1.1s var(--ease-out) calc(var(--i, 0) * 32ms + 420ms) both; }
+  /* «Найти себя»: строка вспыхивает золотым контуром ещё раз */
+  .pd-board__rows > .ui-lb.is-me.is-found::before { animation: ui-lb-ring 1.4s var(--ease-out) 250ms both; }
   /* топ-3: мягкий золотой блик раз в несколько секунд — медленно, без мигания */
   .ui-lb.is-top::after { animation: ui-lb-shine 7s cubic-bezier(.45, 0, .55, 1) infinite; }
   .ui-lb.is-top:nth-child(2)::after { animation-delay: .5s; }

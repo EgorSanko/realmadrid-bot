@@ -44,8 +44,10 @@ import './predict.css';
 
 type BoardTab = 'season' | 'month' | 'leagues';
 
-/** сколько строк рейтинга показываем; меня ниже топа — отдельной строкой */
-const TOP = 10;
+/** рейтинг целиком — все участники (потолок сервера); себя ищут кнопкой «Найти себя» */
+const TOP = 1000;
+/** волна появления строк — только у первых, иначе нижние приезжают через несколько секунд */
+const WAVE = 15;
 
 function loadError<T>(s: Load<T>): string | null {
   if (s.kind !== 'error') return null;
@@ -286,6 +288,8 @@ function Board({
   const [head, reloadHead] = useAuthedGet<LeagueHeader>(inLeague ? `/api/predict/leagues/${lid}` : null, [ver]);
   const headData = head.kind === 'ok' && head.data.id === lid ? head.data : null;
   const view = useMemo(() => (lb.kind === 'ok' ? boardView(lb.data, myName, myAvatar) : null), [lb, myName, myAvatar]);
+  const rowsRef = useRef<HTMLDivElement>(null);
+  const meOff = useMeOffscreen(rowsRef, view);
   // при смене вкладки старый ответ ещё на экране, пока не пришёл новый — его не показываем
   const stale =
     lb.kind === 'ok' && (tab === 'leagues' ? lb.data.league?.id !== lid : lb.data.league != null || lb.data.period !== tab);
@@ -312,7 +316,7 @@ function Board({
     body = <p className="pd-muted pd-board__msg">Пока пусто: очки появятся после первого сыгранного матча.</p>;
   } else if (view) {
     body = (
-      <div className="pd-board__rows">
+      <div className="pd-board__rows" ref={rowsRef}>
         {view.rows.map((r, i) => (
           <LeaderboardRow
             key={`${r.rank}-${r.name}`}
@@ -324,13 +328,13 @@ function Board({
             isMe={r.is_me}
             silhouette
             rankFrom={r.is_me && lb.kind === 'ok' ? lb.data.total : undefined}
-            style={{ '--i': i } as CSSProperties}
+            style={{ '--i': Math.min(i, WAVE) } as CSSProperties}
           />
         ))}
         {view.meRow && (
           <LeaderboardRow
             rankFrom={lb.kind === 'ok' ? lb.data.total : undefined}
-            style={{ '--i': view.rows.length } as CSSProperties}
+            style={{ '--i': Math.min(view.rows.length, WAVE) } as CSSProperties}
             rank={view.meRow.place}
             name={`${view.meRow.name} · ты`}
             sub={view.meRow.sub}
@@ -387,8 +391,47 @@ function Board({
         />
       )}
       {body}
+      {meOff && view?.myPlace != null && lb.kind === 'ok' && !stale && (
+        <button type="button" className="pd-findme" onClick={() => scrollToMe(rowsRef.current)}>
+          <span>
+            Ты <b>{view.myPlace}-й</b> из {lb.data.total}
+          </span>
+          <span className="pd-findme__go">
+            Найти себя
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </button>
+      )}
     </section>
   );
+}
+
+/** Моя строка рейтинга вне экрана (выше или ниже) — тогда показываем кнопку «Найти себя». */
+function useMeOffscreen(rowsRef: RefObject<HTMLDivElement | null>, view: BoardView | null): boolean {
+  const [off, setOff] = useState(false);
+  useEffect(() => {
+    const row = rowsRef.current?.querySelector('.ui-lb.is-me');
+    if (!row || typeof IntersectionObserver === 'undefined') {
+      setOff(false);
+      return;
+    }
+    const io = new IntersectionObserver(([e]) => setOff(!e.isIntersecting), { rootMargin: '-60px 0px -120px 0px' });
+    io.observe(row);
+    return () => io.disconnect();
+  }, [rowsRef, view]);
+  return off;
+}
+
+/** Прокрутить к своей строке и коротко подсветить её. */
+function scrollToMe(rows: HTMLDivElement | null) {
+  const row = rows?.querySelector<HTMLElement>('.ui-lb.is-me');
+  if (!row) return;
+  row.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+  row.classList.remove('is-found');
+  void row.offsetWidth; // перезапуск анимации при повторном нажатии
+  row.classList.add('is-found');
 }
 
 /* ---------- лига: шапка и старт ---------- */

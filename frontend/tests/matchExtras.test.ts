@@ -82,6 +82,7 @@ test('кто победит: наши прогнозы и голоса FotMob, �
   const low = pollView(m, { accepting: true, mine: null })!;
   assert.deepEqual(low.rows.map((r) => r.key), ['fotmob']);
   assert.equal(low.need, 3);
+  assert.deepEqual([low.have, low.of], [7, 10]);
   assert.equal(low.cta, true);
   const mine = pollView(m, { accepting: true, mine: { home: 2, away: 1 } })!;
   assert.equal(mine.cta, false);

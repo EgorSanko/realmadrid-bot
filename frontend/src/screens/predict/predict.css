@@ -93,6 +93,21 @@
 .pd-board__msg { padding: 14px 0 4px; }
 .pd-board__rows .ui-skel { margin-top: 8px; }
 .pd-board__me { margin-top: 10px; }
+/* «Ты 37-й из 42 · Найти себя»: прилипает к низу экрана над нижним меню, пока своей строки не видно */
+.pd-findme {
+  position: sticky; bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px); z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+  margin-top: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(244, 213, 122, .45);
+  background: #151925; color: var(--text); font: inherit; font-size: 14px; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  transition: transform .2s var(--ease-out), border-color .2s;
+}
+.pd-findme b { color: var(--gold); font-variant-numeric: tabular-nums; }
+.pd-findme__go { display: inline-flex; align-items: center; gap: 4px; color: var(--gold); font-weight: 600; }
+.pd-findme:active { transform: scale(.98); }
+html.desk .pd-findme { bottom: 20px; }
+html.desk .pd-findme:hover { border-color: rgba(244, 213, 122, .8); }
+.pd-findme:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 /* шапка лиги: название, лица, моё место, кто готов к ближайшему матчу */
 .pd-lhead { margin-top: 12px; padding: 14px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }

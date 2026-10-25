@@ -35,6 +35,7 @@ CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # 32 символа без 0
 MAX_OWNED_LEAGUES = 10
 MAX_MEMBERSHIPS = 50
 LEAGUE_FACES = 5           # сколько аватаров участников отдаём в списке лиг
+LEADERBOARD_MAX = 1000      # рейтинг показываем целиком — все участники одним списком
 
 PREDICT_RATE = (30, 60.0)   # не больше 30 изменений прогноза в минуту
 JOIN_RATE = (20, 60.0)      # попытки вступления по коду — против перебора
@@ -555,10 +556,10 @@ class PredictionService:
     # --- рейтинги ---
 
     @staticmethod
-    def _row_view(r: sqlite3.Row, rank: int, me: Optional[int], place: Optional[int] = None) -> dict[str, Any]:
-        """rank — порядковый номер строки (уникален); place — место с учётом равенства очков и точных
-        (1, 1, 3…): одинаковым — одно место, порядок внутри — по rank."""
-        return {"rank": rank, "place": place if place is not None else rank, "name": display_name(r["first_name"], r["last_name"], r["username"]),
+    def _row_view(r: sqlite3.Row, rank: int, me: Optional[int]) -> dict[str, Any]:
+        """rank и place — одно и то же место 1, 2, 3…: при равных очках выше больше точных, дальше — кто
+        раньше сделал последний прогноз (решение владельца 26.10.2026: без общих мест)."""
+        return {"rank": rank, "place": rank, "name": display_name(r["first_name"], r["last_name"], r["username"]),
                 "username": r["username"], "photo_url": r["photo_url"], "avatar": avatars.url_for(r["user_id"]),
                 "points": r["points"],
                 "exact": r["exact"], "played": r["played"], "is_me": me is not None and r["user_id"] == me}
@@ -567,30 +568,26 @@ class PredictionService:
         s = c.execute("SELECT * FROM standings WHERE period=? AND user_id=?", (key, user_id)).fetchone()
         if s is None:
             return {"rank": None, "place": None, "points": 0, "exact": 0, "played": 0}
-        ahead = c.execute(  # строго больше очков или точных при равных очках — общее место у равных
-            "SELECT COUNT(*) FROM standings WHERE period=:p AND (points > :pts OR (points = :pts AND exact > :ex))",
-            {"p": key, "pts": s["points"], "ex": s["exact"]}).fetchone()[0]
         better = c.execute(
             """SELECT COUNT(*) FROM standings WHERE period=:p AND (points > :pts OR (points = :pts AND (
                    exact > :ex OR (exact = :ex AND (last_pred_at < :l OR (last_pred_at = :l AND user_id < :u))))))""",
             {"p": key, "pts": s["points"], "ex": s["exact"], "l": s["last_pred_at"], "u": user_id}).fetchone()[0]
-        return {"rank": better + 1, "place": ahead + 1, "points": s["points"], "exact": s["exact"],
+        return {"rank": better + 1, "place": better + 1, "points": s["points"], "exact": s["exact"],
                 "played": s["played"]}
 
     def leaderboard(self, period: str = "season", league_id: Optional[int] = None, limit: int = 50,
                     user_id: Optional[int] = None) -> dict[str, Any]:
         info = period_info(period, self.now())
         key = info["key"]
-        limit = max(1, min(int(limit), 100))
+        limit = max(1, min(int(limit), LEADERBOARD_MAX))
         with self.conn() as c:
             if league_id is None:
                 rows = c.execute(
-                    """SELECT s.*, u.first_name, u.last_name, u.username, u.photo_url,
-                              RANK() OVER (ORDER BY s.points DESC, s.exact DESC) AS place
+                    """SELECT s.*, u.first_name, u.last_name, u.username, u.photo_url
                        FROM standings s JOIN users u ON u.id = s.user_id WHERE s.period = ?
                        ORDER BY s.points DESC, s.exact DESC, s.last_pred_at ASC, s.user_id ASC LIMIT ?""",
                     (key, limit)).fetchall()
-                top = [self._row_view(r, i + 1, user_id, r["place"]) for i, r in enumerate(rows)]
+                top = [self._row_view(r, i + 1, user_id) for i, r in enumerate(rows)]
                 total = c.execute("SELECT COUNT(*) FROM standings WHERE period=?", (key,)).fetchone()[0]
                 me = self._global_rank(c, key, user_id) if user_id is not None else None
                 return {**info, "league": None, "total": total, "top": top, "me": me}
@@ -607,8 +604,7 @@ class PredictionService:
                        SELECT lm.user_id, COALESCE(s.points, 0) AS points, COALESCE(s.exact, 0) AS exact,
                               COALESCE(s.played, 0) AS played,
                               ROW_NUMBER() OVER (ORDER BY COALESCE(s.points, 0) DESC, COALESCE(s.exact, 0) DESC,
-                                                 s.last_pred_at IS NULL, s.last_pred_at ASC, lm.user_id ASC) AS rnk,
-                              RANK() OVER (ORDER BY COALESCE(s.points, 0) DESC, COALESCE(s.exact, 0) DESC) AS place
+                                                 s.last_pred_at IS NULL, s.last_pred_at ASC, lm.user_id ASC) AS rnk
                        FROM league_members lm
                        LEFT JOIN standings s ON s.user_id = lm.user_id AND s.period = ?
                        WHERE lm.league_id = ?)
@@ -616,10 +612,10 @@ class PredictionService:
                    FROM ranked r JOIN users u ON u.id = r.user_id
                    WHERE r.rnk <= ? OR r.user_id = ? ORDER BY r.rnk""",
                 (key, league_id, limit, user_id)).fetchall()
-            top = [self._row_view(r, r["rnk"], user_id, r["place"]) for r in rows if r["rnk"] <= limit]
+            top = [self._row_view(r, r["rnk"], user_id) for r in rows if r["rnk"] <= limit]
             mine = next(r for r in rows if r["user_id"] == user_id)
             total = c.execute("SELECT COUNT(*) FROM league_members WHERE league_id=?", (league_id,)).fetchone()[0]
-            me = {"rank": mine["rnk"], "place": mine["place"], "points": mine["points"], "exact": mine["exact"],
+            me = {"rank": mine["rnk"], "place": mine["rnk"], "points": mine["points"], "exact": mine["exact"],
                   "played": mine["played"]}
             return {**info, "league": {"id": lg["id"], "name": lg["name"]}, "total": total, "top": top, "me": me}
 
