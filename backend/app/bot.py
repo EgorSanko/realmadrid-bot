@@ -9,7 +9,9 @@
     «Вход на сайт выполнен ✅ …» или «Код не найден или устарел …»;
   * `/start` без кода → короткое приветствие с кнопкой мини-аппа (web_app);
   * `/stop` / `/goals` — не присылать / снова присылать ролики голов;
-  * всё остальное (группы, каналы, другие тексты, сообщения старше 10 мин) — молча пропускает.
+  * любое другое личное сообщение (текст, фото, голосовое, стикер…) — сохраняет в bot_messages и
+    пересылает владельцу (ADMIN_IDS) с именем отправителя; человеку — «Спасибо, передали», не чаще раза в час;
+  * группы, каналы, другие боты — молча пропускает.
 Каждый, кто написал боту, попадает в получатели рассылки голов (app/broadcast.py) — её запускает
 владелец кнопкой в «Мадридиста · Клипы» (21.10.2026 владелец разрешил рассылку в личку).
 После подтверждения бот берёт фото профиля (getUserProfilePhotos) и ставит заявку `tg-file:…`
@@ -55,6 +57,10 @@ MSG_LIMIT = "Слишком много неверных кодов. Подожд
 MSG_HELLO = ("Привет! Это «Мадридиста» — всё о «Реале»: матчи онлайн, новости, прогнозы и игры.\n"
              "Откройте приложение кнопкой ниже.")
 BTN_APP = "Открыть «Мадридисту»"
+MSG_THANKS = "Спасибо! Сообщение передали автору «Мадридисты» 🙌"
+THANKS_EVERY = 3600.0             # «спасибо» одному человеку — не чаще раза в час
+MEDIA_KINDS = ("photo", "video", "voice", "video_note", "audio", "document", "animation", "sticker",
+               "location", "contact", "poll")
 MSG_STOP = "Больше не присылаю ролики голов. Вернуть: /goals"
 MSG_GOALS = "Буду присылать ролики голов «Реала». Отключить: /stop"
 CMD_RE = re.compile(r"^/(stop|goals)(?:@[A-Za-z0-9_]+)?\s*$", re.I)
@@ -148,12 +154,14 @@ class TelegramBot(Source):
         self.fails = _Window(*FAIL_LIMIT, clock=mono)
         self.global_fails = _Window(*GLOBAL_FAIL_LIMIT, clock=mono)
         self._limit_told: dict[int, float] = {}
+        self._thanked: dict[int, float] = {}
+        self._inbox: Optional[dict] = None
         self.mono = mono
         self.backoff = 0.0
         self.offset: Optional[int] = None
         self.stats = {"polls": 0, "updates": 0, "logins": 0, "login_failed": 0, "rate_limited": 0,
                       "greetings": 0, "ignored": 0, "stale": 0, "replies": 0, "reply_errors": 0,
-                      "avatars": 0, "avatar_errors": 0, "api_errors": 0}
+                      "avatars": 0, "avatar_errors": 0, "api_errors": 0, "inbox": 0}
 
     # ---------- инфраструктура ----------
 
@@ -281,6 +289,7 @@ class TelegramBot(Source):
         try:
             conn.execute("BEGIN IMMEDIATE")
             try:
+                self._inbox = None
                 reply, login_user = self._decide(conn, upd.get("message"))
                 self._save_offset(conn, int(upd["update_id"]) + 1)
                 conn.execute("COMMIT")
@@ -296,6 +305,8 @@ class TelegramBot(Source):
                 sent.append(reply)
         if login_user is not None:
             await self._want_avatar(login_user)
+        if self._inbox is not None:
+            await self._forward_inbox(self._inbox)
         return sent
 
     def _decide(self, conn, msg: Any) -> tuple[Optional[dict], Optional[int]]:
@@ -306,17 +317,22 @@ class TelegramBot(Source):
         chat, sender = msg.get("chat") or {}, msg.get("from") or {}
         text = msg.get("text")
         if (chat.get("type") != "private" or not isinstance(sender.get("id"), int) or sender.get("is_bot")
-                or chat.get("id") != sender.get("id") or not isinstance(text, str)):
+                or chat.get("id") != sender.get("id")):
             self.stats["ignored"] += 1
             return None, None
         now = self.clock()
         date = msg.get("date")
-        if isinstance(date, int) and datetime.fromtimestamp(date, timezone.utc) < now - STALE_MESSAGE:
-            self.stats["stale"] += 1
-            return None, None
+        stale = isinstance(date, int) and datetime.fromtimestamp(date, timezone.utc) < now - STALE_MESSAGE
         uid = sender["id"]
-        text = text.strip()
         broadcast.record_chat(conn, sender)
+        if not isinstance(text, str):   # фото, голосовое, стикер… — во входящие
+            return self._to_inbox(conn, msg, sender, stale), None
+        text = text.strip()
+        if stale:   # пролежало, пока бот был выключен: вход уже не нужен, а написанное человеком — во входящие
+            self.stats["stale"] += 1
+            if START_RE.match(text) or login_codes.normalize_code(text) is not None:
+                return None, None
+            return self._to_inbox(conn, msg, sender, stale), None
         cm = CMD_RE.match(text)
         if cm:
             on = cm.group(1).lower() == "goals"
@@ -334,8 +350,7 @@ class TelegramBot(Source):
         else:
             code = login_codes.normalize_code(text)
             if code is None:
-                self.stats["ignored"] += 1
-                return None, None
+                return self._to_inbox(conn, msg, sender, stale), None
         # попытка входа: лимит неверных кодов на человека и (для 6 цифр) на всех
         if self.fails.blocked(uid) or (code is not None and self.global_fails.blocked("*")):
             self.stats["rate_limited"] += 1
@@ -357,6 +372,47 @@ class TelegramBot(Source):
             self.global_fails.add("*")
         self.stats["login_failed"] += 1
         return self._message(uid, MSG_BAD), None
+
+    # ---------- входящие ----------
+
+    def _to_inbox(self, conn, msg: dict, sender: dict, stale: bool) -> Optional[dict]:
+        """Сохранить сообщение человека и запомнить его для пересылки владельцу (после фиксации).
+        Возвращает «спасибо» отправителю или None. Без ADMIN_IDS читать некому — без «спасибо»."""
+        from .stream import _admin_ids
+        uid = sender["id"]
+        kind = "text" if isinstance(msg.get("text"), str) else next((k for k in MEDIA_KINDS if k in msg), "other")
+        body = msg.get("text") if kind == "text" else msg.get("caption")
+        conn.execute("INSERT INTO bot_messages(chat_id, message_id, first_name, username, kind, text, created_at) "
+                     "VALUES (?,?,?,?,?,?,?)", (uid, msg.get("message_id"), sender.get("first_name") or "",
+                                                sender.get("username"), kind, body, self.clock().isoformat()))
+        self.stats["inbox"] += 1
+        admins = _admin_ids()
+        if not admins or uid in admins:
+            return None
+        self._inbox = {"admins": sorted(admins), "from": sender, "kind": kind, "text": body,
+                       "message_id": msg.get("message_id")}
+        last = self._thanked.get(uid)
+        if stale or (last is not None and self.mono() - last < THANKS_EVERY):
+            return None
+        self._thanked[uid] = self.mono()
+        return self._message(uid, MSG_THANKS)
+
+    async def _forward_inbox(self, item: dict) -> None:
+        s = item["from"]
+        who = " ".join(x for x in (s.get("first_name"), s.get("last_name")) if x) or "Без имени"
+        if s.get("username"):
+            who += f" (@{s['username']})"
+        head = f"✉️ {who} · id {s['id']}"
+        for admin in item["admins"]:
+            try:
+                if item["kind"] == "text":
+                    await self.call("sendMessage", {"chat_id": admin, "text": f"{head}:\n\n{item['text']}"})
+                else:
+                    await self.call("sendMessage", {"chat_id": admin, "text": f"{head} — {item['kind']}:"})
+                    await self.call("forwardMessage", {"chat_id": admin, "from_chat_id": s["id"],
+                                                       "message_id": item["message_id"]})
+            except Exception as e:  # пересылка — не повод терять апдейт: сообщение уже в bot_messages
+                log.warning("bot: переслать владельцу %s — %s", admin, scrub(str(e))[:200])
 
     @staticmethod
     def _message(chat_id: int, text: str, markup: Optional[dict] = None) -> dict:

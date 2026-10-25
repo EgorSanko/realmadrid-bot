@@ -133,3 +133,33 @@ def test_plain_caption_only_to_self(admin_env, svc):
     assert client.post("/api/admin/broadcast?key=k&plain=1&caption=x", content=VIDEO, headers=H).status_code == 400
     j = client.post("/api/admin/broadcast?key=k&plain=1&test=1&caption=ГОЛ!%0A%0A%23реал", content=VIDEO, headers=H).json()
     assert j["caption"] == "ГОЛ!\n\n#реал" and j["test"] is True
+
+
+# ---------- входящие: что люди пишут боту — владельцу ----------
+
+def test_inbox_forwarded_to_admin_with_thanks_once(admin_env, bot, tg, svc, clock):
+    from app.bot import MSG_THANKS
+    asyncio.run(bot.handle_update(msg(LUKA, "Когда следующий матч?", clock=clock)))
+    asyncio.run(bot.handle_update(msg(LUKA, "И ещё вопрос", clock=clock)))
+    sent = tg.sent()
+    to_admin = [s["text"] for s in sent if s["chat_id"] == ADMIN]
+    assert to_admin == ["✉️ Лука Модрич (@lm10) · id 7001:\n\nКогда следующий матч?",
+                        "✉️ Лука Модрич (@lm10) · id 7001:\n\nИ ещё вопрос"]
+    assert [s["text"] for s in sent if s["chat_id"] == LUKA["id"]] == [MSG_THANKS]   # «спасибо» — один раз
+    c = predictions_db.connect(svc.db_path)
+    try:
+        assert [r[0] for r in c.execute("SELECT text FROM bot_messages ORDER BY id")] == [
+            "Когда следующий матч?", "И ещё вопрос"]
+    finally:
+        c.close()
+
+
+def test_inbox_media_is_forwarded_and_admin_not_echoed(admin_env, bot, tg, clock):
+    upd = {"update_id": 9_000_001, "message": {"message_id": 55, "from": TONI, "chat": {"id": TONI["id"], "type": "private"},
+                                               "date": int(clock().timestamp()), "voice": {"file_id": "v"}}}
+    asyncio.run(bot.handle_update(upd))
+    fw = [p for m, p in tg.calls if m == "forwardMessage"]
+    assert fw == [{"chat_id": ADMIN, "from_chat_id": TONI["id"], "message_id": 55}]
+    n = len(tg.calls)
+    asyncio.run(bot.handle_update(msg({"id": ADMIN, "is_bot": False, "first_name": "Егор"}, "тест", clock=clock)))
+    assert all(m != "forwardMessage" and p.get("chat_id") != ADMIN for m, p in tg.calls[n:])

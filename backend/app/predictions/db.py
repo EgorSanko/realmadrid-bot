@@ -206,6 +206,20 @@ MIGRATIONS: list[str] = [
         blocked_reason  TEXT
     );
     """,
+    # v8 — входящие боту: всё, что люди пишут боту помимо входа и команд (app/bot.py пересылает владельцу)
+    """
+    CREATE TABLE bot_messages (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        chat_id     INTEGER NOT NULL,
+        message_id  INTEGER,
+        first_name  TEXT,
+        username    TEXT,
+        kind        TEXT NOT NULL,                     -- text | photo | sticker | voice | … | other
+        text        TEXT,                              -- текст или подпись к медиа
+        created_at  TEXT NOT NULL
+    );
+    CREATE INDEX bot_messages_chat ON bot_messages(chat_id, created_at);
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)
