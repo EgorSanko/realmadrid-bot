@@ -40,14 +40,17 @@ import {
 import { PredictForm } from './PredictForm';
 import { useAuthedGet, usePredictMatches } from './usePredict';
 import type { Load } from './usePredict';
+import { cx } from '../../ui/format';
 import './predict.css';
 
 type BoardTab = 'season' | 'month' | 'leagues';
 
-/** рейтинг целиком — все участники (потолок сервера); себя ищут кнопкой «Найти себя» */
+/** рейтинг целиком — все участники (потолок сервера) в окне с прокруткой; себя ищут кнопкой «Найти себя» */
 const TOP = 1000;
 /** волна появления строк — только у первых, иначе нижние приезжают через несколько секунд */
 const WAVE = 15;
+/** больше строк — рейтинг прокручивается внутри своего окна, и лиги под ним не уезжают вниз страницы */
+const BOX_ROWS = 8;
 
 function loadError<T>(s: Load<T>): string | null {
   if (s.kind !== 'error') return null;
@@ -316,7 +319,7 @@ function Board({
     body = <p className="pd-muted pd-board__msg">Пока пусто: очки появятся после первого сыгранного матча.</p>;
   } else if (view) {
     body = (
-      <div className="pd-board__rows" ref={rowsRef}>
+      <div className={cx('pd-board__rows', view.rows.length > BOX_ROWS && 'pd-board__rows--box')} ref={rowsRef}>
         {view.rows.map((r, i) => (
           <LeaderboardRow
             key={`${r.rank}-${r.name}`}
@@ -408,7 +411,7 @@ function Board({
   );
 }
 
-/** Моя строка рейтинга вне экрана (выше или ниже) — тогда показываем кнопку «Найти себя». */
+/** Моя строка рейтинга не видна (в окне рейтинга или на экране) — тогда показываем кнопку «Найти себя». */
 function useMeOffscreen(rowsRef: RefObject<HTMLDivElement | null>, view: BoardView | null): boolean {
   const [off, setOff] = useState(false);
   useEffect(() => {
@@ -417,18 +420,24 @@ function useMeOffscreen(rowsRef: RefObject<HTMLDivElement | null>, view: BoardVi
       setOff(false);
       return;
     }
-    const io = new IntersectionObserver(([e]) => setOff(!e.isIntersecting), { rootMargin: '-60px 0px -120px 0px' });
+    const box = rowsRef.current?.classList.contains('pd-board__rows--box') ? rowsRef.current : null;
+    const io = new IntersectionObserver(([e]) => setOff(e.intersectionRatio < 0.9), { root: box, threshold: [0, 0.9] });
     io.observe(row);
     return () => io.disconnect();
   }, [rowsRef, view]);
   return off;
 }
 
-/** Прокрутить к своей строке и коротко подсветить её. */
+/** Прокрутить к своей строке (внутри окна рейтинга, страница остаётся на месте) и коротко подсветить её. */
 function scrollToMe(rows: HTMLDivElement | null) {
   const row = rows?.querySelector<HTMLElement>('.ui-lb.is-me');
-  if (!row) return;
-  row.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+  if (!rows || !row) return;
+  const behavior = reducedMotion() ? 'auto' : 'smooth';
+  if (rows.classList.contains('pd-board__rows--box')) {
+    rows.scrollTo({ top: row.offsetTop - (rows.clientHeight - row.offsetHeight) / 2, behavior });
+  } else {
+    row.scrollIntoView({ block: 'center', behavior });
+  }
   row.classList.remove('is-found');
   void row.offsetWidth; // перезапуск анимации при повторном нажатии
   row.classList.add('is-found');
