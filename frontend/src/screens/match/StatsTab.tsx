@@ -1,12 +1,13 @@
 import { Fragment, useState, type CSSProperties } from 'react';
 import type { ApiMatch, ApiZone } from '../../api/match';
+import { t } from '../../lib/i18n';
 import { Card, EmptyState, MomentumChart, ShotMap, StatRow, Tabs, TeamCrest, useInViewOnce } from '../../ui';
 import { cx } from '../../ui/format';
 import { zoneHeat, zonesView, type ZonesView } from './info';
 import { momentumView, realSide, shortTeam, shotsView, statPeriods, statsView, teamRef, type PeriodKey, type Phase } from './view';
 import './info.css';
 
-const PERIOD_LABEL: Record<PeriodKey, string> = { all: 'Матч', first_half: '1-й тайм', second_half: '2-й тайм' };
+const PERIOD_LABEL: Record<PeriodKey, string> = { all: t('Матч'), first_half: t('1-й тайм'), second_half: t('2-й тайм') };
 
 /** desk — компьютер: группы показателей в две колонки слева, давление, удары и зоны — колонкой справа. */
 export function StatsTab({ match, phase, desk }: { match: ApiMatch; phase: Phase; desk?: boolean }) {
@@ -23,31 +24,31 @@ export function StatsTab({ match, phase, desk }: { match: ApiMatch; phase: Phase
   const zones = zonesView(match, p);
 
   const shotCard = shots && (
-    <Card ariaLabel="Карта ударов">
+    <Card ariaLabel={t('Карта ударов')}>
       <div className="mt-row">
-        <h2 className="mt-h2">{rs === 'home' && match.home.id !== 8633 && match.away.id !== 8633 ? `Удары: ${shots.team}` : 'Удары Реала'}</h2>
+        <h2 className="mt-h2">{rs === 'home' && match.home.id !== 8633 && match.away.id !== 8633 ? t('Удары: {team}', { team: shots.team }) : t('Удары Реала')}</h2>
         <span className="mt-muted mt-small">{shots.summary}</span>
       </div>
-      <ShotMap shots={shots.shots} ariaLabel={`Карта ударов: ${shots.team} по воротам ${shots.opponent}`} />
+      <ShotMap shots={shots.shots} ariaLabel={t('Карта ударов: {team} по воротам {opponent}', { team: shots.team, opponent: shots.opponent })} />
     </Card>
   );
 
   if (!mom && !groups.length && !shots && !zones) {
     const before = phase === 'scheduled' || phase === 'postponed' || phase === 'cancelled';
-    return <EmptyState className="mt-state" title={before ? 'Статистика появится по ходу матча' : 'Статистики пока нет'} />;
+    return <EmptyState className="mt-state" title={before ? t('Статистика появится по ходу матча') : t('Статистики пока нет')} />;
   }
 
   const momCard = mom && (
-    <Card ariaLabel="Давление по ходу матча">
+    <Card ariaLabel={t('Давление по ходу матча')}>
       <div className="mt-row">
-        <h2 className="mt-h2">Давление</h2>
+        <h2 className="mt-h2">{t('Давление')}</h2>
         <span className="mt-muted mt-small">{mom.caption}</span>
       </div>
       <MomentumChart data={mom.data} homeColor={mom.homeColor} awayColor={mom.awayColor} ticks={mom.ticks} />
     </Card>
   );
   const groupCard = (g: (typeof groups)[number], gi: number) => (
-    <Card key={g.title} ariaLabel={g.title === 'Главное' ? 'Статистика' : g.title}>
+    <Card key={g.title} ariaLabel={g.title === t('Главное') ? t('Статистика') : g.title}>
       <div className="mt-row">
         <span className="mt-muted mt-small mt-team mt-team--crest">
           {home.id != null && <TeamCrest id={home.id} name="" size={20} />}
@@ -62,7 +63,7 @@ export function StatsTab({ match, phase, desk }: { match: ApiMatch; phase: Phase
       {gi === 0 && periods.length > 1 && (
         <Tabs
           variant="outline"
-          ariaLabel="Период"
+          ariaLabel={t('Период')}
           className="mt-periods"
           items={periods.map((id) => ({ id, label: PERIOD_LABEL[id] }))}
           value={p}
@@ -121,24 +122,24 @@ export function StatsTab({ match, phase, desk }: { match: ApiMatch; phase: Phase
 }
 
 const LANES: Array<[keyof ApiZone, string]> = [
-  ['left', 'левый'],
-  ['center', 'центр'],
-  ['right', 'правый'],
+  ['left', t('левый')],
+  ['center', t('центр')],
+  ['right', t('правый')],
 ];
 
 /** Зоны атак: у каждой команды — половина поля (атака вверх), три фланга с долей атак; горячая зона — золото. */
 function ZonesCard({ match, zones }: { match: ApiMatch; zones: ZonesView }) {
   const [ref, seen] = useInViewOnce<HTMLDivElement>(0.4);
   const side = (s: 'home' | 'away') => {
-    const t = teamRef(match, s);
+    const tr = teamRef(match, s);
     const z = zones[s];
     return (
       <div key={s} className="mz-side">
         <div className="mz-team">
-          {t.id != null && <TeamCrest id={t.id} name="" size={20} />}
+          {tr.id != null && <TeamCrest id={tr.id} name="" size={20} />}
           <span>{shortTeam(match[s].name)}</span>
         </div>
-        <div className="mz-pitch" role="img" aria-label={`${t.name}: левый фланг ${z.left}%, центр ${z.center}%, правый фланг ${z.right}%`}>
+        <div className="mz-pitch" role="img" aria-label={t('{team}: левый фланг {left}%, центр {center}%, правый фланг {right}%', { team: tr.name, left: z.left, center: z.center, right: z.right })}>
           {LANES.map(([k, label], i) => (
             <div key={k} className={cx('mz-lane', zones.hot[s] === k && 'is-hot')}>
               <span className="mz-lane__heat" style={{ opacity: zoneHeat(z[k]), '--d': `${(s === 'away' ? 3 : 0) * 60 + i * 60}ms` } as CSSProperties} />
@@ -154,13 +155,13 @@ function ZonesCard({ match, zones }: { match: ApiMatch; zones: ZonesView }) {
     );
   };
   return (
-    <Card ariaLabel="Зоны атак">
-      <h2 className="mt-h2">Зоны атак</h2>
+    <Card ariaLabel={t('Зоны атак')}>
+      <h2 className="mt-h2">{t('Зоны атак')}</h2>
       <div ref={ref} className={cx('mz-pitches', 'mo-reveal', seen && 'is-in')}>
         {side('home')}
         {side('away')}
       </div>
-      <p className="mz-note">Доля атак по флангам, направление — вверх</p>
+      <p className="mz-note">{t('Доля атак по флангам, направление — вверх')}</p>
     </Card>
   );
 }
@@ -176,13 +177,13 @@ export function KeyStats({ match, onAll }: { match: ApiMatch; onAll?: () => void
   const home = teamRef(match, 'home');
   const away = teamRef(match, 'away');
   return (
-    <Card ariaLabel="Главные показатели" className="mt-keystats">
+    <Card ariaLabel={t('Главные показатели')} className="mt-keystats">
       <div className="mt-row">
         <span className="mt-muted mt-small mt-team mt-team--crest">
           {home.id != null && <TeamCrest id={home.id} name="" size={20} />}
           <span>{shortTeam(match.home.name)}</span>
         </span>
-        <h2 className="mt-h2">Статистика</h2>
+        <h2 className="mt-h2">{t('Статистика')}</h2>
         <span className="mt-muted mt-small mt-team mt-team--r mt-team--crest">
           <span>{shortTeam(match.away.name)}</span>
           {away.id != null && <TeamCrest id={away.id} name="" size={20} />}
@@ -195,7 +196,7 @@ export function KeyStats({ match, onAll }: { match: ApiMatch; onAll?: () => void
       </div>
       {onAll && (
         <button type="button" className="mt-more" onClick={onAll}>
-          Вся статистика
+          {t('Вся статистика')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M9 6l6 6-6 6" />
           </svg>

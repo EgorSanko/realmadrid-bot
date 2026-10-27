@@ -5,15 +5,18 @@
  * Читаются оба вида: ссылка с телефона открывает ту же вкладку на компьютере и наоборот.
  */
 
+import { t, tc } from '../../lib/i18n';
+
 export type MatchTab = 'overview' | 'lineups' | 'stats' | 'online' | 'table' | 'h2h';
 
+/** словарь грузится до импорта приложения — t() в константе модуля можно */
 export const TAB_LABEL: Record<MatchTab, string> = {
-  overview: 'Обзор',
-  lineups: 'Составы',
-  stats: 'Статистика',
-  online: 'Онлайн',
-  table: 'Турнир',
-  h2h: 'Очные встречи',
+  overview: t('Обзор'),
+  lineups: t('Составы'),
+  stats: t('Статистика'),
+  online: t('Онлайн'),
+  table: tc('tab', 'Турнир'),
+  h2h: t('Очные встречи'),
 };
 
 /** порядок на компьютере */

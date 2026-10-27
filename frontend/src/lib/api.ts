@@ -3,7 +3,7 @@
  * Клиент ходит только по относительным путям /api/*; внешних запросов нет.
  */
 import type { ApiRound } from '../api/match';
-import { withLang } from './i18n';
+import { t, withLang } from './i18n';
 
 /** Общие поля каждого ответа: откуда и когда снимок. */
 export interface ApiMeta {
@@ -134,7 +134,7 @@ export async function fetchApi<T>(path: string, signal?: AbortSignal): Promise<T
     r = await fetch(withLang(path), { cache: 'no-store', signal, headers: { Accept: 'application/json' } });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
-    throw new ApiFetchError(0, null, 'Нет соединения');
+    throw new ApiFetchError(0, null, t('Нет соединения'));
   }
   if (!r.ok) {
     let code: string | null = null;
@@ -149,6 +149,6 @@ export async function fetchApi<T>(path: string, signal?: AbortSignal): Promise<T
   try {
     return (await r.json()) as T;
   } catch {
-    throw new ApiFetchError(r.status, 'bad_json', 'Ответ сервера не разобрать');
+    throw new ApiFetchError(r.status, 'bad_json', t('Ответ сервера не разобрать'));
   }
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { ApiMatch } from '../../api/match';
+import { t } from '../../lib/i18n';
 import { useDesktop } from '../../lib/shell';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import { Badge, Countdown, EmptyState, ErrorState, LeagueLogo, ScoreHeader, Skeleton, Tabs, TeamCrest, formatTime, formatWeekdayShort } from '../../ui';
@@ -122,15 +123,15 @@ export default function MatchScreen() {
   );
 
   useEffect(() => {
-    document.title = match ? `${compactTitle(match)} — Мадридиста` : 'Матч — Мадридиста';
+    document.title = match ? t('{title} — Мадридиста', { title: compactTitle(match) }) : t('Матч — Мадридиста');
   }, [match]);
 
   // большая шапка: на компьютере — всегда, на телефоне — только в «Обзоре»
   const bigHead = desktop || tab === 'overview';
   const title = match ? (bigHead ? tournamentLine(match) : compactTitle(match)) : '';
-  const setTab = (t: MatchTab) => {
+  const setTab = (next: MatchTab) => {
     // вкладки не копят историю: «назад» уводит с матча, а не по вкладкам
-    navigate(desktop ? deskTabHref(id, t, location.search) : mobileTabHref(id, t, location.search), { replace: true });
+    navigate(desktop ? deskTabHref(id, next, location.search) : mobileTabHref(id, next, location.search), { replace: true });
   };
 
   return (
@@ -139,7 +140,7 @@ export default function MatchScreen() {
         {nativeBack ? (
           <span className="mt-top__gap" aria-hidden="true" />
         ) : (
-          <button type="button" className="mt-top__back" aria-label="Назад" onClick={goBack}>
+          <button type="button" className="mt-top__back" aria-label={t('Назад')} onClick={goBack}>
             {BACK_ICON}
           </button>
         )}
@@ -158,13 +159,13 @@ export default function MatchScreen() {
       {state.kind === 'not_found' && (
         <EmptyState
           className="mt-state"
-          title="Матч не найден"
-          text="Такого матча нет в календаре"
-          action={{ label: 'К матчам', onClick: () => navigate('/matches') }}
+          title={t('Матч не найден')}
+          text={t('Такого матча нет в календаре')}
+          action={{ label: t('К матчам'), onClick: () => navigate('/matches') }}
         />
       )}
       {state.kind === 'unavailable' && (
-        <ErrorState className="mt-state" title="Данные ещё собираются" text="Сервер только что запустился. Попробуем снова через несколько секунд" onRetry={reload} />
+        <ErrorState className="mt-state" title={t('Данные ещё собираются')} text={t('Сервер только что запустился. Попробуем снова через несколько секунд')} onRetry={reload} />
       )}
       {state.kind === 'error' && <ErrorState className="mt-state" onRetry={reload} />}
 
@@ -177,7 +178,7 @@ export default function MatchScreen() {
       {match && head && !desktop && (
         <>
           {tab === 'overview' && <Header match={match} onKickoff={reload} />}
-          <Tabs items={MOBILE_ITEMS} value={tab} onChange={setTab} ariaLabel="Разделы матча" className={head.live ? 'mt-tabs--live' : undefined} />
+          <Tabs items={MOBILE_ITEMS} value={tab} onChange={setTab} ariaLabel={t('Разделы матча')} className={head.live ? 'mt-tabs--live' : undefined} />
           {match.pending ? (
             <PendingBody />
           ) : (
@@ -272,7 +273,7 @@ function DeskMatch({
           <div ref={mark} className="mt-dock-mark" aria-hidden="true" />
           <div className={cx('mt-dock', stuck && 'is-stuck')}>
             <MiniBar match={match} head={head} shown={stuck} />
-            <Tabs items={items} value={tab} onChange={choose} ariaLabel="Разделы матча" variant="pill" className="mt-dtabs" />
+            <Tabs items={items} value={tab} onChange={choose} ariaLabel={t('Разделы матча')} variant="pill" className="mt-dtabs" />
           </div>
           <div className={`mt-pane mt-pane--${tab}`} key={tab} role="tabpanel" aria-label={TAB_LABEL[tab]}>
             {tab === 'overview' && <OverviewTab match={match} phase={head.phase} desk onStats={() => choose('stats')} />}
@@ -303,17 +304,17 @@ function MiniBar({ match, head, shown }: { match: ApiMatch; head: HeaderView; sh
   const h = teamRef(match, 'home');
   const a = teamRef(match, 'away');
   let status: string;
-  if (head.phase === 'live') status = head.minute ?? head.statusText ?? 'Идёт матч';
+  if (head.phase === 'live') status = head.minute ?? head.statusText ?? t('Идёт матч');
   else if (head.statusText) status = head.statusText;
-  else if (head.phase === 'finished') status = 'Матч завершён';
-  else status = match.kickoff ? `${formatWeekdayShort(match.kickoff)} · ${formatTime(match.kickoff)} МСК` : '';
+  else if (head.phase === 'finished') status = t('Матч завершён');
+  else status = match.kickoff ? `${formatWeekdayShort(match.kickoff)} · ${formatTime(match.kickoff)} ${t('МСК')}` : '';
   return (
     <button
       type="button"
       className={cx('mt-bar', shown && 'is-on')}
       tabIndex={shown ? 0 : -1}
       aria-hidden={!shown}
-      aria-label={`${compactTitle(match)}. Наверх`}
+      aria-label={t('{title}. Наверх', { title: compactTitle(match) })}
       onClick={() => window.scrollTo({ top: 0, behavior: reducedMotion() ? 'auto' : 'smooth' })}
     >
       <span className="mt-bar__team">
@@ -386,14 +387,14 @@ function CalendarButton({ match }: { match: ApiMatch }) {
       type="button"
       className="ui-btn ui-btn--secondary ui-btn--block mt-cal"
       onClick={() =>
-        addMatchToCalendar(title, match.kickoff!, place, `${what ? `${what}. ` : ''}Мадридиста: https://realmadridfan.ru/match/${match.id ?? ''}`)
+        addMatchToCalendar(title, match.kickoff!, place, `${what ? `${what}. ` : ''}${t('Мадридиста')}: https://realmadridfan.ru/match/${match.id ?? ''}`)
       }
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
         <rect x="3.5" y="5" width="17" height="15" rx="3" />
         <path d="M3.5 10h17M8 3v4M16 3v4" />
       </svg>
-      Добавить в календарь
+      {t('Добавить в календарь')}
     </button>
   );
 }
@@ -410,8 +411,8 @@ function LoadingBody() {
 function PendingBody() {
   return (
     <section className="ui-card mt-pending" aria-live="polite">
-      <p className="mt-pending__title">Данные подгружаются</p>
-      <p className="mt-pending__text">Обновим автоматически через несколько секунд</p>
+      <p className="mt-pending__title">{t('Данные подгружаются')}</p>
+      <p className="mt-pending__text">{t('Обновим автоматически через несколько секунд')}</p>
       <Skeleton shape="stats" rows={4} />
     </section>
   );

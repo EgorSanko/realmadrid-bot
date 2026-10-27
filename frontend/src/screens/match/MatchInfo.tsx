@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import type { ApiMatch } from '../../api/match';
+import { t } from '../../lib/i18n';
 import { Card, Flag, PlayerPhoto, useInViewOnce } from '../../ui';
 import { cx } from '../../ui/format';
 import { infoLine, refereeView, stadiumView, weatherView, type RefScaleView, type RefereeView, type StadiumView, type WeatherIcon, type WeatherView } from './info';
@@ -23,7 +24,7 @@ export function MatchInfo({ match, compact, dense }: { match: ApiMatch; compact?
     const rows = aboutRows(match);
     if (!rows.length) return null;
     return (
-      <Card ariaLabel="О матче" className="mt-about">
+      <Card ariaLabel={t('О матче')} className="mt-about">
         {rows.map(([k, v, iso]) => (
           <div key={k} className="mt-about__row">
             <span className="mt-about__k">{k}</span>
@@ -55,7 +56,7 @@ export function MatchInfo({ match, compact, dense }: { match: ApiMatch; compact?
         aria-controls={bodyId}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="mi-fold__cap">О матче</span>
+        <span className="mi-fold__cap">{t('О матче')}</span>
         <span className="mi-fold__line">{line}</span>
         <svg className="mi-fold__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
           <path d="M6 9l6 6 6-6" />
@@ -73,15 +74,15 @@ export function MatchInfo({ match, compact, dense }: { match: ApiMatch; compact?
 /** dense — обзор на компьютере: название и место строкой, погода — плиткой рядом с вместимостью. */
 function StadiumCard({ st, w, dense }: { st: StadiumView; w: WeatherView | null; dense?: boolean }) {
   const tiles = [
-    st.capacity && { k: 'Вместимость', v: st.capacity },
-    st.surface && { k: 'Покрытие', v: st.surface },
-    st.attendance && { k: 'Зрители', v: st.attendance },
+    st.capacity && { k: t('Вместимость'), v: st.capacity },
+    st.surface && { k: t('Покрытие'), v: st.surface },
+    st.attendance && { k: t('Зрители'), v: st.attendance },
   ].filter((x): x is { k: string; v: string } => !!x);
   const place = [st.city, st.country].filter(Boolean).join(', ');
   if (dense) {
     return (
-      <Card ariaLabel="Стадион" className="mi mi--dense">
-        <p className="mi-ref__cap">Стадион</p>
+      <Card ariaLabel={t('Стадион')} className="mi mi--dense">
+        <p className="mi-ref__cap">{t('Стадион')}</p>
         <p className="mi-title mi-title--sm">{st.name}</p>
         {place && (
           <p className="mi-place">
@@ -101,7 +102,7 @@ function StadiumCard({ st, w, dense }: { st: StadiumView; w: WeatherView | null;
               <div className="mi-tile mi-tile--wx" title={w.details ?? undefined}>
                 <WeatherGlyph kind={w.icon} />
                 <span className="mi-tile__wx">
-                  <span className="mi-tile__k">{w.text || 'Погода'}</span>
+                  <span className="mi-tile__k">{w.text || t('Погода')}</span>
                   <span className="mi-tile__v">{w.temp}</span>
                 </span>
               </div>
@@ -112,8 +113,8 @@ function StadiumCard({ st, w, dense }: { st: StadiumView; w: WeatherView | null;
     );
   }
   return (
-    <Card ariaLabel="Стадион" className="mi">
-      <h2 className="mt-h2">Стадион</h2>
+    <Card ariaLabel={t('Стадион')} className="mi">
+      <h2 className="mt-h2">{t('Стадион')}</h2>
       <p className="mi-title">{st.name}</p>
       {place && (
         <p className="mi-place">
@@ -152,18 +153,18 @@ function RefereeCard({ r, dense }: { r: RefereeView; dense?: boolean }) {
   const meta = [r.country, r.matches].filter(Boolean).join(' · ');
   if (dense) {
     const tiles = [
-      r.yellow && { label: 'Жёлтых за матч', value: r.yellow.value },
-      r.fouls && { label: 'Фолов за матч', value: r.fouls.value },
+      r.yellow && { label: t('Жёлтых за матч'), value: r.yellow.value },
+      r.fouls && { label: t('Фолов за матч'), value: r.fouls.value },
       ...r.tiles,
     ]
       .filter((t): t is { label: string; value: string } => !!t)
       .slice(0, 3);
     return (
-      <Card ariaLabel="Судья" className="mi mi--dense">
+      <Card ariaLabel={t('Судья')} className="mi mi--dense">
         <div className="mi-ref">
           <PlayerPhoto id={r.id} name={r.name} size={44} className="mi-ref__photo" />
           <div className="mi-ref__body">
-            <p className="mi-ref__cap">Судья</p>
+            <p className="mi-ref__cap">{t('Судья')}</p>
             <p className="mi-ref__name">{r.name}</p>
             {meta && (
               <p className="mi-ref__meta">
@@ -187,8 +188,8 @@ function RefereeCard({ r, dense }: { r: RefereeView; dense?: boolean }) {
     );
   }
   return (
-    <Card ariaLabel="Судья" className="mi">
-      <h2 className="mt-h2">Судья</h2>
+    <Card ariaLabel={t('Судья')} className="mi">
+      <h2 className="mt-h2">{t('Судья')}</h2>
       <div className="mi-ref">
         <PlayerPhoto id={r.id} name={r.name} size={52} className="mi-ref__photo" />
         <div className="mi-ref__body">
@@ -201,8 +202,8 @@ function RefereeCard({ r, dense }: { r: RefereeView; dense?: boolean }) {
           )}
         </div>
       </div>
-      {r.yellow && <RefScale title="Жёлтые карточки" s={r.yellow} />}
-      {r.fouls && <RefScale title="Фолы" s={r.fouls} />}
+      {r.yellow && <RefScale title={t('Жёлтые карточки')} s={r.yellow} />}
+      {r.fouls && <RefScale title={t('Фолы')} s={r.fouls} />}
       {r.tiles.length > 0 && (
         <div className="mi-tiles" style={{ gridTemplateColumns: `repeat(${r.tiles.length}, minmax(0, 1fr))` }}>
           {r.tiles.map((t) => (
@@ -224,7 +225,7 @@ function RefScale({ title, s }: { title: string; s: RefScaleView }) {
       <div className="mi-scale__row">
         <span className="mi-scale__title">{title}</span>
         <span className="mi-scale__val">
-          <b>{s.value}</b> / матч
+          <b>{s.value}</b> / {t('матч')}
         </span>
       </div>
       <div className={cx('mi-bar', s.level === 'above' && 'mi-bar--hot')} aria-hidden="true">
@@ -232,7 +233,7 @@ function RefScale({ title, s }: { title: string; s: RefScaleView }) {
         {s.avgFill != null && <span className="mi-bar__avg" style={{ left: `${s.avgFill}%` }} />}
       </div>
       <div className="mi-scale__row mi-scale__row--sub">
-        <span>{s.avg ? `в среднем по лиге ${s.avg}` : ''}</span>
+        <span>{s.avg ? t('в среднем по лиге {avg}', { avg: s.avg }) : ''}</span>
         {s.label && <span className={cx('mi-level', s.level && `mi-level--${s.level}`)}>{s.label}</span>}
       </div>
     </div>

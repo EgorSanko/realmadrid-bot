@@ -1,12 +1,13 @@
 import type { CSSProperties } from 'react';
 import { NavLink, useLocation } from 'react-router';
+import { t } from '../lib/i18n';
 import { Icon, SECTIONS, sectionActive } from '../sections';
 
 export function BottomNav() {
   const { pathname } = useLocation();
   const active = SECTIONS.findIndex((s) => (s.path === '/' ? pathname === '/' : sectionActive(s, pathname)));
   return (
-    <nav className="bottom-nav" aria-label="Разделы">
+    <nav className="bottom-nav" aria-label={t('Разделы')}>
       <div className="bottom-nav__inner">
         {/* золотая метка активной вкладки: одна на всё меню, переезжает к выбранной (transform) */}
         <span

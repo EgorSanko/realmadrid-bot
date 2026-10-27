@@ -1,16 +1,19 @@
 import { useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
+import { isEn, t } from '../../lib/i18n';
 import { useSpaLink } from '../../lib/spaLink';
 import { useTelegramBackButton } from '../../lib/tmaNav';
 import './legal.css';
 
 /*
  * Документы: политика конфиденциальности (/privacy) и условия использования (/terms).
- * Нужны магазину приложений (RuStore) и сайту. Текст простой, по-русски; при изменении — обновить дату.
+ * Нужны магазину приложений (RuStore) и сайту. Текст простой, по-русски (английская редакция — PrivacyEn / TermsEn); при изменении — обновить дату.
  */
 
 const UPDATED = '20 октября 2026 г.';
+/** та же дата по-английски — менять вместе с UPDATED */
+const UPDATED_EN = 'October 20, 2026';
 const BOT = 'Real_Madrid_football_bot';
 const BOT_LINK = `https://t.me/${BOT}`;
 
@@ -204,9 +207,194 @@ function Terms() {
   );
 }
 
+/*
+ * Английская редакция тех же документов (isEn()). Смысл — один в один с русской; при изменении русского текста
+ * обновить и её. Реквизиты, адреса, имена бота и cookie не переводятся.
+ */
+function PrivacyEn() {
+  const link = useSpaLink();
+  return (
+    <>
+      <p className="lg-lead">
+        Madridista is an unofficial fan app and website about Real Madrid football club (realmadridfan.ru, the
+        Madridista Android app and the Telegram mini app). We are not affiliated with Real Madrid C.F. and do not
+        represent the club. This page explains in plain words what data we store, why, and how to delete it.
+      </p>
+
+      <h2>1. Without signing in</h2>
+      <p>
+        All sections — matches, tables, squad, players, news, videos, the quiz and the penalty game — open without
+        registration. Until you sign in, we store nothing about you except an anonymous visit counter (below) and the
+        usual technical server logs (see section 5). There are no ads and no third-party analytics. There are no push
+        notifications: the bot never messages anyone first.
+      </p>
+      <p>
+        <b>Visit counter.</b> To know how many people visit each day, the app stores a random identifier on your
+        device and once a day tells the server what was opened and where — the website, Telegram or the Android app.
+        The server stores not the identifier itself but its irreversible hash and the date; no IP address or device
+        information is recorded with it. If you are signed in, your Telegram ID is added to the record (the link is
+        erased when you delete your account). This data is seen only by the owner of the service, as aggregate
+        numbers, and is not shared with anyone.
+      </p>
+
+      <h2>2. What we store after you sign in</h2>
+      <p>
+        Signing in is needed only for predictions, leaderboards, leagues with friends and saving game results. You sign
+        in via Telegram (the bot @{BOT}); we never ask for or store a password. After you sign in, we keep:
+      </p>
+      <ul>
+        <li>
+          <b>Telegram profile data</b>: your numeric identifier (Telegram ID), first and last name, username
+          (@username), if set, and your profile photo — we keep a copy of it on our server to show it in your profile
+          and on leaderboards;
+        </li>
+        <li>
+          <b>your activity in the app</b>: match predictions and points awarded, leaderboard positions, leagues you
+          created and joined, quiz and penalty game results;
+        </li>
+        <li>
+          <b>service data</b>: when your profile was created and your last visit (recorded at most once a day); the
+          session cookie <code>rm_session</code> — it keeps you signed in for up to 30 days or until you tap “Log
+          out”; while you sign in with a code — a one-time code and the cookie <code>rm_login</code> (they live for 5
+          minutes and are then deleted).
+        </li>
+      </ul>
+      <p>
+        Your name (in short form, e.g. “Luka M.”), photo and points are visible to other users on leaderboards and in
+        the leagues you take part in. This data is not shared with or sold to anyone else.
+      </p>
+      <p>
+        Interface settings (for example, volume) are also stored in the browser or the app on your device — they never
+        leave the device.
+      </p>
+
+      <h2>3. Why</h2>
+      <ul>
+        <li>so that you can sign in and stay signed in;</li>
+        <li>to save predictions, calculate points and show leaderboards and leagues;</li>
+        <li>to save game results and show the weekly leaderboard;</li>
+        <li>to protect the service from abuse (limiting the number of sign-in attempts).</li>
+      </ul>
+
+      <h2>4. How long we keep it</h2>
+      <ul>
+        <li>profile, predictions, leagues and game results — while you use the service or until you delete your account;</li>
+        <li>the copy of your profile photo is deleted if you have not visited for 180 days (it reappears the next time you sign in);</li>
+        <li>sign-in codes — 5 minutes; the session cookie — up to 30 days;</li>
+        <li>daily visit records — 400 days (the date of a device’s first visit is kept for the total number of people);</li>
+        <li>technical server logs — up to 14 days.</li>
+      </ul>
+
+      <h2>5. Technical logs</h2>
+      <p>
+        Like any website, our server records the IP address, time, requested page address and browser type in its
+        logs. They are needed only to run and protect the server, are not shared with anyone and are deleted
+        automatically.
+      </p>
+
+      <h2>6. Third-party services</h2>
+      <ul>
+        <li>
+          <b>Telegram</b> — sign-in via the bot @{BOT}. Telegram passes us only your ID, name, username and profile
+          photo. Telegram’s policy: <Ext href="https://telegram.org/privacy">telegram.org/privacy</Ext>.
+        </li>
+        <li>
+          <b>Match data</b> (fixtures, scores, lineups, statistics) is obtained by our server from public sources —
+          FotMob, SofaScore, ESPN; news — from Championat, Sport-Express and Sports.ru. Your data is not passed to these
+          services.
+        </li>
+        <li>
+          <b>Images</b> (crests, player photos, flags, video and news previews) are loaded through our server — your
+          device does not contact other websites for them.
+        </li>
+        <li>
+          <b>YouTube</b> — videos on the video page are embedded with the YouTube player in privacy-enhanced mode
+          (youtube-nocookie.com). It loads only when you open a video; while watching, Google’s policy applies:{' '}
+          <Ext href="https://policies.google.com/privacy">policies.google.com/privacy</Ext>.
+        </li>
+      </ul>
+
+      <h2>7. How to delete your data</h2>
+      <p>
+        In the <a {...link('/profile')}>“Profile”</a> section, tap “Delete account” and confirm. Your profile, photo,
+        predictions and points, leaderboard positions, leagues you created, league memberships, game results and
+        sign-in sessions are deleted immediately and permanently. To log out without deleting, use the “Log out”
+        button in the same place. If you can’t delete it yourself, message the bot <Ext href={BOT_LINK}>@{BOT}</Ext>{' '}
+        and we will delete it manually.
+      </p>
+
+      <h2>8. Children</h2>
+      <p>
+        The service is intended for a broad audience of fans and does not collect age data. Sign-in is possible only
+        via Telegram, under its rules.
+      </p>
+
+      <h2>9. Trademarks</h2>
+      <p>
+        “Real Madrid”, the club crest and other trademarks, names and logos of clubs and competitions belong to their
+        respective owners and are used only to display match information. This is an unofficial fan project.
+      </p>
+
+      <h2>10. Contacts and changes</h2>
+      <p>
+        Questions about your data — to the Telegram bot <Ext href={BOT_LINK}>@{BOT}</Ext>. If the policy changes, the
+        new version will appear on this page with a new date.
+      </p>
+    </>
+  );
+}
+
+function TermsEn() {
+  const link = useSpaLink();
+  return (
+    <>
+      <p className="lg-lead">
+        Madridista is a free, unofficial fan app and website about Real Madrid. By using it, you agree to these simple
+        terms.
+      </p>
+
+      <h2>1. What it is</h2>
+      <p>
+        An information service for fans: matches, tables, squad, news, videos, score predictions and mini games. The
+        project is not affiliated with Real Madrid C.F., LaLiga, UEFA or other organizations; their names and marks
+        belong to their respective owners.
+      </p>
+
+      <h2>2. Free and no betting</h2>
+      <p>
+        Predictions and games are just for fun: points have no value and cannot be bought, withdrawn or exchanged.
+        There are no payments, bets or ads in the service.
+      </p>
+
+      <h2>3. Match data</h2>
+      <p>
+        We take scores, lineups, statistics and news from public sources and show them as is. Delays and errors are
+        possible; for official information, see the websites of the club and the competitions.
+      </p>
+
+      <h2>4. Conduct</h2>
+      <p>
+        Do not try to disrupt the service, guess other people’s codes or bypass limits. League names must not be
+        offensive — we may delete such leagues.
+      </p>
+
+      <h2>5. Account</h2>
+      <p>
+        You sign in via Telegram. You can delete your account and all your data at any time in the “Profile” section.
+        How we handle data is described in the <a {...link('/privacy')}>privacy policy</a>.
+      </p>
+
+      <h2>6. Contacts</h2>
+      <p>
+        Questions and suggestions — to the Telegram bot <Ext href={BOT_LINK}>@{BOT}</Ext>.
+      </p>
+    </>
+  );
+}
+
 export default function LegalScreen({ doc }: { doc: 'privacy' | 'terms' }) {
   const navigate = useNavigate();
-  const title = doc === 'privacy' ? 'Политика конфиденциальности' : 'Условия использования';
+  const title = doc === 'privacy' ? t('Политика конфиденциальности') : t('Условия использования');
 
   const goBack = useCallback(() => {
     const idx = (window.history.state as { idx?: number } | null)?.idx;
@@ -216,7 +404,7 @@ export default function LegalScreen({ doc }: { doc: 'privacy' | 'terms' }) {
   const nativeBack = useTelegramBackButton(goBack);
 
   useEffect(() => {
-    document.title = `${title} — Мадридиста`;
+    document.title = t('{title} — Мадридиста', { title });
   }, [title]);
 
   return (
@@ -225,17 +413,17 @@ export default function LegalScreen({ doc }: { doc: 'privacy' | 'terms' }) {
         {nativeBack ? (
           <span className="lg-top__gap" aria-hidden="true" />
         ) : (
-          <button type="button" className="lg-top__back" aria-label="Назад" onClick={goBack}>
+          <button type="button" className="lg-top__back" aria-label={t('Назад')} onClick={goBack}>
             {BACK_ICON}
           </button>
         )}
-        <span className="lg-top__brand">Мадридиста</span>
+        <span className="lg-top__brand">{t('Мадридиста')}</span>
         <span className="lg-top__gap" aria-hidden="true" />
       </header>
       <article className="lg-doc">
         <h1>{title}</h1>
-        <p className="lg-date">Редакция от {UPDATED}</p>
-        {doc === 'privacy' ? <Privacy /> : <Terms />}
+        <p className="lg-date">{t('Редакция от {date}', { date: isEn() ? UPDATED_EN : UPDATED })}</p>
+        {isEn() ? doc === 'privacy' ? <PrivacyEn /> : <TermsEn /> : doc === 'privacy' ? <Privacy /> : <Terms />}
       </article>
     </main>
   );

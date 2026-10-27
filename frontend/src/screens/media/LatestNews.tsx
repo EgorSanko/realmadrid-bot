@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Card, SectionHeader, Skeleton } from '../../ui';
 import { useApiResource } from '../../lib/apiResource';
+import { t } from '../../lib/i18n';
 import { NewsLink } from './MediaParts';
 import type { NewsResponse } from './mediaData';
 import './media.css';
@@ -23,8 +24,8 @@ export function LatestNews({ limit = 2, className }: LatestNewsProps) {
   const items = data?.items.slice(0, limit) ?? [];
   if (data && !items.length) return null;
   return (
-    <Card ariaLabel="Новости" className={className}>
-      <SectionHeader title="Новости" onAction={() => navigate('/media?tab=news')} />
+    <Card ariaLabel={t('Новости')} className={className}>
+      <SectionHeader title={t('Новости')} onAction={() => navigate('/media?tab=news')} />
       {loading && !data ? (
         <Skeleton shape="news" rows={limit} style={{ marginTop: 6 }} />
       ) : (

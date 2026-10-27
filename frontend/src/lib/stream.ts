@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { t } from './i18n';
 import { isNativeApp } from './shell';
 
 export interface StreamState {
@@ -133,7 +134,7 @@ export async function adminRequest<T>(
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
-    throw new ApiError(0, 'Сервер недоступен. Проверьте интернет и попробуйте ещё раз');
+    throw new ApiError(0, t('Сервер недоступен. Проверьте интернет и попробуйте ещё раз'));
   }
   if (r.ok) return (await r.json()) as T;
   let detail = '';
@@ -144,10 +145,10 @@ export async function adminRequest<T>(
     /* не JSON */
   }
   if (r.status === 401 || r.status === 403) {
-    if (detail === 'Админка отключена') throw new ApiError(r.status, 'Админка отключена на сервере');
+    if (detail === 'Админка отключена') throw new ApiError(r.status, t('Админка отключена на сервере'));
     const why = detail && detail !== 'Нет доступа' ? `: ${detail[0].toLowerCase()}${detail.slice(1)}` : '';
-    throw new ApiError(r.status, `Нет доступа${why}`);
+    throw new ApiError(r.status, t('Нет доступа') + why);
   }
-  if (r.status === 422) throw new ApiError(422, detail || 'Проверьте ссылку');
-  throw new ApiError(r.status, `Ошибка сервера (${r.status})`);
+  if (r.status === 422) throw new ApiError(422, detail || t('Проверьте ссылку'));
+  throw new ApiError(r.status, t('Ошибка сервера ({status})', { status: r.status }));
 }

@@ -4,6 +4,7 @@ import { LangSwitch } from '../../components/LangSwitch';
 import { LoginButton } from '../../components/LoginButton';
 import { UserAvatar } from '../../components/UserAvatar';
 import { AuthFetchError, BOT_USERNAME, authFetch, deleteAccount, inMiniApp, signOut, useAuth } from '../../lib/auth';
+import { isEn, t } from '../../lib/i18n';
 import { showToast } from '../../lib/toast';
 import { historyRow, isSoftUnavailable, pointsTiles } from '../../lib/profile';
 import type { League, PredictMe } from '../../lib/profile';
@@ -36,7 +37,7 @@ function useAuthed<T>(path: string, enabled: boolean): [Load<T>, () => void] {
       .catch((e: Error) => {
         if (ctl.signal.aborted) return;
         if (e instanceof AuthFetchError && isSoftUnavailable(e.status)) setState({ kind: 'empty' });
-        else setState({ kind: 'error', message: e.message });
+        else setState({ kind: 'error', message: (!isEn() && e.message) || t('Не удалось загрузить') });
       });
     return () => ctl.abort();
   }, [path, enabled, attempt]);
@@ -60,7 +61,7 @@ export default function ProfileScreen() {
   const nativeBack = useTelegramBackButton(goBack);
 
   useEffect(() => {
-    document.title = 'Профиль — Мадридиста';
+    document.title = t('Профиль — Мадридиста');
   }, []);
 
   const authed = auth.status === 'user';
@@ -71,11 +72,11 @@ export default function ProfileScreen() {
         {nativeBack ? (
           <span className="pf-top__gap" aria-hidden="true" />
         ) : (
-          <button type="button" className="pf-top__back" aria-label="Назад" onClick={goBack}>
+          <button type="button" className="pf-top__back" aria-label={t('Назад')} onClick={goBack}>
             {BACK_ICON}
           </button>
         )}
-        <h1 className="pf-top__title">Профиль</h1>
+        <h1 className="pf-top__title">{t('Профиль')}</h1>
         <span className="pf-top__gap" aria-hidden="true" />
       </header>
 
@@ -96,14 +97,14 @@ export default function ProfileScreen() {
         <>
           <section className="pf-hero">
             <UserAvatar src={null} size={84} />
-            <p className="pf-hero__name">Болельщик</p>
-            <p className="pf-hero__sub">Вы не вошли</p>
+            <p className="pf-hero__name">{t('Болельщик')}</p>
+            <p className="pf-hero__sub">{t('Вы не вошли')}</p>
           </section>
           <Card className="pf-login">
             {tma ? (
-              <p className="pf-muted">Входим через Telegram…</p>
+              <p className="pf-muted">{t('Входим через Telegram…')}</p>
             ) : (
-              <LoginButton accessCode hint="Войдите через Telegram, чтобы видеть свои очки, прогнозы и лиги. Пароль не нужен." />
+              <LoginButton accessCode hint={t('Войдите через Telegram, чтобы видеть свои очки, прогнозы и лиги. Пароль не нужен.')} />
             )}
           </Card>
         </>
@@ -121,8 +122,8 @@ export default function ProfileScreen() {
             <Card className="pf-admin">
               <a className="pf-row-link" {...link('/admin')}>
                 <span>
-                  <b>Управление эфиром</b>
-                  <span className="pf-muted pf-block">Включить или остановить трансляцию</span>
+                  <b>{t('Управление эфиром')}</b>
+                  <span className="pf-muted pf-block">{t('Включить или остановить трансляцию')}</span>
                 </span>
                 <span aria-hidden="true">›</span>
               </a>
@@ -137,7 +138,7 @@ export default function ProfileScreen() {
                   await signOut();
                 }}
               >
-                Выйти
+                {t('Выйти')}
               </button>
             </div>
           )}
@@ -157,9 +158,9 @@ export default function ProfileScreen() {
       {/* политика конфиденциальности — на сайте и в приложении (мини-апп не меняем) */}
       {!tma && (
         <p className="pf-legal">
-          <a {...link('/privacy')}>Политика конфиденциальности</a>
+          <a {...link('/privacy')}>{t('Политика конфиденциальности')}</a>
           <span aria-hidden="true"> · </span>
-          <a {...link('/terms')}>Условия использования</a>
+          <a {...link('/terms')}>{t('Условия использования')}</a>
         </p>
       )}
     </main>
@@ -176,7 +177,7 @@ function DeleteAccount() {
     return (
       <div className="pf-delete">
         <button type="button" className="pf-delete__open" onClick={() => setStep('confirm')}>
-          Удалить аккаунт
+          {t('Удалить аккаунт')}
         </button>
       </div>
     );
@@ -184,11 +185,10 @@ function DeleteAccount() {
   return (
     <section className="pf-delete pf-delete--confirm" role="alertdialog" aria-labelledby="pf-del-title" aria-describedby="pf-del-text">
       <p className="pf-delete__title" id="pf-del-title">
-        Удалить аккаунт?
+        {t('Удалить аккаунт?')}
       </p>
       <p className="pf-muted" id="pf-del-text">
-        Удалятся ваш профиль, все прогнозы и очки, места в рейтингах, созданные вами лиги, результаты игр и
-        аватар. Это нельзя отменить. Войти снова через Telegram можно будет в любой момент — с нуля.
+        {t('Удалятся ваш профиль, все прогнозы и очки, места в рейтингах, созданные вами лиги, результаты игр и аватар. Это нельзя отменить. Войти снова через Telegram можно будет в любой момент — с нуля.')}
       </p>
       {error && (
         <p className="pf-delete__err" role="alert">
@@ -197,7 +197,7 @@ function DeleteAccount() {
       )}
       <div className="pf-delete__actions">
         <button type="button" className="ui-btn ui-btn--secondary" disabled={step === 'busy'} onClick={() => setStep('idle')}>
-          Отмена
+          {t('Отмена')}
         </button>
         <button
           type="button"
@@ -208,15 +208,15 @@ function DeleteAccount() {
             setError(null);
             try {
               await deleteAccount();
-              showToast('Аккаунт удалён');
+              showToast(t('Аккаунт удалён'));
               navigate('/profile', { replace: true });
             } catch (e) {
-              setError((e as Error).message || 'Не удалось удалить аккаунт');
+              setError((!isEn() && (e as Error).message) || t('Не удалось удалить аккаунт'));
               setStep('confirm');
             }
           }}
         >
-          {step === 'busy' ? 'Удаляем…' : 'Удалить навсегда'}
+          {step === 'busy' ? t('Удаляем…') : t('Удалить навсегда')}
         </button>
       </div>
     </section>
@@ -238,7 +238,7 @@ function Profile({ link }: { link: LinkFn }) {
 
   return (
     <>
-      <SectionHeader title="Мои очки" page aside={data?.season.label ? `сезон ${data.season.label}` : undefined} />
+      <SectionHeader title={t('Мои очки')} page aside={data?.season.label ? t('сезон {season}', { season: data.season.label }) : undefined} />
       {me.kind === 'loading' ? (
         <div className="pf-tiles">
           {tiles.map((t) => (
@@ -248,7 +248,7 @@ function Profile({ link }: { link: LinkFn }) {
       ) : me.kind === 'error' ? (
         <ErrorState className="pf-state" text={me.message} onRetry={reloadMe} />
       ) : (
-        <div className="pf-tiles" aria-label="Мои очки">
+        <div className="pf-tiles" aria-label={t('Мои очки')}>
           {tiles.map((t) => (
             <div key={t.label} className="pf-tile">
               <span className="pf-tile__label">{t.label}</span>
@@ -260,7 +260,7 @@ function Profile({ link }: { link: LinkFn }) {
       )}
 
       <SectionHeader
-        title="Мои прогнозы"
+        title={t('Мои прогнозы')}
         page
         aside={data && data.predictions > 0 ? `${data.predictions} ${plural(data.predictions, ['прогноз', 'прогноза', 'прогнозов'])}` : undefined}
       />
@@ -269,21 +269,21 @@ function Profile({ link }: { link: LinkFn }) {
           <Skeleton shape="list" rows={3} />
         ) : rows.length === 0 ? (
           <div className="pf-empty">
-            <p className="pf-empty__title">Прогнозов пока нет</p>
-            <p className="pf-muted">Угадайте счёт ближайшего матча Реала — за точный счёт 5 очков.</p>
+            <p className="pf-empty__title">{t('Прогнозов пока нет')}</p>
+            <p className="pf-muted">{t('Угадайте счёт ближайшего матча Реала — за точный счёт 5 очков.')}</p>
             <a className="ui-btn ui-btn--primary ui-btn--block" {...link('/predict')}>
-              Сделать прогноз
+              {t('Сделать прогноз')}
             </a>
           </div>
         ) : (
-          <ul className="pf-list" aria-label="Последние прогнозы">
+          <ul className="pf-list" aria-label={t('Последние прогнозы')}>
             {rows.map((r) => (
               <li key={r.id}>
                 <a className="pf-pred" {...link(r.href)}>
                   <span className="pf-pred__date">{formatDayShort(r.kickoff)}</span>
                   <span className="pf-pred__teams">
                     <Crest t={r.home} />
-                    <b className="pf-pred__pick" aria-label={`Прогноз ${r.pick}`}>
+                    <b className="pf-pred__pick" aria-label={t('Прогноз {pick}', { pick: r.pick })}>
                       {r.pick}
                     </b>
                     <Crest t={r.away} />
@@ -301,7 +301,7 @@ function Profile({ link }: { link: LinkFn }) {
         )}
       </Card>
 
-      <SectionHeader title="Мои лиги" page />
+      <SectionHeader title={t('Мои лиги')} page />
       <Card className="pf-card">
         {leagues.kind === 'loading' ? (
           <Skeleton shape="list" rows={2} />
@@ -309,14 +309,14 @@ function Profile({ link }: { link: LinkFn }) {
           <ErrorState plain text={leagues.message} onRetry={reloadLeagues} />
         ) : leagues.kind === 'empty' || leagues.data.leagues.length === 0 ? (
           <div className="pf-empty">
-            <p className="pf-empty__title">Вы пока не в лиге</p>
-            <p className="pf-muted">Создайте лигу с друзьями в прогнозах или откройте ссылку-приглашение.</p>
+            <p className="pf-empty__title">{t('Вы пока не в лиге')}</p>
+            <p className="pf-muted">{t('Создайте лигу с друзьями в прогнозах или откройте ссылку-приглашение.')}</p>
             <a className="ui-btn ui-btn--secondary ui-btn--block" {...link('/predict')}>
-              К прогнозам
+              {t('К прогнозам')}
             </a>
           </div>
         ) : (
-          <ul className="pf-list" aria-label="Мои лиги">
+          <ul className="pf-list" aria-label={t('Мои лиги')}>
             {leagues.data.leagues.map((lg) => (
               <LeagueRow key={lg.id} lg={lg} />
             ))}
@@ -343,14 +343,14 @@ function LeagueRow({ lg }: { lg: League }) {
     const t = window.setTimeout(() => setMsg(null), 2500);
     return () => window.clearTimeout(t);
   }, [msg]);
-  const text = `Присоединяйся к моей лиге прогнозов «${lg.name}» в Мадридисте`;
+  const text = t('Присоединяйся к моей лиге прогнозов «{name}» в Мадридисте', { name: lg.name });
   return (
     <li className="pf-league">
       <div className="pf-league__head">
         <b className="pf-league__name">{lg.name}</b>
         <span className="pf-muted">
           {lg.members} {plural(lg.members, ['участник', 'участника', 'участников'])}
-          {lg.is_owner ? ' · вы создатель' : ''}
+          {lg.is_owner ? ` · ${t('вы создатель')}` : ''}
         </span>
       </div>
       <p className="pf-league__link" title={url}>
@@ -360,20 +360,20 @@ function LeagueRow({ lg }: { lg: League }) {
         <button
           type="button"
           className="ui-btn ui-btn--secondary"
-          onClick={async () => setMsg((await copyText(url)) ? 'Ссылка скопирована' : 'Не удалось скопировать')}
+          onClick={async () => setMsg((await copyText(url)) ? t('Ссылка скопирована') : t('Не удалось скопировать'))}
         >
-          Скопировать
+          {t('Скопировать')}
         </button>
         <button
           type="button"
           className="ui-btn ui-btn--secondary"
           onClick={async () => {
             const r = await shareLink(url, text);
-            if (r === 'copied') setMsg('Ссылка скопирована');
-            if (r === 'failed') setMsg('Не удалось поделиться');
+            if (r === 'copied') setMsg(t('Ссылка скопирована'));
+            if (r === 'failed') setMsg(t('Не удалось поделиться'));
           }}
         >
-          Поделиться
+          {t('Поделиться')}
         </button>
       </div>
       {msg && (

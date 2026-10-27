@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { commentaryUrl, type ApiCommentary, type ApiMatch } from '../../api/match';
+import { t } from '../../lib/i18n';
 import { usePlayerLinks } from '../../lib/playerNav';
 import { Badge, EmptyState, EventIcon, PlayerInline, Skeleton, Tabs, TeamCrest, type MatchEventType } from '../../ui';
 import { cx } from '../../ui/format';
@@ -59,16 +60,16 @@ function useFresh(keys: string[]): Set<string> {
 }
 
 const FILTERS: Array<{ id: FeedFilter; label: string }> = [
-  { id: 'all', label: 'Все' },
-  { id: 'goals', label: 'Голы' },
-  { id: 'cards', label: 'Карточки' },
-  { id: 'subs', label: 'Замены' },
+  { id: 'all', label: t('Все') },
+  { id: 'goals', label: t('Голы') },
+  { id: 'cards', label: t('Карточки') },
+  { id: 'subs', label: t('Замены') },
 ];
 
 const EMPTY_FILTER: Record<Exclude<FeedFilter, 'all'>, string> = {
-  goals: 'Голов пока нет',
-  cards: 'Карточек пока нет',
-  subs: 'Замен пока нет',
+  goals: t('Голов пока нет'),
+  cards: t('Карточек пока нет'),
+  subs: t('Замен пока нет'),
 };
 
 /**
@@ -88,30 +89,30 @@ export function OnlineTab({ match, phase, panel }: { match: ApiMatch; phase: Pha
   const chips = m === 'key' && items.length > 0;
   const top = panel || en || chips;
   return (
-    <section aria-label={panel ? 'Онлайн-трансляция' : 'Онлайн'} className={cx('mo', panel && 'mo--panel')}>
+    <section aria-label={panel ? t('Онлайн-трансляция') : t('Онлайн')} className={cx('mo', panel && 'mo--panel')}>
       {top && (
         <div className="mo-top">
           {panel && (
             <h2 className="dk-h2 mo-h">
-              Онлайн
+              {t('Онлайн')}
               {live && <Badge tone="live" className="mo-live" />}
             </h2>
           )}
           {en && (
             <Tabs
               variant="outline"
-              ariaLabel="Режим трансляции"
+              ariaLabel={t('Режим трансляции')}
               className="mo-modes"
               items={[
-                { id: 'key', label: 'Ключевое' },
-                { id: 'en', label: 'Все комментарии (EN)' },
+                { id: 'key', label: t('Ключевое') },
+                { id: 'en', label: t('Все комментарии (EN)') },
               ]}
               value={m}
               onChange={setMode}
             />
           )}
           {chips && (
-            <div className="mo-chips" role="group" aria-label="Какие события показать">
+            <div className="mo-chips" role="group" aria-label={t('Какие события показать')}>
               {FILTERS.map((f) => {
                 const n = f.id === 'all' ? null : counts[f.id];
                 return (
@@ -140,9 +141,9 @@ export function OnlineTab({ match, phase, panel }: { match: ApiMatch; phase: Pha
 const isGoal = (k: FeedItem['kind']) => k === 'goal' || k === 'own-goal';
 
 /** «Гол!» → «Гол», «Гол с пенальти!» → «Гол с пенальти»: во второй строке, рядом с передачей. */
-const goalWord = (t: string) => t.replace(/!$/, '');
+const goalWord = (s: string) => s.replace(/!$/, '');
 
-const CARD_NOTE: Partial<Record<FeedItem['kind'], string>> = { 'second-yellow': 'вторая жёлтая — удаление', red: 'удаление' };
+const CARD_NOTE: Partial<Record<FeedItem['kind'], string>> = { 'second-yellow': t('вторая жёлтая — удаление'), red: t('удаление') };
 
 function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilter; phase: Phase }) {
   const shown = useMemo(() => filterFeed(items, filter), [items, filter]);
@@ -153,12 +154,12 @@ function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilt
     return (
       <EmptyState
         className="mt-state"
-        title={before ? 'Трансляция начнётся с первым свистком' : 'Пока без событий'}
-        text={before ? 'Голы, карточки и замены появятся здесь по ходу матча' : undefined}
+        title={before ? t('Трансляция начнётся с первым свистком') : t('Пока без событий')}
+        text={before ? t('Голы, карточки и замены появятся здесь по ходу матча') : undefined}
       />
     );
   }
-  if (!shown.length) return <p className="mo-none">{filter === 'all' ? 'Пока без событий' : EMPTY_FILTER[filter]}</p>;
+  if (!shown.length) return <p className="mo-none">{filter === 'all' ? t('Пока без событий') : EMPTY_FILTER[filter]}</p>;
   const who = (p: FeedItem['players'][number] | undefined, cls?: string) =>
     p ? <PlayerInline player={{ id: p.id, name: p.name }} size={22} className={cls} {...links} /> : null;
   return (
@@ -176,9 +177,10 @@ function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilt
         const goal = isGoal(it.kind);
         const icon = ICON[it.kind] ? <EventIcon type={ICON[it.kind]!} /> : WHISTLE;
         const crest = it.team?.id != null ? <TeamCrest id={it.team.id} name={it.team.name} size={16} className="mo-crest" /> : null;
-        const main = it.players.find((p) => !p.role || p.role === 'вышел');
-        const assist = it.players.find((p) => p.role === 'пас');
-        const out = it.players.find((p) => p.role === 'ушёл');
+        // роли игроков — из keyFeed (view.ts), уже на языке интерфейса
+        const main = it.players.find((p) => !p.role || p.role === t('вышел'));
+        const assist = it.players.find((p) => p.role === t('пас'));
+        const out = it.players.find((p) => p.role === t('ушёл'));
         let body: ReactNode;
         if (goal) {
           body = (
@@ -196,7 +198,7 @@ function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilt
                 {assist && (
                   <>
                     <span aria-hidden="true">·</span>
-                    <span>пас</span>
+                    <span>{t('пас')}</span>
                     {who(assist)}
                   </>
                 )}
@@ -206,18 +208,18 @@ function KeyFeed({ items, filter, phase }: { items: FeedItem[]; filter: FeedFilt
         } else if (it.kind === 'sub') {
           body = (
             <span className="mo-line">
-              <span className="ui-sr">вышел</span>
+              <span className="ui-sr">{t('вышел')}</span>
               {who(main, 'mo-in')}
               {out && (
                 <>
                   <span className="mo-swap" aria-hidden="true">
                     ↔
                   </span>
-                  <span className="ui-sr">ушёл</span>
+                  <span className="ui-sr">{t('ушёл')}</span>
                   {who(out, 'mo-out')}
                 </>
               )}
-              {it.text && <span className="mo-tag">травма</span>}
+              {it.text && <span className="mo-tag">{t('травма')}</span>}
             </span>
           );
         } else if (it.kind === 'start' || it.kind === 'second') {
@@ -285,7 +287,7 @@ function Commentary({ id, live }: { id: number | string; live: boolean }) {
   const links = usePlayerLinks();
 
   if (st.kind === 'loading') return <Skeleton shape="list" rows={5} className="mo-skel" />;
-  if (st.kind === 'error' || !rows.length) return <EmptyState className="mt-state" title="Комментариев пока нет" text="Попробуем снова через минуту" />;
+  if (st.kind === 'error' || !rows.length) return <EmptyState className="mt-state" title={t('Комментариев пока нет')} text={t('Попробуем снова через минуту')} />;
   return (
     <>
       <ol className="mo-list" aria-live="polite">
@@ -293,7 +295,7 @@ function Commentary({ id, live }: { id: number | string; live: boolean }) {
           <CommentaryItem key={r.key} r={r} fresh={fresh.has(r.key)} links={links} />
         ))}
       </ol>
-      <p className="mo-src">Текст: Opta via FotMob, на английском</p>
+      <p className="mo-src">{t('Текст: Opta via FotMob, на английском')}</p>
     </>
   );
 }
@@ -327,7 +329,7 @@ function CommentaryItem({ r, fresh, links }: { r: CommentaryRow; fresh: boolean;
         </p>
         {r.long && (
           <button type="button" className="mo-more" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-            {open ? 'свернуть' : 'ещё'}
+            {open ? t('свернуть') : t('ещё')}
           </button>
         )}
       </div>

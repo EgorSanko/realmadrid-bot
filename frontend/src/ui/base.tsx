@@ -1,4 +1,5 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from 'react';
+import { t } from '../lib/i18n';
 import { cx } from './format';
 import { LeagueLogo } from './images';
 
@@ -47,7 +48,7 @@ export interface SectionHeaderProps {
 export function SectionHeader({
   title,
   aside,
-  actionLabel = 'Все',
+  actionLabel = t('Все'),
   href,
   onAction,
   page,
@@ -182,7 +183,7 @@ export function Badge({ tone, children, className }: BadgeProps) {
         {children ?? 'LIVE'}
       </span>
     );
-  return <span className={cx('ui-badge', 'ui-badge--injury', className)}>{children ?? 'травма'}</span>;
+  return <span className={cx('ui-badge', 'ui-badge--injury', className)}>{children ?? t('травма')}</span>;
 }
 
 /* ---------- Button ---------- */
@@ -324,7 +325,7 @@ export function Skeleton({ shape, rows = 3, width, height, radius, className, st
       break;
   }
   return (
-    <div className={cx('ui-skeleton', className)} style={style} role="status" aria-busy="true" aria-label="Загрузка">
+    <div className={cx('ui-skeleton', className)} style={style} role="status" aria-busy="true" aria-label={t('Загрузка')}>
       {body}
     </div>
   );
@@ -407,10 +408,10 @@ export interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = 'Не удалось загрузить',
-  text = 'Проверь соединение и попробуй ещё раз',
+  title = t('Не удалось загрузить'),
+  text = t('Проверь соединение и попробуй ещё раз'),
   onRetry,
-  retryLabel = 'Повторить',
+  retryLabel = t('Повторить'),
   plain,
   className,
 }: ErrorStateProps) {

@@ -1,8 +1,9 @@
 /**
  * Ответы API → пропсы компонентов главной и «Матчей». Чистые функции без React и DOM:
  * их гоняют тесты (node --test) на сохранённых реальных ответах из src/__fixtures__.
- * Поэтому здесь только `import type` — рантайм-импортов из src нет.
+ * Рантайм-импорт — только lib/i18n (тексты RU / EN); тесты подхватывают его через tests/resolve-ts.mjs.
  */
+import { pluralEn, t } from './i18n';
 import type { ApiFetchError, ApiFixture, ApiHome, ApiMeta, ApiStatus, ApiTable, ApiTableRow, ApiTeam, ApiTournament } from './api';
 import type { CompetitionRef, MatchStatus, Outcome, StandingRow, StandingZone, TeamRef } from '../ui/match';
 
@@ -37,18 +38,18 @@ const COMP_BY_NAME: Record<string, Omit<Competition, 'id'>> = {
   'club friendlies': { name: 'Товарищеский матч', short: 'Товарищеский' },
 };
 
-export function competitionOf(t: ApiTournament | null | undefined): Competition {
-  const id = t?.id ?? undefined;
-  const known = (id != null ? COMP_BY_ID[id] : undefined) ?? COMP_BY_NAME[(t?.name ?? '').trim().toLowerCase()];
-  if (known) return { id, ...known };
-  const name = t?.name || 'Матч';
+export function competitionOf(tr: ApiTournament | null | undefined): Competition {
+  const id = tr?.id ?? undefined;
+  const known = (id != null ? COMP_BY_ID[id] : undefined) ?? COMP_BY_NAME[(tr?.name ?? '').trim().toLowerCase()];
+  if (known) return { id, ...known, name: t(known.name), short: known.short != null ? t(known.short) : known.short };
+  const name = tr?.name || t('Матч');
   return { id, name, short: name, withLogo: id != null };
 }
 
 /* ---------- команды и статус ---------- */
 
-export function teamRef(t: ApiTeam | null | undefined): TeamRef {
-  return { id: t?.id ?? undefined, name: t?.name || '—' };
+export function teamRef(tm: ApiTeam | null | undefined): TeamRef {
+  return { id: tm?.id ?? undefined, name: tm?.name || '—' };
 }
 
 export function matchStatusOf(s: ApiStatus | null | undefined): MatchStatus {
@@ -66,19 +67,19 @@ export function scoreOf(f: Pick<ApiFixture, 'home' | 'away'>): [number, number] 
 
 /** «67′», «45+2′», «Перерыв» */
 export function minuteText(s: ApiStatus): string | undefined {
-  if (s.state === 'halftime') return 'Перерыв';
+  if (s.state === 'halftime') return t('Перерыв');
   if (s.minute == null) return undefined;
   return s.added ? `${s.minute}+${s.added}′` : `${s.minute}′`;
 }
 
 /** «1-й тайм», «2-й тайм», «Перерыв», «Доп. время» */
 export function periodText(s: ApiStatus): string {
-  if (s.state === 'halftime') return 'Перерыв';
+  if (s.state === 'halftime') return t('Перерыв');
   const m = s.minute;
-  if (m == null) return 'Идёт матч';
-  if (m <= 45) return '1-й тайм';
-  if (m <= 90 || s.added) return '2-й тайм';
-  return 'Доп. время';
+  if (m == null) return t('Идёт матч');
+  if (m <= 45) return t('1-й тайм');
+  if (m <= 90 || s.added) return t('2-й тайм');
+  return t('Доп. время');
 }
 
 /** Итог для Реала: из поля result, а нет его — по счёту и стороне. */
@@ -179,10 +180,10 @@ export function leagueSummary(h: ApiHome): LeagueSummary | null {
   if (!l) return null;
   const diff = l.leader_pts != null ? l.leader_pts - l.pts : null;
   let gap = '';
-  if (l.pos === 1) gap = 'лидер';
-  else if (diff != null && diff > 0) gap = `−${diff} до лидера`;
-  else if (diff === 0) gap = 'вровень с лидером';
-  return { pos: l.pos, line: `место · ${l.pts} очк.`, gap };
+  if (l.pos === 1) gap = t('лидер');
+  else if (diff != null && diff > 0) gap = t('−{n} до лидера', { n: diff });
+  else if (diff === 0) gap = t('вровень с лидером');
+  return { pos: l.pos, line: t('место · {pts} очк.', { pts: l.pts }), gap };
 }
 
 /** Прошлый матч (для MatchCard status="finished"). */
@@ -211,20 +212,21 @@ export function staleNote(meta: ApiMeta | null | undefined, extraS = 0): string 
   const age = meta.age_s + Math.max(0, extraS);
   if (age <= STALE_NOTE_AFTER_S) return null;
   const min = Math.floor(age / 60);
-  if (min < 60) return `обновлено ${min} мин назад`;
+  if (min < 60) return t('обновлено {n} мин назад', { n: min });
   const hr = Math.floor(min / 60);
-  if (hr < 48) return `обновлено ${hr} ч назад`;
-  return `обновлено ${Math.floor(hr / 24)} дн назад`;
+  if (hr < 48) return t('обновлено {n} ч назад', { n: hr });
+  return t('обновлено {n} дн назад', { n: Math.floor(hr / 24) });
 }
 
 /* ---------- «Матчи» ---------- */
 
 export type CompTab = 'all' | 'laliga' | 'ucl';
 
+/** словарь грузится до импорта приложения — t() в константе модуля можно */
 export const COMP_TABS: Array<{ id: CompTab; label: string; aside: string }> = [
-  { id: 'all', label: 'Все', aside: 'все турниры' },
-  { id: 'laliga', label: 'Ла Лига', aside: 'Ла Лига' },
-  { id: 'ucl', label: 'Лига чемпионов', aside: 'Лига чемпионов' },
+  { id: 'all', label: t('Все'), aside: t('все турниры') },
+  { id: 'laliga', label: t('Ла Лига'), aside: t('Ла Лига') },
+  { id: 'ucl', label: t('Лига чемпионов'), aside: t('Лига чемпионов') },
 ];
 
 export function inTab(f: ApiFixture, tab: CompTab): boolean {
@@ -259,11 +261,11 @@ export interface ResultItem {
 }
 
 function noteOf(f: ApiFixture): string | undefined {
-  if (f.status?.state === 'postponed') return 'перенесён';
+  if (f.status?.state === 'postponed') return t('перенесён');
   const v = venueText(f);
   if (v) return v;
-  if (f.is_home === true) return 'дома';
-  if (f.is_home === false) return 'в гостях';
+  if (f.is_home === true) return t('дома');
+  if (f.is_home === false) return t('в гостях');
   return undefined;
 }
 
@@ -285,7 +287,7 @@ export function splitFixtures(matches: ApiFixture[], tab: CompTab): { upcoming: 
         away: teamRef(f.away),
         competition: competitionOf(f.tournament),
         note: noteOf(f),
-        live: live ? (minuteText(f.status) ?? 'идёт') : undefined,
+        live: live ? (minuteText(f.status) ?? t('идёт')) : undefined,
         score: live ? scoreOf(f) : undefined,
         highlighted: i === 0,
       };
@@ -341,7 +343,8 @@ const ZONE_STYLE: Record<string, { label: string; color: string }> = {
 };
 
 export function zoneStyle(z: { label: string; color: string }): { label: string; color: string } {
-  return ZONE_STYLE[z.label.trim().toLowerCase()] ?? { label: z.label, color: z.color };
+  const st = ZONE_STYLE[z.label.trim().toLowerCase()];
+  return st ? { label: t(st.label), color: st.color } : { label: z.label, color: z.color };
 }
 
 /** Зоны таблицы — непрерывные диапазоны позиций с одной подписью; только те, что видны. */
@@ -371,21 +374,21 @@ export function compactRows(rows: StandingRow[], usPos: number | null, top = 4, 
 }
 
 /** «после 8 туров» — по сыгранным матчам Реала. */
-export function roundsAside(t: ApiTable): string | undefined {
-  const us = usRow(t);
-  const n = us?.played ?? Math.max(0, ...t.rows.map((r) => r.played));
+export function roundsAside(tbl: ApiTable): string | undefined {
+  const us = usRow(tbl);
+  const n = us?.played ?? Math.max(0, ...tbl.rows.map((r) => r.played));
   if (!n) return undefined;
   const a = n % 100;
   const b = n % 10;
   const w = a > 10 && a < 20 ? 'туров' : b === 1 ? 'тура' : 'туров';
-  return `после ${n} ${w}`;
+  return t('после {n} {w}', { n, w: pluralEn(n, ['тура', 'туров', 'туров']) ?? w });
 }
 
 /* ---------- ошибки ---------- */
 
 export function errorText(e: Pick<ApiFetchError, 'status'> | null | undefined): { title: string; text: string } {
   if (e?.status === 503)
-    return { title: 'Данные ещё собираются', text: 'Сервер пока не получил расписание. Попробуй через минуту' };
-  if (e?.status === 0) return { title: 'Нет соединения', text: 'Проверь интернет и попробуй ещё раз' };
-  return { title: 'Не удалось загрузить', text: 'Попробуй ещё раз чуть позже' };
+    return { title: t('Данные ещё собираются'), text: t('Сервер пока не получил расписание. Попробуй через минуту') };
+  if (e?.status === 0) return { title: t('Нет соединения'), text: t('Проверь интернет и попробуй ещё раз') };
+  return { title: t('Не удалось загрузить'), text: t('Попробуй ещё раз чуть позже') };
 }

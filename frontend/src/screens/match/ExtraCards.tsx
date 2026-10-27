@@ -1,5 +1,6 @@
 import { useId, useState, type MouseEvent } from 'react';
 import type { ApiMatch, ApiRound } from '../../api/match';
+import { t } from '../../lib/i18n';
 import type { MatchesResponse } from '../../lib/predict';
 import { useSpaLink } from '../../lib/spaLink';
 import { Badge, Card, LeagueLogo, TeamCrest, formatTime, formatWeekdayShort } from '../../ui';
@@ -29,26 +30,26 @@ export function PollCard({ match, phase }: { match: ApiMatch; phase: Phase }) {
   const v = pollView(match, before ? ctx : {});
   const link = useSpaLink();
   if (!v) return null;
-  const cap = before ? 'до начала матча' : phase === 'finished' ? 'итог опроса' : 'во время матча';
+  const cap = before ? t('до начала матча') : phase === 'finished' ? t('итог опроса') : t('во время матча');
   const head = (side: 'home' | 'away') => {
-    const t = match[side];
+    const tm = match[side];
     return (
       <span className={cx('mp-head', side === 'away' && 'mp-head--r')}>
-        {t.logo && t.id != null && <TeamCrest id={t.id} name="" size={20} />}
-        <span>{t.name}</span>
+        {tm.logo && tm.id != null && <TeamCrest id={tm.id} name="" size={20} />}
+        <span>{tm.name}</span>
       </span>
     );
   };
   return (
-    <Card ariaLabel="Кто победит?" className="mp">
+    <Card ariaLabel={t('Кто победит?')} className="mp">
       <div className="mt-row">
-        <h2 className="mt-h2">Кто победит?</h2>
+        <h2 className="mt-h2">{t('Кто победит?')}</h2>
         <span className="mt-muted mt-small">{cap}</span>
       </div>
       {v.rows.length > 0 && (
         <div className="mp-heads" aria-hidden="true">
           {head('home')}
-          <span className="mp-head mp-head--x">Ничья</span>
+          <span className="mp-head mp-head--x">{t('Ничья')}</span>
           {head('away')}
         </div>
       )}
@@ -57,12 +58,19 @@ export function PollCard({ match, phase }: { match: ApiMatch; phase: Phase }) {
           <div className="mp-row__cap">
             <b>{r.label}</b>
             <span>{r.sub}</span>
-            {r.key === 'ours' && v.mine && <span className="mp-mine">твой прогноз {v.mine}</span>}
+            {r.key === 'ours' && v.mine && <span className="mp-mine">{t('твой прогноз {score}', { score: v.mine })}</span>}
           </div>
           <div
             className="mp-bar"
             role="img"
-            aria-label={`${r.label}: победа ${match.home.name} ${r.parts[0].pct}%, ничья ${r.parts[1].pct}%, победа ${match.away.name} ${r.parts[2].pct}%`}
+            aria-label={t('{label}: победа {home} {hp}%, ничья {dp}%, победа {away} {ap}%', {
+              label: r.label,
+              home: match.home.name ?? '',
+              hp: r.parts[0].pct,
+              dp: r.parts[1].pct,
+              away: match.away.name ?? '',
+              ap: r.parts[2].pct,
+            })}
           >
             {r.parts.map((p, i) => (
               <span key={p.k} className={cx('mp-seg', p.leader && 'is-lead')} style={{ flexGrow: Math.max(p.pct, 1), animationDelay: `${i * 70}ms` }}>
@@ -76,12 +84,17 @@ export function PollCard({ match, phase }: { match: ApiMatch; phase: Phase }) {
         <div className="mp-ours">
           {v.need != null && (
             <p className="mp-ours__text">
-              <b>Прогнозы Мадридисты: {v.have > 0 ? `уже ${v.have} из ${v.of}` : `пока ни одного из ${v.of}`}.</b> Как наберётся {v.of} — покажем, за кого болельщики.
+              <b>
+                {t('Прогнозы Мадридисты: {state}.', {
+                  state: v.have > 0 ? t('уже {have} из {of}', { have: v.have, of: v.of }) : t('пока ни одного из {of}', { of: v.of }),
+                })}
+              </b>{' '}
+              {t('Как наберётся {of} — покажем, за кого болельщики.', { of: v.of })}
             </p>
           )}
           {v.cta && (
             <a className="mp-cta" {...link('/predict')}>
-              Сделай прогноз
+              {t('Сделай прогноз')}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M9 6l6 6-6 6" />
               </svg>
@@ -89,7 +102,7 @@ export function PollCard({ match, phase }: { match: ApiMatch; phase: Phase }) {
           )}
         </div>
       )}
-      {v.rows.some((r) => r.key === 'fotmob') && <p className="mp-foot">Голоса пользователей FotMob · наш опрос — прогнозы счёта</p>}
+      {v.rows.some((r) => r.key === 'fotmob') && <p className="mp-foot">{t('Голоса пользователей FotMob · наш опрос — прогнозы счёта')}</p>}
     </Card>
   );
 }
@@ -105,18 +118,18 @@ export function InsightsCard({ match, collapsed }: { match: ApiMatch; collapsed?
     <>
       {v.main && (
         <div className="mi-main">
-          <span className="mi-main__cap">Главный факт</span>
+          <span className="mi-main__cap">{t('Главный факт')}</span>
           <p className="mi-main__text">{v.main}</p>
         </div>
       )}
-      {v.teams.map((t) => (
-        <div key={t.id ?? t.name} className="mi-team">
+      {v.teams.map((tm) => (
+        <div key={tm.id ?? tm.name} className="mi-team">
           <p className="mi-team__name">
-            {t.id != null && <TeamCrest id={t.id} name="" size={20} />}
-            <span>{t.name}</span>
+            {tm.id != null && <TeamCrest id={tm.id} name="" size={20} />}
+            <span>{tm.name}</span>
           </p>
           <ul className="mi-list">
-            {t.items.map((x) => (
+            {tm.items.map((x) => (
               <li key={x}>{x}</li>
             ))}
           </ul>
@@ -126,9 +139,9 @@ export function InsightsCard({ match, collapsed }: { match: ApiMatch; collapsed?
   );
   if (collapsed)
     return (
-      <section className="ui-card mi-facts mi-facts--fold" aria-label="Интересные факты">
+      <section className="ui-card mi-facts mi-facts--fold" aria-label={t('Интересные факты')}>
         <button type="button" className="mi-facts__toggle" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
-          <span className="mt-h2">Факты к матчу</span>
+          <span className="mt-h2">{t('Факты к матчу')}</span>
           <span className="mi-facts__n">{v.count}</span>
           <svg className="mx-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <path d="M6 9l6 6 6-6" />
@@ -142,8 +155,8 @@ export function InsightsCard({ match, collapsed }: { match: ApiMatch; collapsed?
       </section>
     );
   return (
-    <Card ariaLabel="Интересные факты" className="mi-facts">
-      <h2 className="mt-h2">Интересные факты</h2>
+    <Card ariaLabel={t('Интересные факты')} className="mi-facts">
+      <h2 className="mt-h2">{t('Интересные факты')}</h2>
       {body}
     </Card>
   );
@@ -155,12 +168,12 @@ const ROUND_FOLD = 10;
 
 function RoundRow({ r, href }: { r: RoundRowView; href?: { href: string; onClick: (e?: MouseEvent<HTMLElement>) => void } }) {
   const side = (s: 'home' | 'away') => {
-    const t = r[s];
+    const tm = r[s];
     return (
-      <span className={cx('mr-team', t.win && 'is-win')}>
-        {t.id != null ? <TeamCrest id={t.id} name="" size={20} /> : <span className="mr-team__gap" />}
-        <span className="mr-team__name">{t.name}</span>
-        <span className={cx('mr-team__sc', (r.state === 'live' || r.state === 'halftime') && 'is-live')}>{t.score ?? (r.state === 'scheduled' ? '' : '–')}</span>
+      <span className={cx('mr-team', tm.win && 'is-win')}>
+        {tm.id != null ? <TeamCrest id={tm.id} name="" size={20} /> : <span className="mr-team__gap" />}
+        <span className="mr-team__name">{tm.name}</span>
+        <span className={cx('mr-team__sc', (r.state === 'live' || r.state === 'halftime') && 'is-live')}>{tm.score ?? (r.state === 'scheduled' ? '' : '–')}</span>
       </span>
     );
   };
@@ -219,17 +232,17 @@ function RoundBody({ v, link, all, onAll }: { v: RoundView; link: ReturnType<typ
     .filter((d) => d.rows.length);
   const shown = days.reduce((n, d) => n + d.rows.length, 0);
   return (
-    <Card ariaLabel="Матчи тура" className="mr">
+    <Card ariaLabel={t('Матчи тура')} className="mr">
       <div className="mt-row">
         <h2 className="mt-h2 mr-title">
           {v.leagueId != null && <LeagueLogo id={v.leagueId} name="" size={22} />}
           <span>{v.title}</span>
         </h2>
-        <span className="mt-muted mt-small">{v.live ? `идёт ${v.live} · ${v.played}` : v.played}</span>
+        <span className="mt-muted mt-small">{v.live ? `${t('идёт {n}', { n: v.live })} · ${v.played}` : v.played}</span>
       </div>
       {days.map((d) => (
         <div key={d.key} className="mr-day">
-          <p className="mr-day__cap">{d.kickoff ? formatWeekdayShort(d.kickoff) : 'Дата уточняется'}</p>
+          <p className="mr-day__cap">{d.kickoff ? formatWeekdayShort(d.kickoff) : t('Дата уточняется')}</p>
           {d.rows.map((r) => (
             <RoundRow key={r.key} r={r} href={!r.ours && r.id != null && (r.home.id === REAL_ID || r.away.id === REAL_ID) ? link(`/match/${r.id}`) : undefined} />
           ))}
@@ -237,10 +250,10 @@ function RoundBody({ v, link, all, onAll }: { v: RoundView; link: ReturnType<typ
       ))}
       {shown < total && (
         <button type="button" className="mr-more" onClick={onAll}>
-          Все матчи тура · {total}
+          {t('Все матчи тура · {n}', { n: total })}
         </button>
       )}
-      <p className="mp-foot">Время московское</p>
+      <p className="mp-foot">{t('Время московское')}</p>
     </Card>
   );
 }
@@ -254,14 +267,14 @@ export function RoundStrip({ round, matchId }: { round: ApiRound; matchId?: numb
   const list = [...rows].sort((a, b) => rank(a) - rank(b) || (rank(a) === 2 ? (b.kickoff ?? '').localeCompare(a.kickoff ?? '') : 0)).slice(0, 8);
   const finished = rows.filter((r) => r.state === 'finished').length;
   return (
-    <section className="ui-card mr-strip" aria-label="Матчи тура">
+    <section className="ui-card mr-strip" aria-label={t('Матчи тура')}>
       <div className="mt-row">
         <h2 className="mr-strip__title">
           {round.league.id != null && <LeagueLogo id={round.league.id} name="" size={18} />}
           <span>{roundTitle(round)}</span>
         </h2>
         <span className="mt-muted mt-small">
-          {finished} из {rows.length} сыграно
+          {t('{done} из {total} сыграно', { done: finished, total: rows.length })}
         </span>
       </div>
       <div className="mr-strip__list">

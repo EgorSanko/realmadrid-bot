@@ -7,6 +7,7 @@
  */
 
 import type { ApiHome } from './api';
+import { t } from './i18n';
 
 export type PenaltyOutcome = 'goal' | 'save' | 'post' | 'bar';
 
@@ -166,13 +167,13 @@ export function shotOutcome(r: { outcome?: string | null; goal: boolean; zone: n
 export function outcomeText(o: PenaltyOutcome): { title: string; sub: string } {
   switch (o) {
     case 'goal':
-      return { title: 'ГОЛ!', sub: 'Красота!' };
+      return { title: t('ГОЛ!'), sub: t('Красота!') };
     case 'save':
-      return { title: 'СЕЙВ!', sub: 'Куртуа угадал!' };
+      return { title: t('СЕЙВ!'), sub: t('Куртуа угадал!') };
     case 'post':
-      return { title: 'ШТАНГА!', sub: 'Чуть-чуть не хватило' };
+      return { title: t('ШТАНГА!'), sub: t('Чуть-чуть не хватило') };
     case 'bar':
-      return { title: 'ПЕРЕКЛАДИНА!', sub: 'Чуть-чуть не хватило' };
+      return { title: t('ПЕРЕКЛАДИНА!'), sub: t('Чуть-чуть не хватило') };
   }
 }
 

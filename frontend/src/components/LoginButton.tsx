@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent, MouseEvent } from 'react';
 import { BOT_PROFILE_LINK, BOT_USERNAME, inMiniApp, reviewSignIn, signIn } from '../lib/auth';
+import { isEn, t } from '../lib/i18n';
 import { isNativeApp } from '../lib/shell';
 import { showToast } from '../lib/toast';
 import { openExternal } from '../lib/tmaNav';
@@ -42,7 +43,7 @@ export function LoginButton({
       {mode === 'idle' && (
         <button type="button" className="tg-login__btn" onClick={() => setMode('code')}>
           {TG_ICON}
-          Войти через Telegram
+          {t('Войти через Telegram')}
         </button>
       )}
       {mode === 'code' && <CodeLogin onAlt={native ? undefined : () => setMode('widget')} />}
@@ -50,7 +51,7 @@ export function LoginButton({
       {mode === 'review' && <ReviewLogin onBack={() => setMode('idle')} />}
       {native && accessCode && mode !== 'review' && (
         <button type="button" className="tg-login__alt" onClick={() => setMode('review')}>
-          У меня есть код доступа
+          {t('У меня есть код доступа')}
         </button>
       )}
     </div>
@@ -70,9 +71,9 @@ function ReviewLogin({ onBack }: { onBack: () => void }) {
     setError(null);
     try {
       const st = await reviewSignIn(code.trim());
-      showToast(st.user ? `Вы вошли как ${st.user.name}` : 'Вы вошли');
+      showToast(st.user ? t('Вы вошли как {name}', { name: st.user.name }) : t('Вы вошли'));
     } catch (err) {
-      setError((err as Error).message || 'Не удалось войти');
+      setError((!isEn() && (err as Error).message) || t('Не удалось войти'));
       setBusy(false);
     }
   };
@@ -80,7 +81,7 @@ function ReviewLogin({ onBack }: { onBack: () => void }) {
   return (
     <form className="review-login" onSubmit={(e) => void submit(e)}>
       <label className="review-login__label" htmlFor="review-code">
-        Код доступа
+        {t('Код доступа')}
       </label>
       <input
         id="review-code"
@@ -102,7 +103,7 @@ function ReviewLogin({ onBack }: { onBack: () => void }) {
         </p>
       )}
       <button type="submit" className="tg-login__btn" disabled={busy || !code.trim()}>
-        {busy ? 'Входим…' : 'Войти'}
+        {busy ? t('Входим…') : t('Войти')}
       </button>
       <button type="button" className="tg-login__alt" onClick={onBack}>
         Войти через Telegram
@@ -132,11 +133,11 @@ function WidgetLogin({ onBack }: { onBack: () => void }) {
       setPhase('sending');
       try {
         const st = await signIn(u as unknown as Record<string, unknown>);
-        if (st.user) showToast(`Вы вошли как ${st.user.name}`);
+        if (st.user) showToast(t('Вы вошли как {name}', { name: st.user.name }));
         cancel.current?.();
         cancel.current = null;
       } catch (e) {
-        setError((e as Error).message || 'Не удалось войти');
+        setError((!isEn() && (e as Error).message) || t('Не удалось войти'));
         setPhase('ready');
       }
     };
@@ -167,15 +168,15 @@ function WidgetLogin({ onBack }: { onBack: () => void }) {
     <>
       {phase === 'loading' && (
         <p className="tg-login__note" role="status">
-          Загружаем вход Telegram…
+          {t('Загружаем вход Telegram…')}
         </p>
       )}
       {/* сюда виджет Telegram вставляет свою кнопку */}
       <div ref={slot} className="tg-login__widget" hidden={phase !== 'ready' && phase !== 'sending'} />
-      {phase === 'ready' && <p className="tg-login__note">Нажмите кнопку Telegram и подтвердите вход</p>}
+      {phase === 'ready' && <p className="tg-login__note">{t('Нажмите кнопку Telegram и подтвердите вход')}</p>}
       {phase === 'sending' && (
         <p className="tg-login__note" role="status">
-          Входим…
+          {t('Входим…')}
         </p>
       )}
       {error && (
@@ -186,20 +187,19 @@ function WidgetLogin({ onBack }: { onBack: () => void }) {
       {phase === 'failed' && (
         <div className="tg-login__fail" role="alert">
           <p className="tg-login__err">
-            Виджет Telegram не загрузился — telegram.org сейчас недоступен. Войдите по коду или откройте приложение в
-            Telegram: там вход произойдёт автоматически.
+            {t('Виджет Telegram не загрузился — telegram.org сейчас недоступен. Войдите по коду или откройте приложение в Telegram: там вход произойдёт автоматически.')}
           </p>
           <a className="tg-login__btn" href={BOT_PROFILE_LINK} target="_blank" rel="noopener noreferrer" onClick={openInTelegram}>
             {TG_ICON}
-            Открыть в Telegram
+            {t('Открыть в Telegram')}
           </a>
           <button type="button" className="tg-login__retry" onClick={() => void start()}>
-            Попробовать ещё раз
+            {t('Попробовать ещё раз')}
           </button>
         </div>
       )}
       <button type="button" className="tg-login__alt" onClick={onBack}>
-        Войти по коду
+        {t('Войти по коду')}
       </button>
     </>
   );

@@ -7,6 +7,7 @@ import { PENALTY_LEVELS, bestFor, levelTitle, moveZone, penaltyHeadline, shareTe
 import type { GameResult, PenaltyLevel, PenaltyShot, PenaltyStart } from '../../lib/games';
 import { REAL_ID, outcomeText, rivalFrom, shotOutcome } from '../../lib/penalty';
 import type { PenaltyOutcome } from '../../lib/penalty';
+import { t, tc } from '../../lib/i18n';
 import { shareLink } from '../../lib/share';
 import ballSrc from '../../assets/games/ball.webp';
 import diveSrc from '../../assets/games/courtois-dive.webp';
@@ -64,7 +65,7 @@ export default function PenaltyScreen() {
   const rival = rivalFrom(home.data);
 
   useEffect(() => {
-    document.title = 'Пенальти — игра «Мадридиста»';
+    document.title = t('Пенальти — игра «Мадридиста»');
     preloadSprites();
   }, []);
 
@@ -107,7 +108,7 @@ export default function PenaltyScreen() {
             if (outcome === 'goal') haptic.notify('success');
             else if (outcome === 'save') haptic.impact('heavy');
             else haptic.impact('rigid');
-            setFlash({ title: text.title, sub: text.sub, rival: r.rival_goal ? 'Соперник забил' : 'Соперник не забил', outcome });
+            setFlash({ title: text.title, sub: text.sub, rival: r.rival_goal ? t('Соперник забил') : t('Соперник не забил'), outcome });
           },
         });
         const next: Series = {
@@ -163,11 +164,11 @@ export default function PenaltyScreen() {
   if (phase.kind === 'pick') {
     return (
       <main className="gm">
-        <GamesHeader aside="пенальти" />
+        <GamesHeader aside={tc('game', 'пенальти')} />
         <GamesTabs />
-        <section className="gm-intro" aria-label="Пенальти">
-          <h2 className="gm-intro__title">Серия пенальти против соперника</h2>
-          <p className="gm-muted">5 ударов. Вратарь угадывает угол наугад — выбирайте зону. Ничья — бьём до первого промаха.</p>
+        <section className="gm-intro" aria-label={t('Пенальти')}>
+          <h2 className="gm-intro__title">{t('Серия пенальти против соперника')}</h2>
+          <p className="gm-muted">{t('5 ударов. Вратарь угадывает угол наугад — выбирайте зону. Ничья — бьём до первого промаха.')}</p>
         </section>
         {error && <ErrorNote text={error.text} onRetry={error.retry} />}
         <LevelPicker<PenaltyLevel> levels={PENALTY_LEVELS} best={(l) => bestFor('penalty', l, local, me)} onPick={(l) => void start(l)} />
@@ -182,7 +183,7 @@ export default function PenaltyScreen() {
   if (phase.kind === 'result') {
     return (
       <main className="gm">
-        <GamesHeader aside="пенальти" />
+        <GamesHeader aside={tc('game', 'пенальти')} />
         <GamesTabs />
         <PenaltyResult
           series={s}
@@ -201,11 +202,11 @@ export default function PenaltyScreen() {
 
   return (
     <main className="gm gm--play gm--pk">
-      <GamesHeader aside={`пенальти · ${levelTitle('penalty', s.level)}`} />
+      <GamesHeader aside={`${tc('game', 'пенальти')} · ${levelTitle('penalty', s.level)}`} />
       <GamesTabs />
       <Scoreboard s={s} rival={rival} />
       <p className={`pk-round${s.sudden ? ' is-sudden' : ''}`} aria-live="polite">
-        {s.sudden ? `Серия до промаха · удар ${round}` : `Удар ${Math.min(round, 5)} из 5`}
+        {s.sudden ? t('Серия до промаха · удар {n}', { n: round }) : t('Удар {n} из 5', { n: Math.min(round, 5) })}
       </p>
       <div className="pk-wrap">
         <PenaltyScene ref={scene} aim={aim} disabled={busy} onShoot={(z) => void shoot(z)} onAim={setAim} />
@@ -218,10 +219,10 @@ export default function PenaltyScreen() {
         )}
       </div>
       {error && <ErrorNote text={error.text} />}
-      <p className="gm-hint pk-hint">Нажмите на угол ворот, проведите пальцем от мяча или 1–6 на клавиатуре</p>
+      <p className="gm-hint pk-hint">{t('Нажмите на угол ворот, проведите пальцем от мяча или 1–6 на клавиатуре')}</p>
       <div className="gm-play__foot">
         <button type="button" className="gm-link" onClick={() => setPhase({ kind: 'pick' })}>
-          Выйти к уровням
+          {t('Выйти к уровням')}
         </button>
       </div>
     </main>
@@ -256,13 +257,13 @@ function Dots({ marks, label, live }: { marks: ReturnType<typeof shotMarks>; lab
 
 function Scoreboard({ s, rival, live = true }: { s: Series; rival: Rival; live?: boolean }) {
   const n = Math.max(5, s.me.length);
-  const rivalName = rival?.name ?? 'Соперник';
+  const rivalName = rival?.name ?? t('Соперник');
   return (
-    <section className="pk-board" aria-label={`Счёт серии ${s.goals}:${s.rivalGoals}`}>
+    <section className="pk-board" aria-label={t('Счёт серии {score}', { score: `${s.goals}:${s.rivalGoals}` })}>
       <div className="pk-board__side">
-        <TeamCrest id={REAL_ID} name="Реал Мадрид" size={28} />
-        <span className="pk-board__name">Реал</span>
-        <Dots marks={shotMarks(s.me, n)} label={`Наши удары: забито ${s.goals}`} live={live} />
+        <TeamCrest id={REAL_ID} name={t('Реал Мадрид')} size={28} />
+        <span className="pk-board__name">{t('Реал')}</span>
+        <Dots marks={shotMarks(s.me, n)} label={t('Наши удары: забито {n}', { n: s.goals })} live={live} />
       </div>
       <div className="pk-board__score">
         <b>{s.goals}</b>
@@ -282,7 +283,7 @@ function Scoreboard({ s, rival, live = true }: { s: Series; rival: Rival; live?:
           </span>
         )}
         <span className="pk-board__name">{rivalName}</span>
-        <Dots marks={shotMarks(s.rival, n)} label={`Удары соперника (${rivalName}): забито ${s.rivalGoals}`} live={live} />
+        <Dots marks={shotMarks(s.rival, n)} label={t('Удары соперника ({name}): забито {n}', { name: rivalName, n: s.rivalGoals })} live={live} />
       </div>
     </section>
   );
@@ -313,12 +314,12 @@ function PenaltyResult({
   const share = async () => {
     const url = inMiniApp() ? `https://t.me/${BOT_USERNAME}?startapp=penalty` : `${location.origin}/games/penalty`;
     const r = await shareLink(url, shareText('penalty', series.level, result));
-    setShareMsg(r === 'copied' ? 'Ссылка скопирована' : r === 'failed' ? 'Не удалось поделиться' : null);
+    setShareMsg(r === 'copied' ? t('Ссылка скопирована') : r === 'failed' ? t('Не удалось поделиться') : null);
   };
   return (
-    <section className={`gm-result${result.won ? ' is-win' : ''}`} aria-label="Итог серии пенальти">
-      {record && <span className="gm-result__badge">Новый рекорд</span>}
-      <p className="gm-result__level">Пенальти · {levelTitle('penalty', series.level)}</p>
+    <section className={`gm-result${result.won ? ' is-win' : ''}`} aria-label={t('Итог серии пенальти')}>
+      {record && <span className="gm-result__badge">{t('Новый рекорд')}</span>}
+      <p className="gm-result__level">{t('Пенальти')} · {levelTitle('penalty', series.level)}</p>
       <p className="gm-result__headline">{penaltyHeadline(result)}</p>
       <p className="gm-result__score gm-result__score--pk">
         {result.goals ?? series.goals}
@@ -329,28 +330,28 @@ function PenaltyResult({
       <div className="gm-result__stats">
         <div>
           <b>{result.score}</b>
-          <span>очков</span>
+          <span>{t('очков')}</span>
         </div>
         <div>
           <b>{result.shots ?? series.me.length}</b>
-          <span>ударов</span>
+          <span>{t('ударов')}</span>
         </div>
         <div>
           <b>{best ?? result.score}</b>
-          <span>рекорд уровня</span>
+          <span>{t('рекорд уровня')}</span>
         </div>
       </div>
-      {!authed && <p className="gm-muted gm-result__note">Без входа результат сохранён только на этом устройстве.</p>}
+      {!authed && <p className="gm-muted gm-result__note">{t('Без входа результат сохранён только на этом устройстве.')}</p>}
       <div className="gm-result__actions">
         <button ref={again} type="button" className="ui-btn ui-btn--primary ui-btn--block" onClick={onAgain}>
-          Ещё раз
+          {t('Ещё раз')}
         </button>
         <div className="gm-result__row">
           <button type="button" className="ui-btn ui-btn--secondary ui-btn--block" onClick={() => void share()}>
-            Поделиться
+            {t('Поделиться')}
           </button>
           <button type="button" className="ui-btn ui-btn--outline ui-btn--block" onClick={onLevels}>
-            Другой уровень
+            {t('Другой уровень')}
           </button>
         </div>
         {shareMsg && <p className="gm-muted gm-result__note">{shareMsg}</p>}

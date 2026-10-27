@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, type MouseEvent } from 'react';
 import type { ApiMatch } from '../../api/match';
+import { t } from '../../lib/i18n';
 import { usePlayerLinks } from '../../lib/playerNav';
 import { openExternal } from '../../lib/tmaNav';
 import { plainClick, useMediaNav, videoHref } from '../../lib/mediaNav';
@@ -65,21 +66,21 @@ export function OverviewTab({ match, phase, desk, onStats }: { match: ApiMatch; 
   const nothing = !hl && !best && !potm && !tl?.items.length && !about.length && !h2h && !form && !live && !facts && !round && !pollView(match);
 
   const starsEl = (best || potm) && (
-    <section aria-label="Лучшие игроки" className={best && potm ? 'mt-stars' : 'mt-stars mt-stars--one'}>
-      {best && <StarCard caption="Лучший у Реала" star={best} />}
-      {potm && <StarCard caption="Игрок матча" star={potm} />}
+    <section aria-label={t('Лучшие игроки')} className={best && potm ? 'mt-stars' : 'mt-stars mt-stars--one'}>
+      {best && <StarCard caption={t('Лучший у Реала')} star={best} />}
+      {potm && <StarCard caption={t('Игрок матча')} star={potm} />}
     </section>
   );
   const tlEl = tl && tl.items.length > 0 ? (
-    <Card ariaLabel="Хронология">
-      <h2 className="mt-h2 mt-h2--tl">Хронология</h2>
+    <Card ariaLabel={t('Хронология')}>
+      <h2 className="mt-h2 mt-h2--tl">{t('Хронология')}</h2>
       <LiveTimeline view={tl} links={links} />
     </Card>
   ) : (
     live && (
-      <Card ariaLabel="Хронология">
-        <h2 className="mt-h2">Хронология</h2>
-        <p className="mt-muted mt-gap">Пока без голов и карточек</p>
+      <Card ariaLabel={t('Хронология')}>
+        <h2 className="mt-h2">{t('Хронология')}</h2>
+        <p className="mt-muted mt-gap">{t('Пока без голов и карточек')}</p>
       </Card>
     )
   );
@@ -88,8 +89,8 @@ export function OverviewTab({ match, phase, desk, onStats }: { match: ApiMatch; 
   const nothingEl = nothing && (
     <EmptyState
       className="mt-state"
-      title={before ? 'Подробности появятся ближе к матчу' : 'Подробностей пока нет'}
-      text={before ? 'Составы — примерно за час до начала' : undefined}
+      title={before ? t('Подробности появятся ближе к матчу') : t('Подробностей пока нет')}
+      text={before ? t('Составы — примерно за час до начала') : undefined}
     />
   );
   const pollEl = (before || live || finished) && poll;
@@ -155,8 +156,8 @@ export function OverviewTab({ match, phase, desk, onStats }: { match: ApiMatch; 
 /** Личные встречи: счёт побед и последние матчи между командами. */
 export function H2HCard({ h2h }: { h2h: NonNullable<ReturnType<typeof h2hView>> }) {
   return (
-    <Card ariaLabel="Личные встречи">
-      <SectionHeader title="Личные встречи" />
+    <Card ariaLabel={t('Личные встречи')}>
+      <SectionHeader title={t('Личные встречи')} />
       <div className="mt-h2h">
         <div className="mt-h2h__col">
           <b>{h2h.home.wins}</b>
@@ -167,7 +168,7 @@ export function H2HCard({ h2h }: { h2h: NonNullable<ReturnType<typeof h2hView>> 
         </div>
         <div className="mt-h2h__col">
           <b>{h2h.draws}</b>
-          <span>ничьи</span>
+          <span>{t('ничьи')}</span>
         </div>
         <div className="mt-h2h__col">
           <b>{h2h.away.wins}</b>
@@ -209,8 +210,8 @@ export function H2HTab({ match, phase }: { match: ApiMatch; phase: Phase }) {
 
 function FormCard({ form }: { form: NonNullable<ReturnType<typeof formView>> }) {
   return (
-    <Card ariaLabel="Форма команд">
-      <SectionHeader title="Форма" aside="последние матчи" />
+    <Card ariaLabel={t('Форма команд')}>
+      <SectionHeader title={t('Форма')} aside={t('последние матчи')} />
       {form.map((f) => (
         <div key={f.side} className="mt-form">
           <span className="mt-form__team">

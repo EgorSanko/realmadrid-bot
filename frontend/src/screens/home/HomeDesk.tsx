@@ -5,6 +5,7 @@ import type { ApiFixtures, ApiTables } from '../../lib/api';
 import { useApiResource } from '../../lib/apiResource';
 import { LALIGA_ID, splitFixtures, tableFor } from '../../lib/mapMatches';
 import { useSpaLink } from '../../lib/spaLink';
+import { t } from '../../lib/i18n';
 import type { StreamState } from '../../lib/stream';
 import { usePoll } from '../../lib/usePoll';
 import { Card, FormStrip, SectionHeader, Skeleton, plural, type Outcome, type TeamRef } from '../../ui';
@@ -62,7 +63,7 @@ export function HomeDesk({
 
   return (
     <main className="home home--desk">
-      <h1 className="ui-sr">Мадридиста — фан-приложение Real Madrid</h1>
+      <h1 className="ui-sr">{t('Мадридиста — фан-приложение Real Madrid')}</h1>
       <div className="dk-split">
         <div className="dk-col">
           {hero}
@@ -73,12 +74,12 @@ export function HomeDesk({
           {last}
         </div>
 
-        <aside className="dk-col" aria-label="Ла Лига, форма и календарь">
+        <aside className="dk-col" aria-label={t('Ла Лига, форма и календарь')}>
           {laliga ? (
-            <LeagueTableMini table={laliga} title="Ла Лига" />
+            <LeagueTableMini table={laliga} title={t('Ла Лига')} />
           ) : tb.loading && !tb.data ? (
-            <Card ariaLabel="Ла Лига">
-              <SectionHeader title="Ла Лига" />
+            <Card ariaLabel={t('Ла Лига')}>
+              <SectionHeader title={t('Ла Лига')} />
               <Skeleton shape="table" rows={7} />
             </Card>
           ) : null}
@@ -87,8 +88,8 @@ export function HomeDesk({
             <Skeleton height={104} radius={20} />
           ) : (
             form.length > 0 && (
-              <Card ariaLabel="Форма" className="hd-form">
-                <SectionHeader title="Форма" aside={`${form.length} ${plural(form.length, ['матч', 'матча', 'матчей'])}`} />
+              <Card ariaLabel={t('Форма')} className="hd-form">
+                <SectionHeader title={t('Форма')} aside={`${form.length} ${plural(form.length, ['матч', 'матча', 'матчей'])}`} />
                 <FormStrip results={form} opponents={formOpp} size={28} className="hd-form__strip" />
               </Card>
             )
@@ -96,15 +97,15 @@ export function HomeDesk({
 
           {upcoming == null ? (
             fx.loading ? (
-              <Card ariaLabel="Ближайшие матчи">
-                <SectionHeader title="Ближайшие матчи" />
+              <Card ariaLabel={t('Ближайшие матчи')}>
+                <SectionHeader title={t('Ближайшие матчи')} />
                 <Skeleton shape="list" rows={3} />
               </Card>
             ) : null
           ) : (
             upcoming.length > 0 && (
-              <Card ariaLabel="Ближайшие матчи" className="hd-next">
-                <SectionHeader title="Ближайшие матчи" actionLabel="Календарь" onAction={() => navigate('/matches')} />
+              <Card ariaLabel={t('Ближайшие матчи')} className="hd-next">
+                <SectionHeader title={t('Ближайшие матчи')} actionLabel={t('Календарь')} onAction={() => navigate('/matches')} />
                 {upcoming.map((m) => (
                   <CalendarRow key={m.id} {...m} highlighted={false} {...link(m.href)} />
                 ))}
@@ -115,8 +116,8 @@ export function HomeDesk({
       </div>
 
       {(news.loading || newsCards.length > 0) && (
-        <section className="dk-full" aria-label="Новости">
-          <SectionHeader title="Новости" actionLabel="Все новости" onAction={() => navigate('/media?tab=news')} className="hd-head" />
+        <section className="dk-full" aria-label={t('Новости')}>
+          <SectionHeader title={t('Новости')} actionLabel={t('Все новости')} onAction={() => navigate('/media?tab=news')} className="hd-head" />
           {news.loading && !news.data ? (
             <div className="dk-news">
               {[0, 1, 2].map((i) => (
@@ -130,8 +131,8 @@ export function HomeDesk({
       )}
 
       {(hl || videoTiles.length > 0) && (
-        <section className="dk-full" aria-label="Видео">
-          <SectionHeader title="Видео" actionLabel="Все видео" onAction={() => navigate('/media?tab=video')} className="hd-head" />
+        <section className="dk-full" aria-label={t('Видео')}>
+          <SectionHeader title={t('Видео')} actionLabel={t('Все видео')} onAction={() => navigate('/media?tab=video')} className="hd-head" />
           <div className={hl ? 'hd-videos hd-videos--hl' : 'hd-videos'}>
             {hl && <HighlightLink h={hl} />}
             <VideoGrid items={videoTiles} className="hd-videos__grid" />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import { useAuth } from '../lib/auth';
+import { t } from '../lib/i18n';
 import '../styles/auth.css';
 
 /** Силуэт: без входа или пока аватар не скачан — свой SVG, никаких внешних картинок. */
@@ -31,7 +32,7 @@ export function UserAvatar({ src, size = 40, className }: { src: string | null |
 /** Кнопка-аватар в шапке главной → /profile. Без входа — силуэт. */
 export function AvatarButton({ onClick }: { onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
   const auth = useAuth();
-  const label = auth.user ? `Профиль: ${auth.user.name}` : 'Профиль и вход';
+  const label = auth.user ? t('Профиль: {name}', { name: auth.user.name }) : t('Профиль и вход');
   return (
     <a className="avatar-btn" href="/profile" aria-label={label} title={label} onClick={onClick}>
       <UserAvatar src={auth.user?.avatar} size={38} />

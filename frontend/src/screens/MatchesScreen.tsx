@@ -11,6 +11,7 @@ import {
   tableFor,
   type CompTab,
 } from '../lib/mapMatches';
+import { t, tc } from '../lib/i18n';
 import { useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
 import { usePoll } from '../lib/usePoll';
@@ -25,9 +26,9 @@ const RESULTS_SHOWN = 10;
 /** что показываем: ближайшие, сыгранные или таблицы — сразу видно, где прошлые матчи */
 type View = 'calendar' | 'results' | 'tables';
 const VIEW_TABS: Array<{ id: View; label: string }> = [
-  { id: 'calendar', label: 'Календарь' },
-  { id: 'results', label: 'Результаты' },
-  { id: 'tables', label: 'Таблица' },
+  { id: 'calendar', label: t('Календарь') },
+  { id: 'results', label: t('Результаты') },
+  { id: 'tables', label: t('Таблица') },
 ];
 
 const fixturesPoll = (d: ApiFixtures | null) => (d?.matches?.some((m) => m.status?.live) ? 15_000 : 60_000);
@@ -48,7 +49,7 @@ export default function MatchesScreen() {
   const desktop = useDesktop();
 
   useEffect(() => {
-    document.title = 'Матчи «Реала»: календарь, результаты, таблица — Мадридиста';
+    document.title = t('Матчи «Реала»: календарь, результаты, таблица — Мадридиста');
   }, []);
 
   const lists = useMemo(() => (fx.data ? splitFixtures(fx.data.matches, tab) : null), [fx.data, tab]);
@@ -67,8 +68,8 @@ export default function MatchesScreen() {
   let resultsBlock;
   if (!fx.data && fx.loading) {
     fixturesBlock = (
-      <section className="ui-card" aria-label={view === 'results' ? 'Результаты' : 'Ближайшие матчи'}>
-        <SectionHeader title={view === 'results' ? 'Результаты' : 'Ближайшие'} />
+      <section className="ui-card" aria-label={view === 'results' ? t('Результаты') : t('Ближайшие матчи')}>
+        <SectionHeader title={view === 'results' ? t('Результаты') : t('Ближайшие')} />
         <Skeleton shape="list" rows={5} />
       </section>
     );
@@ -79,10 +80,10 @@ export default function MatchesScreen() {
     const up = allUpcoming ? lists.upcoming : lists.upcoming.slice(0, UPCOMING_SHOWN);
     const res = allResults ? lists.results : lists.results.slice(0, RESULTS_SHOWN);
     const upcomingCard = (
-        <section className="ui-card" aria-label="Ближайшие матчи">
-          <SectionHeader title="Ближайшие" aside={note ?? undefined} />
+        <section className="ui-card" aria-label={t('Ближайшие матчи')}>
+          <SectionHeader title={t('Ближайшие')} aside={note ?? undefined} />
           {up.length === 0 ? (
-            <EmptyState plain title="Ближайших матчей нет" text="Календарь обновится, когда турнир опубликует даты" />
+            <EmptyState plain title={t('Ближайших матчей нет')} text={t('Календарь обновится, когда турнир опубликует даты')} />
           ) : (
             <div className="screen-list">
               {up.map((m) => (
@@ -94,17 +95,17 @@ export default function MatchesScreen() {
             <MoreButton
               open={allUpcoming}
               onToggle={() => setAllUpcoming((v) => !v)}
-              more={`Весь календарь · ${lists.upcoming.length}`}
-              less="Свернуть"
+              more={t('Весь календарь · {n}', { n: lists.upcoming.length })}
+              less={tc('list', 'Свернуть')}
             />
           )}
         </section>
     );
     const resultsCard = (
-        <section className="ui-card" aria-label="Результаты">
-          <SectionHeader title="Результаты" aside={note ?? undefined} />
+        <section className="ui-card" aria-label={t('Результаты')}>
+          <SectionHeader title={t('Результаты')} aside={note ?? undefined} />
           {res.length === 0 ? (
-            <EmptyState plain title="Пока без результатов" text="Здесь появятся сыгранные матчи" />
+            <EmptyState plain title={t('Пока без результатов')} text={t('Здесь появятся сыгранные матчи')} />
           ) : (
             <div className="screen-list">
               {res.map((m) => (
@@ -116,8 +117,8 @@ export default function MatchesScreen() {
             <MoreButton
               open={allResults}
               onToggle={() => setAllResults((v) => !v)}
-              more={`Все результаты · ${lists.results.length}`}
-              less="Свернуть"
+              more={t('Все результаты · {n}', { n: lists.results.length })}
+              less={tc('list', 'Свернуть')}
             />
           )}
         </section>
@@ -132,21 +133,21 @@ export default function MatchesScreen() {
   let tablesBlock;
   if (!tb.data && tb.loading) {
     tablesBlock = (
-      <section className="ui-card" aria-label="Таблица">
-        <SectionHeader title={tab === 'ucl' ? 'Лига чемпионов' : 'Ла Лига'} />
+      <section className="ui-card" aria-label={t('Таблица')}>
+        <SectionHeader title={tab === 'ucl' ? t('Лига чемпионов') : t('Ла Лига')} />
         <Skeleton shape="table" rows={6} />
       </section>
     );
   } else if (!tb.data) {
     // таблицы — второстепенны: без своей ошибки на весь экран, если календарь уже есть
     tablesBlock = fx.data ? (
-      <ErrorState title="Таблица не загрузилась" text={errorText(tb.error).text} onRetry={tb.reload} />
+      <ErrorState title={t('Таблица не загрузилась')} text={errorText(tb.error).text} onRetry={tb.reload} />
     ) : null;
   } else {
     tablesBlock = (
       <>
-        {showLaliga && laliga && <LeagueTable key="ll" table={laliga} title="Ла Лига" />}
-        {showUcl && ucl && <LeagueTable key="ucl" table={ucl} title="Лига чемпионов" />}
+        {showLaliga && laliga && <LeagueTable key="ll" table={laliga} title={t('Ла Лига')} />}
+        {showUcl && ucl && <LeagueTable key="ucl" table={ucl} title={t('Лига чемпионов')} />}
       </>
     );
   }
@@ -156,16 +157,16 @@ export default function MatchesScreen() {
     return (
       <main className="matches matches--desk">
         <header className="topbar">
-          <h1 className="topbar__title">Матчи</h1>
+          <h1 className="topbar__title">{t('Матчи')}</h1>
           <span className="topbar__aside">{aside}</span>
         </header>
         <div className="dk-split dk-split--matches">
           <div className="dk-col">
-            <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel="Фильтр турниров" variant="pill" className="matches__comp" />
+            <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel={t('Фильтр турниров')} variant="pill" className="matches__comp" />
             {fixturesBlock}
             {resultsBlock}
           </div>
-          <aside className="dk-col" aria-label="Турнирные таблицы">
+          <aside className="dk-col" aria-label={t('Турнирные таблицы')}>
             {tablesBlock}
           </aside>
         </div>
@@ -176,11 +177,11 @@ export default function MatchesScreen() {
   return (
     <main className="matches">
       <header className="topbar">
-        <h1 className="topbar__title">Матчи</h1>
+        <h1 className="topbar__title">{t('Матчи')}</h1>
         <span className="topbar__aside">{aside}</span>
       </header>
-      <Tabs items={VIEW_TABS} value={view} onChange={setView} ariaLabel="Раздел" />
-      <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel="Фильтр турниров" variant="pill" className="matches__comp" />
+      <Tabs items={VIEW_TABS} value={view} onChange={setView} ariaLabel={t('Раздел')} />
+      <Tabs items={COMP_TABS} value={tab} onChange={onTab} ariaLabel={t('Фильтр турниров')} variant="pill" className="matches__comp" />
       {view === 'tables' ? tablesBlock : fixturesBlock}
     </main>
   );

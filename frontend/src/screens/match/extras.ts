@@ -1,14 +1,17 @@
 /**
  * «Интересные факты», «Матчи тура» и «Кто победит?»: отдельные снимки сборщика (insights, round, poll)
  * внутри ответа /api/match → данные карточек. Нет данных — null, карточка не показывается.
- * Чистые функции без рантайм-импортов (только типы) — их проверяет `node --test`.
+ * Чистые функции — их проверяет `node --test`; рантайм-импорт — только lib/i18n.
  */
+import { isEn, pluralEn, t } from '../../lib/i18n';
 import type { ApiMatch, ApiOutcomes, ApiRound, ApiStatus, AvailableKey, Side } from '../../api/match';
 
 const has = (m: ApiMatch, k: AvailableKey) => m.available.includes(k);
 const REAL_ID = 8633;
 
 const plural = (n: number, f: [string, string, string]) => {
+  const en = pluralEn(n, f);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return f[2];
@@ -77,26 +80,26 @@ const mskDay = (iso: string | null) => (iso ? new Date(Date.parse(iso) + 3 * 360
 function rowState(s: ApiStatus): [RoundState, string | null] {
   switch (s.state) {
     case 'live':
-      return ['live', minuteOf(s) ?? 'идёт'];
+      return ['live', minuteOf(s) ?? t('идёт')];
     case 'halftime':
-      return ['halftime', 'Перерыв'];
+      return ['halftime', t('Перерыв')];
     case 'finished':
-      return ['finished', 'Завершён'];
+      return ['finished', t('Завершён')];
     case 'postponed':
-      return ['off', 'Перенесён'];
+      return ['off', t('Перенесён')];
     case 'cancelled':
-      return ['off', 'Отменён'];
+      return ['off', t('Отменён')];
     case 'abandoned':
-      return ['off', 'Прерван'];
+      return ['off', t('Прерван')];
     default:
       return ['scheduled', null];
   }
 }
 
 export function roundTitle(r: Pick<ApiRound, 'league' | 'round'>): string {
-  const name = (r.league.id != null && TOURNAMENT_RU[r.league.id]) || r.league.name || '';
+  const name = (r.league.id != null && TOURNAMENT_RU[r.league.id] && t(TOURNAMENT_RU[r.league.id])) || r.league.name || '';
   const rd = (r.round ?? '').trim();
-  return [name, /^\d+$/.test(rd) ? `${rd}-й тур` : null].filter(Boolean).join(' · ');
+  return [name, /^\d+$/.test(rd) ? t('{n}-й тур', { n: rd }) : null].filter(Boolean).join(' · ');
 }
 
 export function roundRows(r: ApiRound, matchId?: number | string | null): RoundRowView[] {
@@ -134,7 +137,7 @@ export function roundView(m: ApiMatch): RoundView | null {
   return {
     title: roundTitle(r),
     leagueId: r.league.id ?? undefined,
-    played: `сыграно ${finished} из ${rows.length}`,
+    played: t('сыграно {done} из {total}', { done: finished, total: rows.length }),
     live: rows.filter((x) => x.state === 'live' || x.state === 'halftime').length,
     days,
   };
@@ -184,9 +187,10 @@ export function percents(o: ApiOutcomes): Record<Outcome1x2, number> {
 
 /** 963 → «963 голоса», 263 128 → «263 тыс. голосов», 1 240 000 → «1,2 млн голосов» */
 export function votesText(n: number): string {
-  if (n >= 1_000_000) return `${(Math.round(n / 100_000) / 10).toString().replace('.', ',')} млн голосов`;
-  if (n >= 10_000) return `${Math.round(n / 1000)} тыс. голосов`;
-  if (n >= 1000) return `${(Math.round(n / 100) / 10).toString().replace('.', ',')} тыс. голосов`;
+  const dec = (v: number) => (isEn() ? String(v) : String(v).replace('.', ','));
+  if (n >= 1_000_000) return t('{n} млн голосов', { n: dec(Math.round(n / 100_000) / 10) });
+  if (n >= 10_000) return t('{n} тыс. голосов', { n: Math.round(n / 1000) });
+  if (n >= 1000) return t('{n} тыс. голосов', { n: dec(Math.round(n / 100) / 10) });
   return `${n} ${plural(n, ['голос', 'голоса', 'голосов'])}`;
 }
 
@@ -208,7 +212,7 @@ export function pollView(m: ApiMatch, ctx: PollContext = {}): PollView | null {
   if (!p || !has(m, 'poll')) return null;
   const rows: PollRowView[] = [];
   if (p.ours && p.ours.total > 0) {
-    rows.push({ key: 'ours', label: 'Болельщики Мадридисты', sub: `${p.ours.total} ${plural(p.ours.total, ['прогноз', 'прогноза', 'прогнозов'])}`, parts: parts(p.ours) });
+    rows.push({ key: 'ours', label: t('Болельщики Мадридисты'), sub: `${p.ours.total} ${plural(p.ours.total, ['прогноз', 'прогноза', 'прогнозов'])}`, parts: parts(p.ours) });
   }
   if (p.fotmob && p.fotmob.total > 0) {
     rows.push({ key: 'fotmob', label: 'FotMob', sub: votesText(p.fotmob.total), parts: parts(p.fotmob) });

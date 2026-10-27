@@ -1,8 +1,10 @@
 /**
  * Ответ /api/match → пропсы компонентов экрана матча.
- * Чистые функции без рантайм-импортов (только типы) — их проверяет `node --test`.
+ * Чистые функции — их проверяет `node --test`. Рантайм-импорты — только lib/i18n и ui/format (без React).
  * Даты здесь не форматируются: это делают компоненты (по МСК, ui/format.ts).
  */
+import { isEn, pluralEn, t } from '../../lib/i18n';
+import { monthName } from '../../ui/format';
 import type {
   ApiEvent,
   ApiGoal,
@@ -87,6 +89,8 @@ const photoId = (p: { id: number | string | null; photo: string | null } | null 
 /* ---------- склонения ---------- */
 
 export function plural(n: number, forms: [string, string, string]): string {
+  const en = pluralEn(n, forms);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return forms[2];
@@ -111,9 +115,9 @@ const TOURNAMENT_RU: Record<number, string> = {
 };
 
 export function tournamentName(m: ApiMatch): string {
-  const t = m.tournament;
-  if (t.id != null && TOURNAMENT_RU[t.id]) return TOURNAMENT_RU[t.id];
-  return t.name ?? '';
+  const tr = m.tournament;
+  if (tr.id != null && TOURNAMENT_RU[tr.id]) return t(TOURNAMENT_RU[tr.id]);
+  return tr.name ?? '';
 }
 
 const ROUND_RU: Array<[RegExp, string]> = [
@@ -128,8 +132,8 @@ const ROUND_RU: Array<[RegExp, string]> = [
 export function roundName(round: string | null | undefined): string | null {
   const r = (round ?? '').trim();
   if (!r) return null;
-  if (/^\d+$/.test(r)) return `${r}-й тур`;
-  for (const [re, ru] of ROUND_RU) if (re.test(r)) return ru;
+  if (/^\d+$/.test(r)) return t('{n}-й тур', { n: r });
+  for (const [re, ru] of ROUND_RU) if (re.test(r)) return t(ru);
   return null; // «League Stage» и прочее — без подписи, чем по-английски
 }
 
@@ -177,30 +181,30 @@ export function headerView(m: ApiMatch, now: number = Date.now()): HeaderView {
         status: 'live',
         score: score ?? [0, 0],
         minute: m.status.minute != null ? minuteText(m.status.minute, m.status.added) : undefined,
-        statusText: m.status.minute == null ? 'Идёт матч' : undefined,
+        statusText: m.status.minute == null ? t('Идёт матч') : undefined,
         live: true,
         countdown: false,
         scorers,
       };
     case 'halftime':
-      return { phase: 'halftime', status: 'live', score: score ?? [0, 0], statusText: 'Перерыв', live: true, countdown: false, scorers };
+      return { phase: 'halftime', status: 'live', score: score ?? [0, 0], statusText: t('Перерыв'), live: true, countdown: false, scorers };
     case 'finished': {
       const label = (m.status.label ?? '').toUpperCase();
-      const statusText = label === 'AET' ? 'Завершён после доп. времени' : label.startsWith('PEN') ? 'Завершён по пенальти' : undefined;
+      const statusText = label === 'AET' ? t('Завершён после доп. времени') : label.startsWith('PEN') ? t('Завершён по пенальти') : undefined;
       return { phase: 'finished', status: 'finished', score, statusText, live: false, countdown: false, scorers };
     }
     case 'abandoned':
-      return { phase: 'abandoned', status: score ? 'finished' : 'upcoming', score, statusText: 'Матч прерван', live: false, countdown: false, scorers };
+      return { phase: 'abandoned', status: score ? 'finished' : 'upcoming', score, statusText: t('Матч прерван'), live: false, countdown: false, scorers };
     case 'postponed':
-      return { phase: 'postponed', status: 'upcoming', statusText: 'Матч перенесён', live: false, countdown: false, scorers };
+      return { phase: 'postponed', status: 'upcoming', statusText: t('Матч перенесён'), live: false, countdown: false, scorers };
     case 'cancelled':
-      return { phase: 'cancelled', status: 'upcoming', statusText: 'Матч отменён', live: false, countdown: false, scorers };
+      return { phase: 'cancelled', status: 'upcoming', statusText: t('Матч отменён'), live: false, countdown: false, scorers };
     default:
       return {
         phase: 'scheduled',
         status: 'upcoming',
         // без времени начала ScoreHeader не напишет подпись — пишем сами
-        statusText: m.kickoff ? undefined : 'Время уточняется',
+        statusText: m.kickoff ? undefined : t('Время уточняется'),
         live: false,
         countdown: Number.isFinite(kick) && kick > now,
         scorers,
@@ -250,8 +254,8 @@ export function goalKey(g: ApiGoal): string {
 export function scorerLines(m: ApiMatch): { home: ScorerLine[]; away: ScorerLine[] } {
   const res: { home: ScorerLine[]; away: ScorerLine[] } = { home: [], away: [] };
   for (const g of goals(m)) {
-    const nm = shortName(g.ev.player?.name) || 'Гол';
-    const tag = g.ev.own_goal ? ' (авт.)' : g.ev.penalty ? ' (пен.)' : '';
+    const nm = shortName(g.ev.player?.name) || t('Гол');
+    const tag = g.ev.own_goal ? ` (${t('авт.')})` : g.ev.penalty ? ` (${t('пен.')})` : '';
     const list = res[g.side];
     const key = nm + (g.ev.own_goal ? '#og' : '');
     const found = list.find((s) => (s as ScorerLine & { k?: string }).k === key);
@@ -276,9 +280,9 @@ const VAR_RU: Array<[RegExp, string]> = [
 ];
 
 function varText(e: Extract<ApiEvent, { type: 'var' }>): string {
-  const t = `${e.decision ?? ''} ${e.text ?? ''}`.trim();
-  for (const [re, ru] of VAR_RU) if (re.test(t)) return ru;
-  return 'проверка VAR';
+  const s = `${e.decision ?? ''} ${e.text ?? ''}`.trim();
+  for (const [re, ru] of VAR_RU) if (re.test(s)) return t(ru);
+  return t('проверка VAR');
 }
 
 const PERIOD_RU: Record<string, string> = { HT: 'Перерыв', FT: 'Основное время', AET: 'Дополнительное время', ET: 'Дополнительное время' };
@@ -306,16 +310,16 @@ export function timelineView(m: ApiMatch): TimelineView {
       case 'goal': {
         const g = goalSide.get(e);
         if (!g) return; // серия пенальти
-        const detail = [e.own_goal ? 'автогол' : null, e.penalty ? 'пенальти' : null].filter(Boolean).join(' · ');
+        const detail = [e.own_goal ? t('автогол') : null, e.penalty ? t('пенальти') : null].filter(Boolean).join(' · ');
         push(
           {
             minute,
             addedTime,
             side: g.side,
             type: e.own_goal ? 'own-goal' : 'goal',
-            player: shortName(e.player?.name) || 'Гол',
+            player: shortName(e.player?.name) || t('Гол'),
             playerId: photoId(e.player),
-            related: e.assist?.name ? { id: photoId(e.assist), name: shortName(e.assist.name), prefix: 'пас' } : undefined,
+            related: e.assist?.name ? { id: photoId(e.assist), name: shortName(e.assist.name), prefix: t('пас') } : undefined,
             detail: detail || undefined,
             score: g.score,
           },
@@ -330,9 +334,9 @@ export function timelineView(m: ApiMatch): TimelineView {
           addedTime,
           side: e.side,
           type: e.card === 'red' ? 'red' : e.card === 'second_yellow' ? 'second-yellow' : 'yellow',
-          player: shortName(e.player?.name) || 'Карточка',
+          player: shortName(e.player?.name) || t('Карточка'),
           playerId: photoId(e.player),
-          detail: e.card === 'second_yellow' ? 'вторая жёлтая' : undefined,
+          detail: e.card === 'second_yellow' ? t('вторая жёлтая') : undefined,
         });
         return;
       case 'sub':
@@ -342,10 +346,10 @@ export function timelineView(m: ApiMatch): TimelineView {
           addedTime,
           side: e.side,
           type: 'sub',
-          player: shortName(e.player_in?.name) || 'Замена',
+          player: shortName(e.player_in?.name) || t('Замена'),
           playerId: photoId(e.player_in),
-          related: e.player_out?.name ? { id: photoId(e.player_out), name: shortName(e.player_out.name), prefix: 'ушёл' } : undefined,
-          detail: e.injury ? 'травма' : undefined,
+          related: e.player_out?.name ? { id: photoId(e.player_out), name: shortName(e.player_out.name), prefix: t('ушёл') } : undefined,
+          detail: e.injury ? t('травма') : undefined,
         });
         return;
       case 'var':
@@ -359,9 +363,9 @@ export function timelineView(m: ApiMatch): TimelineView {
           addedTime,
           side: e.side,
           type: 'penalty-missed',
-          player: shortName(e.player?.name) || 'Пенальти',
+          player: shortName(e.player?.name) || t('Пенальти'),
           playerId: photoId(e.player),
-          detail: 'не забил пенальти',
+          detail: t('не забил пенальти'),
         });
         return;
       case 'period': {
@@ -370,7 +374,7 @@ export function timelineView(m: ApiMatch): TimelineView {
         const rest = evs.slice(idx + 1).some((x) => x.type !== 'period' && x.type !== 'added_time');
         if (label !== 'HT' && !rest) return;
         const sc = e.score && e.score[0] != null && e.score[1] != null ? ` · ${e.score[0]}:${e.score[1]}` : '';
-        push({ kind: 'divider', label: `${PERIOD_RU[label] ?? 'Перерыв'}${sc}` });
+        push({ kind: 'divider', label: `${t(PERIOD_RU[label] ?? 'Перерыв')}${sc}` });
         return;
       }
       default:
@@ -427,14 +431,14 @@ export function aboutRows(m: ApiMatch): AboutRow[] {
   };
   if (m.venue?.name) {
     const city = m.venue.city && !m.venue.name.includes(m.venue.city) ? `, ${m.venue.city}` : '';
-    rows.push(row('Стадион', `${m.venue.name}${city}`, m.venue.flag));
+    rows.push(row(t('Стадион'), `${m.venue.name}${city}`, m.venue.flag));
   }
-  if (m.attendance) rows.push(['Зрители', groupThousands(m.attendance)]);
-  if (m.referee) rows.push(row('Судья', m.referee, m.referee_country?.flag));
+  if (m.attendance) rows.push([t('Зрители'), groupThousands(m.attendance)]);
+  if (m.referee) rows.push(row(t('Судья'), m.referee, m.referee_country?.flag));
   return rows;
 }
 
-export const groupThousands = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+export const groupThousands = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, isEn() ? ',' : ' ');
 
 /* ---------- видеообзор ---------- */
 
@@ -459,7 +463,7 @@ export function highlightView(m: ApiMatch): HighlightView | null {
   return {
     href: h.url,
     thumb: id ? `/img/yt/${id}.jpg` : undefined,
-    title: `Видеообзор: ${m.home.name} ${s ? `${s[0]}:${s[1]}` : '—'} ${m.away.name}`,
+    title: t('Видеообзор: {home} {score} {away}', { home: m.home.name ?? '', score: s ? `${s[0]}:${s[1]}` : '—', away: m.away.name ?? '' }),
     provider: id || /youtu/i.test(h.source ?? h.url) ? 'YouTube' : undefined,
   };
 }
@@ -574,7 +578,6 @@ export interface LineupView {
   coach?: { id?: number; name: string };
 }
 
-const MONTH_GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 const MONTH_EN = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
 /** «Late October 2026» → «до конца октября»; ISO-дата → «до 31 декабря». */
@@ -582,26 +585,26 @@ export function returnText(s: string | null | undefined): string | null {
   const v = (s ?? '').trim();
   if (!v) return null;
   const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(v);
-  if (iso) return `до ${Number(iso[3])} ${MONTH_GEN[Number(iso[2]) - 1]}`;
+  if (iso) return t('до {day} {month}', { day: Number(iso[3]), month: monthName(Number(iso[2]) - 1) });
   const m = /^(early|mid|late)?\s*([a-z]+)\s+\d{4}$/i.exec(v);
   if (m) {
     const i = MONTH_EN.indexOf(m[2].toLowerCase());
     if (i >= 0) {
-      const when = { early: 'до начала ', mid: 'до середины ', late: 'до конца ' }[(m[1] ?? '').toLowerCase() as 'early'] ?? 'до ';
-      return `${when}${MONTH_GEN[i]}`;
+      const when = { early: 'до начала {month}', mid: 'до середины {month}', late: 'до конца {month}' }[(m[1] ?? '').toLowerCase() as 'early'] ?? 'до {month}';
+      return t(when, { month: monthName(i) });
     }
   }
-  if (/back in training/i.test(v)) return 'вернулся к тренировкам';
-  if (/doubt/i.test(v)) return 'под вопросом';
-  if (/unknown/i.test(v)) return 'срок неизвестен';
+  if (/back in training/i.test(v)) return t('вернулся к тренировкам');
+  if (/doubt/i.test(v)) return t('под вопросом');
+  if (/unknown/i.test(v)) return t('срок неизвестен');
   return null;
 }
 
 export function absenceReason(type: string | null | undefined): string {
-  const t = (type ?? '').toLowerCase();
-  if (/suspen|red card|ban/.test(t)) return 'дисквалификация';
-  if (/injur|knock|ill|ligament|muscle|surgery/.test(t)) return 'травма';
-  return 'не сыграет';
+  const s = (type ?? '').toLowerCase();
+  if (/suspen|red card|ban/.test(s)) return t('дисквалификация');
+  if (/injur|knock|ill|ligament|muscle|surgery/.test(s)) return t('травма');
+  return t('не сыграет');
 }
 
 function countFor(m: ApiMatch, p: ApiLineupPlayer) {
@@ -623,10 +626,10 @@ function countFor(m: ApiMatch, p: ApiLineupPlayer) {
 
 function deedsText(c: { g: number; a: number; yellow: number; red: number }): string[] {
   const out: string[] = [];
-  if (c.g) out.push(c.g === 1 ? 'гол' : `${c.g} ${plural(c.g, ['гол', 'гола', 'голов'])}`);
-  if (c.a) out.push(c.a === 1 ? 'голевая передача' : `${c.a} ${plural(c.a, ['голевая передача', 'голевые передачи', 'голевых передач'])}`);
-  if (c.red) out.push('удалён');
-  else if (c.yellow) out.push('жёлтая');
+  if (c.g) out.push(c.g === 1 ? t('гол') : `${c.g} ${plural(c.g, ['гол', 'гола', 'голов'])}`);
+  if (c.a) out.push(c.a === 1 ? t('голевая передача') : `${c.a} ${plural(c.a, ['голевая передача', 'голевые передачи', 'голевых передач'])}`);
+  if (c.red) out.push(t('удалён'));
+  else if (c.yellow) out.push(t('жёлтая'));
   return out;
 }
 
@@ -646,7 +649,11 @@ export function lineupView(m: ApiMatch, side: Side): LineupView | null {
     .sort((a, b) => (a.sub_in ?? 0) - (b.sub_in ?? 0))
     .map((p, i) => {
       const ev = subEvents.find((e) => samePerson(e.player_in, p.id, p.name));
-      const parts = [`вышел на ${p.sub_in}′${ev?.player_out?.name ? ` вместо ${shortName(ev.player_out.name)}` : ''}`];
+      const parts = [
+        ev?.player_out?.name
+          ? t('вышел на {min}′ вместо {name}', { min: p.sub_in ?? '', name: shortName(ev.player_out.name) })
+          : t('вышел на {min}′', { min: p.sub_in ?? '' }),
+      ];
       const c = countFor(m, p);
       parts.push(...deedsText(c));
       return {
@@ -747,7 +754,7 @@ const STAT_LABEL: Record<string, string> = {
 
 /** Все показатели, которые умеет экран (37 у FotMob): подпись по-русски есть у каждого. */
 export const STAT_KEYS = Object.keys(STAT_LABEL);
-export const statLabel = (key: string): string => STAT_LABEL[key] ?? key;
+export const statLabel = (key: string): string => (STAT_LABEL[key] ? t(STAT_LABEL[key]) : key);
 
 /** порядок «Главного» — как в a-match-stats.html */
 const MAIN = ['possession', 'xg', 'shots_total', 'shots_on_target', 'big_chances', 'touches_opp_box', 'passes_accurate', 'corners', 'yellow_cards'];
@@ -759,13 +766,13 @@ const SHOTS = ['shots_off_target', 'shots_blocked', 'shots_woodwork', 'shots_ins
 function statGroups(by: Map<string, ApiStat>): Array<[string, string[]]> {
   const xg = XG_DETAIL.some((k) => by.has(k));
   return [
-    ['Главное', MAIN],
+    [t('Главное'), MAIN],
     ...(xg ? ([['xG', XG_GROUP]] as Array<[string, string[]]>) : []),
-    ['Удары', xg ? SHOTS : [...SHOTS, 'xg_on_target', 'big_chances_missed']],
-    ['Передачи', ['passes_total', 'passes_accurate', 'passes_own_half', 'passes_opp_half', 'long_balls_accurate', 'crosses_accurate', 'throws']],
-    ['Единоборства', ['duels_won', 'ground_duels_won', 'aerials_won', 'dribbles']],
-    ['Оборона', ['tackles', 'interceptions', 'blocks', 'clearances', 'saves']],
-    ['Дисциплина', ['fouls', 'offsides', 'red_cards']],
+    [t('Удары'), xg ? SHOTS : [...SHOTS, 'xg_on_target', 'big_chances_missed']],
+    [t('Передачи'), ['passes_total', 'passes_accurate', 'passes_own_half', 'passes_opp_half', 'long_balls_accurate', 'crosses_accurate', 'throws']],
+    [t('Единоборства'), ['duels_won', 'ground_duels_won', 'aerials_won', 'dribbles']],
+    [t('Оборона'), ['tackles', 'interceptions', 'blocks', 'clearances', 'saves']],
+    [t('Дисциплина'), ['fouls', 'offsides', 'red_cards']],
   ];
 }
 const NO_COMPARE = new Set(['yellow_cards', 'red_cards', 'fouls', 'offsides', 'throws']);
@@ -864,7 +871,7 @@ export function shotsView(m: ApiMatch, side: Side = realSide(m)): ShotsView | nu
   const words = `${n} ${plural(n, ['удар', 'удара', 'ударов'])}`;
   // xG команды — из статистики матча (как у источника); сумма по ударам расходится на округлениях
   const statXg = m.stats?.all?.find((x) => x.key === 'xg')?.[side];
-  const xg = statXg ?? own.reduce((t, s) => t + (s.xg ?? 0), 0);
+  const xg = statXg ?? own.reduce((sum, s) => sum + (s.xg ?? 0), 0);
   return {
     shots,
     summary: withXg ? `${words} · xG ${xg.toFixed(2)}` : words,
@@ -883,7 +890,7 @@ export function momentumView(m: ApiMatch) {
     homeColor: rs === 'home' ? 'var(--gold)' : 'var(--ui-opp)',
     awayColor: rs === 'away' ? 'var(--gold)' : 'var(--ui-opp)',
     ticks: m.status.finished || last >= 90 ? ['0′', `${Math.round(end / 2)}′`, `${end}′`] : ['0′', `${last}′`],
-    caption: `вверх — ${shortTeam(m.home.name)}, вниз — ${shortTeam(m.away.name)}`,
+    caption: t('вверх — {home}, вниз — {away}', { home: shortTeam(m.home.name), away: shortTeam(m.away.name) }),
   };
 }
 
@@ -919,10 +926,12 @@ function scoreLine(m: ApiMatch, sc: [number, number] | undefined, side: Side): s
   if (!sc) return undefined;
   const [h, a] = sc;
   const s = `${h}:${a}`;
-  if (h === a) return `Счёт сравнялся — ${s}`;
+  if (h === a) return t('Счёт сравнялся — {score}', { score: s });
   const lead: Side = h > a ? 'home' : 'away';
   const name = m[lead].name ?? '';
-  return lead === side && Math.abs(h - a) === 1 && Math.min(h, a) > 0 ? `${name} снова впереди — ${s}` : `${name} ведёт ${s}`;
+  return lead === side && Math.abs(h - a) === 1 && Math.min(h, a) > 0
+    ? t('{name} снова впереди — {score}', { name, score: s })
+    : t('{name} ведёт {score}', { name, score: s });
 }
 
 /**
@@ -933,7 +942,7 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
   const st = m.status.state;
   const started = st === 'live' || st === 'halftime' || st === 'finished' || st === 'abandoned';
   if (!started) return [];
-  const out: FeedItem[] = [{ key: 'start', kind: 'start', title: 'Начало матча', players: [], minute: '1′' }];
+  const out: FeedItem[] = [{ key: 'start', kind: 'start', title: t('Начало матча'), players: [], minute: '1′' }];
   const goalInfo = new Map<ApiGoal, GoalInfo>();
   for (const g of goals(m)) goalInfo.set(g.ev, g);
   let halfDone = false;
@@ -946,7 +955,7 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
     const base = { key: `${e.type}:${i}:${e.minute ?? 0}:${e.added ?? 0}`, minute };
     // после перерыва первое событие второго тайма — сначала «Начался второй тайм»
     if (halfDone && e.type !== 'period' && (e.minute ?? 0) > 45) {
-      out.push({ key: 'second', kind: 'second', title: 'Начался второй тайм', players: [], minute: '46′' });
+      out.push({ key: 'second', kind: 'second', title: t('Начался второй тайм'), players: [], minute: '46′' });
       halfDone = false;
     }
     switch (e.type) {
@@ -956,10 +965,10 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
         out.push({
           ...base,
           kind: e.own_goal ? 'own-goal' : 'goal',
-          title: e.own_goal ? 'Автогол' : e.penalty ? 'Гол с пенальти!' : 'Гол!',
+          title: e.own_goal ? t('Автогол') : e.penalty ? t('Гол с пенальти!') : t('Гол!'),
           side: g.side,
           team: team(g.side),
-          players: [...pl(e.player), ...pl(e.assist, 'пас')],
+          players: [...pl(e.player), ...pl(e.assist, t('пас'))],
           text: scoreLine(m, g.score, g.side),
           score: g.score,
         });
@@ -967,40 +976,40 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
       }
       case 'card': {
         const kind = e.card === 'red' ? 'red' : e.card === 'second_yellow' ? 'second-yellow' : 'yellow';
-        out.push({ ...base, kind, title: CARD_TITLE[kind], side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        out.push({ ...base, kind, title: t(CARD_TITLE[kind]), side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
         return;
       }
       case 'sub':
         out.push({
           ...base,
           kind: 'sub',
-          title: 'Замена',
+          title: t('Замена'),
           side: e.side ?? undefined,
           team: team(e.side),
-          players: [...pl(e.player_in, 'вышел'), ...pl(e.player_out, 'ушёл')],
-          text: e.injury ? 'из-за травмы' : undefined,
+          players: [...pl(e.player_in, t('вышел')), ...pl(e.player_out, t('ушёл'))],
+          text: e.injury ? t('из-за травмы') : undefined,
         });
         return;
       case 'var': {
-        const t = varText(e);
-        out.push({ ...base, kind: 'var', title: `VAR: ${t}`, side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        const v = varText(e);
+        out.push({ ...base, kind: 'var', title: `VAR: ${v}`, side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
         return;
       }
       case 'penalty_missed':
-        out.push({ ...base, kind: 'penalty-missed', title: 'Незабитый пенальти', side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
+        out.push({ ...base, kind: 'penalty-missed', title: t('Незабитый пенальти'), side: e.side ?? undefined, team: team(e.side), players: pl(e.player) });
         return;
       case 'period': {
         const label = (e.label ?? '').toUpperCase();
         const sc = e.score && e.score[0] != null && e.score[1] != null ? ([e.score[0], e.score[1]] as [number, number]) : undefined;
         const line = sc ? `${m.home.name} ${sc[0]}:${sc[1]} ${m.away.name}` : undefined;
         if (label === 'HT') {
-          out.push({ key: `half:${i}`, kind: 'half', title: 'Перерыв', players: [], text: line, score: sc, divider: true });
+          out.push({ key: `half:${i}`, kind: 'half', title: t('Перерыв'), players: [], text: line, score: sc, divider: true });
           halfDone = st !== 'halftime';
           return;
         }
         // конец основного времени при продолжении (доп. время / пенальти) — разделитель
         const rest = evs.slice(i + 1).some((x) => x.type !== 'period' && x.type !== 'added_time');
-        if (rest) out.push({ key: `period:${i}`, kind: 'half', title: PERIOD_RU[label] ?? 'Конец периода', players: [], text: line, score: sc, divider: true });
+        if (rest) out.push({ key: `period:${i}`, kind: 'half', title: t(PERIOD_RU[label] ?? 'Конец периода'), players: [], text: line, score: sc, divider: true });
         return;
       }
       default:
@@ -1009,14 +1018,14 @@ export function keyFeed(m: ApiMatch): FeedItem[] {
   });
   // перерыв закончился, а событий второго тайма ещё нет
   if (halfDone && (st === 'live' || st === 'finished') && (m.status.minute ?? 46) > 45) {
-    out.push({ key: 'second', kind: 'second', title: 'Начался второй тайм', players: [], minute: '46′' });
+    out.push({ key: 'second', kind: 'second', title: t('Начался второй тайм'), players: [], minute: '46′' });
   }
   if (st === 'finished') {
     const sc = scoreOf(m);
     out.push({
       key: 'end',
       kind: 'end',
-      title: 'Матч завершён',
+      title: t('Матч завершён'),
       players: [],
       text: sc ? `${m.home.name} ${sc[0]}:${sc[1]} ${m.away.name}` : undefined,
       score: sc,

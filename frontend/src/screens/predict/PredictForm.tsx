@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent, RefObject } from 'react';
 import { LoginButton } from '../../components/LoginButton';
 import { AuthFetchError, authFetch, inMiniApp, useAuth } from '../../lib/auth';
+import { t } from '../../lib/i18n';
 import { competitionOf } from '../../lib/mapMatches';
 import { livePoints, predictError, rmGoals, scorerName, shortName, teamIdOf } from '../../lib/predict';
 import type { NextMatch, PredictionView, SquadPlayer } from '../../lib/predict';
@@ -35,7 +36,7 @@ function useSave(match: NextMatch, onSaved: (p: PredictionView) => void, onClose
       });
       celebrateSave(card?.current ?? null);
       onSaved({ home: r.home, away: r.away, first_scorer_id: r.first_scorer_id, updated_at: r.updated_at, revisions: r.revisions });
-      setSt({ busy: false, msg: { tone: 'ok', text: 'Прогноз сохранён' }, needLogin: false });
+      setSt({ busy: false, msg: { tone: 'ok', text: t('Прогноз сохранён') }, needLogin: false });
     } catch (e) {
       const fe = e instanceof AuthFetchError ? e : new AuthFetchError(0, null, '');
       const { kind, message } = predictError(fe.status, fe.code, fe.message);
@@ -131,16 +132,16 @@ function ScorerPicker({
   return (
     <div className="pd-scorers-wrap">
       {!edge.start && (
-        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--prev" aria-label="Назад" onClick={() => page(-1)}>
+        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--prev" aria-label={t('Назад')} onClick={() => page(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
         </button>
       )}
       {!edge.end && (
-        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--next" aria-label="Дальше" onClick={() => page(1)}>
+        <button type="button" className="pd-scorers__arrow pd-scorers__arrow--next" aria-label={t('Дальше')} onClick={() => page(1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
         </button>
       )}
-    <div className="pd-scorers" ref={ref} role="radiogroup" aria-label="Автор первого гола Реала">
+    <div className="pd-scorers" ref={ref} role="radiogroup" aria-label={t('Автор первого гола Реала')}>
       <button
         type="button"
         role="radio"
@@ -154,7 +155,7 @@ function ScorerPicker({
             <path d="M7 17L17 7" />
           </svg>
         </span>
-        <span className="pd-scorer__name">Не выбирать</span>
+        <span className="pd-scorer__name">{t('Не выбирать')}</span>
       </button>
       {squad.map((p) => {
         const on = value === p.id;
@@ -190,22 +191,22 @@ function ClosedView({ match }: { match: NextMatch }) {
   return (
     <div className="pd-closed">
       <div className="pd-closed__head">
-        <span className="pd-closed__lock">Приём закрыт</span>
+        <span className="pd-closed__lock">{t('Приём закрыт')}</span>
         {match.status === 'live' && <Badge tone="live">LIVE</Badge>}
         {sc && (
-          <span className="pd-closed__score" aria-label={`Счёт ${sc.home}:${sc.away}`}>
+          <span className="pd-closed__score" aria-label={t('Счёт {score}', { score: `${sc.home}:${sc.away}` })}>
             {sc.home}:{sc.away}
           </span>
         )}
       </div>
       {p ? (
         <p className="pd-closed__mine">
-          Твой прогноз <b>{p.home}:{p.away}</b>
+          {t('Твой прогноз')} <b>{p.home}:{p.away}</b>
           {scorer && <> · {scorer}</>}
-          {live && <span className="pd-closed__pts"> · пока +{live.total}</span>}
+          {live && <span className="pd-closed__pts"> · {t('пока +{n}', { n: live.total })}</span>}
         </p>
       ) : (
-        <p className="pd-muted">Прогноз на этот матч ты не сделал — до встречи на следующем.</p>
+        <p className="pd-muted">{t('Прогноз на этот матч ты не сделал — до встречи на следующем.')}</p>
       )}
     </div>
   );
@@ -235,7 +236,7 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
   const squad = useMemo(() => match.rm_squad, [match.rm_squad]);
 
   return (
-    <section ref={card} className="ui-card pd-match" aria-label="Прогноз на матч">
+    <section ref={card} className="ui-card pd-match" aria-label={t('Прогноз на матч')}>
       <div className="pd-match__meta">
         <Chip label={comp.name} tone={comp.tone === 'ucl' ? 'ucl' : 'gold'} leagueId={comp.id ?? undefined} />
         <span>{formatKickoff(match.kickoff_utc)}</span>
@@ -254,42 +255,42 @@ export function PredictForm({ match, onSaved, onClosed }: PredictFormProps) {
             <ScoreStepper teamName={match.away.name} value={away} max={20} onChange={(v) => setVals([home, v, scorerRaw])} />
           </ScorePicker>
           <div className="pd-cap">
-            <span>Первый гол Реала забьёт</span>
+            <span>{t('Первый гол Реала забьёт')}</span>
             <span className="pd-cap__pts">+2</span>
           </div>
           {squad.length > 0 ? (
             <ScorerPicker squad={squad} value={scorer} disabled={realGoals === 0} onChange={(id) => setVals([home, away, id])} />
           ) : (
-            <p className="pd-muted">Состав на матч ещё не известен — автора гола можно будет выбрать позже.</p>
+            <p className="pd-muted">{t('Состав на матч ещё не известен — автора гола можно будет выбрать позже.')}</p>
           )}
-          {realGoals === 0 && squad.length > 0 && <p className="pd-hint">По твоему прогнозу Реал не забивает — бомбардира не выбрать.</p>}
+          {realGoals === 0 && squad.length > 0 && <p className="pd-hint">{t('По твоему прогнозу Реал не забивает — бомбардира не выбрать.')}</p>}
 
           {anonSite ? (
             <div className="pd-login">
-              <LoginButton hint="Войдите через Telegram, чтобы сохранить прогноз и попасть в рейтинг." />
+              <LoginButton hint={t('Войдите через Telegram, чтобы сохранить прогноз и попасть в рейтинг.')} />
             </div>
           ) : auth.status !== 'user' ? (
-            <p className="pd-muted pd-login">Входим через Telegram…</p>
+            <p className="pd-muted pd-login">{t('Входим через Telegram…')}</p>
           ) : (
             <Button className="pd-save" disabled={s.busy || !dirty} onClick={() => void s.save(home, away, scorer)}>
               {s.busy ? (
-                'Сохраняем…'
+                t('Сохраняем…')
               ) : !dirty ? (
                 <>
                   <SavedCheck draw={s.msg?.tone === 'ok'} />
-                  Прогноз сохранён
+                  {t('Прогноз сохранён')}
                 </>
               ) : p ? (
-                'Изменить прогноз'
+                t('Изменить прогноз')
               ) : (
-                'Сохранить прогноз'
+                t('Сохранить прогноз')
               )}
             </Button>
           )}
           {s.needLogin && !inMiniApp() && <LoginButton compact />}
           <div className="pd-deadline">
-            <span>Приём до начала матча</span>
-            <Countdown to={match.closes_at} onEnd={onClosed} className="pd-cd" endedLabel="Приём закрыт" />
+            <span>{t('Приём до начала матча')}</span>
+            <Countdown to={match.closes_at} onEnd={onClosed} className="pd-cd" endedLabel={t('Приём закрыт')} />
           </div>
         </>
       )}
@@ -338,11 +339,11 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
         <span className="hp-line__text">
           {p ? (
             <>
-              Твой прогноз <b>{p.home}:{p.away}</b>
-              {live ? <span className="hp-gold"> · пока +{live.total}</span> : ' · приём закрыт'}
+              {t('Твой прогноз')} <b>{p.home}:{p.away}</b>
+              {live ? <span className="hp-gold"> · {t('пока +{n}', { n: live.total })}</span> : ` · ${t('приём закрыт')}`}
             </>
           ) : (
-            'Приём закрыт — матч уже начался'
+            t('Приём закрыт — матч уже начался')
           )}
         </span>
       </div>
@@ -352,9 +353,9 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
       <div className={`hp-line${s.msg?.tone === 'ok' ? ' hp-line--new' : ''}`}>
         {crests}
         <span className="hp-line__text">
-          Твой прогноз <b>{p.home}:{p.away}</b> ·{' '}
+          {t('Твой прогноз')} <b>{p.home}:{p.away}</b> ·{' '}
           <button type="button" className="hp-link" onClick={() => setEditing(true)}>
-            изменить
+            {t('изменить')}
           </button>
         </span>
       </div>
@@ -370,14 +371,14 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
           </ScorePicker>
         </div>
         {anonSite ? (
-          <LoginButton compact hint="Войдите через Telegram, чтобы сохранить прогноз." />
+          <LoginButton compact hint={t('Войдите через Telegram, чтобы сохранить прогноз.')} />
         ) : (
           <Button
             className="hp-save"
             disabled={s.busy || !dirty || auth.status !== 'user'}
             onClick={() => void s.save(home, away, keepScorer)}
           >
-            {s.busy ? 'Сохраняем…' : auth.status !== 'user' ? 'Входим через Telegram…' : 'Сохранить'}
+            {s.busy ? t('Сохраняем…') : auth.status !== 'user' ? t('Входим через Telegram…') : t('Сохранить')}
           </Button>
         )}
       </>
@@ -385,11 +386,11 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
   }
 
   return (
-    <section ref={card} className="ui-card home-predict hp" aria-label="Твой прогноз">
+    <section ref={card} className="ui-card home-predict hp" aria-label={t('Твой прогноз')}>
       <div className="home-predict__head">
-        <span className="home-predict__title">Твой прогноз</span>
+        <span className="home-predict__title">{t('Твой прогноз')}</span>
         <a className="hp-more" {...more}>
-          Подробнее
+          {t('Подробнее')}
           <svg className="home-predict__chev" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M9 6l6 6-6 6" />
           </svg>
@@ -397,10 +398,10 @@ export function PredictInline({ match, onSaved, onClosed, more }: PredictFormPro
       </div>
       <p className="home-predict__aside hp-aside">
         {match.accepting
-          ? `приём до ${formatWeekdayShort(match.closes_at)}, ${formatTime(match.closes_at)} МСК`
+          ? t('приём до {day}, {time} {tz}', { day: formatWeekdayShort(match.closes_at), time: formatTime(match.closes_at), tz: t('МСК') })
           : match.status === 'live'
-            ? 'матч идёт'
-            : 'приём закрыт'}
+            ? t('матч идёт')
+            : t('приём закрыт')}
       </p>
       {body}
       {s.msg && (

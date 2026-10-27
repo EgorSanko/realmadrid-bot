@@ -4,6 +4,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerE
 import type Hls from 'hls.js';
 import type { ErrorData } from 'hls.js';
 import { viewport } from '@tma.js/sdk-react';
+import { t } from '../lib/i18n';
 import '../styles/player.css';
 
 type Phase = 'loading' | 'playing' | 'paused' | 'error' | 'ended';
@@ -489,7 +490,7 @@ export function Player({ src, title }: Props) {
       onKeyDown={onKey}
       tabIndex={0}
       role="region"
-      aria-label={title ? `Трансляция: ${title}` : 'Трансляция'}
+      aria-label={title ? t('Трансляция: {title}', { title }) : t('Трансляция')}
     >
       {/* сцена: всё содержимое плеера. Её, а не сам блок, поворачиваем на телефоне —
           браузер запрещает трансформировать элемент, который в полноэкранном режиме */}
@@ -517,14 +518,14 @@ export function Player({ src, title }: Props) {
       {muted && (phase === 'playing' || phase === 'loading') && (
         <button type="button" className="player__unmute" onClick={toggleMute}>
           <SoundIcon muted />
-          Включить звук
+          {t('Включить звук')}
         </button>
       )}
 
-      {busy && <div className="player__spinner" role="status" aria-label="Загрузка трансляции" />}
+      {busy && <div className="player__spinner" role="status" aria-label={t('Загрузка трансляции')} />}
 
       {phase === 'paused' && (
-        <button type="button" className="player__bigplay" onClick={togglePlay} aria-label="Смотреть">
+        <button type="button" className="player__bigplay" onClick={togglePlay} aria-label={t('Смотреть')}>
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M8 5v14l11-7z" fill="currentColor" />
           </svg>
@@ -533,15 +534,15 @@ export function Player({ src, title }: Props) {
 
       {(phase === 'error' || phase === 'ended') && (
         <div className="player__msg" role="alert">
-          <p>{phase === 'error' ? 'Не удалось загрузить трансляцию' : 'Трансляция закончилась'}</p>
+          <p>{phase === 'error' ? t('Не удалось загрузить трансляцию') : t('Трансляция закончилась')}</p>
           <button type="button" className="player__retry" onClick={retry}>
-            Повторить
+            {t('Повторить')}
           </button>
         </div>
       )}
 
       <div className="player__bar" ref={barRef}>
-        <button type="button" onClick={togglePlay} aria-label={playing || busy ? 'Пауза' : 'Смотреть'} disabled={phase === 'error' || phase === 'ended'}>
+        <button type="button" onClick={togglePlay} aria-label={playing || busy ? t('Пауза') : t('Смотреть')} disabled={phase === 'error' || phase === 'ended'}>
           {playing || busy ? (
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <rect x="6" y="5" width="4" height="14" rx="1" />
@@ -554,7 +555,7 @@ export function Player({ src, title }: Props) {
           )}
         </button>
         <div className="player__vol" ref={volRef}>
-          <button type="button" onClick={toggleMute} aria-label={muted ? 'Включить звук' : 'Выключить звук'} aria-pressed={!muted}>
+          <button type="button" onClick={toggleMute} aria-label={muted ? t('Включить звук') : t('Выключить звук')} aria-pressed={!muted}>
             <SoundIcon muted={muted || volume === 0} level={volume} />
           </button>
           {volumeOk && (
@@ -567,13 +568,13 @@ export function Player({ src, title }: Props) {
               value={muted ? 0 : volume}
               style={{ '--p': `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
               onChange={(e) => changeVolume(Number(e.target.value))}
-              aria-label="Громкость"
+              aria-label={t('Громкость')}
               aria-valuetext={`${Math.round((muted ? 0 : volume) * 100)}%`}
             />
           )}
         </div>
         <span className="player__spacer" />
-        <button type="button" onClick={toggleFullscreen} aria-label={fs !== 'off' ? 'Свернуть' : 'На весь экран'}>
+        <button type="button" onClick={toggleFullscreen} aria-label={fs !== 'off' ? t('Свернуть') : t('На весь экран')}>
           {fs !== 'off' ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />

@@ -1,4 +1,5 @@
 import { NewsItem, VideoCard } from '../../ui';
+import { t } from '../../lib/i18n';
 import { newsHref, useMediaNav, videoHref } from '../../lib/mediaNav';
 import {
   highlightSubtitle,
@@ -41,16 +42,16 @@ export function HighlightLink({ h, height = 196 }: { h: HighlightData; height?: 
     <a
       href={videoHref(h.video_id)}
       className="mx-link"
-      aria-label={`Обзор матча ${h.title}`}
+      aria-label={t('Обзор матча {title}', { title: h.title })}
       onClick={(e) =>
-        openVideo({ id: h.video_id, title: `Обзор матча: ${h.title}`, short: false, published: h.kickoff }, e)
+        openVideo({ id: h.video_id, title: t('Обзор матча: {title}', { title: h.title }), short: false, published: h.kickoff }, e)
       }
     >
       <VideoCard
         title={h.title}
         subtitle={highlightSubtitle(h)}
         thumbnailUrl={h.thumb}
-        tag="Обзор матча"
+        tag={t('Обзор матча')}
         height={height}
       />
     </a>

@@ -3,6 +3,7 @@ import { hapticFeedback } from '@tma.js/sdk-react';
 import { fetchMatch } from '../api/match';
 import type { GoalCelebration, GoalScorer } from '../lib/celebrate';
 import { burst } from '../lib/confetti';
+import { t } from '../lib/i18n';
 import { REAL_ID, goals, minuteText, shortName } from '../screens/match/view';
 import { PlayerPhoto, TeamCrest, imageUrl } from '../ui';
 import './goalBurst.css';
@@ -162,9 +163,9 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
   if (!info) return null;
   if (goal.against) {
     const rival = goal.rival;
-    const by = info.scorer?.name ?? rival?.name ?? 'Соперник';
+    const by = info.scorer?.name ?? rival?.name ?? t('Соперник');
     return (
-      <div ref={root} className="gb gb--against" role="status" aria-live="polite" aria-label={`Пропустили: ${by}${info.minute ? `, ${info.minute}` : ''}`}>
+      <div ref={root} className="gb gb--against" role="status" aria-live="polite" aria-label={t('Пропустили: {by}', { by }) + (info.minute ? `, ${info.minute}` : '')}>
         <div className="gb__dim" aria-hidden="true" />
         <div ref={card} className="gb__card" onClick={leave} aria-hidden="true">
           <span className="gb__ph">
@@ -177,7 +178,7 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
             ) : null}
           </span>
           <span className="gb__txt">
-            <span className="gb__miss">Пропустили</span>
+            <span className="gb__miss">{t('Пропустили')}</span>
             <span className="gb__who">
               <b>{by}</b>
               {info.minute && <em>{info.minute}</em>}
@@ -188,8 +189,8 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
       </div>
     );
   }
-  const who = info.scorer?.name ?? 'Реал Мадрид';
-  const label = `Гол! ${who}${info.minute ? `, ${info.minute}` : ''}`;
+  const who = info.scorer?.name ?? t('Реал Мадрид');
+  const label = t('Гол! {who}', { who }) + (info.minute ? `, ${info.minute}` : '');
   return (
     <div ref={root} className="gb" role="status" aria-live="polite" aria-label={label}>
       <div className="gb__flash" aria-hidden="true" />
@@ -206,7 +207,7 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
         </span>
         <span className="gb__txt">
           <span className="gb__goal">
-            {['Г', 'О', 'Л', '!'].map((c, i) => (
+            {[...t('ГОЛ!')].map((c, i) => (
               <span key={i} style={{ animationDelay: `${170 + i * 55}ms` }}>
                 {c}
               </span>

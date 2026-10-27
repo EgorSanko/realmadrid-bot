@@ -2,6 +2,7 @@
  * Мини-игры (/games): типы ответов /api/games/* (backend/app/games/service.py) и чистые функции экрана.
  * Без импортов SDK и React — проверяются node --test. Правила очков считает сервер; здесь — только показ.
  */
+import { isEn, pluralEn, t, tc } from './i18n';
 
 export type GameId = 'quiz' | 'penalty';
 export type QuizLevel = 'easy' | 'medium' | 'hard' | 'expert';
@@ -128,22 +129,23 @@ export interface LevelCard<L extends string> {
 }
 
 export const QUIZ_LEVELS: LevelCard<QuizLevel>[] = [
-  { id: 'easy', title: 'Лёгкий', pips: 1, text: 'Стадион, легенды, главные трофеи' },
-  { id: 'medium', title: 'Средний', pips: 2, text: 'Финалы, трансферы, тренеры' },
-  { id: 'hard', title: 'Сложный', pips: 3, text: 'Рекорды, прозвища, детали матчей' },
-  { id: 'expert', title: 'Эксперт', pips: 4, text: 'Для тех, кто помнит «Чамартин»' },
+  { id: 'easy', title: t('Лёгкий'), pips: 1, text: t('Стадион, легенды, главные трофеи') },
+  { id: 'medium', title: tc('level', 'Средний'), pips: 2, text: t('Финалы, трансферы, тренеры') },
+  { id: 'hard', title: t('Сложный'), pips: 3, text: t('Рекорды, прозвища, детали матчей') },
+  { id: 'expert', title: t('Эксперт'), pips: 4, text: t('Для тех, кто помнит «Чамартин»') },
 ];
 
 export const PENALTY_LEVELS: LevelCard<PenaltyLevel>[] = [
-  { id: 'easy', title: 'Лёгкий', pips: 1, text: 'Соперник часто мажет · очки ×1' },
-  { id: 'medium', title: 'Средний', pips: 2, text: 'Крепкий середняк · очки ×2' },
-  { id: 'hard', title: 'Сложный', pips: 3, text: 'Бьют уверенно · очки ×3' },
-  { id: 'legend', title: 'Легенда', pips: 4, text: 'Почти не промахиваются · очки ×4' },
+  { id: 'easy', title: t('Лёгкий'), pips: 1, text: t('Соперник часто мажет · очки ×1') },
+  { id: 'medium', title: tc('level', 'Средний'), pips: 2, text: t('Крепкий середняк · очки ×2') },
+  { id: 'hard', title: t('Сложный'), pips: 3, text: t('Бьют уверенно · очки ×3') },
+  { id: 'legend', title: t('Легенда'), pips: 4, text: t('Почти не промахиваются · очки ×4') },
 ];
 
 export function levelTitle(game: GameId, level: string): string {
   const list: LevelCard<string>[] = game === 'quiz' ? QUIZ_LEVELS : PENALTY_LEVELS;
-  return list.find((l) => l.id === level)?.title ?? level;
+  const title = list.find((l) => l.id === level)?.title;
+  return title != null ? t(title) : level;
 }
 
 /* ---------- викторина ---------- */
@@ -176,8 +178,8 @@ export function answerFromKey(key: string, code?: string): number | null {
 
 export function quizSummary(r: GameResult): string {
   const c = r.correct ?? 0;
-  const t = r.total ?? 0;
-  return `${c} из ${t} ${plural(t, ['верный', 'верных', 'верных'])}`;
+  const n = r.total ?? 0;
+  return t('{c} из {n} {word}', { c, n, word: plural(n, ['верный', 'верных', 'верных']) });
 }
 
 /* ---------- пенальти ---------- */
@@ -230,8 +232,8 @@ export function shotMarks(results: boolean[], regular = 5): ShotMark[] {
 }
 
 export function penaltyHeadline(r: GameResult): string {
-  if (r.won) return r.sudden ? 'Победа в серии до промаха!' : 'Победа!';
-  return r.sudden ? 'Проиграли в серии до промаха' : 'Поражение';
+  if (r.won) return r.sudden ? t('Победа в серии до промаха!') : t('Победа!');
+  return r.sudden ? t('Проиграли в серии до промаха') : t('Поражение');
 }
 
 /** Плавная кривая полёта мяча: easeOutCubic. */
@@ -302,11 +304,24 @@ export function bestFor(game: GameId, level: string, local: LocalBest, server: G
 export function shareText(game: GameId, level: string, r: GameResult): string {
   const lv = levelTitle(game, level);
   if (game === 'quiz')
-    return `Викторина «Мадридиста», уровень «${lv}»: ${r.score} ${plural(r.score, ['очко', 'очка', 'очков'])}, ${quizSummary(r)}. Сможешь больше?`;
-  return `Пенальти «Мадридиста», уровень «${lv}»: ${r.goals ?? 0}:${r.rival ?? 0}, ${r.score} ${plural(r.score, ['очко', 'очка', 'очков'])}. Попробуй переиграть!`;
+    return t('Викторина «Мадридиста», уровень «{lv}»: {score} {pts}, {summary}. Сможешь больше?', {
+      lv,
+      score: r.score,
+      pts: plural(r.score, ['очко', 'очка', 'очков']),
+      summary: quizSummary(r),
+    });
+  return t('Пенальти «Мадридиста», уровень «{lv}»: {goals}:{rival}, {score} {pts}. Попробуй переиграть!', {
+    lv,
+    goals: r.goals ?? 0,
+    rival: r.rival ?? 0,
+    score: r.score,
+    pts: plural(r.score, ['очко', 'очка', 'очков']),
+  });
 }
 
 export function plural(n: number, forms: [string, string, string]): string {
+  const en = pluralEn(n, forms);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return forms[2];
@@ -315,11 +330,12 @@ export function plural(n: number, forms: [string, string, string]): string {
   return forms[2];
 }
 
-/** Ошибка API игр → понятный текст. */
+/** Ошибка API игр → понятный текст (по-английски — свой текст вместо русского текста сервера). */
 export function gameError(status: number, serverMessage?: string): string {
-  if (status === 0) return 'Нет соединения — проверьте интернет';
-  if (status === 404) return 'Игра устарела — начните заново';
-  if (status === 429) return serverMessage || 'Слишком часто — подождите немного';
-  if (status >= 500) return 'Сервер игр недоступен — попробуйте позже';
-  return serverMessage || 'Что-то пошло не так';
+  const srv = isEn() ? undefined : serverMessage;
+  if (status === 0) return t('Нет соединения — проверьте интернет');
+  if (status === 404) return t('Игра устарела — начните заново');
+  if (status === 429) return srv || t('Слишком часто — подождите немного');
+  if (status >= 500) return t('Сервер игр недоступен — попробуйте позже');
+  return srv || t('Что-то пошло не так');
 }

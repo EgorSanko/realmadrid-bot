@@ -1,4 +1,6 @@
-// Ответы /api/news и /api/videos и чистые функции для «Медиа». Без импортов — их гоняет node --test.
+// Ответы /api/news и /api/videos и чистые функции для «Медиа». Импорт — только lib/i18n (без зависимостей): их гоняет node --test.
+
+import { isEn, t } from '../../lib/i18n';
 
 export interface NewsItemData {
   id: string;
@@ -63,15 +65,23 @@ const TOURNAMENT_RU: Record<number, string> = {
   73: 'Клубный чемпионат мира',
 };
 
-export function tournamentRu(t: { id: number | null; name: string | null } | null | undefined): string | null {
-  if (!t) return null;
-  return (t.id != null && TOURNAMENT_RU[t.id]) || t.name || null;
+/** Турнир по-русски; по-английски — название источника (оно английское), без него — перевод русского. */
+export function tournamentRu(tn: { id: number | null; name: string | null } | null | undefined): string | null {
+  if (!tn) return null;
+  if (isEn() && tn.name) return tn.name;
+  const ru = tn.id != null ? TOURNAMENT_RU[tn.id] : undefined;
+  return (ru && t(ru)) || tn.name || null;
 }
 
 const MONTHS_GEN = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
+const MONTHS_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+const monthGen = (m: number) => (isEn() ? MONTHS_EN : MONTHS_GEN)[m];
 const MSK_MS = 3 * 3600e3; // Москва — UTC+3 без перехода на летнее время
 
 function msk(iso: string): Date {
@@ -82,24 +92,24 @@ function msk(iso: string): Date {
 export function dayMonthRu(iso: string | null | undefined): string | null {
   if (!iso || Number.isNaN(Date.parse(iso))) return null;
   const d = msk(iso);
-  return `${d.getUTCDate()} ${MONTHS_GEN[d.getUTCMonth()]}`;
+  return `${d.getUTCDate()} ${monthGen(d.getUTCMonth())}`;
 }
 
 /** Время новости: «только что», «12 мин назад», «3 ч назад», «вчера, 21:40», «14 октября, 18:30» (МСК). */
 export function newsTime(iso: string | null | undefined, now: Date = new Date()): string | undefined {
   if (!iso || Number.isNaN(Date.parse(iso))) return undefined;
   const diff = (now.getTime() - Date.parse(iso)) / 1000;
-  if (diff < 60) return 'только что';
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`;
-  if (diff < 6 * 3600) return `${Math.floor(diff / 3600)} ч назад`;
+  if (diff < 60) return t('только что');
+  if (diff < 3600) return t('{n} мин назад', { n: Math.floor(diff / 60) });
+  if (diff < 6 * 3600) return t('{n} ч назад', { n: Math.floor(diff / 3600) });
   const d = msk(iso);
   const n = new Date(now.getTime() + MSK_MS);
   const hhmm = `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
   const dayKey = (x: Date) => `${x.getUTCFullYear()}-${x.getUTCMonth()}-${x.getUTCDate()}`;
-  if (dayKey(d) === dayKey(n)) return `сегодня, ${hhmm}`;
+  if (dayKey(d) === dayKey(n)) return t('сегодня, {time}', { time: hhmm });
   const y = new Date(n.getTime() - 86400e3);
-  if (dayKey(d) === dayKey(y)) return `вчера, ${hhmm}`;
-  return `${d.getUTCDate()} ${MONTHS_GEN[d.getUTCMonth()]}, ${hhmm}`;
+  if (dayKey(d) === dayKey(y)) return t('вчера, {time}', { time: hhmm });
+  return `${d.getUTCDate()} ${monthGen(d.getUTCMonth())}, ${hhmm}`;
 }
 
 /** Подпись под роликом: «Shorts · Real Madrid», «Real Madrid · YouTube». */
@@ -150,7 +160,7 @@ export interface ArticleData {
 /** Время чтения: ~180 слов в минуту, не меньше минуты. */
 export function readingTime(words: number | null | undefined): string | null {
   if (!words || words < 1) return null;
-  return `${Math.max(1, Math.round(words / 180))} мин чтения`;
+  return t('{n} мин чтения', { n: Math.max(1, Math.round(words / 180)) });
 }
 
 /** Подпись под заголовком: «Спорт-Экспресс · 3 ч назад · 2 мин чтения». */
@@ -206,7 +216,7 @@ export function findVideo(data: VideosResponse | null | undefined, id: string): 
   const v = data.items.find((x) => x.id === id);
   if (v) return { id, title: v.title, published: v.published, short: v.short, subtitle: videoSubtitle(v) };
   const h = data.highlights.find((x) => x.video_id === id);
-  if (h) return { id, title: `Обзор матча: ${h.title}`, published: h.kickoff, short: false, subtitle: highlightSubtitle(h) };
+  if (h) return { id, title: t('Обзор матча: {title}', { title: h.title }), published: h.kickoff, short: false, subtitle: highlightSubtitle(h) };
   return null;
 }
 

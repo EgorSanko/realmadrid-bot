@@ -1,4 +1,5 @@
 import { useSpaLink } from '../lib/spaLink';
+import { t } from '../lib/i18n';
 import { SECTIONS } from '../sections';
 
 const BOT_LINK = 'https://t.me/Real_Madrid_football_bot';
@@ -23,19 +24,19 @@ export function SiteFooter() {
             }}
           />
           <div>
-            <div className="sf__word">МАДРИДИСТА</div>
-            <div className="sf__sub">Real Madrid · фан-приложение</div>
+            <div className="sf__word">{t('МАДРИДИСТА')}</div>
+            <div className="sf__sub">{t('Real Madrid · фан-приложение')}</div>
           </div>
         </div>
 
-        <nav className="sf__nav" aria-label="Разделы сайта">
+        <nav className="sf__nav" aria-label={t('Разделы сайта')}>
           {SECTIONS.map((s) => (
             <a key={s.path} className="sf__link" {...link(s.path)}>
               {s.label}
             </a>
           ))}
           <a className="sf__link" {...link('/profile')}>
-            Профиль
+            {t('Профиль')}
           </a>
         </nav>
 
@@ -46,13 +47,13 @@ export function SiteFooter() {
               d="M21.4 3.6 2.9 10.7c-1.3.5-1.2 1.3-.2 1.6l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.5-1.5zM9.6 14.9l-.3 3.2-1.4-4.6 10.6-6.7z"
             />
           </svg>
-          Открыть в Telegram
+          {t('Открыть в Telegram')}
         </a>
       </div>
       <p className="sf__legal">
-        Неофициальный фан-проект, не связан с Real Madrid CF. Данные: FotMob, SofaScore, ESPN; новости: Чемпионат,
-        Спорт-Экспресс, Sports.ru. <a {...link('/privacy')}>Политика конфиденциальности</a> ·{' '}
-        <a {...link('/terms')}>Условия</a>
+        {t('Неофициальный фан-проект, не связан с Real Madrid CF. Данные: FotMob, SofaScore, ESPN; новости: Чемпионат, Спорт-Экспресс, Sports.ru.')}{' '}
+        <a {...link('/privacy')}>{t('Политика конфиденциальности')}</a> ·{' '}
+        <a {...link('/terms')}>{t('Условия')}</a>
       </p>
     </footer>
   );

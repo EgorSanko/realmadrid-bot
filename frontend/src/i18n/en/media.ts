@@ -1,5 +1,65 @@
 /** Английские строки: media. Ключ — русский текст из t()/plural(), значение — перевод (подстановки {имя} те же). */
 const en: Record<string, string> = {
+  // экран «Медиа»
+  'Новости и видео «Реала» — Мадридиста': 'Real Madrid news and videos — Madridista',
+  'Медиа': 'Media',
+  'Всё': 'All',
+  'Новости': 'News',
+  'Видео': 'Videos',
+  'Тип материалов': 'Content type',
+  'Видео клуба': 'Club videos',
+  'Пока нет новостей о «Реале»': 'No Real Madrid news yet',
+  'Лента обновляется каждые 10 минут': 'The feed updates every 10 minutes',
+  'могли устареть': 'may be outdated',
+  'Все новости': 'All news',
+  'Показать ещё': 'Show more',
+  'Видео пока нет': 'No videos yet',
+  'Лента канала обновляется каждые 15 минут': 'The channel feed updates every 15 minutes',
+  'Обзоры матчей': 'Match highlights',
+  'Коротко': 'In brief',
+  'Все видео': 'All videos',
+  'Обзор матча': 'Highlights',
+  'Обзор матча {title}': 'Highlights {title}',
+  'Обзор матча: {title}': 'Highlights: {title}',
+
+  // чтение новости
+  '{title} — Мадридиста': '{title} — Madridista',
+  'Новость — Мадридиста': 'News — Madridista',
+  'Новость: {title}': 'News: {title}',
+  'Новость': 'News',
+  'Новость не найдена': 'Story not found',
+  'Её уже нет в ленте — загляни в свежие': 'It’s no longer in the feed — check out the latest',
+  'Загружаем текст новости…': 'Loading the story…',
+  'Полный текст этой новости есть только на сайте источника.': 'The full story is only available on the source’s website.',
+  'Читать полностью на {source}': 'Read the full story on {source}',
+  'Ссылка скопирована': 'Link copied',
+  'Не удалось поделиться': 'Couldn’t share',
+  'Поделиться': 'Share',
+  'Источник:': 'Source:',
+  'со ссылкой на {origin}': 'via {origin}',
+  'Ещё новости': 'More news',
+
+  // видео
+  'Видео — Мадридиста': 'Video — Madridista',
+  'Видео: {title}': 'Video: {title}',
+  'Видео не найдено': 'Video not found',
+  'Неверная ссылка на ролик': 'Invalid video link',
+  'Видео Real Madrid': 'Real Madrid video',
+  'Ещё видео': 'More videos',
+  'Этот ролик смотрят только на YouTube': 'This video can only be watched on YouTube',
+  'Автор запретил показывать его в других приложениях и на сайтах': 'The owner doesn’t allow it to be played in other apps and websites',
+  'Смотреть на YouTube': 'Watch on YouTube',
+  'YouTube грузится слишком долго — в России он работает с перебоями.': 'YouTube is taking too long to load — it’s unreliable in Russia.',
+  'Не грузится?': 'Not loading?',
+  'Открыть на YouTube': 'Open on YouTube',
+
+  // время и подписи (mediaData)
+  'только что': 'just now',
+  '{n} мин назад': '{n} min ago',
+  '{n} ч назад': '{n}h ago',
+  'сегодня, {time}': 'today, {time}',
+  'вчера, {time}': 'yesterday, {time}',
+  '{n} мин чтения': '{n} min read',
 };
 
 export default en;

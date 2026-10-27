@@ -1,7 +1,8 @@
 /**
  * «Онлайн» → «Все комментарии (EN)»: записи текстовой трансляции Opta (через FotMob) — оригинал на английском,
- * заголовки типов — наши, по-русски. Чистые функции без рантайм-импортов — их проверяет `node --test`.
+ * заголовки типов — наши (RU / EN). Чистые функции — их проверяет `node --test`; рантайм-импорт — только lib/i18n.
  */
+import { t } from '../../lib/i18n';
 import type { ApiCommentaryItem, CommentaryType, Side } from '../../api/match';
 
 const TITLE: Partial<Record<CommentaryType, string>> = {
@@ -44,7 +45,7 @@ export function commentaryRows(items: ApiCommentaryItem[]): CommentaryRow[] {
     key: x.id,
     type: x.type,
     minute: x.minute != null && x.minute > 0 ? (x.added ? `${x.minute}+${x.added}′` : `${x.minute}′`) : undefined,
-    title: TITLE[x.type],
+    title: TITLE[x.type] ? t(TITLE[x.type] as string) : undefined,
     text: x.text,
     long: x.text.length > LONG_TEXT,
     side: x.side ?? undefined,

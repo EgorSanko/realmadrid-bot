@@ -11,6 +11,7 @@ import {
   shareText,
 } from '../../lib/games';
 import type { GameResult, QuizAnswer, QuizLevel, QuizQuestion, QuizStart } from '../../lib/games';
+import { t } from '../../lib/i18n';
 import { shareLink } from '../../lib/share';
 import { LeagueLogo, PlayerPhoto, TeamCrest } from '../../ui';
 import { ErrorNote, GamesHeader, LevelPicker, WeeklyBoard } from './common';
@@ -37,7 +38,7 @@ export default function QuizScreen() {
   const busy = useRef(false);
 
   useEffect(() => {
-    document.title = 'Викторина о «Реале» — Мадридиста';
+    document.title = t('Викторина о «Реале» — Мадридиста');
   }, []);
 
   const loadNext = useCallback(async (level: QuizLevel, session: string) => {
@@ -109,11 +110,11 @@ export default function QuizScreen() {
   if (phase.kind === 'pick') {
     return (
       <main className="gm">
-        <GamesHeader aside="викторина" />
+        <GamesHeader aside={t('викторина')} />
         <GamesTabs />
-        <section className="gm-intro" aria-label="Викторина">
-          <h2 className="gm-intro__title">Насколько хорошо ты знаешь «Реал»?</h2>
-          <p className="gm-muted">10 вопросов, 15 секунд на каждый. Серия верных ответов включает множитель ×2 и ×3.</p>
+        <section className="gm-intro" aria-label={t('Викторина')}>
+          <h2 className="gm-intro__title">{t('Насколько хорошо ты знаешь «Реал»?')}</h2>
+          <p className="gm-muted">{t('10 вопросов, 15 секунд на каждый. Серия верных ответов включает множитель ×2 и ×3.')}</p>
         </section>
         {error && <ErrorNote text={error.text} onRetry={error.retry} />}
         <LevelPicker<QuizLevel> levels={QUIZ_LEVELS} best={(l) => bestFor('quiz', l, local, me)} onPick={(l) => void start(l)} />
@@ -125,7 +126,7 @@ export default function QuizScreen() {
   if (phase.kind === 'result') {
     return (
       <main className="gm">
-        <GamesHeader aside="викторина" />
+        <GamesHeader aside={t('викторина')} />
         <GamesTabs />
         <QuizResult
           level={phase.level}
@@ -143,17 +144,17 @@ export default function QuizScreen() {
 
   return (
     <main className="gm gm--play">
-      <GamesHeader aside={`викторина · ${levelTitle('quiz', phase.level)}`} />
+      <GamesHeader aside={`${t('викторина')} · ${levelTitle('quiz', phase.level)}`} />
       <GamesTabs />
       {error && <ErrorNote text={error.text} onRetry={error.retry} />}
       {phase.q ? (
         <QuestionCard key={phase.q.index} q={phase.q} picked={phase.picked} res={phase.res} onAnswer={(c) => void answer(c)} />
       ) : (
-        !error && <div className="gm-loading" aria-live="polite">Готовим вопросы…</div>
+        !error && <div className="gm-loading" aria-live="polite">{t('Готовим вопросы…')}</div>
       )}
       <div className="gm-play__foot">
         <button type="button" className="gm-link" onClick={() => setPhase({ kind: 'pick' })}>
-          Выйти к уровням
+          {t('Выйти к уровням')}
         </button>
       </div>
     </main>
@@ -225,7 +226,7 @@ function QuestionCard({
   const score = res ? res.score : q.score;
 
   return (
-    <section className="gm-q" aria-label={`Вопрос ${q.index + 1} из ${q.total}`}>
+    <section className="gm-q" aria-label={t('Вопрос {n} из {total}', { n: q.index + 1, total: q.total })}>
       <div className="gm-q__bar">
         <div className="gm-q__progress" aria-hidden="true">
           {Array.from({ length: q.total }, (_, i) => (
@@ -234,9 +235,9 @@ function QuestionCard({
         </div>
         <div className="gm-q__meta">
           <span>
-            Вопрос <b>{q.index + 1}</b> из {q.total}
+            {t('Вопрос')} <b>{q.index + 1}</b> {t('из {n}', { n: q.total })}
           </span>
-          <span className="gm-q__score" aria-label={`Счёт ${score}`}>
+          <span className="gm-q__score" aria-label={t('Счёт {score}', { score })}>
             {score}
           </span>
         </div>
@@ -244,7 +245,7 @@ function QuestionCard({
 
       <div className="gm-q__card">
         <div className="gm-q__top">
-          <div ref={box} className={`gm-timer${res ? ' is-stopped' : ''}`} role="timer" aria-label="Осталось секунд">
+          <div ref={box} className={`gm-timer${res ? ' is-stopped' : ''}`} role="timer" aria-label={t('Осталось секунд')}>
             <svg viewBox="0 0 72 72" aria-hidden="true">
               <defs>
                 <linearGradient id="gm-ring-grad" x1="0" y1="0" x2="1" y2="1">
@@ -267,8 +268,8 @@ function QuestionCard({
               {Math.ceil(q.left_s)}
             </span>
           </div>
-          <div className={`gm-streak${streak >= 3 ? ' is-hot' : ''}`} aria-label={`Серия ${streak}, множитель ×${mult}`}>
-            <span className="gm-streak__label">Серия</span>
+          <div className={`gm-streak${streak >= 3 ? ' is-hot' : ''}`} aria-label={t('Серия {streak}, множитель ×{mult}', { streak, mult })}>
+            <span className="gm-streak__label">{t('Серия')}</span>
             <span className="gm-streak__val">{streak}</span>
             <span className="gm-streak__mult">×{mult}</span>
           </div>
@@ -287,7 +288,7 @@ function QuestionCard({
         <h2 className="gm-q__text">{q.q}</h2>
       </div>
 
-      <div className="gm-answers" role="group" aria-label="Варианты ответа">
+      <div className="gm-answers" role="group" aria-label={t('Варианты ответа')}>
         {q.a.map((text, i) => {
           let state = '';
           if (res) {
@@ -313,15 +314,15 @@ function QuestionCard({
         {res &&
           (res.correct ? (
             <span className="gm-fb gm-fb--ok">
-              Верно! <b>+{res.points}</b>
+              {t('Верно!')} <b>+{res.points}</b>
               {res.multiplier > 1 && <em> ×{res.multiplier}</em>}
             </span>
           ) : res.timeout ? (
-            <span className="gm-fb gm-fb--bad">Время вышло</span>
+            <span className="gm-fb gm-fb--bad">{t('Время вышло')}</span>
           ) : (
-            <span className="gm-fb gm-fb--bad">Мимо — серия сброшена</span>
+            <span className="gm-fb gm-fb--bad">{t('Мимо — серия сброшена')}</span>
           ))}
-        {!res && <span className="gm-hint">Клавиши 1–4 или A–D</span>}
+        {!res && <span className="gm-hint">{t('Клавиши 1–4 или A–D')}</span>}
       </div>
     </section>
   );
@@ -353,42 +354,42 @@ function QuizResult({
   const share = async () => {
     const url = inMiniApp() ? `https://t.me/${BOT_USERNAME}?startapp=quiz` : `${location.origin}/games/quiz`;
     const r = await shareLink(url, shareText('quiz', level, result));
-    setShareMsg(r === 'copied' ? 'Ссылка скопирована' : r === 'failed' ? 'Не удалось поделиться' : null);
+    setShareMsg(r === 'copied' ? t('Ссылка скопирована') : r === 'failed' ? t('Не удалось поделиться') : null);
   };
 
   return (
-    <section className="gm-result" aria-label="Итог викторины">
-      {record && <span className="gm-result__badge">Новый рекорд</span>}
-      <p className="gm-result__level">Викторина · {levelTitle('quiz', level)}</p>
+    <section className="gm-result" aria-label={t('Итог викторины')}>
+      {record && <span className="gm-result__badge">{t('Новый рекорд')}</span>}
+      <p className="gm-result__level">{t('Викторина')} · {levelTitle('quiz', level)}</p>
       <p className="gm-result__score">{result.score}</p>
-      <p className="gm-result__unit">очков</p>
+      <p className="gm-result__unit">{t('очков')}</p>
       <div className="gm-result__stats">
         <div>
           <b>
             {result.correct ?? 0}/{result.total ?? 0}
           </b>
-          <span>верных ответов</span>
+          <span>{t('верных ответов')}</span>
         </div>
         <div>
           <b>{result.best_streak ?? 0}</b>
-          <span>лучшая серия</span>
+          <span>{t('лучшая серия')}</span>
         </div>
         <div>
           <b>{best ?? result.score}</b>
-          <span>рекорд уровня</span>
+          <span>{t('рекорд уровня')}</span>
         </div>
       </div>
-      {!authed && <p className="gm-muted gm-result__note">Без входа результат сохранён только на этом устройстве.</p>}
+      {!authed && <p className="gm-muted gm-result__note">{t('Без входа результат сохранён только на этом устройстве.')}</p>}
       <div className="gm-result__actions">
         <button ref={again} type="button" className="ui-btn ui-btn--primary ui-btn--block" onClick={onAgain}>
-          Ещё раз
+          {t('Ещё раз')}
         </button>
         <div className="gm-result__row">
           <button type="button" className="ui-btn ui-btn--secondary ui-btn--block" onClick={() => void share()}>
-            Поделиться
+            {t('Поделиться')}
           </button>
           <button type="button" className="ui-btn ui-btn--outline ui-btn--block" onClick={onLevels}>
-            Другой уровень
+            {t('Другой уровень')}
           </button>
         </div>
         {shareMsg && <p className="gm-muted gm-result__note">{shareMsg}</p>}

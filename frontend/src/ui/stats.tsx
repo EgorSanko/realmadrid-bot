@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { t } from '../lib/i18n';
 import { cx, plural } from './format';
 import { PlayerPhoto } from './images';
 import { PlayerTap, type PlayerLinkProps } from './playerLink';
@@ -17,7 +18,7 @@ export interface RatingChipProps {
 export function RatingChip({ value, size = 'md', className }: RatingChipProps) {
   const tone = value >= 8 ? 'top' : value >= 7 ? 'mid' : 'low';
   return (
-    <span className={cx('ui-rating', `ui-rating--${tone}`, size === 'sm' && 'ui-rating--sm', className)} aria-label={`оценка ${value.toFixed(1)}`}>
+    <span className={cx('ui-rating', `ui-rating--${tone}`, size === 'sm' && 'ui-rating--sm', className)} aria-label={t('оценка {n}', { n: value.toFixed(1) })}>
       {value.toFixed(1)}
     </span>
   );
@@ -53,7 +54,7 @@ const PITCH_W = 358;
 const PITCH_H = 470;
 
 /** Поле с расстановкой (a-match-lineup): фото, оценка, номер, фамилия. */
-export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый состав на поле', className, playerHref, onPlayerClick }: PitchProps) {
+export function Pitch({ players, mirrorX = true, ariaLabel = t('Стартовый состав на поле'), className, playerHref, onPlayerClick }: PitchProps) {
   // выход на поле: линиями от вратаря к нападающим (по y), внутри линии — от края к краю
   const lines = Array.from(new Set(players.map((p) => Math.round(p.y * 20)))).sort((a, b) => a - b);
   return (
@@ -81,7 +82,7 @@ export function Pitch({ players, mirrorX = true, ariaLabel = 'Стартовый
                 <PlayerPhoto id={p.id} name={p.name} size={40} />
                 {p.rating != null && <RatingChip value={p.rating} size="sm" className="ui-pl__rating" />}
                 {p.number != null && (
-                  <span className="ui-pl__num" aria-label={`номер ${p.number}`}>
+                  <span className="ui-pl__num" aria-label={t('номер {n}', { n: p.number })}>
                     {p.number}
                   </span>
                 )}
@@ -180,7 +181,7 @@ export function MomentumChart({
   homeColor = 'var(--ui-opp)',
   awayColor = 'var(--gold)',
   ticks = ['0′', '45′', '90′'],
-  ariaLabel = 'Давление по ходу матча',
+  ariaLabel = t('Давление по ходу матча'),
   className,
 }: MomentumChartProps) {
   const max = Math.max(1, ...data.map((d) => Math.abs(d.value)));
@@ -252,7 +253,7 @@ export function shotSummary(shots: Shot[]): string {
 }
 
 /** Карта ударов по половине поля; размер точки — xG, гол залит золотом. */
-export function ShotMap({ shots, ariaLabel = 'Карта ударов', legend = true, className }: ShotMapProps) {
+export function ShotMap({ shots, ariaLabel = t('Карта ударов'), legend = true, className }: ShotMapProps) {
   // голы рисуем последними, чтобы были сверху
   const order = [...shots].sort((a, b) => Number(a.outcome === 'goal') - Number(b.outcome === 'goal'));
   // в кадре удары падают на карту по очереди, голы — последними и с отскоком
@@ -283,13 +284,13 @@ export function ShotMap({ shots, ariaLabel = 'Карта ударов', legend =
         <div className="ui-shots__legend">
           <span className="ui-shots__key">
             <span className="ui-ev ui-ev--goal" aria-hidden="true" />
-            гол
+            {t('гол')}
           </span>
           <span className="ui-shots__key">
             <span className="ui-shots__ring" aria-hidden="true" />
-            мимо / отбит
+            {t('мимо / отбит')}
           </span>
-          <span>размер — xG</span>
+          <span>{t('размер — xG')}</span>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { withLang } from './i18n';
+import { t, withLang } from './i18n';
 import { useRefreshBump } from './refresh';
 
 /**
@@ -77,6 +77,6 @@ export function useApiResource<T>(url: string): Resource<T> {
 
 /** Текст ошибки для ErrorState. */
 export function errorText(e: Error | null): string {
-  if (e instanceof ApiError && e.noData) return 'Данные ещё собираются — загляни через пару минут';
-  return 'Проверь соединение и попробуй ещё раз';
+  if (e instanceof ApiError && e.noData) return t('Данные ещё собираются — загляни через пару минут');
+  return t('Проверь соединение и попробуй ещё раз');
 }

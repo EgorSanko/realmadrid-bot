@@ -1,4 +1,5 @@
 import { acceptSession, authFetch, type AuthResponse, type AuthUser } from './auth';
+import { t } from './i18n';
 import { showToast } from './toast';
 
 /**
@@ -44,7 +45,7 @@ export async function checkCode(signal?: AbortSignal): Promise<CodeCheck> {
   if (r.status === 'ok') {
     const st = acceptSession(r);
     // тост — здесь, а не в компоненте: после входа форма входа сразу исчезает (размонтируется)
-    showToast(st.user ? `Вы вошли как ${st.user.name}` : 'Вы вошли');
+    showToast(st.user ? t('Вы вошли как {name}', { name: st.user.name }) : t('Вы вошли'));
     return { state: 'ok', user: st.user };
   }
   return { state: 'expired' };

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Button, Card, EmptyState, ErrorState, SectionHeader, Skeleton, Tabs } from '../../ui';
 import { errorText, useApiResource, type Resource } from '../../lib/apiResource';
+import { t } from '../../lib/i18n';
 import { useDesktop } from '../../lib/shell';
 import { NewsCards, NewsRows, VideoGrid, splitByImage } from './DeskMedia';
 import { HighlightLink, NewsLink, VideoTile, pickHero } from './MediaParts';
@@ -10,20 +11,20 @@ import './media.css';
 
 type Tab = 'all' | 'news' | 'video';
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'all', label: 'Всё' },
-  { id: 'news', label: 'Новости' },
-  { id: 'video', label: 'Видео' },
+  { id: 'all', label: t('Всё') },
+  { id: 'news', label: t('Новости') },
+  { id: 'video', label: t('Видео') },
 ];
 
 /** Этап 9: «Медиа» по design/screens/a-media.html. Данные — /api/news и /api/videos (снимки сборщика). */
 export default function MediaScreen() {
   useEffect(() => {
-    document.title = 'Новости и видео «Реала» — Мадридиста';
+    document.title = t('Новости и видео «Реала» — Мадридиста');
   }, []);
   const [params, setParams] = useSearchParams();
-  const tab = (TABS.find((t) => t.id === params.get('tab'))?.id ?? 'all') as Tab;
-  const setTab = (t: Tab) => {
-    setParams(t === 'all' ? {} : { tab: t }, { replace: true });
+  const tab = (TABS.find((x) => x.id === params.get('tab'))?.id ?? 'all') as Tab;
+  const setTab = (next: Tab) => {
+    setParams(next === 'all' ? {} : { tab: next }, { replace: true });
     window.scrollTo(0, 0);
   };
   const news = useApiResource<NewsResponse>('/api/news?limit=50');
@@ -34,9 +35,9 @@ export default function MediaScreen() {
     return (
       <main className="mx mx--desk">
         <header className="topbar">
-          <h1 className="topbar__title">Медиа</h1>
+          <h1 className="topbar__title">{t('Медиа')}</h1>
         </header>
-        <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Тип материалов" className="mx-desk-tabs" />
+        <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel={t('Тип материалов')} className="mx-desk-tabs" />
         {tab !== 'news' && <DeskVideos videos={videos} full={tab === 'video'} onAll={() => setTab('video')} />}
         {tab !== 'video' && <DeskNews news={news} full={tab === 'news'} onAll={() => setTab('news')} />}
       </main>
@@ -46,9 +47,9 @@ export default function MediaScreen() {
   return (
     <main className="mx">
       <header className="topbar">
-        <h1 className="topbar__title">Медиа</h1>
+        <h1 className="topbar__title">{t('Медиа')}</h1>
       </header>
-      <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel="Тип материалов" />
+      <Tabs items={TABS} value={tab} onChange={setTab} ariaLabel={t('Тип материалов')} />
       {tab === 'all' && <AllTab news={news} videos={videos} onTab={setTab} />}
       {tab === 'news' && <NewsBlock news={news} limit={null} />}
       {tab === 'video' && <VideosTab videos={videos} />}
@@ -90,16 +91,16 @@ function VideoRail({ videos, onAll }: { videos: Resource<VideosResponse>; onAll:
   const items = videos.data?.items ?? [];
   if (!videos.loading && !videos.data) {
     return (
-      <Card ariaLabel="Видео клуба">
-        <SectionHeader title="Видео клуба" />
+      <Card ariaLabel={t('Видео клуба')}>
+        <SectionHeader title={t('Видео клуба')} />
         <ErrorState plain text={errorText(videos.error)} onRetry={videos.reload} />
       </Card>
     );
   }
   if (videos.data && !items.length) return null;
   return (
-    <section aria-label="Видео клуба" className="mx-videos">
-      <SectionHeader title="Видео клуба" page onAction={items.length ? onAll : undefined} />
+    <section aria-label={t('Видео клуба')} className="mx-videos">
+      <SectionHeader title={t('Видео клуба')} page onAction={items.length ? onAll : undefined} />
       <div className="mx-rail" role="list">
         {videos.loading && !videos.data
           ? [0, 1].map((i) => (
@@ -124,8 +125,8 @@ function NewsBlock({ news, limit, onAll }: { news: Resource<NewsResponse>; limit
   const [shown, setShown] = useState(PAGE);
   if (news.loading && !news.data) {
     return (
-      <Card ariaLabel="Новости">
-        <SectionHeader title="Новости" />
+      <Card ariaLabel={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
         <Skeleton height={170} radius={16} style={{ marginTop: 12 }} />
         <Skeleton shape="news" rows={limit ?? 4} style={{ marginTop: 6 }} />
       </Card>
@@ -133,8 +134,8 @@ function NewsBlock({ news, limit, onAll }: { news: Resource<NewsResponse>; limit
   }
   if (!news.data) {
     return (
-      <Card ariaLabel="Новости">
-        <SectionHeader title="Новости" />
+      <Card ariaLabel={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
         <ErrorState plain text={errorText(news.error)} onRetry={news.reload} />
       </Card>
     );
@@ -142,17 +143,17 @@ function NewsBlock({ news, limit, onAll }: { news: Resource<NewsResponse>; limit
   const all = news.data.items;
   if (!all.length) {
     return (
-      <Card ariaLabel="Новости">
-        <SectionHeader title="Новости" />
-        <EmptyState plain title="Пока нет новостей о «Реале»" text="Лента обновляется каждые 10 минут" />
+      <Card ariaLabel={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
+        <EmptyState plain title={t('Пока нет новостей о «Реале»')} text={t('Лента обновляется каждые 10 минут')} />
       </Card>
     );
   }
   const { hero, rest } = pickHero(all);
   const list = rest.slice(0, (limit ?? shown) - 1);
   return (
-    <Card ariaLabel="Новости">
-      <SectionHeader title="Новости" aside={news.data.stale ? 'могли устареть' : undefined} />
+    <Card ariaLabel={t('Новости')}>
+      <SectionHeader title={t('Новости')} aside={news.data.stale ? t('могли устареть') : undefined} />
       {hero && <NewsLink item={hero} variant="hero" />}
       <div className="mx-news-list">
         {list.map((n) => (
@@ -161,12 +162,12 @@ function NewsBlock({ news, limit, onAll }: { news: Resource<NewsResponse>; limit
       </div>
       {limit != null && all.length > limit && onAll && (
         <Button variant="secondary" block onClick={onAll} className="mx-more">
-          Все новости
+          {t('Все новости')}
         </Button>
       )}
       {limit == null && rest.length > list.length && (
         <Button variant="secondary" block onClick={() => setShown((s) => s + PAGE)} className="mx-more">
-          Показать ещё
+          {t('Показать ещё')}
         </Button>
       )}
     </Card>
@@ -195,23 +196,23 @@ function VideosTab({ videos }: { videos: Resource<VideosResponse> }) {
   if (!highlights.length && !items.length) {
     return (
       <Card>
-        <EmptyState plain title="Видео пока нет" text="Лента канала обновляется каждые 15 минут" />
+        <EmptyState plain title={t('Видео пока нет')} text={t('Лента канала обновляется каждые 15 минут')} />
       </Card>
     );
   }
   return (
     <>
       {highlights.length > 0 && (
-        <section aria-label="Обзоры матчей">
-          <SectionHeader title="Обзоры матчей" page />
+        <section aria-label={t('Обзоры матчей')}>
+          <SectionHeader title={t('Обзоры матчей')} page />
           {highlights.map((h) => (
             <HighlightLink key={h.match_id} h={h} height={180} />
           ))}
         </section>
       )}
       {items.length > 0 && (
-        <section aria-label="Видео клуба" className="mx-videos">
-          <SectionHeader title="Видео клуба" page aside={`${items.length}`} />
+        <section aria-label={t('Видео клуба')} className="mx-videos">
+          <SectionHeader title={t('Видео клуба')} page aside={`${items.length}`} />
           <div className="mx-grid" role="list">
             {items.map((v) => (
               <div key={v.id} role="listitem">
@@ -233,8 +234,8 @@ function DeskNews({ news, full, onAll }: { news: Resource<NewsResponse>; full: b
   const [shown, setShown] = useState(DESK_PAGE);
   if (news.loading && !news.data) {
     return (
-      <section className="dk-full mx-desk-sec" aria-label="Новости">
-        <SectionHeader title="Новости" />
+      <section className="dk-full mx-desk-sec" aria-label={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
         <div className="dk-news">
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} height={300} radius={18} />
@@ -245,8 +246,8 @@ function DeskNews({ news, full, onAll }: { news: Resource<NewsResponse>; full: b
   }
   if (!news.data) {
     return (
-      <Card ariaLabel="Новости">
-        <SectionHeader title="Новости" />
+      <Card ariaLabel={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
         <ErrorState plain text={errorText(news.error)} onRetry={news.reload} />
       </Card>
     );
@@ -254,19 +255,19 @@ function DeskNews({ news, full, onAll }: { news: Resource<NewsResponse>; full: b
   const { cards, rows } = splitByImage(news.data.items);
   if (!cards.length && !rows.length) {
     return (
-      <Card ariaLabel="Новости">
-        <SectionHeader title="Новости" />
-        <EmptyState plain title="Пока нет новостей о «Реале»" text="Лента обновляется каждые 10 минут" />
+      <Card ariaLabel={t('Новости')}>
+        <SectionHeader title={t('Новости')} />
+        <EmptyState plain title={t('Пока нет новостей о «Реале»')} text={t('Лента обновляется каждые 10 минут')} />
       </Card>
     );
   }
   const limit = full ? shown : 9;
   return (
-    <section className="dk-full mx-desk-sec" aria-label="Новости">
+    <section className="dk-full mx-desk-sec" aria-label={t('Новости')}>
       <SectionHeader
-        title="Новости"
-        aside={news.data.stale ? 'могли устареть' : undefined}
-        actionLabel="Все новости"
+        title={t('Новости')}
+        aside={news.data.stale ? t('могли устареть') : undefined}
+        actionLabel={t('Все новости')}
         onAction={full ? undefined : onAll}
       />
       <div className={full && rows.length ? 'dk-split mx-desk-news' : 'mx-desk-news'}>
@@ -274,13 +275,13 @@ function DeskNews({ news, full, onAll }: { news: Resource<NewsResponse>; full: b
           <NewsCards items={cards.slice(0, limit)} className={full && rows.length ? 'dk-news--2' : undefined} />
           {full && cards.length > limit && (
             <Button variant="secondary" onClick={() => setShown((x) => x + DESK_PAGE)} className="mx-more mx-desk-more">
-              Показать ещё
+              {t('Показать ещё')}
             </Button>
           )}
         </div>
         {full && rows.length > 0 && (
-          <Card ariaLabel="Коротко" className="dk-sticky mx-desk-brief">
-            <SectionHeader title="Коротко" />
+          <Card ariaLabel={t('Коротко')} className="dk-sticky mx-desk-brief">
+            <SectionHeader title={t('Коротко')} />
             <NewsRows items={rows} />
           </Card>
         )}
@@ -292,8 +293,8 @@ function DeskNews({ news, full, onAll }: { news: Resource<NewsResponse>; full: b
 function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>; full: boolean; onAll: () => void }) {
   if (videos.loading && !videos.data) {
     return (
-      <section className="dk-full mx-desk-sec" aria-label="Видео">
-        <SectionHeader title="Видео" />
+      <section className="dk-full mx-desk-sec" aria-label={t('Видео')}>
+        <SectionHeader title={t('Видео')} />
         <div className="dk-videos">
           {[0, 1, 2, 3].map((i) => (
             <Skeleton key={i} height={150} radius={14} />
@@ -304,8 +305,8 @@ function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>;
   }
   if (!videos.data) {
     return (
-      <Card ariaLabel="Видео клуба">
-        <SectionHeader title="Видео клуба" />
+      <Card ariaLabel={t('Видео клуба')}>
+        <SectionHeader title={t('Видео клуба')} />
         <ErrorState plain text={errorText(videos.error)} onRetry={videos.reload} />
       </Card>
     );
@@ -314,7 +315,7 @@ function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>;
   if (!highlights.length && !items.length) {
     return full ? (
       <Card>
-        <EmptyState plain title="Видео пока нет" text="Лента канала обновляется каждые 15 минут" />
+        <EmptyState plain title={t('Видео пока нет')} text={t('Лента канала обновляется каждые 15 минут')} />
       </Card>
     ) : null;
   }
@@ -325,8 +326,8 @@ function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>;
     const hl = highlights[0];
     const tiles = [...clips, ...shorts].slice(0, hl ? 4 : 8);
     return (
-      <section className="dk-full mx-desk-sec" aria-label="Видео">
-        <SectionHeader title="Видео" actionLabel="Все видео" onAction={onAll} />
+      <section className="dk-full mx-desk-sec" aria-label={t('Видео')}>
+        <SectionHeader title={t('Видео')} actionLabel={t('Все видео')} onAction={onAll} />
         <div className={hl ? 'mx-desk-vtop' : undefined}>
           {hl && <HighlightLink h={hl} />}
           <VideoGrid items={tiles} className={hl ? 'dk-videos--2' : undefined} />
@@ -337,8 +338,8 @@ function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>;
   return (
     <>
       {highlights.length > 0 && (
-        <section className="dk-full mx-desk-sec" aria-label="Обзоры матчей">
-          <SectionHeader title="Обзоры матчей" aside={`${highlights.length}`} />
+        <section className="dk-full mx-desk-sec" aria-label={t('Обзоры матчей')}>
+          <SectionHeader title={t('Обзоры матчей')} aside={`${highlights.length}`} />
           <div className="mx-desk-hl">
             {highlights.map((h) => (
               <HighlightLink key={h.match_id} h={h} />
@@ -347,8 +348,8 @@ function DeskVideos({ videos, full, onAll }: { videos: Resource<VideosResponse>;
         </section>
       )}
       {clips.length > 0 && (
-        <section className="dk-full mx-desk-sec" aria-label="Видео клуба">
-          <SectionHeader title="Видео клуба" aside={`${clips.length}`} />
+        <section className="dk-full mx-desk-sec" aria-label={t('Видео клуба')}>
+          <SectionHeader title={t('Видео клуба')} aside={`${clips.length}`} />
           <VideoGrid items={clips} />
         </section>
       )}

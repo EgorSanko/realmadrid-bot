@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { retrieveRawInitData } from '@tma.js/sdk-react';
-import { withLang } from './i18n';
+import { t, withLang } from './i18n';
 
 /**
  * Вход через Telegram (backend/app/auth_api.py).
@@ -121,7 +121,7 @@ export async function authFetch<T>(
     });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
-    throw new AuthFetchError(0, null, 'Нет соединения');
+    throw new AuthFetchError(0, null, t('Нет соединения'));
   }
   let body: unknown = null;
   try {
@@ -131,7 +131,7 @@ export async function authFetch<T>(
   }
   if (!r.ok) {
     const b = (body ?? {}) as { error?: unknown; message?: unknown; detail?: unknown };
-    const msg = typeof b.message === 'string' ? b.message : typeof b.detail === 'string' ? b.detail : `Ошибка сервера (${r.status})`;
+    const msg = typeof b.message === 'string' ? b.message : typeof b.detail === 'string' ? b.detail : t('Ошибка сервера ({status})', { status: r.status });
     throw new AuthFetchError(r.status, typeof b.error === 'string' ? b.error : null, msg);
   }
   return body as T;

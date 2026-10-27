@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BOT_USERNAME } from '../lib/auth';
+import { isEn, t } from '../lib/i18n';
 import { countdown, spacedCode } from '../lib/codeFormat';
 import { checkCode, POLL_MS, requestCode, type LoginCode } from '../lib/codeLogin';
 import type { QrCode } from '../lib/qr';
@@ -46,7 +47,7 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
       setPhase('active');
     } catch (e) {
       if (!alive.current) return;
-      setError((e as Error).message || 'Не удалось получить код');
+      setError((!isEn() && (e as Error).message) || t('Не удалось получить код'));
       setPhase('error');
     }
   }, []);
@@ -137,7 +138,7 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
     <div className="code-login" data-phase={phase}>
       {phase === 'loading' && (
         <p className="tg-login__note" role="status">
-          Получаем код входа…
+          {t('Получаем код входа…')}
         </p>
       )}
 
@@ -145,7 +146,7 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
         <div className="tg-login__fail" role="alert">
           <p className="tg-login__err">{error}</p>
           <button type="button" className="tg-login__retry" onClick={() => void issue()}>
-            Попробовать ещё раз
+            {t('Попробовать ещё раз')}
           </button>
         </div>
       )}
@@ -154,27 +155,27 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
         <>
           <a className="tg-login__btn code-login__open" href={code.deepLink} target="_blank" rel="noopener noreferrer">
             {TG_ICON}
-            Открыть Telegram
+            {t('Открыть Telegram')}
           </a>
-          <p className="code-login__how">Откроется бот — нажмите в нём «Старт», и вход завершится здесь.</p>
+          <p className="code-login__how">{t('Откроется бот — нажмите в нём «Старт», и вход завершится здесь.')}</p>
 
           <div className="code-login__code">
-            <span className="code-login__digits" aria-label={`Код входа ${code.code.split('').join(' ')}`}>
+            <span className="code-login__digits" aria-label={t('Код входа {code}', { code: code.code.split('').join(' ') })}>
               {spacedCode(code.code)}
             </span>
             <button type="button" className="code-login__copy" onClick={() => void copy()}>
-              {copied ? 'Скопировано' : 'Скопировать'}
+              {copied ? t('Скопировано') : t('Скопировать')}
             </button>
           </div>
           <p className="code-login__how">
-            или отправьте код боту <b>@{code.bot || BOT_USERNAME}</b>
+            {t('или отправьте код боту')} <b>@{code.bot || BOT_USERNAME}</b>
           </p>
 
           {desktopPointer() && <QrBlock link={code.deepLink} />}
 
           <p className="code-login__status" role="status">
             <span className="code-login__spin" aria-hidden="true" />
-            Ждём подтверждения в Telegram… <span className="code-login__left">{countdown(left)}</span>
+            {t('Ждём подтверждения в Telegram…')} <span className="code-login__left">{countdown(left)}</span>
           </p>
         </>
       )}
@@ -182,23 +183,23 @@ export function CodeLogin({ onAlt }: { onAlt?: () => void }) {
       {phase === 'expired' && (
         <div className="code-login__expired">
           <p className="tg-login__note" role="status">
-            Код истёк — получите новый.
+            {t('Код истёк — получите новый.')}
           </p>
           <button type="button" className="tg-login__btn" onClick={() => void issue()}>
-            Получить новый код
+            {t('Получить новый код')}
           </button>
         </div>
       )}
 
       {phase === 'done' && (
         <p className="tg-login__note" role="status">
-          Готово, вы вошли.
+          {t('Готово, вы вошли.')}
         </p>
       )}
 
       {onAlt && phase !== 'done' && (
         <button type="button" className="tg-login__alt" onClick={onAlt}>
-          Другой способ входа
+          {t('Другой способ входа')}
         </button>
       )}
     </div>
@@ -224,14 +225,14 @@ function QrBlock({ link }: { link: string }) {
     <div className="code-login__qr">
       <div className="code-login__qrimg">
         {qr && (
-          <svg viewBox={`0 0 ${side} ${side}`} width="132" height="132" shapeRendering="crispEdges" role="img" aria-label="QR-код для входа с телефона">
+          <svg viewBox={`0 0 ${side} ${side}`} width="132" height="132" shapeRendering="crispEdges" role="img" aria-label={t('QR-код для входа с телефона')}>
             <rect width={side} height={side} fill="#fff" />
             <path d={qr.path} fill="#000" />
           </svg>
         )}
       </div>
       <p className="code-login__qrtext">
-        Telegram на телефоне? Наведите камеру на код — откроется бот, нажмите «Старт».
+        {t('Telegram на телефоне? Наведите камеру на код — откроется бот, нажмите «Старт».')}
       </p>
     </div>
   );

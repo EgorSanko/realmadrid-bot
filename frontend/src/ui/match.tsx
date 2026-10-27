@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { t } from '../lib/i18n';
 import { Badge, Chip } from './base';
 import {
   cx,
@@ -112,7 +113,7 @@ export function countdownUnits(left: number): Array<[number, [string, string, st
  * За 10 минут до старта — класс ui-cd--soon (карточка мягко пульсирует золотом),
  * в момент старта (liveOnEnd) — «LIVE · Матч начинается» с переходом.
  */
-export function Countdown({ to, endedLabel = 'Матч начинается', liveOnEnd, onEnd, className }: CountdownProps) {
+export function Countdown({ to, endedLabel = t('Матч начинается'), liveOnEnd, onEnd, className }: CountdownProps) {
   const target = toMs(to);
   const now = useCountdownClock(target);
   const left = Math.max(0, target - now);
@@ -147,7 +148,7 @@ export function Countdown({ to, endedLabel = 'Матч начинается', li
     <div
       className={cx('ui-cd', left <= SOON_MS && 'ui-cd--soon', className)}
       role="timer"
-      aria-label={`До начала: ${units.map(([n, w]) => `${n} ${w}`).join(' ')}`}
+      aria-label={t('До начала: {left}', { left: units.map(([n, w]) => `${n} ${w}`).join(' ') })}
     >
       {units.map(([n, w], i) => (
         <Fragment key={i}>
@@ -233,7 +234,7 @@ export function MatchCard(props: MatchCardProps) {
             </div>
           )}
         </div>
-        <span className="ui-mc-past__act">{props.actionLabel ?? 'Обзор'}</span>
+        <span className="ui-mc-past__act">{props.actionLabel ?? t('Обзор')}</span>
       </>
     );
     const cls = cx('ui-mc-past', className);
@@ -242,7 +243,7 @@ export function MatchCard(props: MatchCardProps) {
         {body}
       </a>
     ) : (
-      <section className={cls} onClick={onClick} style={style} aria-label="Прошлый матч">
+      <section className={cls} onClick={onClick} style={style} aria-label={t('Прошлый матч')}>
         {body}
       </section>
     );
@@ -250,7 +251,7 @@ export function MatchCard(props: MatchCardProps) {
 
   if (status === 'live') {
     return (
-      <section className={cx('ui-mc', 'ui-mc--live', className)} style={style} aria-label="Счёт">
+      <section className={cx('ui-mc', 'ui-mc--live', className)} style={style} aria-label={t('Счёт')}>
         <div className="ui-mc__top ui-mc__top--sm">
           <Chip label={competition.name} />
           <span>{props.period}</span>
@@ -277,7 +278,7 @@ export function MatchCard(props: MatchCardProps) {
   }
 
   return (
-    <section className={cx('ui-mc', className)} style={style} aria-label="Ближайший матч">
+    <section className={cx('ui-mc', className)} style={style} aria-label={t('Ближайший матч')}>
       <div className="ui-mc__top">
         <Chip label={competition.name} size="lg" />
         <span>{formatKickoff(kickoff)}</span>
@@ -327,11 +328,11 @@ const scorerText = (list: ScorerLine[]) => list.map((s) => `${s.name} ${s.minute
 export function ScoreHeader({ home, away, status, score, kickoff, minute, statusText, scorers, className }: ScoreHeaderProps) {
   let sub: ReactNode = statusText;
   if (sub == null) {
-    if (status === 'finished') sub = `Матч завершён${kickoff != null ? ` · ${formatDayShort(kickoff)}` : ''}`;
-    else if (status === 'upcoming' && kickoff != null) sub = `${formatWeekdayShort(kickoff)} · ${formatTime(kickoff)} МСК`;
+    if (status === 'finished') sub = `${t('Матч завершён')}${kickoff != null ? ` · ${formatDayShort(kickoff)}` : ''}`;
+    else if (status === 'upcoming' && kickoff != null) sub = `${formatWeekdayShort(kickoff)} · ${formatTime(kickoff)} ${t('МСК')}`;
   }
   return (
-    <section className={cx('ui-score-head', className)} aria-label="Счёт">
+    <section className={cx('ui-score-head', className)} aria-label={t('Счёт')}>
       <div className="ui-score-head__grid">
         <div className="ui-mc__team">
           <Crest team={home} size={56} />
@@ -376,9 +377,9 @@ export function OutcomeBadge({ result, size = 26 }: { result: Outcome; size?: nu
     <span
       className={cx('ui-form__item', `ui-form__item--${result}`)}
       style={{ width: size, height: size }}
-      title={OUTCOME_WORD[result]}
+      title={t(OUTCOME_WORD[result])}
     >
-      {OUTCOME_LETTER[result]}
+      {t(OUTCOME_LETTER[result])}
     </span>
   );
 }
@@ -397,10 +398,10 @@ export function FormStrip({ results, opponents, size = 26, className }: FormStri
   const withCrests = opponents?.some((o) => o?.id != null);
   const words = results.map((r, i) => {
     const o = opponents?.[i];
-    return o?.name ? `${OUTCOME_WORD[r]} (${o.name})` : OUTCOME_WORD[r];
+    return o?.name ? `${t(OUTCOME_WORD[r])} (${o.name})` : t(OUTCOME_WORD[r]);
   });
   return (
-    <div className={cx('ui-form', className)} role="img" aria-label={`Форма: ${words.join(', ')}`}>
+    <div className={cx('ui-form', className)} role="img" aria-label={t('Форма: {list}', { list: words.join(', ') })}>
       {results.map((r, i) => {
         if (!withCrests) return <OutcomeBadge key={i} result={r} size={size} />;
         const o = opponents?.[i];
@@ -598,10 +599,10 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, re
         <thead>
           <tr>
             <th className="ui-table__pos">#</th>
-            <th className="ui-table__team">Команда</th>
-            <th>И</th>
-            <th>Мячи</th>
-            <th className="ui-table__pts">О</th>
+            <th className="ui-table__team">{t('Команда')}</th>
+            <th>{t('И')}</th>
+            <th>{t('Мячи')}</th>
+            <th className="ui-table__pts">{t('О')}</th>
           </tr>
         </thead>
         <tbody ref={body}>
@@ -616,7 +617,7 @@ export function StandingsTable({ rows, highlightTeamId, zones = [], footnote, re
                   {mv && seen && (
                     <span
                       className={`ui-table__mv ui-table__mv--${mv}`}
-                      aria-label={mv === 'up' ? `поднялись с ${moved!.from}-го места` : `опустились с ${moved!.from}-го места`}
+                      aria-label={mv === 'up' ? t('поднялись с {n}-го места', { n: moved!.from }) : t('опустились с {n}-го места', { n: moved!.from })}
                     >
                       {mv === 'up' ? '↑' : '↓'}
                     </span>
@@ -672,7 +673,7 @@ const EVENT_LABEL: Record<MatchEventType, string> = {
 
 /** Значок события. Чистый CSS/SVG. */
 export function EventIcon({ type, className }: { type: MatchEventType; className?: string }) {
-  const common = { role: 'img', 'aria-label': EVENT_LABEL[type], className: cx('ui-ev', `ui-ev--${type}`, className) } as const;
+  const common = { role: 'img', 'aria-label': t(EVENT_LABEL[type]), className: cx('ui-ev', `ui-ev--${type}`, className) } as const;
   if (type === 'var')
     return (
       <svg {...common} viewBox="0 0 16 14" width="16" height="14">

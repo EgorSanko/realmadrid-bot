@@ -1,4 +1,6 @@
-// Ответ /api/team и чистые функции для экрана «Команда». Без импортов — их гоняет node --test.
+// Ответ /api/team и чистые функции для экрана «Команда». Импорт — только lib/i18n (без зависимостей): их гоняет node --test.
+
+import { isEn, pluralEn, t } from '../../lib/i18n';
 
 export interface Country {
   code: string | null;
@@ -72,14 +74,16 @@ export interface TeamResponse {
 }
 
 export const LINES: { key: LineKey; title: string }[] = [
-  { key: 'goalkeepers', title: 'Вратари' },
-  { key: 'defenders', title: 'Защитники' },
-  { key: 'midfielders', title: 'Полузащитники' },
-  { key: 'attackers', title: 'Нападающие' },
+  { key: 'goalkeepers', title: t('Вратари') },
+  { key: 'defenders', title: t('Защитники') },
+  { key: 'midfielders', title: t('Полузащитники') },
+  { key: 'attackers', title: t('Нападающие') },
 ];
 
 /** plural(5, ['год', 'года', 'лет']) → «лет» */
 export function plural(n: number, forms: [string, string, string]): string {
+  const en = pluralEn(n, forms);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return forms[2];
@@ -114,6 +118,28 @@ const POS_RU: Record<string, string> = {
   SS: 'НАП',
 };
 
+/** По-английски — привычные сокращения FotMob, сгруппированные так же, как русские (LM и LW — обе «LW»). */
+const POS_EN: Record<string, string> = {
+  GK: 'GK',
+  CB: 'CB',
+  RB: 'RB',
+  RWB: 'RB',
+  LB: 'LB',
+  LWB: 'LB',
+  CDM: 'DM',
+  DM: 'DM',
+  CM: 'CM',
+  CAM: 'AM',
+  AM: 'AM',
+  LM: 'LW',
+  RM: 'RW',
+  LW: 'LW',
+  RW: 'RW',
+  ST: 'ST',
+  CF: 'ST',
+  SS: 'ST',
+};
+
 const LINE_CODES: Record<LineKey, string[]> = {
   goalkeepers: ['GK'],
   defenders: ['CB', 'RB', 'LB', 'RWB', 'LWB'],
@@ -132,7 +158,7 @@ export function positionRu(position: string | null | undefined, line?: LineKey):
   const central = line === 'midfielders' ? codes.find((c) => ['CDM', 'DM', 'CM', 'CAM', 'AM'].includes(c)) : undefined;
   const fit = central ?? (line ? codes.find((c) => LINE_CODES[line].includes(c)) : undefined);
   const code = fit ?? codes[0];
-  return POS_RU[code] ?? null;
+  return (isEn() ? POS_EN : POS_RU)[code] ?? null;
 }
 
 const MONTHS_EN = [
@@ -143,6 +169,11 @@ const MONTHS_GEN = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
+const MONTHS_LONG_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+const monthGen = (m: number) => (isEn() ? MONTHS_LONG_EN : MONTHS_GEN)[m];
 
 export interface ReturnInfo {
   /** «конец октября», «вернулся в общую группу» */
@@ -157,19 +188,19 @@ export interface ReturnInfo {
 
 function parseReturn(raw: string | null | undefined, now: Date): Omit<ReturnInfo, 'past'> {
   const s = (raw ?? '').trim();
-  if (!s) return { text: 'срок неизвестен', back: false, date: null };
+  if (!s) return { text: t('срок неизвестен'), back: false, date: null };
   const low = s.toLowerCase();
   if (/back in training|returned to training|in training/.test(low)) {
-    return { text: 'вернулся в общую группу', back: true, date: null };
+    return { text: t('вернулся в общую группу'), back: true, date: null };
   }
-  if (/doubtful|questionable|50%/.test(low)) return { text: 'под вопросом', back: false, date: null };
-  if (/unknown|indefinite/.test(low)) return { text: 'срок неизвестен', back: false, date: null };
-  if (/season|end of season/.test(low)) return { text: 'до конца сезона', back: false, date: null };
+  if (/doubtful|questionable|50%/.test(low)) return { text: t('под вопросом'), back: false, date: null };
+  if (/unknown|indefinite/.test(low)) return { text: t('срок неизвестен'), back: false, date: null };
+  if (/season|end of season/.test(low)) return { text: t('до конца сезона'), back: false, date: null };
 
   const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
   if (iso) {
     const d = new Date(Date.UTC(+iso[1], +iso[2] - 1, +iso[3]));
-    return { text: `до ${d.getUTCDate()} ${MONTHS_GEN[d.getUTCMonth()]}${yearSuffix(d, now)}`, back: false, date: d };
+    return { text: t('до {date}', { date: `${d.getUTCDate()} ${monthGen(d.getUTCMonth())}${yearSuffix(d, now)}` }), back: false, date: d };
   }
   const m = /^(early|mid|middle of|late|end of|beginning of)?\s*([a-z]+)\s+(\d{4})$/.exec(low);
   if (m) {
@@ -177,13 +208,13 @@ function parseReturn(raw: string | null | undefined, now: Date): Omit<ReturnInfo
     if (mi >= 0) {
       const part = m[1] ?? '';
       const day = /early|beginning/.test(part) ? 5 : /mid/.test(part) ? 15 : /late|end/.test(part) ? 25 : 15;
-      const word = /early|beginning/.test(part) ? 'начало' : /mid/.test(part) ? 'середина' : /late|end/.test(part) ? 'конец' : '';
+      const word = /early|beginning/.test(part) ? t('начало') : /mid/.test(part) ? t('середина') : /late|end/.test(part) ? t('конец') : '';
       const d = new Date(Date.UTC(+m[3], mi, day));
-      const text = word ? `${word} ${MONTHS_GEN[mi]}${yearSuffix(d, now)}` : `${MONTHS_GEN[mi]}${yearSuffix(d, now)}`;
+      const text = word ? `${word} ${monthGen(mi)}${yearSuffix(d, now)}` : `${monthGen(mi)}${yearSuffix(d, now)}`;
       return { text, back: false, date: d };
     }
   }
-  return { text: 'срок уточняется', back: false, date: null };
+  return { text: t('срок уточняется'), back: false, date: null };
 }
 
 /** FotMob «Early/Mid/Late October 2026», «Back in training», ISO-дата → по-русски. */
@@ -200,17 +231,17 @@ function yearSuffix(d: Date, now: Date): string {
 }
 
 /** «€125 млн», «€2,5 млн», «€500 тыс.», «аренда», «бесплатно», null — сумма неизвестна. */
-export function feeText(t: Pick<Transfer, 'fee_text' | 'fee_eur' | 'loan'>): string | null {
-  if (t.loan || /loan/i.test(t.fee_text ?? '')) return 'аренда';
-  if (/free/i.test(t.fee_text ?? '')) return 'бесплатно';
-  const v = t.fee_eur;
+export function feeText(tr: Pick<Transfer, 'fee_text' | 'fee_eur' | 'loan'>): string | null {
+  if (tr.loan || /loan/i.test(tr.fee_text ?? '')) return t('аренда');
+  if (/free/i.test(tr.fee_text ?? '')) return t('бесплатно');
+  const v = tr.fee_eur;
   if (v == null || !Number.isFinite(v) || v <= 0) return null;
   if (v >= 1e6) {
     const m = v / 1e6;
-    const s = m >= 10 ? Math.round(m).toString() : (Math.round(m * 10) / 10).toString().replace('.', ',');
-    return `€${s} млн`;
+    const r = m >= 10 ? Math.round(m).toString() : (Math.round(m * 10) / 10).toString();
+    return t('€{s} млн', { s: isEn() ? r : r.replace('.', ',') });
   }
-  return `€${Math.round(v / 1e3)} тыс.`;
+  return t('€{s} тыс.', { s: Math.round(v / 1e3) });
 }
 
 /** Сезон по МСК: с июля — «2026/27». */

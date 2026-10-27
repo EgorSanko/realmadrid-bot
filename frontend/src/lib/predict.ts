@@ -3,6 +3,7 @@
  * Правила очков — копия backend/app/predictions/rules.py (единственный источник правды — сервер;
  * здесь только для подсказки «пока +N» во время матча). Чистые функции — проверяются node --test.
  */
+import { isEn, pluralEn, t } from './i18n';
 
 export interface PTeam {
   id: string | number | null;
@@ -101,10 +102,10 @@ export interface Leaderboard {
 export const RULES = { exact: 5, diff: 3, outcome: 2, scorer: 2 } as const;
 
 export const RULE_LINES: Array<{ label: string; points: number; gold?: boolean }> = [
-  { label: 'Точный счёт', points: RULES.exact, gold: true },
-  { label: 'Угадана разница мячей', points: RULES.diff },
-  { label: 'Угадан исход', points: RULES.outcome },
-  { label: 'Автор первого гола Реала', points: RULES.scorer },
+  { label: t('Точный счёт'), points: RULES.exact, gold: true },
+  { label: t('Угадана разница мячей'), points: RULES.diff },
+  { label: t('Угадан исход'), points: RULES.outcome },
+  { label: t('Автор первого гола Реала'), points: RULES.scorer },
 ];
 
 const sign = (x: number) => (x > 0 ? 1 : x < 0 ? -1 : 0);
@@ -147,21 +148,41 @@ export function rmGoals(home: number, away: number, rmSide: 'home' | 'away'): nu
 
 export type PredictErrorKind = 'closed' | 'auth' | 'rate' | 'invalid' | 'network' | 'unavailable' | 'other';
 
-/** Статус и код ответа → понятное сообщение по-русски. */
+/** Статус и код ответа → понятное сообщение (по-английски — свой текст вместо русского текста сервера). */
 export function predictError(status: number, code: string | null, serverMessage?: string): { kind: PredictErrorKind; message: string } {
-  if (status === 0) return { kind: 'network', message: 'Нет соединения — проверьте интернет и попробуйте ещё раз' };
-  if (status === 409 && code === 'match_cancelled') return { kind: 'closed', message: 'Матч отменён — прогнозы не принимаются' };
-  if (status === 409) return { kind: 'closed', message: 'Приём закрыт: матч уже начался' };
-  if (status === 401) return { kind: 'auth', message: 'Нужно войти через Telegram — тогда прогноз сохранится' };
-  if (status === 429) return { kind: 'rate', message: 'Слишком часто — подождите минуту и сохраните ещё раз' };
+  const srv = isEn() ? undefined : serverMessage;
+  if (status === 0) return { kind: 'network', message: t('Нет соединения — проверьте интернет и попробуйте ещё раз') };
+  if (status === 409 && code === 'match_cancelled') return { kind: 'closed', message: t('Матч отменён — прогнозы не принимаются') };
+  if (status === 409) return { kind: 'closed', message: t('Приём закрыт: матч уже начался') };
+  if (status === 401) return { kind: 'auth', message: t('Нужно войти через Telegram — тогда прогноз сохранится') };
+  if (status === 429) return { kind: 'rate', message: t('Слишком часто — подождите минуту и сохраните ещё раз') };
   if (status === 422) {
-    if (code === 'scorer_without_goal') return { kind: 'invalid', message: 'По вашему прогнозу Реал не забивает — автора первого гола выбрать нельзя' };
-    if (code === 'scorer_not_in_squad') return { kind: 'invalid', message: 'Этого игрока нет в составе Реала на матч — выберите другого' };
-    return { kind: 'invalid', message: serverMessage || 'Проверьте счёт: голы — от 0 до 20' };
+    if (code === 'scorer_without_goal') return { kind: 'invalid', message: t('По вашему прогнозу Реал не забивает — автора первого гола выбрать нельзя') };
+    if (code === 'scorer_not_in_squad') return { kind: 'invalid', message: t('Этого игрока нет в составе Реала на матч — выберите другого') };
+    return { kind: 'invalid', message: srv || t('Проверьте счёт: голы — от 0 до 20') };
   }
-  if (status === 404) return { kind: 'other', message: serverMessage || 'Матч не найден' };
-  if (status === 503) return { kind: 'unavailable', message: 'Прогнозы временно недоступны — попробуйте чуть позже' };
-  return { kind: 'other', message: serverMessage || `Не удалось сохранить (ошибка ${status})` };
+  if (status === 404) return { kind: 'other', message: srv || t('Матч не найден') };
+  if (status === 503) return { kind: 'unavailable', message: t('Прогнозы временно недоступны — попробуйте чуть позже') };
+  return { kind: 'other', message: srv || t('Не удалось сохранить (ошибка {status})', { status }) };
+}
+
+const LEAGUE_ERRORS: Record<string, string> = {
+  league_not_found: 'Лига не найдена',
+  not_member: 'Вы не состоите в этой лиге',
+  not_owner: 'Это может только создатель лиги',
+  owner_cannot_leave: 'Создатель не может выйти из лиги — её можно удалить',
+  too_many_leagues: 'Достигнут предел числа лиг',
+  invalid_code: 'Неверный код приглашения',
+  validation: 'Проверьте название лиги: до 40 символов, без особых знаков',
+};
+
+/**
+ * Ошибка действия с лигой по коду сервера — свой текст вместо русского текста сервера (для английского).
+ * Неизвестный код — null (тогда общее сообщение predictError).
+ */
+export function leagueErrorText(code: string | null | undefined): string | null {
+  const ru = code ? LEAGUE_ERRORS[code] : undefined;
+  return ru ? t(ru) : null;
 }
 
 /* ---------- состав для выбора бомбардира ---------- */
@@ -193,13 +214,15 @@ export interface Summary {
 
 export function summaryTiles(s: Summary | null): Array<{ label: string; value: string; gold?: boolean }> {
   return [
-    { label: 'Очки', value: String(s?.points ?? 0), gold: true },
-    { label: 'Место', value: s?.rank != null ? String(s.place ?? s.rank) : '—' },
-    { label: 'Точных', value: String(s?.exact ?? 0) },
+    { label: t('Очки'), value: String(s?.points ?? 0), gold: true },
+    { label: t('Место'), value: s?.rank != null ? String(s.place ?? s.rank) : '—' },
+    { label: t('Точных'), value: String(s?.exact ?? 0) },
   ];
 }
 
 function ru(n: number, forms: [string, string, string]): string {
+  const en = pluralEn(n, forms);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return forms[2];
@@ -209,7 +232,7 @@ function ru(n: number, forms: [string, string, string]): string {
 
 /** Подпись под именем в рейтинге: «3 прогноза · 1 точный». played — рассчитанные прогнозы. */
 export function rowSub(r: { played: number; exact: number }): string {
-  if (!r.played) return 'пока без прогнозов';
+  if (!r.played) return t('пока без прогнозов');
   return `${r.played} ${ru(r.played, ['прогноз', 'прогноза', 'прогнозов'])} · ${r.exact} ${ru(r.exact, ['точный', 'точных', 'точных'])}`;
 }
 
@@ -301,13 +324,13 @@ export interface LeagueHeader {
 
 /** «Реал — Севилья» / «Севилья — Реал»: Реал коротко, порядок — как в матче. */
 export function matchTitle(m: { home: PTeam; away: PTeam; rm_side: 'home' | 'away' }): string {
-  return m.rm_side === 'home' ? `Реал — ${m.away.name}` : `${m.home.name} — Реал`;
+  return m.rm_side === 'home' ? `${t('Реал')} — ${m.away.name}` : `${m.home.name} — ${t('Реал')}`;
 }
 
 /** «ты 2-й из 5»; в нестартовавшей лиге или без моего места — null (все пока первые). */
 export function placeLine(v: Pick<BoardView, 'started' | 'myPlace'>, total: number): string | null {
   if (!v.started || v.myPlace == null) return null;
-  return `ты ${v.myPlace}-й из ${total}`;
+  return t('ты {place}-й из {total}', { place: v.myPlace, total });
 }
 
 /** «Прогнозы сделали 1 из 2» на ближайший матч; матча нет — null. */
@@ -315,9 +338,9 @@ export function nextLine(h: LeagueHeader): string | null {
   if (!h.next_match) return null;
   const k = h.predicted_next_count;
   const m = h.members;
-  if (m > 1 && k === m) return 'Прогнозы сделали все';
-  if (k === 0) return m > 1 ? 'Прогнозов пока нет ни у кого' : 'Прогноза пока нет';
-  return `Прогнозы сделали ${k} из ${m}`;
+  if (m > 1 && k === m) return t('Прогнозы сделали все');
+  if (k === 0) return m > 1 ? t('Прогнозов пока нет ни у кого') : t('Прогноза пока нет');
+  return t('Прогнозы сделали {k} из {m}', { k, m });
 }
 
 /** Участники нестартовавшей лиги: я первым, дальше — как пришли с сервера (создатель, по вступлению). */
@@ -369,12 +392,14 @@ export function historyItem(h: MeHistoryEntry): HistoryItem {
   if (h.state === 'settled' && h.points) {
     points = h.points.total;
     tone = h.points.kind === 'exact' ? 'exact' : points > 0 ? 'hit' : 'miss';
-    const parts = [h.points.score > 0 ? `${KIND_LABEL[h.points.kind]} +${h.points.score}` : KIND_LABEL[h.points.kind]];
-    if (h.prediction?.first_scorer_id) parts.push(h.points.scorer > 0 ? `бомбардир +${h.points.scorer}` : 'бомбардир мимо');
+    const kind = t(KIND_LABEL[h.points.kind]);
+    const parts = [h.points.score > 0 ? `${kind} +${h.points.score}` : kind];
+    if (h.prediction?.first_scorer_id)
+      parts.push(h.points.scorer > 0 ? t('бомбардир +{n}', { n: h.points.scorer }) : t('бомбардир мимо'));
     note = parts.join(' · ');
-  } else if (h.state === 'open') note = 'можно изменить до начала';
-  else if (h.state === 'void') note = 'матч не состоялся';
-  else note = m.status === 'live' ? 'матч идёт' : 'считаем очки';
+  } else if (h.state === 'open') note = t('можно изменить до начала');
+  else if (h.state === 'void') note = t('матч не состоялся');
+  else note = m.status === 'live' ? t('матч идёт') : t('считаем очки');
   return {
     id: m.id,
     kickoff: m.kickoff_utc,
@@ -396,11 +421,11 @@ export function homeLine(m: NextMatch): { pick: string | null; tail: string | nu
   const p = m.my_prediction;
   if (!p) return { pick: null, tail: null };
   const pick = `${p.home}:${p.away}`;
-  if (m.accepting) return { pick, tail: 'изменить' };
+  if (m.accepting) return { pick, tail: t('изменить') };
   const live = livePoints(m);
-  if (live) return { pick, tail: `пока +${live.total}` };
+  if (live) return { pick, tail: t('пока +{n}', { n: live.total }) };
   if (m.my_points) return { pick, tail: `+${m.my_points.total}` };
-  return { pick, tail: 'приём закрыт' };
+  return { pick, tail: t('приём закрыт') };
 }
 
 /* ---------- праздник точного счёта ---------- */

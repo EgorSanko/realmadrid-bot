@@ -103,6 +103,15 @@ export function t(ru: string, vars?: Record<string, string | number>): string {
 }
 
 /**
+ * Перевод с контекстом — когда одно русское слово в разных местах переводится по-разному:
+ * tc('list', 'Свернуть') ищет в словаре 'list::Свернуть' ('Show less'), без него — обычный 'Свернуть'.
+ */
+export function tc(ctx: string, ru: string, vars?: Record<string, string | number>): string {
+  if (current !== 'en') return fill(ru, vars);
+  return fill(dict[`${ctx}::${ru}`] ?? dict[ru] ?? ru, vars);
+}
+
+/**
  * Формы для plural(): в словаре ключ 'матч|матча|матчей' → 'match|matches' (единственное|множественное).
  * Без строки в словаре — русские формы.
  */

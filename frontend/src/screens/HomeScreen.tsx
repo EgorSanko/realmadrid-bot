@@ -17,6 +17,7 @@ import {
 } from '../lib/mapMatches';
 import { isNativeApp, useDesktop } from '../lib/shell';
 import { useSpaLink } from '../lib/spaLink';
+import { t } from '../lib/i18n';
 import { useStream } from '../lib/stream';
 import { usePoll } from '../lib/usePoll';
 import { useGoalWatch } from '../lib/useGoalWatch';
@@ -50,8 +51,8 @@ export default function HomeScreen() {
 
   useEffect(() => {
     document.title = isNativeApp()
-      ? 'Мадридиста — фан-приложение Real Madrid: матчи, новости, прогнозы'
-      : 'Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости';
+      ? t('Мадридиста — фан-приложение Real Madrid: матчи, новости, прогнозы')
+      : t('Мадридиста — фан-приложение Real Madrid: матчи, трансляции, новости');
   }, []);
 
   // dev: ?debugGoal=1 — ближайший матч «идёт», через 2,5 с гол (в прод-сборку не попадает)
@@ -115,7 +116,7 @@ export default function HomeScreen() {
         footer={note && <p className="screen-note">{note}</p>}
       />
     ) : (
-      <EmptyState title="Ближайших матчей нет" text="Расписание появится, как только его опубликуют" />
+      <EmptyState title={t('Ближайших матчей нет')} text={t('Расписание появится, как только его опубликуют')} />
     );
   // идёт матч Реала — под ним лента его тура (Ла Лига, ЛЧ); сервер отдаёт round только в лайве
   const roundBlock = d?.round && d.next?.status?.live ? <RoundStrip round={d.round} matchId={d.next.id} /> : null;
@@ -129,8 +130,8 @@ export default function HomeScreen() {
       <RecentResults limit={3} />
     ) : view?.nextRow ? (
       <>
-        <section className="ui-card home-next" aria-label="Следующий матч">
-          <div className="home-tile__cap">Следующий матч</div>
+        <section className="ui-card home-next" aria-label={t('Следующий матч')}>
+          <div className="home-tile__cap">{t('Следующий матч')}</div>
           <CalendarRow {...view.nextRow} highlighted={false} {...link(view.nextRow.href)} />
         </section>
         <RecentResults limit={3} />
@@ -159,7 +160,7 @@ export default function HomeScreen() {
 
   return (
     <main className="home">
-      <ScreenHeader title="Главная" brand live={!!stream?.live} />
+      <ScreenHeader title={t('Главная')} brand live={!!stream?.live} />
 
       {/* 1. Ближайший матч / идёт / итог */}
       {heroBlock}
@@ -184,16 +185,18 @@ export default function HomeScreen() {
         (view.form.length > 0 || view.league) && (
           <div className="home-grid">
             {view.form.length > 0 && (
-              <section className="home-tile" aria-label="Форма">
-                <div className="home-tile__cap">Форма, {view.form.length} {plural(view.form.length, ['матч', 'матча', 'матчей'])}</div>
+              <section className="home-tile" aria-label={t('Форма')}>
+                <div className="home-tile__cap">
+                  {t('Форма, {n} {matches}', { n: view.form.length, matches: plural(view.form.length, ['матч', 'матча', 'матчей']) })}
+                </div>
                 <FormStrip results={view.form} opponents={view.formOpp} size={24} className="home-tile__form" />
               </section>
             )}
             {view.league && (
-              <a className="home-tile" aria-label="Таблица Ла Лиги" {...link('/matches')}>
+              <a className="home-tile" aria-label={t('Таблица Ла Лиги')} {...link('/matches')}>
                 <div className="home-tile__cap home-tile__cap--logo">
                   {view.leagueId != null && <LeagueLogo id={view.leagueId} name="" size={16} />}
-                  Ла Лига
+                  {t('Ла Лига')}
                 </div>
                 <div className="home-tile__pos">
                   <span className="disp">{view.league.pos}</span>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { useAuth } from '../lib/auth';
 import { useSpaLink } from '../lib/spaLink';
+import { t } from '../lib/i18n';
 import { LangSwitch } from './LangSwitch';
 import { useStream } from '../lib/stream';
 import { SECTIONS } from '../sections';
@@ -27,7 +28,7 @@ export function SiteHeader() {
   return (
     <header className="sh">
       <div className="sh__in">
-        <a className="sh__brand" aria-label="Мадридиста — на главную" {...link('/')}>
+        <a className="sh__brand" aria-label={t('Мадридиста — на главную')} {...link('/')}>
           <img
             className="sh__crest"
             src="/img/team/8633.png"
@@ -39,10 +40,10 @@ export function SiteHeader() {
               e.currentTarget.style.visibility = 'hidden';
             }}
           />
-          <span className="sh__word">МАДРИДИСТА</span>
+          <span className="sh__word">{t('МАДРИДИСТА')}</span>
         </a>
 
-        <nav className="sh__nav" aria-label="Разделы">
+        <nav className="sh__nav" aria-label={t('Разделы')}>
           {SECTIONS.map((s) => (
             <NavLink key={s.path} to={s.path} className={() => (activeOf(s.path) ? 'sh__link on' : 'sh__link')} aria-current={activeOf(s.path) ? 'page' : undefined}>
               {s.label}
@@ -53,12 +54,13 @@ export function SiteHeader() {
         <div className="sh__right">
           <LangSwitch className="sh__lang" />
           {stream?.live && (
-            <a className="badge-live sh__live" {...link('/')} aria-label="Идёт эфир — смотреть на главной">
-              <span className="live-dot" />В ЭФИРЕ
+            <a className="badge-live sh__live" {...link('/')} aria-label={t('Идёт эфир — смотреть на главной')}>
+              <span className="live-dot" />
+              {t('В ЭФИРЕ')}
             </a>
           )}
           {auth.status === 'user' && auth.user ? (
-            <a className="sh__user" title={`Профиль: ${auth.user.name}`} aria-label={`Профиль: ${auth.user.name}`} {...link('/profile')}>
+            <a className="sh__user" title={t('Профиль: {name}', { name: auth.user.name })} aria-label={t('Профиль: {name}', { name: auth.user.name })} {...link('/profile')}>
               <UserAvatar src={auth.user.avatar} size={34} />
               <span className="sh__uname">{auth.user.name}</span>
             </a>
@@ -113,11 +115,11 @@ function HeaderLogin() {
     <div className="sh-login" ref={box}>
       <button type="button" className="sh-login__btn" aria-expanded={open} aria-controls="sh-login-panel" onClick={() => setOpen((v) => !v)}>
         {TG_ICON}
-        Войти через Telegram
+        {t('Войти через Telegram')}
       </button>
       {open && (
-        <div className="sh-login__panel" id="sh-login-panel" role="dialog" aria-label="Вход через Telegram">
-          <p className="sh-login__text">Прогнозы, рейтинг и лиги с друзьями — после входа через Telegram. Пароль не нужен.</p>
+        <div className="sh-login__panel" id="sh-login-panel" role="dialog" aria-label={t('Вход через Telegram')}>
+          <p className="sh-login__text">{t('Прогнозы, рейтинг и лиги с друзьями — после входа через Telegram. Пароль не нужен.')}</p>
           <LoginButton autoStart />
         </div>
       )}

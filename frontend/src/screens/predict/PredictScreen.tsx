@@ -10,6 +10,7 @@ import {
   boardView,
   exactToCelebrate,
   historyItem,
+  leagueErrorText,
   matchTitle,
   nextLine,
   placeLine,
@@ -17,6 +18,7 @@ import {
   summaryTiles,
   waitingPeople,
 } from '../../lib/predict';
+import { isEn, t } from '../../lib/i18n';
 import { reducedMotion } from '../../lib/motion';
 import type { BoardView, HistoryItem, Leaderboard, LeagueHeader, MeHistoryEntry } from '../../lib/predict';
 import type { League, PredictMe } from '../../lib/profile';
@@ -67,7 +69,7 @@ export default function PredictScreen() {
   const [leagues, reloadLeagues] = useAuthedGet<{ leagues: League[] }>(authed ? '/api/predict/leagues' : null, [leaguesVer]);
 
   useEffect(() => {
-    document.title = 'Прогнозы на матчи «Реала» — Мадридиста';
+    document.title = t('Прогнозы на матчи «Реала» — Мадридиста');
   }, []);
 
   const meData = authed && me.kind === 'ok' ? me.data : null;
@@ -79,8 +81,8 @@ export default function PredictScreen() {
     return (
       <main className="pd pd--desk">
         <header className="topbar pd-top">
-          <h1 className="topbar__title">Игры</h1>
-          {season && <span className="pd-top__aside">прогнозы · сезон {season}</span>}
+          <h1 className="topbar__title">{t('Игры')}</h1>
+          {season && <span className="pd-top__aside">{t('прогнозы · сезон {season}', { season })}</span>}
         </header>
         <GamesTabs />
         <div className="dk-split pd-desk">
@@ -88,7 +90,7 @@ export default function PredictScreen() {
       {/* Мои итоги / вход */}
       {authed ? (
         me.kind === 'ok' ? (
-          <section className="pd-tiles" aria-label="Мои итоги">
+          <section className="pd-tiles" aria-label={t('Мои итоги')}>
             {summaryTiles(me.data.season).map((t) => (
               <div key={t.label} className="pd-tile">
                 <span className="pd-tile__label">{t.label}</span>
@@ -104,11 +106,11 @@ export default function PredictScreen() {
           </div>
         )
       ) : (
-        <section className="ui-card pd-anon" aria-label="Вход">
-          <p className="pd-anon__title">Угадывай счёт матчей Реала</p>
-          <p className="pd-muted">Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.</p>
+        <section className="ui-card pd-anon" aria-label={t('Вход')}>
+          <p className="pd-anon__title">{t('Угадывай счёт матчей Реала')}</p>
+          <p className="pd-muted">{t('Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.')}</p>
           {auth.status === 'loading' ? null : inMiniApp() ? (
-            <p className="pd-muted">Входим через Telegram…</p>
+            <p className="pd-muted">{t('Входим через Telegram…')}</p>
           ) : matches.state.kind === 'ok' && matches.state.data.next?.accepting ? null : (
             // есть открытый матч — кнопка входа в его карточке, рядом со «Сохранить»; иначе — здесь
             <LoginButton />
@@ -131,14 +133,14 @@ export default function PredictScreen() {
           onClosed={matches.reload}
         />
       ) : (
-        <EmptyState className="pd-state" title="Ближайших матчей нет" text="Прогноз можно будет сделать, как только появится расписание" />
+        <EmptyState className="pd-state" title={t('Ближайших матчей нет')} text={t('Прогноз можно будет сделать, как только появится расписание')} />
       )}
 
       {authed && <MyPredictions me={me} onRetry={reloadMe} />}
 
       {/* Правила */}
-      <section className="ui-card pd-rules" aria-label="Как начисляются очки">
-        <h2 className="pd-h2">Очки</h2>
+      <section className="ui-card pd-rules" aria-label={t('Как начисляются очки')}>
+        <h2 className="pd-h2">{t('Очки')}</h2>
         {RULE_LINES.map((r) => (
           <div key={r.label} className="pd-rule">
             <span>{r.label}</span>
@@ -146,14 +148,13 @@ export default function PredictScreen() {
           </div>
         ))}
         <p className="pd-rules__note">
-          За счёт засчитывается лучшее из трёх; бомбардир — сверху. Счёт — после основного и дополнительного времени, без серии пенальти.
-          Автогол соперника автором первого гола не считается.
+          {t('За счёт засчитывается лучшее из трёх; бомбардир — сверху. Счёт — после основного и дополнительного времени, без серии пенальти. Автогол соперника автором первого гола не считается.')}
         </p>
       </section>
 
           </div>
-          <aside className="dk-col" aria-label="Рейтинг и лиги">
-      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
+          <aside className="dk-col" aria-label={t('Рейтинг и лиги')}>
+      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? t('Ты')} myAvatar={auth.user?.avatar ?? null} />
 
       <Invite
         authed={authed}
@@ -172,15 +173,15 @@ export default function PredictScreen() {
   return (
     <main className="pd">
       <header className="topbar pd-top">
-        <h1 className="topbar__title">Игры</h1>
-        {season && <span className="pd-top__aside">прогнозы · сезон {season}</span>}
+        <h1 className="topbar__title">{t('Игры')}</h1>
+        {season && <span className="pd-top__aside">{t('прогнозы · сезон {season}', { season })}</span>}
       </header>
       <GamesTabs />
 
       {/* Мои итоги / вход */}
       {authed ? (
         me.kind === 'ok' ? (
-          <section className="pd-tiles" aria-label="Мои итоги">
+          <section className="pd-tiles" aria-label={t('Мои итоги')}>
             {summaryTiles(me.data.season).map((t) => (
               <div key={t.label} className="pd-tile">
                 <span className="pd-tile__label">{t.label}</span>
@@ -196,11 +197,11 @@ export default function PredictScreen() {
           </div>
         )
       ) : (
-        <section className="ui-card pd-anon" aria-label="Вход">
-          <p className="pd-anon__title">Угадывай счёт матчей Реала</p>
-          <p className="pd-muted">Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.</p>
+        <section className="ui-card pd-anon" aria-label={t('Вход')}>
+          <p className="pd-anon__title">{t('Угадывай счёт матчей Реала')}</p>
+          <p className="pd-muted">{t('Очки, место в рейтинге и лиги с друзьями — после входа через Telegram.')}</p>
           {auth.status === 'loading' ? null : inMiniApp() ? (
-            <p className="pd-muted">Входим через Telegram…</p>
+            <p className="pd-muted">{t('Входим через Telegram…')}</p>
           ) : matches.state.kind === 'ok' && matches.state.data.next?.accepting ? null : (
             // есть открытый матч — кнопка входа в его карточке, рядом со «Сохранить»; иначе — здесь
             <LoginButton />
@@ -223,12 +224,12 @@ export default function PredictScreen() {
           onClosed={matches.reload}
         />
       ) : (
-        <EmptyState className="pd-state" title="Ближайших матчей нет" text="Прогноз можно будет сделать, как только появится расписание" />
+        <EmptyState className="pd-state" title={t('Ближайших матчей нет')} text={t('Прогноз можно будет сделать, как только появится расписание')} />
       )}
 
       {/* Правила */}
-      <section className="ui-card pd-rules" aria-label="Как начисляются очки">
-        <h2 className="pd-h2">Очки</h2>
+      <section className="ui-card pd-rules" aria-label={t('Как начисляются очки')}>
+        <h2 className="pd-h2">{t('Очки')}</h2>
         {RULE_LINES.map((r) => (
           <div key={r.label} className="pd-rule">
             <span>{r.label}</span>
@@ -236,12 +237,11 @@ export default function PredictScreen() {
           </div>
         ))}
         <p className="pd-rules__note">
-          За счёт засчитывается лучшее из трёх; бомбардир — сверху. Счёт — после основного и дополнительного времени, без серии пенальти.
-          Автогол соперника автором первого гола не считается.
+          {t('За счёт засчитывается лучшее из трёх; бомбардир — сверху. Счёт — после основного и дополнительного времени, без серии пенальти. Автогол соперника автором первого гола не считается.')}
         </p>
       </section>
 
-      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? 'Ты'} myAvatar={auth.user?.avatar ?? null} />
+      <Board authed={authed} leagues={leagues} ver={leaguesVer} myName={auth.user?.name ?? t('Ты')} myAvatar={auth.user?.avatar ?? null} />
 
       {authed && <MyPredictions me={me} onRetry={reloadMe} />}
 
@@ -299,9 +299,9 @@ function Board({
 
   let body;
   if (tab === 'leagues' && !authed) {
-    body = <p className="pd-muted pd-board__msg">Лиги видны после входа через Telegram.</p>;
+    body = <p className="pd-muted pd-board__msg">{t('Лиги видны после входа через Telegram.')}</p>;
   } else if (tab === 'leagues' && leagues.kind === 'ok' && list.length === 0) {
-    body = <p className="pd-muted pd-board__msg">Вы пока не в лиге — создайте свою ниже и позовите друзей.</p>;
+    body = <p className="pd-muted pd-board__msg">{t('Вы пока не в лиге — создайте свою ниже и позовите друзей.')}</p>;
   } else if (lb.kind === 'loading' || stale || (tab === 'leagues' && lid == null)) {
     body = <Skeleton shape="list" rows={4} />;
   } else if (lb.kind === 'error') {
@@ -316,7 +316,7 @@ function Board({
       <Skeleton shape="list" rows={2} />
     );
   } else if (view && view.empty) {
-    body = <p className="pd-muted pd-board__msg">Пока пусто: очки появятся после первого сыгранного матча.</p>;
+    body = <p className="pd-muted pd-board__msg">{t('Пока пусто: очки появятся после первого сыгранного матча.')}</p>;
   } else if (view) {
     body = (
       <div className={cx('pd-board__rows', view.rows.length > BOX_ROWS && 'pd-board__rows--box')} ref={rowsRef}>
@@ -324,7 +324,7 @@ function Board({
           <LeaderboardRow
             key={`${r.rank}-${r.name}`}
             rank={r.place}
-            name={r.is_me ? `${r.name} · ты` : r.name}
+            name={r.is_me ? `${r.name} · ${t('ты')}` : r.name}
             sub={r.sub}
             points={r.points}
             avatarUrl={r.avatar ?? undefined}
@@ -339,7 +339,7 @@ function Board({
             rankFrom={lb.kind === 'ok' ? lb.data.total : undefined}
             style={{ '--i': Math.min(view.rows.length, WAVE) } as CSSProperties}
             rank={view.meRow.place}
-            name={`${view.meRow.name} · ты`}
+            name={`${view.meRow.name} · ${t('ты')}`}
             sub={view.meRow.sub}
             points={view.meRow.points}
             avatarUrl={view.meRow.avatar ?? undefined}
@@ -353,9 +353,9 @@ function Board({
   }
 
   return (
-    <section className="ui-card pd-board" aria-label="Рейтинг">
+    <section className="ui-card pd-board" aria-label={t('Рейтинг')}>
       <div className="pd-board__head">
-        <h2 className="pd-h2">Рейтинг</h2>
+        <h2 className="pd-h2">{t('Рейтинг')}</h2>
         {lb.kind === 'ok' && !stale && !inLeague && (
           <span className="pd-muted">
             {lb.data.total} {plural(lb.data.total, ['участник', 'участника', 'участников'])}
@@ -363,21 +363,21 @@ function Board({
         )}
       </div>
       <Tabs<BoardTab>
-        ariaLabel="Период рейтинга"
+        ariaLabel={t('Период рейтинга')}
         inset={false}
         className="pd-board__tabs"
         value={tab}
         onChange={setTab}
         items={[
-          { id: 'season', label: 'Сезон' },
-          { id: 'month', label: 'Месяц' },
-          { id: 'leagues', label: 'Лиги' },
+          { id: 'season', label: t('Сезон') },
+          { id: 'month', label: t('Месяц') },
+          { id: 'leagues', label: t('Лиги') },
         ]}
       />
       {/* одна лига — её название в шапке, переключатель не нужен */}
       {tab === 'leagues' && list.length > 1 && (
         <Tabs<string>
-          ariaLabel="Моя лига"
+          ariaLabel={t('Моя лига')}
           variant="pill"
           className="pd-board__leagues"
           value={String(lid)}
@@ -396,11 +396,9 @@ function Board({
       {body}
       {meOff && view?.myPlace != null && lb.kind === 'ok' && !stale && (
         <button type="button" className="pd-findme" onClick={() => scrollToMe(rowsRef.current)}>
-          <span>
-            Ты <b>{view.myPlace}-й</b> из {lb.data.total}
-          </span>
+          <FindMeText place={view.myPlace} total={lb.data.total} />
           <span className="pd-findme__go">
-            Найти себя
+            {t('Найти себя')}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
             </svg>
@@ -514,7 +512,7 @@ function LeagueHead({
       {showNext && head && next && (
         <div className="pd-lhead__next">
           <span className="pd-lhead__match">
-            Ближайший матч: {matchTitle(next)} · <span className="pd-nowrap">{formatWeekdayShort(next.kickoff_utc)}</span>
+            {t('Ближайший матч: {title}', { title: matchTitle(next) })} · <span className="pd-nowrap">{formatWeekdayShort(next.kickoff_utc)}</span>
           </span>
           <PredictedBar done={head.predicted_next_count} of={head.members} label={nextLine(head)} />
         </div>
@@ -523,12 +521,24 @@ function LeagueHead({
   );
 }
 
+/** «Ты 3-й из 12»: место — жирным; порядок слов — из перевода. */
+function FindMeText({ place, total }: { place: number; total: number }) {
+  const [before, after = ''] = t('Ты {place} из {total}', { total }).split('{place}');
+  return (
+    <span>
+      {before}
+      <b>{t('{n}-й', { n: place })}</b>
+      {after}
+    </span>
+  );
+}
+
 /** «прогнозы сделали 1 из 2» и полоска заполненности. */
 function PredictedBar({ done, of, label }: { done: number; of: number; label: string | null }) {
   return (
     <span className="pd-pbar">
       <span className="pd-pbar__label">{label}</span>
-      <span className="pd-pbar__track" role="img" aria-label={`Прогнозы сделали ${done} из ${of}`}>
+      <span className="pd-pbar__track" role="img" aria-label={t('Прогнозы сделали {k} из {m}', { k: done, m: of })}>
         <span className="pd-pbar__fill" style={{ width: `${of ? Math.round((done / of) * 100) : 0}%` }} />
       </span>
     </span>
@@ -544,15 +554,15 @@ function LeagueStart({ head }: { head: LeagueHeader }) {
       {next ? (
         <>
           <p className="pd-lstart__title">
-            Лига стартует с матча <b>{matchTitle(next)}</b>
+            {t('Лига стартует с матча')} <b>{matchTitle(next)}</b>
           </p>
           <p className="pd-muted">{formatKickoff(next.kickoff_utc)}</p>
           <PredictedBar done={head.predicted_next_count} of={head.members} label={nextLine(head)} />
         </>
       ) : (
         <>
-          <p className="pd-lstart__title">Лига стартует с ближайшего матча Реала</p>
-          <p className="pd-muted">Расписание пока не объявили — когда матч появится, здесь будет видно, кто уже сделал прогноз.</p>
+          <p className="pd-lstart__title">{t('Лига стартует с ближайшего матча Реала')}</p>
+          <p className="pd-muted">{t('Расписание пока не объявили — когда матч появится, здесь будет видно, кто уже сделал прогноз.')}</p>
         </>
       )}
       <ul className="pd-lstart__people">
@@ -560,23 +570,23 @@ function LeagueStart({ head }: { head: LeagueHeader }) {
           <li key={`${i}-${p.name}`} className="pd-lstart__row">
             <Face name={p.name} avatar={p.avatar} me={p.is_me} />
             <span className="pd-lstart__name">
-              <span className="pd-lstart__nm">{p.is_me ? `${p.name} · ты` : p.name}</span>
-              {p.is_owner && <span className="pd-lstart__tag">создатель</span>}
+              <span className="pd-lstart__nm">{p.is_me ? `${p.name} · ${t('ты')}` : p.name}</span>
+              {p.is_owner && <span className="pd-lstart__tag">{t('создатель')}</span>}
             </span>
             {p.state === 'done' ? (
               <span className="pd-lstart__st is-done">
-                прогноз сделан
+                {t('прогноз сделан')}
                 <svg className="pd-check" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M5 12.5l4.5 4.5L19 7.5" />
                 </svg>
               </span>
             ) : p.state === 'wait' ? (
-              <span className="pd-lstart__st">ждём</span>
+              <span className="pd-lstart__st">{t('ждём')}</span>
             ) : null}
           </li>
         ))}
       </ul>
-      {next && <p className="pd-lstart__note">Чужой счёт не виден до начала матча — только то, что прогноз сделан.</p>}
+      {next && <p className="pd-lstart__note">{t('Чужой счёт не виден до начала матча — только то, что прогноз сделан.')}</p>}
     </div>
   );
 }
@@ -651,14 +661,14 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
   const list = useRef<HTMLUListElement>(null);
   useExactCelebration(items, list);
   return (
-    <section className="ui-card pd-mine" aria-label="Мои прогнозы">
-      <h2 className="pd-h2">Мои прогнозы</h2>
+    <section className="ui-card pd-mine" aria-label={t('Мои прогнозы')}>
+      <h2 className="pd-h2">{t('Мои прогнозы')}</h2>
       {me.kind === 'loading' ? (
         <Skeleton shape="list" rows={3} />
       ) : me.kind === 'error' ? (
         <ErrorState plain text={loadError(me) ?? undefined} onRetry={onRetry} />
       ) : items.length === 0 ? (
-        <p className="pd-muted">Прогнозов пока нет — начни с ближайшего матча.</p>
+        <p className="pd-muted">{t('Прогнозов пока нет — начни с ближайшего матча.')}</p>
       ) : (
         <ul className="pd-hist" ref={list}>
           {items.map((h) => (
@@ -668,13 +678,13 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
                 <span className="pd-hist__teams">
                   {h.home.id != null ? <TeamCrest id={h.home.id} name={h.home.name} size={28} /> : <span className="pd-hist__ph" />}
                   <span className="pd-hist__score">
-                    <b aria-label={`Мой прогноз ${h.pick}`}>{h.pick}</b>
-                    <span className="pd-hist__res">{h.result ? `итог ${h.result}` : 'итог —'}</span>
+                    <b aria-label={t('Мой прогноз {pick}', { pick: h.pick })}>{h.pick}</b>
+                    <span className="pd-hist__res">{h.result ? t('итог {result}', { result: h.result }) : t('итог —')}</span>
                   </span>
                   {h.away.id != null ? <TeamCrest id={h.away.id} name={h.away.name} size={28} /> : <span className="pd-hist__ph" />}
                 </span>
                 <span className="pd-hist__note">
-                  {h.scorerPick && <PlayerPhoto id={Number(h.scorerPick)} name="Мой бомбардир" size={22} className="pd-hist__sc" />}
+                  {h.scorerPick && <PlayerPhoto id={Number(h.scorerPick)} name={t('Мой бомбардир')} size={22} className="pd-hist__sc" />}
                   {h.note}
                 </span>
                 <span className={`pd-hist__pts pd-hist__pts--${h.tone}`}>{h.points != null ? `+${h.points}` : '·'}</span>
@@ -692,6 +702,7 @@ function MyPredictions({ me, onRetry }: { me: Load<PredictMe>; onRetry: () => vo
 /** Ошибка действия с лигой: понятные (403/404/409/422) — текстом сервера, остальное — общим. */
 function leagueError(ex: unknown): string {
   const fe = ex instanceof AuthFetchError ? ex : new AuthFetchError(0, null, '');
+  if (isEn()) return leagueErrorText(fe.code) ?? predictError(fe.status, fe.code, fe.message).message;
   return [403, 404, 409, 422].includes(fe.status) && fe.message ? fe.message : predictError(fe.status, fe.code, fe.message).message;
 }
 
@@ -733,11 +744,11 @@ function Invite({
   };
 
   return (
-    <section className="ui-card pd-invite" aria-label="Лиги с друзьями">
-      <h2 className="pd-h2">Лиги с друзьями</h2>
-      <p className="pd-muted">Своя лига — отдельный рейтинг для друзей. Друг откроет ссылку в Telegram и сразу окажется в лиге.</p>
+    <section className="ui-card pd-invite" aria-label={t('Лиги с друзьями')}>
+      <h2 className="pd-h2">{t('Лиги с друзьями')}</h2>
+      <p className="pd-muted">{t('Своя лига — отдельный рейтинг для друзей. Друг откроет ссылку в Telegram и сразу окажется в лиге.')}</p>
       {!authed ? (
-        <p className="pd-muted pd-invite__anon">Создать лигу можно после входа через Telegram.</p>
+        <p className="pd-muted pd-invite__anon">{t('Создать лигу можно после входа через Telegram.')}</p>
       ) : (
         <>
           {leagues.kind === 'error' && <ErrorState plain text={loadError(leagues) ?? undefined} onRetry={onRetry} />}
@@ -755,18 +766,18 @@ function Invite({
           ))}
           <form className="pd-invite__form" onSubmit={create}>
             <label className="ui-sr" htmlFor="pd-league-name">
-              Название лиги
+              {t('Название лиги')}
             </label>
             <input
               id="pd-league-name"
               className="pd-input"
               value={name}
               maxLength={40}
-              placeholder={shown.length ? 'Ещё одна лига, например «Офис»' : 'Название, например «Пенья Бернабеу»'}
+              placeholder={shown.length ? t('Ещё одна лига, например «Офис»') : t('Название, например «Пенья Бернабеу»')}
               onChange={(e) => setName(e.target.value)}
             />
             <button type="submit" className="ui-btn ui-btn--outline pd-invite__btn" disabled={busy || !name.trim()}>
-              {busy ? 'Создаём…' : 'Создать лигу'}
+              {busy ? t('Создаём…') : t('Создать лигу')}
             </button>
           </form>
           {err && (
@@ -818,7 +829,7 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
       () => authFetch<League>(`/api/predict/leagues/${lg.id}`, { method: 'PATCH', body: { name: draft } }),
       () => {
         setMode('idle');
-        setMsg('Название сохранено');
+        setMsg(t('Название сохранено'));
         onChanged();
       },
     );
@@ -835,7 +846,7 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
       {mode === 'rename' ? (
         <form className="pd-league__rename" onSubmit={rename}>
           <label className="pd-league__lbl" htmlFor={`pd-league-rn-${lg.id}`}>
-            Новое название
+            {t('Новое название')}
           </label>
           <input
             id={`pd-league-rn-${lg.id}`}
@@ -850,10 +861,10 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
           />
           <div className="pd-league__actions">
             <button type="button" className="ui-btn ui-btn--secondary" onClick={() => open('idle')} disabled={busy}>
-              Отмена
+              {t('Отмена')}
             </button>
             <button type="submit" className="ui-btn ui-btn--primary pd-league__share" disabled={busy || !draft.trim()}>
-              {busy ? 'Сохраняем…' : 'Сохранить'}
+              {busy ? t('Сохраняем…') : t('Сохранить')}
             </button>
           </div>
         </form>
@@ -863,7 +874,7 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
             <b>{lg.name}</b>
             <span className="pd-muted">
               {lg.members} {plural(lg.members, ['участник', 'участника', 'участников'])}
-              {lg.is_owner ? ' · ты создатель' : ''}
+              {lg.is_owner ? ` · ${t('ты создатель')}` : ''}
             </span>
           </div>
           <Faces faces={lg.faces ?? []} total={lg.members} />
@@ -871,18 +882,18 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
       )}
 
       {confirm && (
-        <div className="pd-league__confirm" role="alertdialog" aria-label={mode === 'delete' ? 'Удалить лигу' : 'Выйти из лиги'}>
+        <div className="pd-league__confirm" role="alertdialog" aria-label={mode === 'delete' ? t('Удалить лигу') : t('Выйти из лиги')}>
           <p className="pd-league__q">
             {mode === 'delete'
-              ? `Удалить лигу «${lg.name}»? Её рейтинг пропадёт у всех участников. Прогнозы и очки в общем рейтинге останутся.`
-              : `Выйти из лиги «${lg.name}»? Вернуться можно по ссылке-приглашению.`}
+              ? t('Удалить лигу «{name}»? Её рейтинг пропадёт у всех участников. Прогнозы и очки в общем рейтинге останутся.', { name: lg.name })
+              : t('Выйти из лиги «{name}»? Вернуться можно по ссылке-приглашению.', { name: lg.name })}
           </p>
           <div className="pd-league__actions">
             <button type="button" className="ui-btn ui-btn--secondary" onClick={() => open('idle')} disabled={busy}>
-              Отмена
+              {t('Отмена')}
             </button>
             <button type="button" className="ui-btn pd-league__danger" onClick={remove} disabled={busy}>
-              {busy ? (mode === 'delete' ? 'Удаляем…' : 'Выходим…') : mode === 'delete' ? 'Удалить' : 'Выйти'}
+              {busy ? (mode === 'delete' ? t('Удаляем…') : t('Выходим…')) : mode === 'delete' ? t('Удалить') : isEn() ? 'Leave' : 'Выйти'}
             </button>
           </div>
         </div>
@@ -894,35 +905,35 @@ function InviteRow({ lg, onChanged, onGone }: { lg: League; onChanged: () => voi
             <button
               type="button"
               className="ui-btn ui-btn--secondary"
-              onClick={async () => setMsg((await copyText(url)) ? 'Ссылка скопирована' : 'Не удалось скопировать')}
+              onClick={async () => setMsg((await copyText(url)) ? t('Ссылка скопирована') : t('Не удалось скопировать'))}
             >
-              Скопировать
+              {t('Скопировать')}
             </button>
             <button
               type="button"
               className="ui-btn ui-btn--primary pd-league__share"
               onClick={async () => {
-                const r = await shareLink(url, `Присоединяйся к моей лиге прогнозов «${lg.name}» в Мадридисте`);
-                if (r === 'copied') setMsg('Ссылка скопирована');
-                if (r === 'failed') setMsg('Не удалось поделиться');
+                const r = await shareLink(url, t('Присоединяйся к моей лиге прогнозов «{name}» в Мадридисте', { name: lg.name }));
+                if (r === 'copied') setMsg(t('Ссылка скопирована'));
+                if (r === 'failed') setMsg(t('Не удалось поделиться'));
               }}
             >
-              Поделиться
+              {t('Поделиться')}
             </button>
           </div>
           <div className="pd-league__more">
             {lg.is_owner ? (
               <>
                 <button type="button" className="pd-league__act" onClick={() => open('rename')}>
-                  Переименовать
+                  {t('Переименовать')}
                 </button>
                 <button type="button" className="pd-league__act is-danger" onClick={() => open('delete')}>
-                  Удалить
+                  {t('Удалить')}
                 </button>
               </>
             ) : (
               <button type="button" className="pd-league__act is-danger" onClick={() => open('leave')}>
-                Выйти из лиги
+                {t('Выйти из лиги')}
               </button>
             )}
           </div>

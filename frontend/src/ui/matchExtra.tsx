@@ -5,6 +5,7 @@
  * Вёрстка и классы — те же, что у MatchCard / FixtureRow; свои стили — в matchExtra.css.
  */
 import { useRef, type MouseEventHandler, type ReactNode } from 'react';
+import { t, tc } from '../lib/i18n';
 import { Badge, Chip } from './base';
 import { cx, formatKickoff, formatTime, formatWeekdayShort, formatDayShort, type DateInput } from './format';
 import { FlipScore } from './flip';
@@ -43,8 +44,8 @@ export interface HeroMatchCardProps {
 
 const MORE_LABEL: Record<MatchStatus, string> = {
   upcoming: '',
-  live: 'Весь матч: события, составы, статистика',
-  finished: 'Обзор матча',
+  live: t('Весь матч: события, составы, статистика'),
+  finished: tc('match', 'Обзор матча'),
 };
 
 /**
@@ -88,7 +89,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
             {live && <Badge tone="live" />}
             {chip}
           </span>
-          <span>{live ? props.period : `Матч завершён · ${formatDayShort(kickoff)}`}</span>
+          <span>{live ? props.period : `${t('Матч завершён')} · ${formatDayShort(kickoff)}`}</span>
         </div>
         <div className="ui-mc__teams">
           <div className="ui-mc__team">
@@ -98,7 +99,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
           <div className="ui-mc__mid">
             <div className="ui-mc__score">{live && score ? <FlipScore score={score} /> : sc}</div>
             {live && props.minute && <div className="ui-mc__minute">{props.minute}</div>}
-            {!live && <div className="hero-mc__final">Финальный свисток</div>}
+            {!live && <div className="hero-mc__final">{t('Финальный свисток')}</div>}
           </div>
           <div className="ui-mc__team">
             <Crest team={away} size={52} />
@@ -119,7 +120,7 @@ export function HeroMatchCard(props: HeroMatchCardProps) {
   }
 
   const label =
-    status === 'live' ? `Идёт матч: ${home.name} — ${away.name}` : status === 'finished' ? 'Матч завершён' : 'Ближайший матч';
+    status === 'live' ? t('Идёт матч: {home} — {away}', { home: home.name, away: away.name }) : status === 'finished' ? t('Матч завершён') : t('Ближайший матч');
   const cls = cx('ui-mc', status === 'live' && 'ui-mc--live', 'hero-mc', `hero-mc--${status}`, started.current && 'hero-mc--started', className);
   return (
     <section className="hero-wrap" aria-label={label}>

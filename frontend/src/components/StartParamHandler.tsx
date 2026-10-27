@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import { AuthFetchError, authFetch, bootstrapAuth, inMiniApp } from '../lib/auth';
 import { joinedMessage, parseStartParam } from '../lib/startParam';
+import { t } from '../lib/i18n';
 
 function launchStartParam(): string | null {
   try {
@@ -48,7 +49,7 @@ export function StartParamHandler() {
           });
           flash = joinedMessage(r.name, r.joined);
         } catch (e) {
-          flash = e instanceof AuthFetchError ? e.message : 'Не удалось вступить в лигу';
+          flash = e instanceof AuthFetchError ? e.message : t('Не удалось вступить в лигу');
         }
         navigate('/profile', { state: { flash } });
       }

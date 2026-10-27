@@ -3,6 +3,8 @@
  * → данные для блоков экрана. Чистые функции — проверяются node --test.
  */
 
+import { t } from './i18n';
+
 export interface PredTeam {
   id: string | number | null;
   name: string;
@@ -76,17 +78,17 @@ export function monthLabel(label: string | undefined): string | undefined {
   const m = label ? /^(\d{4})-(\d{2})$/.exec(label) : null;
   if (!m) return label;
   const i = Number(m[2]) - 1;
-  return MONTHS[i] ? `${MONTHS[i]} ${m[1]}` : label;
+  return MONTHS[i] ? `${t(MONTHS[i])} ${m[1]}` : label;
 }
 
 export function pointsTiles(me: PredictMe | null): Tile[] {
   const s = me?.season;
   const m = me?.month;
   return [
-    { label: 'Очки за сезон', value: String(s?.points ?? 0), sub: s?.label },
-    { label: 'За месяц', value: String(m?.points ?? 0), sub: monthLabel(m?.label) },
-    { label: 'Место', value: s?.rank != null ? `${s.place ?? s.rank}` : '—', sub: s?.rank != null ? 'в сезоне' : 'нет прогнозов' },
-    { label: 'Точных счетов', value: String(s?.exact ?? 0), sub: s ? `из ${s.played}` : undefined },
+    { label: t('Очки за сезон'), value: String(s?.points ?? 0), sub: s?.label },
+    { label: t('За месяц'), value: String(m?.points ?? 0), sub: monthLabel(m?.label) },
+    { label: t('Место'), value: s?.rank != null ? `${s.place ?? s.rank}` : '—', sub: s?.rank != null ? t('в сезоне') : t('нет прогнозов') },
+    { label: t('Точных счетов'), value: String(s?.exact ?? 0), sub: s ? t('из {n}', { n: s.played }) : undefined },
   ];
 }
 
@@ -119,16 +121,16 @@ export function historyRow(h: PredHistoryItem): HistoryRow {
     case 'settled':
       points = h.points?.total ?? 0;
       tone = h.points?.kind === 'exact' ? 'exact' : points > 0 ? 'hit' : 'miss';
-      note = result ? `Итог ${result}` : 'Очки начислены';
+      note = result ? t('Итог {result}', { result }) : t('Очки начислены');
       break;
     case 'open':
-      note = 'Можно изменить до начала';
+      note = t('Можно изменить до начала');
       break;
     case 'void':
-      note = 'Матч не состоялся';
+      note = t('Матч не состоялся');
       break;
     default:
-      note = result ? `Итог ${result} · считаем очки` : 'Ждём результат';
+      note = result ? t('Итог {result} · считаем очки', { result }) : t('Ждём результат');
   }
   return {
     id: m.id,

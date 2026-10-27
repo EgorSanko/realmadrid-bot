@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import type { ApiFixtures } from '../../lib/api';
 import { splitFixtures } from '../../lib/mapMatches';
 import { useSpaLink } from '../../lib/spaLink';
+import { t } from '../../lib/i18n';
 import { usePoll } from '../../lib/usePoll';
 import { SectionHeader, Skeleton } from '../../ui';
 import { MatchRow } from '../../ui/matchExtra';
@@ -17,16 +18,16 @@ export function RecentResults({ limit = 3 }: { limit?: number }) {
 
   if (!fx.data && fx.loading) {
     return (
-      <section className="ui-card" aria-label="Последние матчи">
-        <SectionHeader title="Последние матчи" />
+      <section className="ui-card" aria-label={t('Последние матчи')}>
+        <SectionHeader title={t('Последние матчи')} />
         <Skeleton shape="list" rows={limit} />
       </section>
     );
   }
   if (!rows.length) return null;
   return (
-    <section className="ui-card" aria-label="Последние матчи">
-      <SectionHeader title="Последние матчи" actionLabel="Все" onAction={() => navigate('/matches?view=results')} />
+    <section className="ui-card" aria-label={t('Последние матчи')}>
+      <SectionHeader title={t('Последние матчи')} actionLabel={t('Все')} onAction={() => navigate('/matches?view=results')} />
       <div className="screen-list">
         {rows.map((m) => (
           <MatchRow key={m.id} kind="result" {...m} {...link(m.href)} />

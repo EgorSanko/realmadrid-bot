@@ -1,4 +1,5 @@
 import { useSpaLink } from '../lib/spaLink';
+import { t } from '../lib/i18n';
 import { AvatarButton } from './UserAvatar';
 
 /** Шапка раздела, как .topbar в макете. На главной — логотип-надпись и справа кнопка-аватар (профиль). */
@@ -15,7 +16,7 @@ export function ScreenHeader({
   if (brand) {
     return (
       <header className="brandbar">
-        <h1 className="brand" aria-label={`Мадридиста — ${title}`}>
+        <h1 className="brand" aria-label={t('Мадридиста — {title}', { title })}>
           {/* настоящая эмблема клуба из нашего кэша /img; не загрузилась — просто прячется */}
           <img
             className="brand__crest"
@@ -29,14 +30,15 @@ export function ScreenHeader({
             }}
           />
           <span className="brand__word">
-            МАДРИДИСТА
-            <span className="brand__sub">Real Madrid · фан-приложение</span>
+            {t('МАДРИДИСТА')}
+            <span className="brand__sub">{t('Real Madrid · фан-приложение')}</span>
           </span>
         </h1>
         <div className="brandbar__right">
           {live && (
             <span className="badge-live">
-              <span className="live-dot" />В ЭФИРЕ
+              <span className="live-dot" />
+              {t('В ЭФИРЕ')}
             </span>
           )}
           <ProfileLink />

@@ -1,5 +1,67 @@
 /** Английские строки: matches. Ключ — русский текст из t()/plural(), значение — перевод (подстановки {имя} те же). */
 const en: Record<string, string> = {
+  // lib/mapMatches.ts — турниры (общие с экраном матча — в match.ts: «Ла Лига», «Лига чемпионов», «Перерыв»…)
+  'ЛЛ': 'LL',
+  'ЛЧ': 'UCL',
+  'Кубок': 'Copa',
+  'Суперкубок': 'Supercopa',
+  'Суперкубок УЕФА': 'UEFA Super Cup',
+  'Клубный чемпионат мира': 'Club World Cup',
+  'КЧМ': 'CWC',
+  'Товарищеский матч': 'Friendly',
+  'Товарищеский': 'Friendly',
+  'Доп. время': 'Extra time',
+  // главная: место в таблице, устаревшие данные
+  'лидер': 'top of the table',
+  '−{n} до лидера': '{n} pts off the top',
+  'вровень с лидером': 'level on points with the leaders',
+  'место · {pts} очк.': 'place · {pts} pts',
+  'обновлено {n} мин назад': 'updated {n} min ago',
+  'обновлено {n} ч назад': 'updated {n} h ago',
+  'обновлено {n} дн назад': 'updated {n} d ago',
+  // «Матчи»
+  'все турниры': 'all competitions',
+  'перенесён': 'postponed',
+  'дома': 'home',
+  'в гостях': 'away',
+  'зона Лиги чемпионов': 'Champions League',
+  'Лига конференций': 'Conference League',
+  'зона вылета': 'Relegation',
+  'выход в 1/8 финала': 'Round of 16',
+  'стыковые матчи': 'Knockout play-offs',
+  'после {n} {w}': 'after {n} {w}',
+  'тура|туров|туров': 'matchday|matchdays',
+  'Сервер пока не получил расписание. Попробуй через минуту': 'The server hasn’t received the schedule yet. Try again in a minute',
+  'Нет соединения': 'No connection',
+  'Проверь интернет и попробуй ещё раз': 'Check your connection and try again',
+  'Не удалось загрузить': 'Couldn’t load',
+  'Попробуй ещё раз чуть позже': 'Please try again a little later',
+
+  // screens/MatchesScreen.tsx
+  'Календарь': 'Fixtures',
+  'Результаты': 'Results',
+  'Таблица': 'Table',
+  'Матчи «Реала»: календарь, результаты, таблица — Мадридиста': 'Real Madrid fixtures, results and table — Madridista',
+  'Ближайшие матчи': 'Upcoming matches',
+  'Ближайшие': 'Upcoming',
+  'Ближайших матчей нет': 'No upcoming matches',
+  'Календарь обновится, когда турнир опубликует даты': 'Fixtures will update once the competition confirms the dates',
+  'Весь календарь · {n}': 'All fixtures · {n}',
+  'list::Свернуть': 'Show less',
+  'Пока без результатов': 'No results yet',
+  'Здесь появятся сыгранные матчи': 'Played matches will appear here',
+  'Все результаты · {n}': 'All results · {n}',
+  'Таблица не загрузилась': 'Couldn’t load the table',
+  'Матчи': 'Matches',
+  'Фильтр турниров': 'Competition filter',
+  'Турнирные таблицы': 'League tables',
+  'Раздел': 'Section',
+
+  // screens/LeagueTable.tsx
+  'Таблица: {title}': 'Table: {title}',
+  'Вся таблица': 'Full table',
+  'Свернуть таблицу': 'Collapse table',
+  'Вся таблица и календарь': 'Full table and fixtures',
 };
 
 export default en;

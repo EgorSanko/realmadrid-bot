@@ -1,3 +1,4 @@
+import { t } from '../../lib/i18n';
 import { useSpaLink } from '../../lib/spaLink';
 import { Skeleton } from '../../ui';
 import { PredictInline } from './PredictForm';
@@ -17,11 +18,11 @@ export default function HomePredict() {
     return (
       <a className="ui-card home-predict" {...link('/predict')}>
         <span className="home-predict__head">
-          <span className="home-predict__title">Прогнозы</span>
-          <span className="home-predict__aside">рейтинг болельщиков</span>
+          <span className="home-predict__title">{t('Прогнозы')}</span>
+          <span className="home-predict__aside">{t('рейтинг болельщиков')}</span>
         </span>
         <span className="home-predict__row">
-          <span className="home-predict__cta">Угадывай счёт матчей Реала</span>
+          <span className="home-predict__cta">{t('Угадывай счёт матчей Реала')}</span>
           <svg className="home-predict__chev" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M9 6l6 6-6 6" />
           </svg>

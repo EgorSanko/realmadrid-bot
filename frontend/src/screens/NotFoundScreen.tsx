@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useSpaLink } from '../lib/spaLink';
+import { t } from '../lib/i18n';
 import { EmptyState } from '../ui';
 
 /**
@@ -9,7 +10,7 @@ import { EmptyState } from '../ui';
 export default function NotFoundScreen() {
   const link = useSpaLink();
   useEffect(() => {
-    document.title = 'Страница не найдена — Мадридиста';
+    document.title = t('Страница не найдена — Мадридиста');
     // не индексировать: поисковик, выполняющий JS, увидит noindex (nginx на такие адреса отдаёт 404)
     const robots = document.createElement('meta');
     robots.name = 'robots';
@@ -22,16 +23,16 @@ export default function NotFoundScreen() {
   return (
     <main className="nf">
       <header className="topbar">
-        <h1 className="topbar__title">Не найдено</h1>
+        <h1 className="topbar__title">{t('Не найдено')}</h1>
       </header>
       <EmptyState
-        title="Такой страницы нет"
-        text="Ссылка устарела или в адресе опечатка. Всё главное — на главной"
-        action={{ label: 'На главную', href: home.href, onClick: home.onClick }}
+        title={t('Такой страницы нет')}
+        text={t('Ссылка устарела или в адресе опечатка. Всё главное — на главной')}
+        action={{ label: t('На главную'), href: home.href, onClick: home.onClick }}
       />
       <p className="nf__more">
         <a href={matches.href} onClick={matches.onClick}>
-          Календарь матчей
+          {t('Календарь матчей')}
         </a>
       </p>
     </main>

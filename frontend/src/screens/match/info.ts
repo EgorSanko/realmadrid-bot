@@ -2,20 +2,21 @@
  * «О матче» (стадион, погода, судья) и зоны атак: ответ /api/match → данные карточек.
  * Только FotMob даёт вместимость, покрытие, погоду, статистику судьи и зоны (available: venue_details,
  * weather, referee_stats, zones); у резервов этих пунктов нет — карточки сводятся к строкам или прячутся.
- * Чистые функции без рантайм-импортов (только типы) — их проверяет `node --test`.
+ * Чистые функции — их проверяет `node --test`; рантайм-импорт — только lib/i18n.
  */
+import { isEn, pluralEn, t } from '../../lib/i18n';
 import type { ApiMatch, ApiRefScale, ApiZone, AvailableKey } from '../../api/match';
 
 type PeriodKey = 'all' | 'first_half' | 'second_half';
 
 const has = (m: ApiMatch, k: AvailableKey) => m.available.includes(k);
 
-/** 5.51 → «5,51»; целые — без дробной части */
+/** 5.51 → «5,51» (по-английски «5.51»); целые — без дробной части */
 export function decimalRu(v: number, digits = 2): string {
-  return Number.isInteger(v) ? String(v) : v.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '').replace('.', ',');
+  return Number.isInteger(v) ? String(v) : v.toFixed(digits).replace(/0+$/, '').replace(/\.$/, '').replace('.', isEn() ? '.' : ',');
 }
 
-export const thousandsRu = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+export const thousandsRu = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, isEn() ? ',' : ' ');
 
 /** '/img/flag/es.svg' → 'es' */
 export function flagIsoOf(flag: string | null | undefined): string | null {
@@ -28,10 +29,10 @@ const HOME_NATIONS: Record<string, string> = { 'gb-eng': 'Англия', 'gb-sct
 /** Страна по-русски по коду флага (как countryRu в карточке игрока); не вышло — null (английский не выводим). */
 export function countryNameRu(iso2: string | null | undefined): string | null {
   const c = (iso2 ?? '').toLowerCase();
-  if (HOME_NATIONS[c]) return HOME_NATIONS[c];
+  if (HOME_NATIONS[c]) return t(HOME_NATIONS[c]);
   if (!/^[a-z]{2}$/.test(c)) return null;
   try {
-    const n = new Intl.DisplayNames(['ru'], { type: 'region' }).of(c.toUpperCase());
+    const n = new Intl.DisplayNames([isEn() ? 'en' : 'ru'], { type: 'region' }).of(c.toUpperCase());
     return n && n.toUpperCase() !== c.toUpperCase() ? n : null;
   } catch {
     return null; // старый движок без Intl.DisplayNames
@@ -84,7 +85,7 @@ export function stadiumView(m: ApiMatch): StadiumView | null {
     iso,
     country: (iso && countryNameRu(iso)) || undefined,
     capacity: details && v.capacity ? thousandsRu(v.capacity) : undefined,
-    surface: details && v.surface ? SURFACE_RU[v.surface.toLowerCase()] : undefined,
+    surface: details && v.surface && SURFACE_RU[v.surface.toLowerCase()] ? t(SURFACE_RU[v.surface.toLowerCase()]) : undefined,
     attendance: m.attendance ? thousandsRu(m.attendance) : undefined,
   };
 }
@@ -135,13 +136,13 @@ export function weatherView(m: ApiMatch): WeatherView | null {
   const key = (w.key ?? '').toLowerCase();
   const icon = ICON_BY_KEY.find(([re]) => re.test(key))?.[1] ?? 'cloudy';
   const details = [
-    w.humidity != null ? `влажность ${w.humidity}%` : null,
-    w.cloud != null ? `облачность ${w.cloud}%` : null,
-    w.precip != null ? `осадки ${decimalRu(w.precip, 1)} мм` : null,
+    w.humidity != null ? t('влажность {n}%', { n: w.humidity }) : null,
+    w.cloud != null ? t('облачность {n}%', { n: w.cloud }) : null,
+    w.precip != null ? t('осадки {n} мм', { n: decimalRu(w.precip, 1) }) : null,
   ]
     .filter(Boolean)
     .join(' · ');
-  return { temp: `${Math.round(w.temp)} °C`, text: WEATHER_RU[key] ?? null, icon, details };
+  return { temp: `${Math.round(w.temp)} °C`, text: WEATHER_RU[key] ? t(WEATHER_RU[key]) : null, icon, details };
 }
 
 /* ---------- судья ---------- */
@@ -151,7 +152,7 @@ export type RefLevel = 'above' | 'average' | 'below';
 const LEVEL_RU: Record<RefLevel, string> = { above: 'Выше среднего', average: 'Средний', below: 'Ниже среднего' };
 
 export function refereeLevelText(level: RefLevel | null | undefined): string | null {
-  return level ? LEVEL_RU[level] ?? null : null;
+  return level && LEVEL_RU[level] ? t(LEVEL_RU[level]) : null;
 }
 
 export interface RefScaleView {
@@ -198,6 +199,8 @@ export interface RefereeView {
 }
 
 const plural = (n: number, f: [string, string, string]) => {
+  const en = pluralEn(n, f);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return f[2];
@@ -215,13 +218,16 @@ export function refereeView(m: ApiMatch): RefereeView | null {
   const id = ri.id != null && ri.id > 0 && ri.photo ? ri.id : undefined;
   let matches: string | undefined;
   if (ri.matches != null) {
-    const where = ri.league?.id != null && TOURNAMENT_RU[ri.league.id] ? ` в ${TOURNAMENT_RU[ri.league.id]}` : ' в лиге';
-    matches = `${ri.matches} ${plural(ri.matches, ['матч', 'матча', 'матчей'])}${where}`;
+    const word = plural(ri.matches, ['матч', 'матча', 'матчей']);
+    const league = ri.league?.id != null ? TOURNAMENT_RU[ri.league.id] : undefined;
+    matches = league
+      ? t('{n} {word} в {league}', { n: ri.matches, word, league: t(league) })
+      : t('{n} {word} в лиге', { n: ri.matches, word });
   }
   const tiles: RefereeView['tiles'] = [];
-  if (ri.yellow?.total != null) tiles.push({ label: 'Жёлтых всего', value: thousandsRu(ri.yellow.total) });
-  if (ri.red != null) tiles.push({ label: 'Красных', value: String(ri.red) });
-  if (ri.pens != null) tiles.push({ label: 'Пенальти', value: String(ri.pens) });
+  if (ri.yellow?.total != null) tiles.push({ label: t('Жёлтых всего'), value: thousandsRu(ri.yellow.total) });
+  if (ri.red != null) tiles.push({ label: t('Красных'), value: String(ri.red) });
+  if (ri.pens != null) tiles.push({ label: t('Пенальти'), value: String(ri.pens) });
   return { ...base, id, matches, yellow: scaleView(ri.yellow), fouls: scaleView(ri.fouls), tiles };
 }
 

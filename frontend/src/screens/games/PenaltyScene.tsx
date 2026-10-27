@@ -4,6 +4,7 @@ import ballSrc from '../../assets/games/ball.webp';
 import diveSrc from '../../assets/games/courtois-dive.webp';
 import idleSrc from '../../assets/games/courtois-idle.webp';
 import { zoneFromSwipe } from '../../lib/games';
+import { t } from '../../lib/i18n';
 import {
   BALL_SIZE,
   DIVE,
@@ -464,7 +465,7 @@ export const PenaltyScene = forwardRef<
 
   return (
     <div className={`pk-stage${disabled ? ' is-busy' : ''}`} ref={stage}>
-      <svg className="pk-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Стадион ночью: ворота, Куртуа и мяч на одиннадцатиметровой отметке">
+      <svg className="pk-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('Стадион ночью: ворота, Куртуа и мяч на одиннадцатиметровой отметке')}>
         <defs>
           <linearGradient id="pk-sky" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#020308" />
@@ -657,7 +658,7 @@ export const PenaltyScene = forwardRef<
           height: `${(GOAL.h / H) * 100}%`,
         }}
         role="group"
-        aria-label="Куда бить: зоны ворот 1–6"
+        aria-label={t('Куда бить: зоны ворот 1–6')}
       >
         {[1, 2, 3, 4, 5, 6].map((z) => (
           <button
@@ -665,7 +666,11 @@ export const PenaltyScene = forwardRef<
             type="button"
             className={`pk-zone${aim === z ? ' is-aim' : ''}`}
             disabled={disabled}
-            aria-label={`Удар в зону ${z}: ${z <= 3 ? 'верх' : 'низ'}, ${['левый угол', 'по центру', 'правый угол'][(z - 1) % 3]}`}
+            aria-label={t('Удар в зону {z}: {row}, {col}', {
+              z,
+              row: z <= 3 ? t('верх') : t('низ'),
+              col: [t('левый угол'), t('по центру'), t('правый угол')][(z - 1) % 3],
+            })}
             onPointerEnter={() => !disabled && onAim(z)}
             onFocus={() => onAim(z)}
             onClick={() => onShoot(z)}
@@ -680,7 +685,7 @@ export const PenaltyScene = forwardRef<
         type="button"
         className="pk-ballhit"
         style={{ left: `${(SPOT.x / W) * 100}%`, top: `${(SPOT.y / H) * 100}%` }}
-        aria-label="Мяч: проведите пальцем к воротам или нажмите — удар в выбранную зону"
+        aria-label={t('Мяч: проведите пальцем к воротам или нажмите — удар в выбранную зону')}
         disabled={disabled}
         onPointerDown={onDown}
         onPointerMove={onMove}

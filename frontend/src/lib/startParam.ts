@@ -6,6 +6,7 @@
  *   quiz | penalty → /games/quiz, /games/penalty (ссылка «Поделиться» из игры)
  * Чистые функции — без SDK, проверяются node --test.
  */
+import { t } from './i18n';
 export type StartAction =
   | { kind: 'profile' }
   | { kind: 'league'; code: string }
@@ -31,5 +32,5 @@ export function inviteLink(code: string, serverLink: string | null | undefined, 
 
 /** Текст сообщения после вступления по ссылке. */
 export function joinedMessage(name: string, joined: boolean): string {
-  return joined ? `Вы вступили в лигу «${name}»` : `Вы уже в лиге «${name}»`;
+  return joined ? t('Вы вступили в лигу «{name}»', { name }) : t('Вы уже в лиге «{name}»', { name });
 }

@@ -1,3 +1,5 @@
+import { t } from './i18n';
+
 /**
  * Срок действия ссылки поставщика (Nimble Streamer).
  * Ссылка вида …/chunks.m3u8?nimblesessionid=…&token=<base64url(JSON)>.<подпись>,
@@ -58,17 +60,17 @@ export function describeExpiry(url: string, now: Date = new Date()): ExpiryInfo 
   const at = linkExpiry(url);
   if (!at) return null;
   const minutesLeft = Math.floor((at.getTime() - now.getTime()) / 60000);
-  const until = `${formatMsk(at, now)} (МСК)`;
+  const until = `${formatMsk(at, now)} (${t('МСК')})`;
   if (at.getTime() <= now.getTime()) {
-    return { at, level: 'expired', minutesLeft, text: `Срок действия ссылки истёк в ${until}` };
+    return { at, level: 'expired', minutesLeft, text: t('Срок действия ссылки истёк в {until}', { until }) };
   }
   if (minutesLeft < 30) {
     return {
       at,
       level: 'soon',
       minutesLeft,
-      text: `Ссылка действует до ${until} — осталось меньше 30 мин`,
+      text: t('Ссылка действует до {until} — осталось меньше 30 мин', { until }),
     };
   }
-  return { at, level: 'ok', minutesLeft, text: `Ссылка действует до ${until}` };
+  return { at, level: 'ok', minutesLeft, text: t('Ссылка действует до {until}', { until }) };
 }

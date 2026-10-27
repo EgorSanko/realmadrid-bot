@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { LoginButton } from '../../components/LoginButton';
 import { useAuth } from '../../lib/auth';
 import { levelTitle, plural } from '../../lib/games';
+import { t } from '../../lib/i18n';
 import type { GameId, LevelCard, WeekBoard } from '../../lib/games';
 import { LeaderboardRow, Skeleton } from '../../ui';
 import { gamesFetch } from './kit';
@@ -11,7 +12,7 @@ import { gamesFetch } from './kit';
 export function GamesHeader({ aside }: { aside?: ReactNode }) {
   return (
     <header className="topbar">
-      <h1 className="topbar__title">Игры</h1>
+      <h1 className="topbar__title">{t('Игры')}</h1>
       {aside != null && <span className="gm-top__aside">{aside}</span>}
     </header>
   );
@@ -43,7 +44,7 @@ export function LevelPicker<L extends string>({
             <span className="gm-level__title">{l.title}</span>
             <span className="gm-level__text">{l.text}</span>
             {note && <span className="gm-level__note">{note(l.id)}</span>}
-            <span className="gm-level__best">{b != null ? <>Рекорд <b>{b}</b></> : 'Ещё не играли'}</span>
+            <span className="gm-level__best">{b != null ? <>{t('Рекорд')} <b>{b}</b></> : t('Ещё не играли')}</span>
             <span className="gm-level__go" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <path d="M9 6l6 6-6 6" />
@@ -73,8 +74,8 @@ export function WeeklyBoard({ game, ver }: { game: GameId; ver: number }) {
 
   let body: ReactNode;
   if (board === null) body = <Skeleton shape="list" rows={3} />;
-  else if (board === 'error') body = <p className="gm-muted">Рейтинг сейчас недоступен — попробуйте позже.</p>;
-  else if (board.top.length === 0) body = <p className="gm-muted">На этой неделе ещё никто не играл — станьте первым.</p>;
+  else if (board === 'error') body = <p className="gm-muted">{t('Рейтинг сейчас недоступен — попробуйте позже.')}</p>;
+  else if (board.top.length === 0) body = <p className="gm-muted">{t('На этой неделе ещё никто не играл — станьте первым.')}</p>;
   else {
     const meBelow = board.me && board.me.rank != null && !board.top.some((r) => r.is_me);
     body = (
@@ -92,22 +93,22 @@ export function WeeklyBoard({ game, ver }: { game: GameId; ver: number }) {
           />
         ))}
         {meBelow && board.me && (
-          <LeaderboardRow rank={board.me.rank!} name="Вы" points={board.me.score} avatarUrl={auth.user?.avatar ?? undefined} silhouette isMe />
+          <LeaderboardRow rank={board.me.rank!} name={t('Вы')} points={board.me.score} avatarUrl={auth.user?.avatar ?? undefined} silhouette isMe />
         )}
       </div>
     );
   }
   const week = board && board !== 'error' ? board.week.label : null;
   return (
-    <section className="ui-card gm-board" aria-label="Лучшие за неделю">
+    <section className="ui-card gm-board" aria-label={t('Лучшие за неделю')}>
       <div className="gm-board__head">
-        <h2 className="gm-h2">Лучшие за неделю</h2>
+        <h2 className="gm-h2">{t('Лучшие за неделю')}</h2>
         {week && <span className="gm-muted">{week}</span>}
       </div>
       {body}
       {auth.status === 'anon' && (
         <div className="gm-board__login">
-          <p className="gm-muted">Без входа рекорд хранится только на этом устройстве. Войдите, чтобы попасть в рейтинг.</p>
+          <p className="gm-muted">{t('Без входа рекорд хранится только на этом устройстве. Войдите, чтобы попасть в рейтинг.')}</p>
           <LoginButton />
         </div>
       )}
@@ -121,7 +122,7 @@ export function ErrorNote({ text, onRetry }: { text: string; onRetry?: () => voi
       <span>{text}</span>
       {onRetry && (
         <button type="button" className="gm-error__retry" onClick={onRetry}>
-          Повторить
+          {t('Повторить')}
         </button>
       )}
     </div>

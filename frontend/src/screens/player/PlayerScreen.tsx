@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { backgroundOf, takePlayerOrigin, type PlayerNavState } from '../../lib/playerNav';
+import { t } from '../../lib/i18n';
 import { reducedMotion } from '../../lib/motion';
 import { useSpaLink } from '../../lib/spaLink';
 import { isDesktop, useDesktop } from '../../lib/shell';
@@ -118,7 +119,7 @@ export default function PlayerScreen() {
   const name = p?.name ?? (nav?.player && String(nav.player.id) === id ? nav.player.name : null);
   useEffect(() => {
     const prev = document.title;
-    document.title = name ? `${name} — Мадридиста` : 'Игрок — Мадридиста';
+    document.title = name ? t('{name} — Мадридиста', { name }) : t('Игрок — Мадридиста');
     return () => {
       document.title = prev;
     };
@@ -127,29 +128,34 @@ export default function PlayerScreen() {
   const numericId = /^\d+$/.test(id) ? Number(id) : undefined;
 
   return (
-    <div ref={ref} className="pc" role={page ? undefined : 'dialog'} aria-modal={page ? undefined : true} aria-label={name ? `Карточка игрока: ${name}` : 'Карточка игрока'} tabIndex={-1}>
+    <div ref={ref} className="pc" role={page ? undefined : 'dialog'} aria-modal={page ? undefined : true} aria-label={name ? t('Карточка игрока: {name}', { name }) : t('Карточка игрока')} tabIndex={-1}>
       <div className="pc-in">
         <header className="pc-top">
           {nativeBack ? (
             <span className="pc-top__gap" aria-hidden="true" />
           ) : (
-            <button type="button" className="pc-top__back" aria-label="Назад" onClick={goBack}>
+            <button type="button" className="pc-top__back" aria-label={t('Назад')} onClick={goBack}>
               {BACK_ICON}
             </button>
           )}
-          <span className="pc-top__title">Игрок</span>
+          <span className="pc-top__title">{t('Игрок')}</span>
           <span className="pc-top__gap" aria-hidden="true" />
         </header>
 
         {p ? (
           <PlayerBody p={p} />
         ) : state.kind === 'not_found' ? (
-          <EmptyState className="pc-state" title="Игрок не найден" text="Источник не знает такого игрока" action={{ label: 'К составу', onClick: () => navigate('/team') }} />
+          <EmptyState
+            className="pc-state"
+            title={t('Игрок не найден')}
+            text={t('Источник не знает такого игрока')}
+            action={{ label: t('К составу'), onClick: () => navigate('/team') }}
+          />
         ) : state.kind === 'error' ? (
           <ErrorState
             className="pc-state"
-            title={state.unavailable ? 'Данные игрока недоступны' : 'Не удалось загрузить'}
-            text={state.unavailable ? 'Источник сейчас не отвечает — попробуй чуть позже' : 'Проверь соединение и попробуй ещё раз'}
+            title={state.unavailable ? t('Данные игрока недоступны') : t('Не удалось загрузить')}
+            text={state.unavailable ? t('Источник сейчас не отвечает — попробуй чуть позже') : t('Проверь соединение и попробуй ещё раз')}
             onRetry={reload}
           />
         ) : (
@@ -173,11 +179,11 @@ function Waiting({ id, name, pending }: { id?: number; name: string | null; pend
           <Skeleton width="60%" height={14} style={{ marginTop: 10 }} />
         </div>
       </section>
-      <Card className="pc-wait" ariaLabel="Загрузка">
+      <Card className="pc-wait" ariaLabel={t('Загрузка')}>
         <p className="pc-wait__title" role="status">
-          Загружаем данные игрока…
+          {t('Загружаем данные игрока…')}
         </p>
-        {pending && <p className="pc-wait__text">Собираем карточку — обычно это несколько секунд</p>}
+        {pending && <p className="pc-wait__text">{t('Собираем карточку — обычно это несколько секунд')}</p>}
         <Skeleton shape="stats" rows={4} style={{ marginTop: 12 }} />
       </Card>
     </div>
@@ -188,14 +194,14 @@ function PlayerBody({ p }: { p: ApiPlayer }) {
   const has = (k: string) => p.available.includes(k);
   const tabs = useMemo(() => {
     const on = (k: string) => p.available.includes(k);
-    const t: Array<{ id: TabId; label: string }> = [];
-    if (on('season') && p.season?.tournaments.length) t.push({ id: 'season', label: 'Сезон' });
-    if (on('recent') && p.recent.length) t.push({ id: 'matches', label: 'Последние матчи' });
-    if ((on('career') && p.career.length) || (on('national') && p.national.length)) t.push({ id: 'career', label: 'Карьера' });
-    return t;
+    const list: Array<{ id: TabId; label: string }> = [];
+    if (on('season') && p.season?.tournaments.length) list.push({ id: 'season', label: t('Сезон') });
+    if (on('recent') && p.recent.length) list.push({ id: 'matches', label: t('Последние матчи') });
+    if ((on('career') && p.career.length) || (on('national') && p.national.length)) list.push({ id: 'career', label: t('Карьера') });
+    return list;
   }, [p]);
   const [tab, setTab] = useState<TabId | null>(tabs[0]?.id ?? null);
-  const current = tabs.find((t) => t.id === tab)?.id ?? tabs[0]?.id ?? null;
+  const current = tabs.find((x) => x.id === tab)?.id ?? tabs[0]?.id ?? null;
   const upd = updatedText(p.updated_at);
   const desktop = useDesktop();
 
@@ -210,14 +216,14 @@ function PlayerBody({ p }: { p: ApiPlayer }) {
         </div>
         <div className="pc-desk__stats">
           {has('season') && p.season && <KeyRow p={p} />}
-          {tabs.length > 1 && <Tabs items={tabs} value={current ?? tabs[0].id} onChange={setTab} ariaLabel="Разделы карточки" />}
+          {tabs.length > 1 && <Tabs items={tabs} value={current ?? tabs[0].id} onChange={setTab} ariaLabel={t('Разделы карточки')} />}
           {current === 'season' && <SeasonCard p={p} />}
           {current === 'matches' && <RecentCard p={p} />}
           {current === 'career' && <CareerCard p={p} />}
           <p className="pc-foot">
-            {p.stale ? 'Данные могли устареть · ' : ''}
+            {p.stale ? t('Данные могли устареть') + ' · ' : ''}
             {p.source === 'sofascore' ? 'SofaScore' : 'FotMob'}
-            {upd ? ` · обновлено в ${upd} МСК` : ''}
+            {upd ? ' · ' + t('обновлено в {time} МСК', { time: upd }) : ''}
           </p>
         </div>
       </div>
@@ -230,14 +236,14 @@ function PlayerBody({ p }: { p: ApiPlayer }) {
       {has('status') && p.status && <StatusCard p={p} />}
       <Facts p={p} />
       {has('season') && p.season && <KeyRow p={p} />}
-      {tabs.length > 1 && <Tabs items={tabs} value={current ?? tabs[0].id} onChange={setTab} ariaLabel="Разделы карточки" />}
+      {tabs.length > 1 && <Tabs items={tabs} value={current ?? tabs[0].id} onChange={setTab} ariaLabel={t('Разделы карточки')} />}
       {current === 'season' && <SeasonCard p={p} />}
       {current === 'matches' && <RecentCard p={p} />}
       {current === 'career' && <CareerCard p={p} />}
       <p className="pc-foot">
-        {p.stale ? 'Данные могли устареть · ' : ''}
+        {p.stale ? t('Данные могли устареть') + ' · ' : ''}
         {p.source === 'sofascore' ? 'SofaScore' : 'FotMob'}
-        {upd ? ` · обновлено в ${upd} МСК` : ''}
+        {upd ? ' · ' + t('обновлено в {time} МСК', { time: upd }) : ''}
       </p>
     </>
   );
@@ -249,11 +255,11 @@ function Hero({ p }: { p: ApiPlayer }) {
   const country = p.country ? countryRu(iso, p.country.name) : null;
   const role = roleRu(p.role);
   return (
-    <section className="pc-hero" aria-label="Игрок">
+    <section className="pc-hero" aria-label={t('Игрок')}>
       <div className="pc-hero__photo">
         <PlayerPhoto id={p.id} name={p.name ?? ''} size={104} />
         {p.number != null && (
-          <span className="pc-hero__num" aria-label={`номер ${p.number}`}>
+          <span className="pc-hero__num" aria-label={t('номер {n}', { n: p.number })}>
             {p.number}
           </span>
         )}
@@ -274,7 +280,7 @@ function Hero({ p }: { p: ApiPlayer }) {
           <div className="pc-hero__row">
             {p.team.id != null && p.team.logo && <TeamCrest id={p.team.id} name="" size={20} />}
             <span className="pc-ell">{p.team.name}</span>
-            {p.team.on_loan && <span className="pc-tag">аренда</span>}
+            {p.team.on_loan && <span className="pc-tag">{t('аренда')}</span>}
           </div>
         )}
         {country && (
@@ -300,7 +306,7 @@ function StatusCard({ p }: { p: ApiPlayer }) {
         {what && <span className="pc-status__what">{what}</span>}
       </div>
       <p className="pc-status__when">
-        {r.back ? r.text : r.past ? `Возвращение ожидалось: ${r.text}` : `Возвращение: ${r.text}`}
+        {r.back ? r.text : r.past ? t('Возвращение ожидалось: {when}', { when: r.text }) : t('Возвращение: {when}', { when: r.text })}
       </p>
     </section>
   );
@@ -310,17 +316,17 @@ function Facts({ p }: { p: ApiPlayer }) {
   const age = ageFromBirth(p.birth) ?? p.age;
   const items: Array<{ k: string; v: string; sub?: string | null }> = [];
   const at = ageText(age);
-  if (at) items.push({ k: 'Возраст', v: at, sub: dateLong(p.birth) });
-  if (p.height) items.push({ k: 'Рост', v: `${p.height} см` });
+  if (at) items.push({ k: t('Возраст'), v: at, sub: dateLong(p.birth) });
+  if (p.height) items.push({ k: t('Рост'), v: t('{n} см', { n: p.height }) });
   const foot = footRu(p.foot);
-  if (foot) items.push({ k: 'Нога', v: foot });
+  if (foot) items.push({ k: t('Нога'), v: foot });
   const val = p.available.includes('value') ? moneyText(p.value_eur) : null;
-  if (val) items.push({ k: 'Стоимость', v: val });
+  if (val) items.push({ k: t('Стоимость'), v: val });
   const ct = p.available.includes('contract') ? contractText(p.contract_until) : null;
-  if (ct) items.push({ k: 'Контракт до', v: ct });
+  if (ct) items.push({ k: t('Контракт до'), v: ct });
   if (!items.length) return null;
   return (
-    <section className="pc-facts" aria-label="Данные игрока">
+    <section className="pc-facts" aria-label={t('Данные игрока')}>
       {items.map((f) => (
         <div key={f.k} className="pc-fact">
           <div className="pc-fact__k">{f.k}</div>
@@ -337,11 +343,11 @@ function KeyRow({ p }: { p: ApiPlayer }) {
   if (!stats.length) return null;
   const s = p.season!;
   return (
-    <section className="pc-key" aria-label="Сезон в цифрах">
+    <section className="pc-key" aria-label={t('Сезон в цифрах')}>
       <div className="pc-key__cap">
-        Сезон {seasonShort(s.name)}
+        {t('Сезон {season}', { season: seasonShort(s.name) ?? '' })}
         {s.team?.name ? ` · ${s.team.name}` : ''}
-        {s.partial ? ' · по последним матчам' : ''}
+        {s.partial ? ' · ' + t('по последним матчам') : ''}
       </div>
       <div className="pc-key__grid">
         {stats.map((x) => (
@@ -360,9 +366,9 @@ function SeasonCard({ p }: { p: ApiPlayer }) {
   if (!v) return null;
   const head = seasonHead(p);
   return (
-    <Card ariaLabel="Сезон по турнирам" className="pc-season">
+    <Card ariaLabel={t('Сезон по турнирам')} className="pc-season">
       <div className="pc-srow pc-srow--head" aria-hidden="true">
-        <span className="pc-srow__name">Турнир</span>
+        <span className="pc-srow__name">{t('Турнир')}</span>
         {head.map((h) => (
           <span key={h} className="pc-srow__c">
             {h}
@@ -394,7 +400,7 @@ function SeasonCard({ p }: { p: ApiPlayer }) {
           <li className="pc-srow pc-srow--total">
             <span className="pc-srow__name">
               <span className="ui-crest-gap" style={{ width: 24, height: 24 }} aria-hidden="true" />
-              <span className="pc-srow__t">Всего</span>
+              <span className="pc-srow__t">{t('Всего')}</span>
             </span>
             {v.total.map((c, i) => (
               <span key={i} className="pc-srow__c" aria-label={`${head[i]}: ${c}`}>
@@ -404,7 +410,11 @@ function SeasonCard({ p }: { p: ApiPlayer }) {
           </li>
         )}
       </ul>
-      <p className="pc-legend">И — матчи, Мин — минуты, {p.role === 'GK' ? 'Сух — сухие матчи, Проп — пропущено' : 'Г — голы, П — передачи'}, Оц — средняя оценка</p>
+      <p className="pc-legend">
+        {t('И — матчи, Мин — минуты, {cols}, Оц — средняя оценка', {
+          cols: p.role === 'GK' ? t('Сух — сухие матчи, Проп — пропущено') : t('Г — голы, П — передачи'),
+        })}
+      </p>
     </Card>
   );
 }
@@ -414,7 +424,7 @@ function RecentCard({ p }: { p: ApiPlayer }) {
   const link = useSpaLink();
   if (!rows.length) return null;
   return (
-    <Card ariaLabel="Последние матчи" className="pc-recent">
+    <Card ariaLabel={t('Последние матчи')} className="pc-recent">
       <ul className="pc-list">
         {rows.map((m) => {
           const body = (
@@ -445,7 +455,12 @@ function RecentCard({ p }: { p: ApiPlayer }) {
                 <a
                   className="pc-rm"
                   {...link(m.href)}
-                  aria-label={`${m.date}, ${m.opponent?.name ?? ''}, ${m.venue}, счёт ${m.score} — к матчу`}
+                  aria-label={t('{date}, {opponent}, {venue}, счёт {score} — к матчу', {
+                    date: m.date,
+                    opponent: m.opponent?.name ?? '',
+                    venue: m.venue,
+                    score: m.score,
+                  })}
                 >
                   {body}
                 </a>
@@ -478,7 +493,7 @@ function CareerCard({ p }: { p: ApiPlayer }) {
               <span className="pc-cr__main">
                 <span className="pc-cr__name">
                   <span className="pc-ell">{c.team?.name ?? '—'}</span>
-                  {c.loan && <span className="pc-tag">аренда</span>}
+                  {c.loan && <span className="pc-tag">{t('аренда')}</span>}
                 </span>
                 {c.stats && <span className="pc-cr__sub">{c.stats}</span>}
               </span>
@@ -489,9 +504,9 @@ function CareerCard({ p }: { p: ApiPlayer }) {
       </section>
     );
   return (
-    <Card ariaLabel="Карьера" className="pc-career">
-      {group('Клубы', clubs)}
-      {group('Сборная', nat)}
+    <Card ariaLabel={t('Карьера')} className="pc-career">
+      {group(t('Клубы'), clubs)}
+      {group(t('Сборная'), nat)}
     </Card>
   );
 }

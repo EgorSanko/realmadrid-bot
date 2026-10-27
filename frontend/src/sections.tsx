@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { t } from './lib/i18n';
 
 /** Пять разделов нижнего меню. Иконки — ровно те, что в макете a-home.html («Игры» — кубок прогнозов). */
 export interface Section {
@@ -15,16 +16,16 @@ export interface Section {
 export const SECTIONS: Section[] = [
   {
     path: '/',
-    label: 'Главная',
+    label: t('Главная'),
     stage: 2,
-    about: 'Ближайший матч, обратный отсчёт и главное за день.',
+    about: t('Ближайший матч, обратный отсчёт и главное за день.'),
     icon: <path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />,
   },
   {
     path: '/matches',
-    label: 'Матчи',
+    label: t('Матчи'),
     stage: 7,
-    about: 'Календарь, результаты и онлайн матчей.',
+    about: t('Календарь, результаты и онлайн матчей.'),
     icon: (
       <>
         <rect x="4" y="5" width="16" height="15" rx="2" />
@@ -34,16 +35,16 @@ export const SECTIONS: Section[] = [
   },
   {
     path: '/team',
-    label: 'Команда',
+    label: t('Команда'),
     stage: 8,
-    about: 'Состав и статистика игроков.',
+    about: t('Состав и статистика игроков.'),
     icon: <path d="M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2z" />,
   },
   {
     path: '/media',
-    label: 'Медиа',
+    label: t('Медиа'),
     stage: 9,
-    about: 'Видео и новости клуба.',
+    about: t('Видео и новости клуба.'),
     icon: (
       <>
         <rect x="3" y="6" width="18" height="13" rx="2" />
@@ -55,9 +56,9 @@ export const SECTIONS: Section[] = [
     // «Игры»: внутри вкладки «Прогнозы / Викторина / Пенальти» (components/GamesTabs.tsx).
     // Пункт ведёт на прогнозы — главную игру раздела, викторина и пенальти — /games/*.
     path: '/predict',
-    label: 'Игры',
+    label: t('Игры'),
     stage: 10,
-    about: 'Прогнозы на матчи, викторина и пенальти.',
+    about: t('Прогнозы на матчи, викторина и пенальти.'),
     also: ['/games'],
     icon: <path d="M7 4h10v4a5 5 0 01-10 0zM5 5H3v1a4 4 0 004 4M19 5h2v1a4 4 0 01-4 4M12 13v4M8 20h8" />,
   },

@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactNode } from 'react';
+import { t } from '../lib/i18n';
 import { cx } from './format';
 import { PlayerPhoto } from './images';
 
@@ -32,7 +33,7 @@ export function PlayerTap({ player, playerHref, onPlayerClick, children, classNa
     <a
       className={cx('ui-ptap', className)}
       href={playerHref(id)}
-      aria-label={label ?? `${player.name} — карточка игрока`}
+      aria-label={label ?? t('{name} — карточка игрока', { name: player.name })}
       onClick={onPlayerClick ? (e) => onPlayerClick({ id, name: player.name }, e) : undefined}
     >
       {children}

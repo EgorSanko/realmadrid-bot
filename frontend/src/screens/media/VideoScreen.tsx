@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useApiResource } from '../../lib/apiResource';
 import { ExternalLink } from '../../lib/ExternalLink';
+import { isEn, t } from '../../lib/i18n';
 import { isVideoId, useOverlayBack, type MediaNavState } from '../../lib/mediaNav';
 import { backgroundOf } from '../../lib/playerNav';
 import { isDesktop, useDesktop } from '../../lib/shell';
@@ -88,7 +89,7 @@ export default function VideoScreen() {
   }, [id]);
   useEffect(() => {
     const prev = document.title;
-    document.title = title ? `${title} — Мадридиста` : 'Видео — Мадридиста';
+    document.title = title ? t('{title} — Мадридиста', { title }) : t('Видео — Мадридиста');
     return () => {
       document.title = prev;
     };
@@ -103,7 +104,7 @@ export default function VideoScreen() {
       className={overlay ? 'nr nr--overlay' : 'nr'}
       role={page ? undefined : 'dialog'}
       aria-modal={page ? undefined : true}
-      aria-label={title ? `Видео: ${title}` : 'Видео'}
+      aria-label={title ? t('Видео: {title}', { title }) : t('Видео')}
       tabIndex={-1}
     >
       <div className="nr-in nr-in--video">
@@ -111,26 +112,31 @@ export default function VideoScreen() {
           {nativeBack ? (
             <span className="nr-top__gap" aria-hidden="true" />
           ) : (
-            <button type="button" className="nr-top__back" aria-label="Назад" onClick={goBack}>
+            <button type="button" className="nr-top__back" aria-label={t('Назад')} onClick={goBack}>
               {BACK_ICON}
             </button>
           )}
-          <span className="nr-top__title">{short ? 'Shorts' : 'Видео'}</span>
+          <span className="nr-top__title">{short ? 'Shorts' : isEn() ? 'Video' : 'Видео'}</span>
           <span className="nr-top__gap" aria-hidden="true" />
         </header>
 
         {!valid ? (
-          <EmptyState className="nr-state" title="Видео не найдено" text="Неверная ссылка на ролик" action={{ label: 'Все видео', onClick: goBack }} />
+          <EmptyState
+            className="nr-state"
+            title={t('Видео не найдено')}
+            text={t('Неверная ссылка на ролик')}
+            action={{ label: t('Все видео'), onClick: goBack }}
+          />
         ) : (
           <>
-            <Player key={id} id={id} short={short} title={title ?? 'Видео Real Madrid'} />
+            <Player key={id} id={id} short={short} title={title ?? t('Видео Real Madrid')} />
             <div className="nr-pad">
               {title ? <h1 className="nr-title nr-title--video">{title}</h1> : <Skeleton width="80%" height={20} />}
               <p className="nr-meta">{metaLine(found?.subtitle ?? (short ? 'Shorts · Real Madrid' : 'Real Madrid · YouTube'), date)}</p>
             </div>
             {more.length > 0 && (
-              <section className="mx-videos nr-vmore" aria-label="Ещё видео">
-                <h2 className="nr-more__title nr-pad">Ещё видео</h2>
+              <section className="mx-videos nr-vmore" aria-label={t('Ещё видео')}>
+                <h2 className="nr-more__title nr-pad">{t('Ещё видео')}</h2>
                 <div className="mx-grid" role="list">
                   {more.map((v) => (
                     <div key={v.id} role="listitem">
@@ -158,8 +164,8 @@ function Player({ id, short, title }: { id: string; short: boolean; title: strin
   const frame = useRef<HTMLIFrameElement>(null);
   const blocked = useEmbedBlocked(frame, id);
   useEffect(() => {
-    const t = window.setTimeout(() => setSlow(true), SLOW_MS);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setSlow(true), SLOW_MS);
+    return () => window.clearTimeout(timer);
   }, []);
   const base = ytEmbedUrl(id);
   // enablejsapi — плеер шлёт события (в т. ч. ошибку «встраивание запрещено») в postMessage
@@ -174,13 +180,13 @@ function Player({ id, short, title }: { id: string; short: boolean; title: strin
       <div className={short ? 'vp vp--short vp--blocked' : 'vp vp--blocked'}>
         <img className="vp-blocked__bg" src={`/img/yt/${id}.jpg`} alt="" decoding="async" />
         <div className="vp-blocked__in">
-          <p className="vp-blocked__title">Этот ролик смотрят только на YouTube</p>
-          <p className="vp-blocked__text">Автор запретил показывать его в других приложениях и на сайтах</p>
+          <p className="vp-blocked__title">{t('Этот ролик смотрят только на YouTube')}</p>
+          <p className="vp-blocked__text">{t('Автор запретил показывать его в других приложениях и на сайтах')}</p>
           <ExternalLink href={watch} className="ui-btn ui-btn--primary vp-blocked__btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5.5v13l11-6.5z" />
             </svg>
-            Смотреть на YouTube
+            {t('Смотреть на YouTube')}
           </ExternalLink>
         </div>
       </div>
@@ -211,9 +217,9 @@ function Player({ id, short, title }: { id: string; short: boolean; title: strin
         )}
       </div>
       <p className={slow && !loaded ? 'vp-hint vp-hint--slow' : 'vp-hint'} role={slow && !loaded ? 'alert' : undefined}>
-        {slow && !loaded ? 'YouTube грузится слишком долго — в России он работает с перебоями. ' : 'Не грузится? '}
+        {slow && !loaded ? t('YouTube грузится слишком долго — в России он работает с перебоями.') + ' ' : t('Не грузится?') + ' '}
         <ExternalLink href={watch} className="vp-hint__link">
-          Открыть на YouTube
+          {t('Открыть на YouTube')}
         </ExternalLink>
       </p>
     </>

@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
+import { t } from '../lib/i18n';
 import { CountUp } from './countUp';
 import { Chip } from './base';
 import { cx } from './format';
@@ -151,11 +152,11 @@ export interface ScoreStepperProps {
 /** «− 2 +» для прогноза счёта. */
 export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, disabled, className }: ScoreStepperProps) {
   return (
-    <div className={cx('ui-stepper', className)} role="group" aria-label={`Голы — ${teamName}`}>
+    <div className={cx('ui-stepper', className)} role="group" aria-label={t('Голы — {team}', { team: teamName })}>
       <button
         type="button"
         className="ui-stepper__btn ui-stepper__btn--minus"
-        aria-label={`Меньше голов — ${teamName}`}
+        aria-label={t('Меньше голов — {team}', { team: teamName })}
         disabled={disabled || value <= min}
         onClick={() => onChange(Math.max(min, value - 1))}
       >
@@ -167,7 +168,7 @@ export function ScoreStepper({ value, onChange, teamName, min = 0, max = 15, dis
       <button
         type="button"
         className="ui-stepper__btn"
-        aria-label={`Больше голов — ${teamName}`}
+        aria-label={t('Больше голов — {team}', { team: teamName })}
         disabled={disabled || value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
       >
@@ -212,7 +213,7 @@ export interface LeaderboardRowProps {
 
 export function LeaderboardRow({ rank, name, points, avatarUrl, isMe, silhouette, sub, rankFrom, className, style }: LeaderboardRowProps) {
   const [imgOk, setImgOk] = useState(true);
-  const letter = (isMe ? 'Я' : name.trim()[0] ?? '?').toUpperCase();
+  const letter = (isMe ? t('Я') : name.trim()[0] ?? '?').toUpperCase();
   return (
     <div className={cx('ui-lb', isMe && 'is-me', rank <= 3 && 'is-top', className)} style={style}>
       <span className={cx('ui-lb__rank', rank <= 3 && 'is-top')}>
