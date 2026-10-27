@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { withLang } from './i18n';
 import { useRefreshBump } from './refresh';
 
 /**
@@ -24,7 +25,7 @@ export interface SnapshotMeta {
 }
 
 export async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
-  const r = await fetch(url, { signal, headers: { Accept: 'application/json' } });
+  const r = await fetch(withLang(url), { signal, headers: { Accept: 'application/json' } });
   let body: unknown = null;
   try {
     body = await r.json();

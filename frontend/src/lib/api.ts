@@ -3,6 +3,7 @@
  * Клиент ходит только по относительным путям /api/*; внешних запросов нет.
  */
 import type { ApiRound } from '../api/match';
+import { withLang } from './i18n';
 
 /** Общие поля каждого ответа: откуда и когда снимок. */
 export interface ApiMeta {
@@ -130,7 +131,7 @@ export class ApiFetchError extends Error {
 export async function fetchApi<T>(path: string, signal?: AbortSignal): Promise<T> {
   let r: Response;
   try {
-    r = await fetch(path, { cache: 'no-store', signal, headers: { Accept: 'application/json' } });
+    r = await fetch(withLang(path), { cache: 'no-store', signal, headers: { Accept: 'application/json' } });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
     throw new ApiFetchError(0, null, 'Нет соединения');

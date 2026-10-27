@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { LangSwitch } from '../../components/LangSwitch';
 import { LoginButton } from '../../components/LoginButton';
 import { UserAvatar } from '../../components/UserAvatar';
 import { AuthFetchError, BOT_USERNAME, authFetch, deleteAccount, inMiniApp, signOut, useAuth } from '../../lib/auth';
@@ -142,6 +143,15 @@ export default function ProfileScreen() {
           )}
           {!tma && <DeleteAccount />}
         </>
+      )}
+
+      {auth.status !== 'loading' && (
+        <Card className="pf-lang">
+          <span>
+            <b>Язык · Language</b>
+          </span>
+          <LangSwitch />
+        </Card>
       )}
 
       {/* политика конфиденциальности — на сайте и в приложении (мини-апп не меняем) */}

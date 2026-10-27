@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { retrieveRawInitData } from '@tma.js/sdk-react';
+import { withLang } from './i18n';
 
 /**
  * Вход через Telegram (backend/app/auth_api.py).
@@ -106,7 +107,7 @@ export async function authFetch<T>(
 ): Promise<T> {
   let r: Response;
   try {
-    r = await fetch(path, {
+    r = await fetch(withLang(path), {
       method: init.method ?? 'GET',
       cache: 'no-store',
       credentials: 'same-origin',

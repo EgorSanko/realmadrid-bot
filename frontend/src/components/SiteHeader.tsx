@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { useAuth } from '../lib/auth';
 import { useSpaLink } from '../lib/spaLink';
+import { LangSwitch } from './LangSwitch';
 import { useStream } from '../lib/stream';
 import { SECTIONS } from '../sections';
 import { LoginButton } from './LoginButton';
@@ -50,6 +51,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="sh__right">
+          <LangSwitch className="sh__lang" />
           {stream?.live && (
             <a className="badge-live sh__live" {...link('/')} aria-label="Идёт эфир — смотреть на главной">
               <span className="live-dot" />В ЭФИРЕ

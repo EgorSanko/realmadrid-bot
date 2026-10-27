@@ -1,0 +1,16 @@
+/* RU / EN — маленькая сегментная кнопка: в шапке сайта и в профиле */
+.lang-sw {
+  display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px;
+  background: rgba(255, 255, 255, .04); border: 1px solid var(--line);
+}
+.lang-sw__btn {
+  min-width: 38px; height: 28px; padding: 0 10px; border: 0; border-radius: 999px;
+  background: transparent; color: var(--muted); font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .04em;
+  cursor: pointer; transition: background .2s, color .2s;
+}
+.lang-sw__btn:hover { color: var(--text); }
+.lang-sw__btn.on { background: rgba(212, 175, 55, .16); color: var(--gold); cursor: default; }
+.lang-sw__btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.lang-sw__btn:active:not(.on) { transform: scale(.96); }
+
+.pf-lang { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

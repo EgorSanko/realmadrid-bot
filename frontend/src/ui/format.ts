@@ -1,4 +1,6 @@
-/** Время и тексты для интерфейса. Всё время показываем по Москве. */
+/** Время и тексты для интерфейса. Всё время показываем по Москве; язык — lib/i18n (RU / EN). */
+
+import { isEn, pluralEn } from '../lib/i18n';
 
 export type DateInput = Date | string | number;
 
@@ -14,6 +16,14 @@ const MONTH_LONG = [
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
 const WEEKDAY = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+const MONTH_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_LONG_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+const monthShort = (m: number) => (isEn() ? MONTH_EN : MONTH_SHORT)[m];
+const monthLong = (m: number) => (isEn() ? MONTH_LONG_EN : MONTH_LONG)[m];
+const weekday = (w: number) => (isEn() ? WD_EN : WEEKDAY)[w];
 
 interface MskParts {
   year: number;
@@ -57,26 +67,33 @@ export function formatTime(d: DateInput): string {
   return `${p.hh}:${p.mm}`;
 }
 
-/** «14 окт» */
+/** «14 окт» · «14 Oct» */
 export function formatDayShort(d: DateInput): string {
   const p = mskParts(d);
-  return `${p.day} ${MONTH_SHORT[p.month]}`;
+  return `${p.day} ${monthShort(p.month)}`;
 }
 
-/** «Вс, 18 окт» */
+/** «Вс, 18 окт» · «Sun, 18 Oct» */
 export function formatWeekdayShort(d: DateInput): string {
   const p = mskParts(d);
-  return `${WEEKDAY[p.weekday]}, ${p.day} ${MONTH_SHORT[p.month]}`;
+  return `${weekday(p.weekday)}, ${p.day} ${monthShort(p.month)}`;
 }
 
-/** «Вс, 18 октября · 22:00 МСК» */
+/** «Вс, 18 октября · 22:00 МСК» · «Sun, 18 October · 22:00 MSK» */
 export function formatKickoff(d: DateInput): string {
   const p = mskParts(d);
-  return `${WEEKDAY[p.weekday]}, ${p.day} ${MONTH_LONG[p.month]} · ${p.hh}:${p.mm} МСК`;
+  return `${weekday(p.weekday)}, ${p.day} ${monthLong(p.month)} · ${p.hh}:${p.mm} ${isEn() ? 'MSK' : 'МСК'}`;
 }
 
-/** plural(5, ['день', 'дня', 'дней']) → «дней» */
+/** Название месяца: «октября» / «October» (для дат в тексте). */
+export function monthName(m: number): string {
+  return monthLong(m);
+}
+
+/** plural(5, ['день', 'дня', 'дней']) → «дней»; по-английски — из словаря: 'день|дня|дней' → 'day|days' */
 export function plural(n: number, forms: [string, string, string]): string {
+  const en = pluralEn(n, forms);
+  if (en != null) return en;
   const a = Math.abs(n) % 100;
   const b = a % 10;
   if (a > 10 && a < 20) return forms[2];
