@@ -10,7 +10,9 @@
   * `/start` без кода → короткое приветствие с кнопкой мини-аппа (web_app);
   * `/stop` / `/goals` — не присылать / снова присылать ролики голов;
   * любое другое личное сообщение (текст, фото, голосовое, стикер…) — сохраняет в bot_messages и
-    пересылает владельцу (ADMIN_IDS) с именем отправителя; человеку — «Спасибо, передали», не чаще раза в час;
+    пересылает владельцу (ADMIN_IDS) с именем отправителя; человеку — что это за бот, кнопка приложения и
+    контакт поддержки (SUPPORT_CONTACT), не чаще раза в час;
+  * язык ответов — по language_code Telegram: русский для ru/uk/be/kk/…, остальным — английский;
   * группы, каналы, другие боты — молча пропускает.
 Каждый, кто написал боту, попадает в получатели рассылки голов (app/broadcast.py) — её запускает
 владелец кнопкой в «Мадридиста · Клипы» (21.10.2026 владелец разрешил рассылку в личку).
@@ -51,18 +53,36 @@ STALE_MESSAGE = timedelta(minutes=10)    # старые сообщения (на
 FAIL_LIMIT = (5, 600.0)           # неверных кодов от одного человека за 10 мин
 GLOBAL_FAIL_LIMIT = (300, 600.0)  # неверных кодов от всех за 10 мин — дальше 6 цифр не принимаем
 
+SUPPORT_CONTACT = "@papito007"   # поддержка и вопросы — владелец (решение владельца 27.10.2026)
 MSG_OK = "Вход на сайт выполнен ✅ Можно вернуться в браузер."
 MSG_BAD = "Код не найден или устарел. Нажмите „Войти“ на сайте ещё раз."
 MSG_LIMIT = "Слишком много неверных кодов. Подождите 10 минут и нажмите „Войти“ на сайте ещё раз."
 MSG_HELLO = ("Привет! Это «Мадридиста» — всё о «Реале»: матчи онлайн, новости, прогнозы и игры.\n"
              "Откройте приложение кнопкой ниже.")
 BTN_APP = "Открыть «Мадридисту»"
-MSG_THANKS = "Спасибо! Сообщение передали автору «Мадридисты» 🙌"
-THANKS_EVERY = 3600.0             # «спасибо» одному человеку — не чаще раза в час
+MSG_ABOUT = ("Это бот приложения «Мадридиста» — всё о «Реале»: матчи онлайн, новости, прогнозы и игры. "
+             "Откройте приложение кнопкой ниже.\n\n"
+             f"По вопросам и поддержке пишите {SUPPORT_CONTACT}")
+ABOUT_EVERY = 3600.0              # «что это за бот» одному человеку — не чаще раза в час
 MEDIA_KINDS = ("photo", "video", "voice", "video_note", "audio", "document", "animation", "sticker",
                "location", "contact", "poll")
 MSG_STOP = "Больше не присылаю ролики голов. Вернуть: /goals"
 MSG_GOALS = "Буду присылать ролики голов «Реала». Отключить: /stop"
+# английские версии — тем, у кого Telegram не на русском и не на близком к нему языке
+EN = {
+    MSG_OK: "Signed in to the website ✅ You can go back to your browser.",
+    MSG_BAD: "Code not found or expired. Tap “Log in” on the website again.",
+    MSG_LIMIT: "Too many wrong codes. Wait 10 minutes and tap “Log in” on the website again.",
+    MSG_HELLO: ("Hi! This is Madridista — everything about Real Madrid: live matches, news, predictions "
+                "and games.\nOpen the app with the button below."),
+    BTN_APP: "Open Madridista",
+    MSG_ABOUT: ("This is the Madridista app bot — everything about Real Madrid: live matches, news, predictions "
+                "and games. Open the app with the button below.\n\n"
+                f"For questions and support, message {SUPPORT_CONTACT}"),
+    MSG_STOP: "I won't send goal clips anymore. Turn them back on: /goals",
+    MSG_GOALS: "I'll send Real Madrid goal clips. Turn off: /stop",
+}
+RU_LANGS = {"ru", "uk", "be", "kk", "ky", "uz", "tg", "hy", "az", "ka", "tk", "ro"}
 CMD_RE = re.compile(r"^/(stop|goals)(?:@[A-Za-z0-9_]+)?\s*$", re.I)
 
 START_RE = re.compile(r"^/start(?:@[A-Za-z0-9_]+)?(?:\s+(\S+))?\s*$")
@@ -75,6 +95,16 @@ Transport = Callable[[str, dict, float], Awaitable[dict]]
 def scrub(text: str) -> str:
     """Токен бота не должен попасть ни в логи, ни в /api/health/sources."""
     return TOKEN_SCRUB.sub("bot<token>", text)
+
+
+def lang_of(sender: dict) -> str:
+    """'ru' — Telegram на русском или близком языке (и когда язык неизвестен), иначе 'en'."""
+    code = str(sender.get("language_code") or "").lower().split("-")[0]
+    return "en" if code and code not in RU_LANGS else "ru"
+
+
+def tr(text: str, lang: str) -> str:
+    return EN.get(text, text) if lang == "en" else text
 
 
 def utcnow() -> datetime:
@@ -324,6 +354,7 @@ class TelegramBot(Source):
         date = msg.get("date")
         stale = isinstance(date, int) and datetime.fromtimestamp(date, timezone.utc) < now - STALE_MESSAGE
         uid = sender["id"]
+        lang = lang_of(sender)
         broadcast.record_chat(conn, sender)
         if not isinstance(text, str):   # фото, голосовое, стикер… — во входящие
             return self._to_inbox(conn, msg, sender, stale), None
@@ -337,15 +368,14 @@ class TelegramBot(Source):
         if cm:
             on = cm.group(1).lower() == "goals"
             broadcast.set_notify(conn, uid, on)
-            return self._message(uid, MSG_GOALS if on else MSG_STOP), None
+            return self._message(uid, tr(MSG_GOALS if on else MSG_STOP, lang)), None
         token = code = None
         m = START_RE.match(text)
         if m:
             payload = m.group(1) or ""
             if not payload.startswith(login_codes.START_PREFIX):
                 self.stats["greetings"] += 1
-                return self._message(uid, MSG_HELLO, {"inline_keyboard": [[
-                    {"text": BTN_APP, "web_app": {"url": self.site_url}}]]}), None
+                return self._message(uid, tr(MSG_HELLO, lang), self._app_button(lang)), None
             token = payload[len(login_codes.START_PREFIX):]
         else:
             code = login_codes.normalize_code(text)
@@ -358,7 +388,7 @@ class TelegramBot(Source):
             if told is not None and self.mono() - told < FAIL_LIMIT[1]:
                 return None, None  # уже сказали — не отвечаем на каждое сообщение
             self._limit_told[uid] = self.mono()
-            return self._message(uid, MSG_LIMIT), None
+            return self._message(uid, tr(MSG_LIMIT, lang)), None
         user = {"id": uid, "first_name": sender.get("first_name") or "", "last_name": sender.get("last_name"),
                 "username": sender.get("username")}
         if login_codes.confirm(conn, now, user, token=token, code=code):
@@ -366,18 +396,19 @@ class TelegramBot(Source):
                          now.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
             self.stats["logins"] += 1
             log.info("bot: вход по %s подтверждён (user %s)", "ссылке" if token else "коду", uid)
-            return self._message(uid, MSG_OK), uid
+            return self._message(uid, tr(MSG_OK, lang)), uid
         self.fails.add(uid)
         if code is not None:
             self.global_fails.add("*")
         self.stats["login_failed"] += 1
-        return self._message(uid, MSG_BAD), None
+        return self._message(uid, tr(MSG_BAD, lang)), None
 
     # ---------- входящие ----------
 
     def _to_inbox(self, conn, msg: dict, sender: dict, stale: bool) -> Optional[dict]:
         """Сохранить сообщение человека и запомнить его для пересылки владельцу (после фиксации).
-        Возвращает «спасибо» отправителю или None. Без ADMIN_IDS читать некому — без «спасибо»."""
+        Возвращает отправителю «что это за бот + поддержка» (раз в час) или None. Без ADMIN_IDS
+        сообщение читать некому — тогда и ответа нет."""
         from .stream import _admin_ids
         uid = sender["id"]
         kind = "text" if isinstance(msg.get("text"), str) else next((k for k in MEDIA_KINDS if k in msg), "other")
@@ -392,10 +423,14 @@ class TelegramBot(Source):
         self._inbox = {"admins": sorted(admins), "from": sender, "kind": kind, "text": body,
                        "message_id": msg.get("message_id")}
         last = self._thanked.get(uid)
-        if stale or (last is not None and self.mono() - last < THANKS_EVERY):
+        if stale or (last is not None and self.mono() - last < ABOUT_EVERY):
             return None
         self._thanked[uid] = self.mono()
-        return self._message(uid, MSG_THANKS)
+        lang = lang_of(sender)
+        return self._message(uid, tr(MSG_ABOUT, lang), self._app_button(lang))
+
+    def _app_button(self, lang: str) -> dict:
+        return {"inline_keyboard": [[{"text": tr(BTN_APP, lang), "web_app": {"url": self.site_url}}]]}
 
     async def _forward_inbox(self, item: dict) -> None:
         s = item["from"]

@@ -138,14 +138,16 @@ def test_plain_caption_only_to_self(admin_env, svc):
 # ---------- входящие: что люди пишут боту — владельцу ----------
 
 def test_inbox_forwarded_to_admin_with_thanks_once(admin_env, bot, tg, svc, clock):
-    from app.bot import MSG_THANKS
+    from app.bot import MSG_ABOUT
     asyncio.run(bot.handle_update(msg(LUKA, "Когда следующий матч?", clock=clock)))
     asyncio.run(bot.handle_update(msg(LUKA, "И ещё вопрос", clock=clock)))
     sent = tg.sent()
     to_admin = [s["text"] for s in sent if s["chat_id"] == ADMIN]
     assert to_admin == ["✉️ Лука Модрич (@lm10) · id 7001:\n\nКогда следующий матч?",
                         "✉️ Лука Модрич (@lm10) · id 7001:\n\nИ ещё вопрос"]
-    assert [s["text"] for s in sent if s["chat_id"] == LUKA["id"]] == [MSG_THANKS]   # «спасибо» — один раз
+    to_luka = [s for s in sent if s["chat_id"] == LUKA["id"]]
+    assert [s["text"] for s in to_luka] == [MSG_ABOUT]   # «что это за бот + поддержка» — один раз
+    assert "@papito007" in MSG_ABOUT and to_luka[0]["reply_markup"]["inline_keyboard"][0][0]["web_app"]
     c = predictions_db.connect(svc.db_path)
     try:
         assert [r[0] for r in c.execute("SELECT text FROM bot_messages ORDER BY id")] == [
@@ -163,3 +165,15 @@ def test_inbox_media_is_forwarded_and_admin_not_echoed(admin_env, bot, tg, clock
     n = len(tg.calls)
     asyncio.run(bot.handle_update(msg({"id": ADMIN, "is_bot": False, "first_name": "Егор"}, "тест", clock=clock)))
     assert all(m != "forwardMessage" and p.get("chat_id") != ADMIN for m, p in tg.calls[n:])
+
+
+def test_bot_answers_in_english_for_english_telegram(admin_env, bot, tg, clock):
+    """language_code не русский (и не близкий) — ответы бота на английском; ru/uk/без языка — по-русски."""
+    from app.bot import EN, MSG_ABOUT, MSG_STOP, lang_of
+    jude = {"id": 7005, "is_bot": False, "first_name": "Jude", "username": "jb5", "language_code": "en"}
+    asyncio.run(bot.handle_update(msg(jude, "Hello, is this the Real Madrid app?", clock=clock)))
+    asyncio.run(bot.handle_update(msg(jude, "/stop", clock=clock)))
+    mine = [s for s in tg.sent() if s["chat_id"] == jude["id"]]
+    assert [s["text"] for s in mine] == [EN[MSG_ABOUT], EN[MSG_STOP]]
+    assert mine[0]["reply_markup"]["inline_keyboard"][0][0]["text"] == "Open Madridista"
+    assert [lang_of({"language_code": c}) for c in ("ru", "uk", "pt-br", None, "")] == ["ru", "ru", "en", "ru", "ru"]
