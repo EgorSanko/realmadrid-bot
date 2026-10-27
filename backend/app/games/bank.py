@@ -4,6 +4,10 @@
 {id, q, a: [4 варианта], correct: индекс верного, media?: {type: player|team|league, id}, stale?, note?}.
 `stale: true` — вопрос устарел или в нём ошибка: в игру не попадает (остаётся в файле для истории).
 Перенесён из старого проекта (quiz_questions/*.json) и проверен на актуальность к октябрю 2026.
+
+Английский банк — app/games/quiz_questions_en.json (ручной перевод, для ?lang=en): те же id, уровни, порядок
+вариантов, `correct`, `media` и `stale`. Ответ проверяется по id вопроса и индексу варианта, поэтому язык
+на очки не влияет. Расхождение структуры с русским банком — ошибка при старте (`load_en`).
 """
 from __future__ import annotations
 
@@ -14,6 +18,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 PATH = Path(__file__).with_name("quiz_questions.json")
+PATH_EN = Path(__file__).with_name("quiz_questions_en.json")
 LEVELS = ("easy", "medium", "hard", "expert")
 MEDIA_TYPES = ("player", "team", "league")
 
@@ -61,3 +66,19 @@ def load(path: str = str(PATH)) -> dict[str, tuple[Question, ...]]:
                 items.append(q)
         out[level] = tuple(items)
     return out
+
+
+@lru_cache(maxsize=4)
+def load_en(path: str = str(PATH_EN), ru_path: str = str(PATH)) -> dict[str, tuple[Question, ...]]:
+    """Английские вопросы. Проверка: тот же набор активных вопросов по уровням, тот же `correct` и `media`."""
+    en = load(path)
+    ru = load(ru_path)
+    for level in LEVELS:
+        a = {q.id: q for q in ru.get(level, ())}
+        b = {q.id: q for q in en.get(level, ())}
+        if a.keys() != b.keys():
+            raise ValueError(f"{level}: разные вопросы в русском и английском банке: {sorted(a.keys() ^ b.keys())[:10]}")
+        for qid, q in a.items():
+            if (b[qid].correct, b[qid].media) != (q.correct, q.media):
+                raise ValueError(f"{qid}: correct/media в английском банке не совпадают с русским")
+    return en

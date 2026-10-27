@@ -1,4 +1,5 @@
-"""HTTP-слой прогнозов: /api/predict/*. Ошибки — JSON {error, message} по-русски.
+"""HTTP-слой прогнозов: /api/predict/*. Ошибки — JSON {error, message} по-русски (?lang=en — по-английски,
+app/i18n.py; коды те же). ?lang=en — «Болельщик» (пользователь без имени) в рейтингах и лигах → «Fan».
 
 Подключение в main.py: `predictions.api.install(app)`.
 Источник матчей: `configure(provider=...)`; по умолчанию — SnapshotProvider (пока заглушка).
@@ -13,6 +14,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 
+from app import i18n
 from app.auth import InitDataError
 from app.identity import authenticate, has_credentials
 
@@ -39,6 +41,11 @@ def get_service() -> PredictionService:
 
 def _ok(body: Any, status: int = 200) -> JSONResponse:
     return JSONResponse(body, status_code=status, headers={"Cache-Control": "no-store"})
+
+
+def _okl(request: Request, body: Any, status: int = 200) -> JSONResponse:
+    """Ответ с именами пользователей: ?lang=en — «Болельщик» → «Fan»."""
+    return _ok(i18n.fan_names(body, i18n.request_lang(request)), status)
 
 
 def _err(status: int, error: str, message: str) -> JSONResponse:
@@ -96,8 +103,9 @@ class JoinIn(BaseModel):
 # ---------- эндпоинты ----------
 
 @router.get("/matches")
-def get_matches(user: Optional[int] = Depends(optional_user), svc: PredictionService = Depends(get_service)):
-    return _ok(svc.matches(user))
+def get_matches(request: Request, user: Optional[int] = Depends(optional_user),
+                svc: PredictionService = Depends(get_service)):
+    return _okl(request, svc.matches(user))
 
 
 @router.put("/matches/{match_id}")
@@ -107,20 +115,20 @@ def put_match(match_id: str, body: PredictionIn, user: int = Depends(current_use
 
 
 @router.get("/leaderboard")
-def get_leaderboard(period: Literal["season", "month"] = "season", league: Optional[int] = None,
+def get_leaderboard(request: Request, period: Literal["season", "month"] = "season", league: Optional[int] = None,
                     limit: int = Query(50, ge=1, le=1000), user: Optional[int] = Depends(optional_user),
                     svc: PredictionService = Depends(get_service)):
-    return _ok(svc.leaderboard(period, league, limit, user))
+    return _okl(request, svc.leaderboard(period, league, limit, user))
 
 
 @router.get("/me")
-def get_me(user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
-    return _ok(svc.me(user))
+def get_me(request: Request, user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
+    return _okl(request, svc.me(user))
 
 
 @router.get("/leagues")
-def get_leagues(user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
-    return _ok(svc.my_leagues(user))
+def get_leagues(request: Request, user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
+    return _okl(request, svc.my_leagues(user))
 
 
 @router.post("/leagues")
@@ -129,8 +137,9 @@ def post_league(body: LeagueIn, user: int = Depends(current_user), svc: Predicti
 
 
 @router.get("/leagues/{league_id}")
-def get_league(league_id: int, user: int = Depends(current_user), svc: PredictionService = Depends(get_service)):
-    return _ok(svc.league(user, league_id))
+def get_league(request: Request, league_id: int, user: int = Depends(current_user),
+               svc: PredictionService = Depends(get_service)):
+    return _okl(request, svc.league(user, league_id))
 
 
 @router.post("/leagues/join")

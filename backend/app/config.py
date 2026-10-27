@@ -101,12 +101,28 @@ KEEP_FULL_DAYS = _int("KEEP_FULL_DAYS", 14)
 # берём из прошлого снимка того же матча, если сами блоки не старше LIVE_BORROW_MAX_AGE секунд
 LIVE_BORROW_MAX_AGE = _int("LIVE_BORROW_MAX_AGE", 10 * 60)
 
+# --- машинный перевод RU→EN для ?lang=en (app/translate.py, бесплатный эндпоинт Google без ключа) ---
+# С VPS translate.googleapis.com открывается напрямую (и из bridge-сети API, и из сети хоста), прокси не нужен.
+# TRANSLATE_PROXY — на случай блокировки: http(s)://…; выключить перевод — DISABLED_SOURCES=gtranslate.
+TRANSLATE_PROXY = os.environ.get("TRANSLATE_PROXY", "")
+TRANSLATE_TIMEOUT = float(os.environ.get("TRANSLATE_TIMEOUT", "8"))
+TRANSLATE_INTERVAL = _int("TRANSLATE_INTERVAL", 60)        # сборщик: заголовки/анонсы/факты — раз в минуту
+TRANSLATE_BATCH = _int("TRANSLATE_BATCH", 20)              # коротких текстов в одном запросе
+TRANSLATE_RATE_PER_MIN = _int("TRANSLATE_RATE_PER_MIN", 10)  # запросов в минуту из сборщика
+TRANSLATE_PER_TICK = _int("TRANSLATE_PER_TICK", 3)         # запросов за один проход сборщика
+TRANSLATE_NEWS_N = _int("TRANSLATE_NEWS_N", 60)            # сколько свежих новостей переводить заранее
+# текст статьи: API переводит по первому запросу ?lang=en, укладываясь в этот бюджет (секунды на всю статью)
+TRANSLATE_ARTICLE_BUDGET = float(os.environ.get("TRANSLATE_ARTICLE_BUDGET", "6"))
+TRANSLATE_ARTICLE_RETRY = _int("TRANSLATE_ARTICLE_RETRY", 120)       # не вышло — эту статью не раньше чем через 2 мин
+TRANSLATE_ARTICLE_RATE_PER_MIN = _int("TRANSLATE_ARTICLE_RATE_PER_MIN", 6)  # статей в минуту на процесс API
+
 # --- очистка (раз в сутки в сборщике) ---
 CLEANUP_INTERVAL = _int("CLEANUP_INTERVAL", 24 * 3600)
 ARTICLE_TEXT_TTL_DAYS = _int("ARTICLE_TEXT_TTL_DAYS", 90)     # тексты статей; сами новости в ленте остаются
 AVATAR_TTL_DAYS = _int("AVATAR_TTL_DAYS", 180)                 # аватар пользователя, который давно не заходил
 FOREIGN_PLAYER_TTL_DAYS = _int("FOREIGN_PLAYER_TTL_DAYS", 30)  # снимки карточек чужих игроков
 VISIT_DAYS_TTL_DAYS = _int("VISIT_DAYS_TTL_DAYS", 400)        # посещения по дням (visit_days, app/visits.py)
+TRANSLATION_TTL_DAYS = _int("TRANSLATION_TTL_DAYS", 90)       # кэш переводов (как тексты статей)
 
 # --- надёжность источников ---
 HTTP_TIMEOUT = float(os.environ.get("HTTP_TIMEOUT", "10"))

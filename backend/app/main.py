@@ -3,6 +3,10 @@
 Каждый ответ несёт `source` (откуда снимок), `updated_at` (когда получен), `age_s` и `stale`.
 Если все источники упали, сборщик снимок не трогает — здесь отдаётся последний удачный
 с его возрастом и кодом 200.
+
+`?lang=en` (app/i18n.py): новости, видео и факты матча — из кэша машинного перевода (app/translate.py;
+перевода ещё нет — русский оригинал и `translated: false`), сообщения об ошибках — по-английски.
+Без параметра (и с любым другим значением) ответы — как раньше, по-русски.
 """
 import os
 import re
@@ -12,7 +16,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from . import auth_api, config, store, visits
+from . import auth_api, config, i18n, store, translate, visits
 from .model import result_for, ts
 from .games import api as games_api
 from .predictions import api as predict_api
@@ -33,6 +37,10 @@ predict_api.install(app)  # /api/predict/* — этап 10
 auth_api.install(app)     # /api/auth/* — вход через Telegram и сессия
 games_api.install(app)    # /api/games/* — викторина и пенальти (отдельный рейтинг, без очков прогнозов)
 visits.install(app)       # /api/visit и /api/admin/stats — счётчик людей без входа (хеш id устройства)
+app.add_middleware(i18n.EnglishErrors)  # ?lang=en: message/detail ошибок по-английски (коды те же)
+
+# текст статьи по-английски — по первому запросу ?lang=en (единственный поход API во внешний сервис)
+_ARTICLES = translate.ArticleTranslator()
 
 # прогнозы читают матчи из снимков сборщика (rm.sqlite3); тесты и проверки подставляют свой сервис сами
 if predict_api._service is None:
@@ -239,13 +247,26 @@ def _round_snapshot_key(conn, match_id: str, m: dict) -> str | None:
     return fotmob.round_key(t.get("id"), t.get("round"))
 
 
-def _match_extras(conn, match_id: str, m: dict) -> dict:
+def _insights_en(conn, ins: dict) -> dict:
+    """Факты матча (FotMob отдаёт по-русски) — из кэша перевода; чего нет — оригинал, translated: false."""
+    texts = [ins.get("main")] + [t for team in ins.get("teams") or [] for t in team.get("items") or []]
+    tr = translate.lookup(conn, texts, "en")
+    ok = all(not translate.needs(t) or t in tr for t in texts)
+    return {**ins, "main": tr.get(ins.get("main"), ins.get("main")),
+            "teams": [{**team, "items": [tr.get(t, t) for t in team.get("items") or []]}
+                      for team in ins.get("teams") or []],
+            "lang": "en" if ok else ins.get("lang"), "translated": ok}
+
+
+def _match_extras(conn, match_id: str, m: dict, lng: str = "ru") -> dict:
     """Факты, тур, «Кто победит?» и сводка трансляции — из отдельных снимков сборщика (в источники не ходим).
     Нет снимка — поле null, пункта в available нет: экран просто прячет блок."""
     out = {"insights": None, "round": None, "poll": None, "commentary": None}
     ins = store.get(conn, f"insights:{match_id}")
     if ins:
         out["insights"] = {**ins["data"], "updated_at": _iso(ins["fetched_at"])}
+        if lng == i18n.EN:
+            out["insights"] = _insights_en(conn, out["insights"])
     if (m.get("tournament") or {}).get("id") in config.ROUND_LEAGUES:
         rk = _round_snapshot_key(conn, match_id, m)
         rs = store.get(conn, rk) if rk else None
@@ -285,7 +306,7 @@ def match_commentary(match_id: str) -> JSONResponse:
 
 
 @app.get("/api/match/{match_id}")
-def match(match_id: str) -> JSONResponse:
+def match(match_id: str, lang: str | None = None) -> JSONResponse:
     conn = _db()
     try:
         snap = store.get(conn, f"match:{match_id}")
@@ -294,7 +315,7 @@ def match(match_id: str) -> JSONResponse:
             live = m["status"]["live"]
             meta = _meta(snap, STALE_AFTER["match_live" if live else "match_idle"])
             m.pop("finished_seen_at", None)
-            extras = _match_extras(conn, match_id, m)
+            extras = _match_extras(conn, match_id, m, i18n.lang(lang))
             avail = list(m.get("available") or []) + [k for k, v in extras.items() if v]
             return _resp({**m, **extras, **meta, "available": avail},
                          5 if live else (60 if m["status"]["finished"] else 30))
@@ -419,8 +440,36 @@ def _limit(v: int | None, default: int, top: int) -> int:
 _NEWS_FIELDS = ("id", "title", "summary", "source", "url", "published", "image")
 
 
+def _en_fields(conn, obj: dict, fields: tuple[str, ...], tr: dict | None = None) -> tuple[dict, bool]:
+    """Поля `fields` объекта — из кэша перевода. → (новый объект, всё ли переведено)."""
+    tr = tr if tr is not None else translate.lookup(conn, [obj.get(f) for f in fields], "en")
+    out, ok = dict(obj), True
+    for f in fields:
+        v = obj.get(f)
+        if translate.needs(v):
+            if v in tr:
+                out[f] = tr[v]
+            else:
+                ok = False
+    return out, ok
+
+
+def _news_en(conn, items: list[dict]) -> list[dict]:
+    """Лента ?lang=en: заголовок и анонс — переводы (сборщик готовит заранее), источник — латиницей."""
+    tr = translate.lookup(conn, [i.get(f) for i in items for f in ("title", "summary")], "en")
+    out = []
+    for i in items:
+        it, ok = _en_fields(conn, i, ("title", "summary"), tr)
+        it["source"] = i18n.source_name(i.get("source"), i18n.EN)
+        if "also" in it:
+            it["also"] = [i18n.source_name(a, i18n.EN) for a in it["also"]]
+        it["translated"] = ok
+        out.append(it)
+    return out
+
+
 @app.get("/api/news")
-def news(limit: int | None = None) -> JSONResponse:
+def news(limit: int | None = None, lang: str | None = None) -> JSONResponse:
     conn = _db()
     try:
         snap = store.get(conn, "news")
@@ -433,8 +482,12 @@ def news(limit: int | None = None) -> JSONResponse:
         avail = ["news"] if items else []
         if any(i["image"] for i in items):
             avail.append("images")
+        extra = {}
+        if i18n.lang(lang) == i18n.EN:
+            items = _news_en(conn, items)
+            extra = {"lang": "en", "translated": all(i["translated"] for i in items)}
         return _resp({**_meta(snap, STALE_AFTER["news"]), "available": avail, "feeds": feeds,
-                      "count": len(items), "items": items}, 60)
+                      "count": len(items), "items": items, **extra}, 60)
     finally:
         conn.close()
 
@@ -442,6 +495,33 @@ def news(limit: int | None = None) -> JSONResponse:
 def _brief_news(it: dict) -> dict:
     return {"aid": media.news_aid(it["id"]), "title": it.get("title"), "source": it.get("source"),
             "published": it.get("published"), "image": it.get("image")}
+
+
+_ARTICLE_TEXT_FIELDS = ("title", "summary", "lead", "image_caption", "author", "origin")
+
+
+def _article_html_en(conn, d: dict, title, summary) -> str | None:
+    """Английский html статьи: из кэша, иначе — перевод сейчас (бюджет TRANSLATE_ARTICLE_BUDGET).
+    None — перевода нет (Google недоступен, статью уже переводит другой запрос, лимит) — отдаём оригинал."""
+    src = d.get("html") or ""
+    if not translate.needs(src):
+        return src
+    hit = translate.cached_article(conn, src, "en")
+    if hit is not None:
+        return hit
+    extras = [d.get(k) for k in ("lead", "image_caption", "author", "origin")] + [title, summary]
+    if _ARTICLES.translate(conn, src, extras, "en"):
+        return translate.cached_article(conn, src, "en")
+    return None
+
+
+def _news_item_en(conn, body: dict, html_ok: bool = True) -> dict:
+    out, ok = _en_fields(conn, body, _ARTICLE_TEXT_FIELDS)
+    out["source"] = i18n.source_name(body.get("source"), i18n.EN)
+    out["more"] = _news_en(conn, body.get("more") or [])
+    out["translated"] = ok and html_ok
+    out["lang"] = "en"
+    return out
 
 
 def _more_news(items: list[dict], aid: str, n: int = 3) -> list[dict]:
@@ -456,22 +536,34 @@ _ARTICLE_FIELDS = ("lead", "html", "author", "origin", "image_caption", "words")
 
 
 @app.get("/api/news/{aid}")
-def news_item(aid: str) -> JSONResponse:
+def news_item(aid: str, lang: str | None = None) -> JSONResponse:
     """Новость целиком для чтения внутри приложения.
 
     Есть текст — `full: true` и `html` (безопасный, только белый список тегов). Текста ещё нет —
     `pending: true` и заявка сборщику (клиент повторяет запрос). Источник не отдал текст — `full: false`:
-    клиент показывает лид, картинку и ссылку «Читать полностью на <источник>»."""
+    клиент показывает лид, картинку и ссылку «Читать полностью на <источник>».
+
+    `?lang=en`: заголовок, анонс, лид и подписи — из кэша перевода, html — перевод по первому запросу
+    (не вышло — русский текст, `translated: false`, ответ кэшируется ненадолго — следующий запрос повторит)."""
     if not media.is_aid(aid):
         return _resp({"error": "not_found", "detail": "неверный id новости", "available": []}, 60, 404)
     conn = _db()
+    en = i18n.lang(lang) == i18n.EN
+
+    def reply(payload: dict, max_age: int, status_code: int = 200, html_ok: bool = True) -> JSONResponse:
+        if en and status_code == 200:
+            payload = _news_item_en(conn, payload, html_ok)
+            if not payload["translated"]:
+                max_age = min(max_age, 30)
+        return _resp(payload, max_age, status_code)
+
     try:
         snap = store.get(conn, "news")
         items = snap["data"]["items"] if snap else []
         item = next((i for i in items if media.news_aid(i["id"]) == aid), None)
         art = store.get(conn, f"article:{aid}")
         if not item and not art:
-            return _resp({"error": "not_found", "detail": "такой новости нет", "available": []}, 60, 404)
+            return reply({"error": "not_found", "detail": "такой новости нет", "available": []}, 60, 404)
         base = item or art["data"]
         body = {"aid": aid, "id": base["id"], "title": base.get("title"), "source": base.get("source"),
                 "site": base.get("site"), "url": base.get("url"), "published": base.get("published"),
@@ -486,16 +578,20 @@ def news_item(aid: str) -> JSONResponse:
                     known[nid] = a2
             known.pop(base["id"], None)
             body.update({k: d.get(k) for k in _ARTICLE_FIELDS})
-            body["html"] = article.link_internal(d.get("html") or "", known)
             body["image"] = None if d.get("hero_in_text") else (d.get("image") or body["image"])
             body["title"] = body["title"] or d.get("title")
+            html_text, html_ok = d.get("html") or "", True
+            if en:
+                html_en = _article_html_en(conn, d, body["title"], body["summary"])
+                html_text, html_ok = (html_en, True) if html_en is not None else (html_text, False)
+            body["html"] = article.link_internal(html_text, known)
             avail = ["text"] + (["image"] if body["image"] else [])
-            return _resp({**body, "full": True, "pending": False, "available": avail,
-                          "updated_at": _iso(art["fetched_at"])}, 300)
+            return reply({**body, "full": True, "pending": False, "available": avail,
+                          "updated_at": _iso(art["fetched_at"])}, 300, html_ok=html_ok)
         partial = {**{k: None for k in _ARTICLE_FIELDS}, "html": None, "full": False}
         if art:  # текст удалён суточной очисткой (старше ARTICLE_TEXT_TTL_DAYS) — заново не качаем
             avail = ["summary"] if body["summary"] else []
-            return _resp({**body, **partial, "author": art["data"].get("author"), "origin": art["data"].get("origin"),
+            return reply({**body, **partial, "author": art["data"].get("author"), "origin": art["data"].get("origin"),
                           "pending": False, "reason": "expired", "available": avail,
                           "updated_at": _iso(art["fetched_at"])}, 300)
         fail = store.get(conn, f"article_fail:{aid}")
@@ -504,11 +600,11 @@ def news_item(aid: str) -> JSONResponse:
                      or now - fail["fetched_at"] < config.ARTICLE_RETRY):
             reason = "no_text" if fail["data"].get("status") == "no_text" else "unavailable"
             avail = ["summary"] if body["summary"] else []
-            return _resp({**body, **partial, "pending": False, "reason": reason, "available": avail,
+            return reply({**body, **partial, "pending": False, "reason": reason, "available": avail,
                           "updated_at": _iso(fail["fetched_at"])}, 60)
         if not store.ask_article(conn, aid):
-            return _resp({**body, **partial, "pending": False, "reason": "busy", "available": []}, 0)
-        return _resp({**body, **partial, "pending": True, "available": [], "updated_at": None}, 0)
+            return reply({**body, **partial, "pending": False, "reason": "busy", "available": []}, 0)
+        return reply({**body, **partial, "pending": True, "available": [], "updated_at": None}, 0)
     finally:
         conn.close()
 
@@ -517,7 +613,7 @@ _VIDEO_FIELDS = ("id", "title", "published", "thumb", "url", "short", "kind", "c
 
 
 @app.get("/api/videos")
-def videos(limit: int | None = None) -> JSONResponse:
+def videos(limit: int | None = None, lang: str | None = None) -> JSONResponse:
     """Лента канала + «обзоры матчей» (highlights из снимков матчей, запасной вариант — ролик канала)."""
     conn = _db()
     try:
@@ -540,8 +636,15 @@ def videos(limit: int | None = None) -> JSONResponse:
             avail.append("shorts")
         meta = _meta(snap, STALE_AFTER["videos"]) if snap else \
             {"source": None, "updated_at": None, "age_s": None, "stale": True}
+        extra = {}
+        if i18n.lang(lang) == i18n.EN:
+            # заголовки официального канала обычно уже английские — тогда это просто они же
+            tr = translate.lookup(conn, [v.get("title") for v in (*items, *highlights)], "en")
+            items = [{**v, "translated": ok} for v, ok in (_en_fields(conn, v, ("title",), tr) for v in items)]
+            highlights = [{**h, "translated": ok} for h, ok in (_en_fields(conn, h, ("title",), tr) for h in highlights)]
+            extra = {"lang": "en", "translated": all(v["translated"] for v in (*items, *highlights))}
         return _resp({**meta, "available": avail, "highlights": highlights, "count": len(items),
-                      "items": items}, 60)
+                      "items": items, **extra}, 60)
     finally:
         conn.close()
 
@@ -570,6 +673,7 @@ def health_sources() -> JSONResponse:
         players = {"cards": sum(k.startswith("player:") for k in ages),
                    "failed": sum(k.startswith("player_fail:") for k in ages),
                    "queued": conn.execute("SELECT COUNT(*) FROM player_demand").fetchone()[0]}
+        translations = dict(conn.execute("SELECT kind, COUNT(*) FROM translations GROUP BY kind").fetchall())
         articles = {"texts": sum(k.startswith("article:") for k in ages),
                     "failed": sum(k.startswith("article_fail:") for k in ages),
                     "queued": conn.execute("SELECT COUNT(*) FROM article_demand").fetchone()[0]}
@@ -578,10 +682,10 @@ def health_sources() -> JSONResponse:
                       # медиа — отдельный список: в цепочку данных матча они не входят
                       "media_sources": [states[n] for n in media.MEDIA_SOURCES if n in states],
                       # редкие запросы экрана матча (факты, тур, голоса, трансляция): свой breaker
-                      "extra_sources": [states[n] for n in ("fotmob_extra",) if n in states],
+                      "extra_sources": [states[n] for n in ("fotmob_extra", "gtranslate") if n in states],
                       # бот входа по коду (long polling в сборщике): breaker, офсет, счётчики без личных данных
                       "bot": states.get("telegram_bot"),
-                      "snapshots": snaps, "players": players, "articles": articles,
+                      "snapshots": snaps, "players": players, "articles": articles, "translations": translations,
                       "idmap": store.map_count(conn)}, 0)
     finally:
         conn.close()

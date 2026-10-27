@@ -1,4 +1,5 @@
-"""HTTP-слой мини-игр: /api/games/*. Ошибки — JSON {error, message} по-русски.
+"""HTTP-слой мини-игр: /api/games/*. Ошибки — JSON {error, message} по-русски (?lang=en — по-английски,
+app/i18n.py; коды те же). ?lang=en — вопросы викторины из английского банка, названия уровней по-английски.
 
 Вход — тот же, что у прогнозов (initData мини-аппа, заголовок Session, cookie rm_session; app/identity.py).
 Играть можно без входа: тогда итог не сохраняется на сервере (клиент держит рекорд на устройстве).
@@ -19,6 +20,7 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, FastAPI, Query, Request
 from fastapi.responses import JSONResponse
 
+from .. import i18n
 from ..predictions import api as predict_api
 from .service import GameError, GameService
 
@@ -59,8 +61,8 @@ async def _body(request: Request) -> dict[str, Any]:
 
 
 @router.get("/info")
-def get_info(svc: GameService = Depends(get_service)):
-    return _ok(svc.info())
+def get_info(request: Request, svc: GameService = Depends(get_service)):
+    return _ok(svc.info(i18n.request_lang(request)))
 
 
 @router.post("/quiz/start")
@@ -73,7 +75,7 @@ async def quiz_start(request: Request, user: Optional[int] = Depends(predict_api
 @router.post("/quiz/{sid}/next")
 def quiz_next(sid: str, request: Request, user: Optional[int] = Depends(predict_api.optional_user),
               svc: GameService = Depends(get_service)):
-    return _ok(svc.quiz_next(sid, user, _rate_key(request, user)))
+    return _ok(svc.quiz_next(sid, user, _rate_key(request, user), i18n.request_lang(request)))
 
 
 @router.post("/quiz/{sid}/answer")
@@ -105,10 +107,10 @@ def get_me(user: int = Depends(predict_api.current_user), svc: GameService = Dep
 
 
 @router.get("/leaderboard")
-def get_leaderboard(game: str = "quiz", limit: int = Query(20, ge=1, le=100),
+def get_leaderboard(request: Request, game: str = "quiz", limit: int = Query(20, ge=1, le=100),
                     user: Optional[int] = Depends(predict_api.optional_user),
                     svc: GameService = Depends(get_service)):
-    return _ok(svc.leaderboard(game, limit, user))
+    return _ok(svc.leaderboard(game, limit, user, i18n.request_lang(request)))
 
 
 async def _on_game_error(request: Request, exc: GameError):

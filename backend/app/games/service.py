@@ -14,6 +14,10 @@
 
 Итог сохраняется только для вошедших. Таблица game_results — отдельная от прогнозов:
 очков прогнозов игры не дают и в standings не пишут.
+
+Язык (`lang`: 'ru' | 'en', ?lang=en в API) влияет только на тексты: вопрос и варианты берутся из
+английского банка (те же id и порядок вариантов), названия уровней и подпись недели рейтинга —
+по-английски. Партия от языка не зависит: перестановки и проверка ответа — по индексам.
 """
 from __future__ import annotations
 
@@ -30,6 +34,7 @@ from typing import Any, Callable, Optional
 
 from .. import avatars
 from ..predictions.service import MSK, RateLimiter, display_name, iso, utcnow
+from .. import i18n
 from . import bank
 
 # ---------- правила ----------
@@ -40,6 +45,7 @@ QUIZ_LEVELS: dict[str, dict[str, Any]] = {
     "hard": {"title": "Сложный", "base": 200},
     "expert": {"title": "Эксперт", "base": 300},
 }
+LEVEL_TITLES_EN = {"easy": "Easy", "medium": "Medium", "hard": "Hard", "expert": "Expert", "legend": "Legend"}
 QUIZ_ROUND = 10          # вопросов в партии
 QUIZ_TIMER = 15.0        # секунд на вопрос (как в старой игре)
 QUIZ_GRACE = 2.0         # запас на сеть и отрисовку
@@ -99,11 +105,20 @@ MONTHS = ("января", "февраля", "марта", "апреля", "ма�
           "октября", "ноября", "декабря")
 
 
-def week_label(start: date) -> str:
+def week_label(start: date, lang: str = "ru") -> str:
     end = start + timedelta(days=6)
+    if lang == i18n.EN:
+        m = i18n.MONTHS_EN
+        if start.month == end.month:
+            return f"{m[end.month - 1]} {start.day}–{end.day}"
+        return f"{m[start.month - 1]} {start.day} – {m[end.month - 1]} {end.day}"
     if start.month == end.month:
         return f"{start.day}–{end.day} {MONTHS[end.month - 1]}"
     return f"{start.day} {MONTHS[start.month - 1]} – {end.day} {MONTHS[end.month - 1]}"
+
+
+def level_title(table: dict[str, dict[str, Any]], level: str, lang: str = "ru") -> str:
+    return LEVEL_TITLES_EN.get(level, table[level]["title"]) if lang == i18n.EN else table[level]["title"]
 
 
 # ---------- партии ----------
@@ -146,13 +161,18 @@ class PenaltySession:
 class GameService:
     def __init__(self, conn: Callable[[], AbstractContextManager], clock: Callable[[], datetime] = utcnow,
                  mono: Callable[[], float] = time.monotonic, rng: Optional[random.Random] = None,
-                 questions: Optional[dict[str, tuple[bank.Question, ...]]] = None):
+                 questions: Optional[dict[str, tuple[bank.Question, ...]]] = None,
+                 questions_en: Optional[dict[str, tuple[bank.Question, ...]]] = None):
         self._conn = conn
         self.clock = clock
         self.mono = mono
         self.rng = rng or random.SystemRandom()
         self.questions = questions if questions is not None else bank.load()
         self.by_id = {q.id: q for qs in self.questions.values() for q in qs}
+        # английский банк; подставили свой набор вопросов (тесты) без английского — тексты по-русски
+        if questions_en is None:
+            questions_en = bank.load_en() if questions is None else {}
+        self.by_id_en = {q.id: q for qs in questions_en.values() for q in qs}
         self._sessions: OrderedDict[str, Any] = OrderedDict()
         self._lock = threading.Lock()
         self._recent: dict[tuple[int, str], deque] = defaultdict(lambda: deque(maxlen=QUIZ_RECENT))
@@ -193,13 +213,14 @@ class GameService:
 
     # --- справка ---
 
-    def info(self) -> dict[str, Any]:
+    def info(self, lang: str = "ru") -> dict[str, Any]:
         return {
             "quiz": {"round": QUIZ_ROUND, "timer_s": QUIZ_TIMER,
-                     "levels": [{"id": k, "title": v["title"], "base": v["base"],
+                     "levels": [{"id": k, "title": level_title(QUIZ_LEVELS, k, lang), "base": v["base"],
                                  "questions": len(self.questions.get(k, ()))} for k, v in QUIZ_LEVELS.items()]},
             "penalty": {"shots": PENALTY_REGULAR, "zones": PENALTY_ZONES,
-                        "levels": [{"id": k, "title": v["title"], "mult": v["mult"]} for k, v in PENALTY_LEVELS.items()]},
+                        "levels": [{"id": k, "title": level_title(PENALTY_LEVELS, k, lang), "mult": v["mult"]}
+                                   for k, v in PENALTY_LEVELS.items()]},
         }
 
     # --- викторина ---
@@ -231,15 +252,17 @@ class GameService:
         return {"session": s.id, "level": level, "total": QUIZ_ROUND, "timer_s": QUIZ_TIMER,
                 "saved": user_id is not None}
 
-    def _question_view(self, s: QuizSession, now: float) -> dict[str, Any]:
+    def _question_view(self, s: QuizSession, now: float, lang: str = "ru") -> dict[str, Any]:
         q = self.by_id[s.qids[s.idx]]
+        if lang == i18n.EN:
+            q = self.by_id_en.get(q.id, q)   # тот же вопрос: id, порядок вариантов и correct совпадают
         assert s.open_at is not None
         left = max(0.0, QUIZ_TIMER - (now - s.open_at))
         return {"index": s.idx, "total": len(s.qids), "q": q.q, "a": [q.a[i] for i in s.perms[s.idx]],
                 "media": q.media, "timer_s": QUIZ_TIMER, "left_s": round(left, 2),
                 "score": s.score, "streak": s.streak, "multiplier": multiplier(s.streak + 1)}
 
-    def quiz_next(self, sid: str, user_id: Optional[int], rate_key: Any) -> dict[str, Any]:
+    def quiz_next(self, sid: str, user_id: Optional[int], rate_key: Any, lang: str = "ru") -> dict[str, Any]:
         s: QuizSession = self._get(sid, "quiz", user_id)
         self._limit(self.action_limiter, rate_key)
         now = self.mono()
@@ -248,7 +271,7 @@ class GameService:
                 raise GameError(409, "finished", "Игра уже закончилась")
             if s.open_at is None:  # повторный запрос открытого вопроса таймер не сбрасывает
                 s.open_at = now
-            return self._question_view(s, now)
+            return self._question_view(s, now, lang)
 
     def quiz_answer(self, sid: str, choice: Any, user_id: Optional[int], rate_key: Any) -> dict[str, Any]:
         if choice is not None and (isinstance(choice, bool) or not isinstance(choice, int) or not 0 <= choice < 4):
@@ -382,7 +405,8 @@ class GameService:
                 week[r["game"]] = {"best": r["best"], "played": r["played"]}
         return {"best": out, "week": week}
 
-    def leaderboard(self, game: Any, limit: int = 20, user_id: Optional[int] = None) -> dict[str, Any]:
+    def leaderboard(self, game: Any, limit: int = 20, user_id: Optional[int] = None,
+                    lang: str = "ru") -> dict[str, Any]:
         if game not in GAMES:
             raise GameError(400, "bad_game", "Игра: quiz или penalty")
         limit = max(1, min(int(limit), 100))
@@ -411,5 +435,5 @@ class GameService:
             mine = next((r for r in rows if r["user_id"] == user_id), None)
             me = ({"rank": mine["rnk"], "score": mine["score"], "played": mine["played"]} if mine
                   else {"rank": None, "score": 0, "played": 0})
-        return {"game": game, "week": {"start": start.isoformat(), "label": week_label(start)},
-                "total": total, "top": top, "me": me}
+        return i18n.fan_names({"game": game, "week": {"start": start.isoformat(), "label": week_label(start, lang)},
+                               "total": total, "top": top, "me": me}, lang)

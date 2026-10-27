@@ -15,6 +15,7 @@ API во внешние источники не ходит никогда — т
   python -m app.collector once settle           # начислить очки прогнозов за сыгранные матчи
   python -m app.collector once cleanup          # суточная очистка (старые тексты статей, аватары, чужие игроки)
   python -m app.collector once crests           # прогреть кэш nginx эмблемами команд из таблиц и календаря
+  python -m app.collector once translate        # перевести на английский заголовки/анонсы/факты (для ?lang=en)
   python -m app.collector live <id> [--cycles 6] [--interval 12]   # режим матча на любом матче
   python -m app.collector find-live             # идущие сейчас матчи по FotMob
 
@@ -33,7 +34,7 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, bot, broadcast, cleanup, config, crests, store
+from . import avatars, bot, broadcast, cleanup, config, crests, store, translate
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
@@ -98,11 +99,15 @@ class Collector:
         self.settle_due = False
         self.predict_clock = utcnow                # подменяется в тестах
         self._predict: PredictionService | None = None
+        # перевод для ?lang=en (app/translate.py): заранее — заголовки, анонсы, факты; фоновой задачей
+        self.tr = translate.GoogleTranslate()
+        self.last_translate = 0.0
+        self._translate_task: asyncio.Task | None = None
 
     async def close(self):
-        for s in (*self.sources.values(), *self.media.values(), self.fx):
+        for s in (*self.sources.values(), *self.media.values(), self.fx, self.tr):
             await s.close()
-        for task in (self._avatar_task, self._bot_task, self._crest_task, self._extra_task):
+        for task in (self._avatar_task, self._bot_task, self._crest_task, self._extra_task, self._translate_task):
             if task is not None and not task.done():
                 task.cancel()
                 try:
@@ -409,6 +414,59 @@ class Collector:
         merged = media.merge_videos((prev["data"]["items"] if prev else []), fresh)
         store.put(self.conn, "videos", "youtube", {"items": merged})
         return {"videos": len(merged), "fresh": len(fresh), "shorts": sum(v["short"] for v in fresh)}
+
+    # ================= перевод для ?lang=en =================
+    # Заголовки и анонсы свежих новостей, заголовки видео, «Интересные факты» ближайших матчей →
+    # таблица translations. Тексты статей переводит API по первому запросу (их много, читают единицы).
+
+    def translate_texts(self, now: float | None = None) -> list[str]:
+        """Что нужно перевести заранее и ещё не переведено (новые новости — первыми)."""
+        now = time.time() if now is None else now
+        texts: list[str | None] = []
+        snap = store.get(self.conn, "news")
+        for it in (snap["data"]["items"] if snap else [])[:config.TRANSLATE_NEWS_N]:
+            texts += [it.get("title"), it.get("summary")]
+        vids = store.get(self.conn, "videos")
+        texts += [v.get("title") for v in (vids["data"]["items"] if vids else [])]
+        for fid in dict.fromkeys([*self.window(now), *self.last_next(now)]):
+            ins = store.get(self.conn, f"insights:{fid}")
+            if ins:
+                d = ins["data"]
+                texts.append(d.get("main"))
+                texts += [t for team in d.get("teams") or [] for t in team.get("items") or []]
+        return translate.missing(self.conn, texts, "en")
+
+    async def tick_translate(self, now: float, force: bool = False) -> dict | None:
+        """Раз в TRANSLATE_INTERVAL (и сразу после обновления ленты): до TRANSLATE_PER_TICK запросов,
+        не больше TRANSLATE_RATE_PER_MIN в минуту. Google недоступен — breaker, API отдаёт оригинал."""
+        if not force and now - self.last_translate < config.TRANSLATE_INTERVAL:
+            return None
+        self.last_translate = now
+        if not self.tr.available():
+            return None
+        todo = self.translate_texts(now)
+        done = reqs = 0
+        while (todo and reqs < config.TRANSLATE_PER_TICK
+               and self.tr.requests_last_min() < config.TRANSLATE_RATE_PER_MIN):
+            batch = [todo[i] for i in translate.groups(todo, translate.CHUNK, config.TRANSLATE_BATCH)[0]]
+            reqs += 1
+            try:
+                out = await self.tr.translate(batch, "en", batch=config.TRANSLATE_BATCH, max_requests=8)
+            except SourceError as e:
+                log.info("translate: %s", e)
+                break
+            translate.save(self.conn, dict(zip(batch, out)), "en")
+            done += len(batch)
+            todo = todo[len(batch):]
+        if done or todo:
+            log.info("translate: переведено %d, осталось %d", done, len(todo))
+        return {"translated": done, "left": len(todo)}
+
+    async def _translate_bg(self, now: float):
+        try:
+            await self.tick_translate(now)
+        except Exception:  # фоновая задача не роняет сборщик
+            log.exception("translate: ошибка (продолжаю)")
 
     # ================= команда / календарь / таблицы =================
 
@@ -1261,7 +1319,7 @@ class Collector:
 
     def write_state(self):
         with self.conn:
-            for name, s in (*self.sources.items(), *self.media.items(), (self.fx.name, self.fx)):
+            for name, s in (*self.sources.items(), *self.media.items(), (self.fx.name, self.fx), (self.tr.name, self.tr)):
                 store.put_source_state(self.conn, name, s.snapshot())
             store.put_source_state(self.conn, self.bot.name, self.bot.snapshot())
             store.put_source_state(self.conn, "_collector", {
@@ -1302,8 +1360,10 @@ class Collector:
                     r = await self.refresh_news(og_limit=0 if win else config.NEWS_OG_PER_CYCLE,
                                                 article_limit=0 if win else config.ARTICLE_PER_CYCLE)
                     log.info("news: %s", {k: v for k, v in r.items() if k != "feeds"})
+                    self.last_translate = 0.0      # свежие заголовки — переводим сразу, не ждём минуту
                 if now - self.last_videos >= config.VIDEO_INTERVAL:
                     log.info("videos: %s", await self.refresh_videos())
+                    self.last_translate = 0.0
                 for fid in win:
                     if self.live_due(fid, now):
                         self.match_due[fid] = now + config.LIVE_INTERVAL
@@ -1335,6 +1395,9 @@ class Collector:
                 # эмблемы — фоновой задачей и только вне окна матча
                 if not win and (self._crest_task is None or self._crest_task.done()):
                     self._crest_task = asyncio.create_task(self.tick_crests(now))
+                # перевод заголовков/фактов для ?lang=en — фоновой задачей: Google не задерживает лайв
+                if self._translate_task is None or self._translate_task.done():
+                    self._translate_task = asyncio.create_task(self._translate_bg(now))
                 # аватары — фоновой задачей: медленный туннель не должен задерживать лайв
                 if self._avatar_task is None or self._avatar_task.done():
                     self._avatar_task = asyncio.create_task(self.tick_avatars(now))
@@ -1625,6 +1688,9 @@ async def _cli(args) -> int:
                 print(json.dumps(c.tick_cleanup(time.time(), force=True), ensure_ascii=False))
             elif args.what == "crests":
                 print(json.dumps(await c.tick_crests(time.time()), ensure_ascii=False))
+            elif args.what == "translate":
+                print(json.dumps(await c.tick_translate(time.time(), force=True), ensure_ascii=False))
+                c.write_state()
             elif args.what == "avatars":
                 c.last_avatars = 0.0
                 print(json.dumps(await c.tick_avatars(time.time(), limit=50), ensure_ascii=False))
@@ -1670,7 +1736,7 @@ def main():
     ap = argparse.ArgumentParser(prog="python -m app.collector")
     sub = ap.add_subparsers(dest="cmd")
     o = sub.add_parser("once")
-    o.add_argument("what", choices=["team", "mapping", "match", "extras", "news", "videos", "articles", "player", "players", "avatars", "settle",
+    o.add_argument("what", choices=["team", "mapping", "match", "extras", "news", "videos", "articles", "player", "players", "avatars", "settle", "translate",
                                     "cleanup", "crests"])
     o.add_argument("id", nargs="?")
     lv = sub.add_parser("live")

@@ -29,7 +29,7 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi.responses import JSONResponse
 
-from . import login_codes
+from . import i18n, login_codes
 from .auth import (SESSION_COOKIE, SESSION_TTL, InitDataError, _session_key, admin_ids, issue_session,
                    validate_init_data, validate_widget)
 from .identity import Principal, _cross_site, authenticate, has_credentials
@@ -277,7 +277,7 @@ def me(request: Request, authorization: Optional[str] = Header(default=None),
         body["is_admin"] = False
     else:
         _seen(svc, uid)
-    return _json(body)
+    return _json(i18n.fan_names(body, i18n.request_lang(request)))
 
 
 @router.post("/logout")

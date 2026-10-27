@@ -46,6 +46,14 @@ CREATE TABLE IF NOT EXISTS article_demand (  -- текст новости: че�
     aid        TEXT PRIMARY KEY,
     asked_at   REAL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS translations (    -- машинный перевод (app/translate.py): каждый текст — один раз
+    key        TEXT PRIMARY KEY,   -- sha256(язык + исходный текст)
+    lang       TEXT NOT NULL,      -- en
+    kind       TEXT NOT NULL,      -- text | article
+    text       TEXT NOT NULL,      -- перевод (для article — JSON с html и подписями)
+    created_at REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS translations_by_age ON translations(created_at);
 """
 
 PLAYER_DEMAND_CAP = 200  # больше заявок в очереди не копим — защита от перебора id

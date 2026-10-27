@@ -1,0 +1,4475 @@
+{
+ "easy": [
+  {
+   "id": "e0",
+   "q": "What is the name of Real Madrid's home stadium?",
+   "a": [
+    "Camp Nou",
+    "Santiago Bernabéu",
+    "Wanda Metropolitano",
+    "Mestalla"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e1",
+   "q": "What is the main colour of the club's home kit?",
+   "a": [
+    "Blue",
+    "Red",
+    "White",
+    "Black"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e2",
+   "q": "Because of their kit colour, what are Real Madrid's players and fans called?",
+   "a": [
+    "Blaugrana",
+    "Colchoneros",
+    "Los Blancos",
+    "The Eagles"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e3",
+   "q": "Real Madrid's rivalry with which club is known as El Clásico?",
+   "a": [
+    "Atlético Madrid",
+    "Valencia",
+    "Barcelona",
+    "Sevilla"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e4",
+   "q": "Who is the all-time top scorer in the club's history?",
+   "a": [
+    "Raúl González",
+    "Cristiano Ronaldo",
+    "Alfredo Di Stéfano",
+    "Karim Benzema"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e5",
+   "q": "How many times had Real Madrid won the Champions League by the end of the 2023/24 season?",
+   "a": [
+    "10",
+    "13",
+    "15",
+    "12"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e6",
+   "q": "Which player earned the nickname \"King of Europe\"?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Luka Modrić",
+    "Vinícius Júnior",
+    "Sergio Ramos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e7",
+   "q": "What honorary title did King Alfonso XIII grant the club in 1920?",
+   "a": [
+    "Imperial",
+    "Royal (Real)",
+    "Great",
+    "Noble"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e8",
+   "q": "Which captain lifted La Décima, the club's 10th Champions League trophy?",
+   "a": [
+    "Iker Casillas",
+    "Sergio Ramos",
+    "Marcelo",
+    "Raúl"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e9",
+   "q": "Who is Real Madrid's head coach in the 2026/27 season?",
+   "a": [
+    "José Mourinho",
+    "Carlo Ancelotti",
+    "Xabi Alonso",
+    "Zinedine Zidane"
+   ],
+   "correct": 0,
+   "note": "previously \"as of 2024: Ancelotti\"; updated from /api/team (October 2026)"
+  },
+  {
+   "id": "e10",
+   "q": "Which shirt number did Cristiano Ronaldo wear for most of his time in Madrid?",
+   "a": [
+    "9",
+    "10",
+    "7",
+    "11"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e11",
+   "q": "In which city is Real Madrid based?",
+   "a": [
+    "Barcelona",
+    "Madrid",
+    "Seville",
+    "Valencia"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e12",
+   "q": "Which legend of the 1950s and 60s won the first five European Cups?",
+   "a": [
+    "Ronaldo",
+    "Alfredo Di Stéfano",
+    "David Beckham",
+    "Roberto Carlos"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e13",
+   "q": "Which element of Madrid's coat of arms used to appear on the club's old crests?",
+   "a": [
+    "An eagle",
+    "A bear",
+    "A lion",
+    "A stork"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e14",
+   "q": "What is the name of the Real Madrid anthem written for the club's 10th Champions League title?",
+   "a": [
+    "Hala Madrid y Nada Más",
+    "Cant del Barça",
+    "You'll Never Walk Alone",
+    "Himno del Centenario"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e15",
+   "q": "Who caused a huge scandal by moving to Real from Barcelona in 2000?",
+   "a": [
+    "Zinedine Zidane",
+    "Luís Figo",
+    "Ronaldo",
+    "Michael Owen"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e16",
+   "q": "Which number did the legendary striker Raúl González traditionally wear?",
+   "a": [
+    "9",
+    "7",
+    "11",
+    "10"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e17",
+   "q": "Which goalkeeper came through the club's academy and spent more than 20 years there?",
+   "a": [
+    "Thibaut Courtois",
+    "Keylor Navas",
+    "Iker Casillas",
+    "Andriy Lunin"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e18",
+   "q": "What is Real Madrid's youth academy called?",
+   "a": [
+    "La Masia",
+    "La Fábrica",
+    "Castilla",
+    "Valdebebas"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e19",
+   "q": "What nickname did the team get in the early 2000s for its many world stars?",
+   "a": [
+    "The Invincibles",
+    "Galácticos",
+    "The Avengers",
+    "The Gladiators"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e20",
+   "q": "Who scored the winning volley against Bayer Leverkusen in the 2002 Champions League final?",
+   "a": [
+    "Raúl",
+    "Zinedine Zidane",
+    "Luís Figo",
+    "Roberto Carlos"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e21",
+   "q": "Which defender became famous for late headed goals, including in the 2014 Champions League final?",
+   "a": [
+    "Pepe",
+    "Sergio Ramos",
+    "Raphaël Varane",
+    "Dani Carvajal"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e22",
+   "q": "Which French striker won the 2022 Ballon d'Or as a Real Madrid player?",
+   "a": [
+    "Kylian Mbappé",
+    "Thierry Henry",
+    "Karim Benzema",
+    "Nicolas Anelka"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e23",
+   "q": "In which country was the legendary Alfredo Di Stéfano born?",
+   "a": [
+    "Spain",
+    "Argentina",
+    "Brazil",
+    "Uruguay"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e24",
+   "q": "Which Madrid derby is considered the fiercest in the city?",
+   "a": [
+    "Against Getafe",
+    "Against Rayo Vallecano",
+    "Against Atlético",
+    "Against Leganés"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e25",
+   "q": "What is the name of the Real Madrid president who created the Galácticos era?",
+   "a": [
+    "Ramón Calderón",
+    "Florentino Pérez",
+    "Santiago Bernabéu",
+    "Lorenzo Sanz"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e26",
+   "q": "Which of these English players wore the Real Madrid shirt?",
+   "a": [
+    "Steven Gerrard",
+    "David Beckham",
+    "Frank Lampard",
+    "Wayne Rooney"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e27",
+   "q": "What was defender Dani Carvajal's nickname?",
+   "a": [
+    "The Wall",
+    "Pitbull",
+    "Cyborg",
+    "The Professor"
+   ],
+   "correct": 2,
+   "note": "verb tense: the player is not in the 2026/27 squad"
+  },
+  {
+   "id": "e28",
+   "q": "Which club did Cristiano Ronaldo play for before joining Real in 2009?",
+   "a": [
+    "Sporting CP",
+    "Manchester United",
+    "Juventus",
+    "PSG"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e29",
+   "q": "Which Brazilian became famous at Real for his thunderous free kicks?",
+   "a": [
+    "Kaká",
+    "Ronaldinho",
+    "Roberto Carlos",
+    "Marcelo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e30",
+   "q": "How many Champions League titles in a row did Real Madrid win under Zidane?",
+   "a": [
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e31",
+   "q": "Which trophy is awarded to the champions of Spain?",
+   "a": [
+    "Copa del Rey",
+    "LaLiga trophy",
+    "Supercopa de España",
+    "European Cup"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e32",
+   "q": "What is the surname of the Croatian Ballon d'Or-winning midfielder who played for Real from 2012 to 2025?",
+   "a": [
+    "Rakitić",
+    "Kovačić",
+    "Modrić",
+    "Mandžukić"
+   ],
+   "correct": 2,
+   "note": "Modrić left the club in summer 2025"
+  },
+  {
+   "id": "e33",
+   "q": "Who scored twice, including a bicycle kick, in the 2018 Champions League final against Liverpool?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Gareth Bale",
+    "Karim Benzema",
+    "Marco Asensio"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e34",
+   "q": "In which Madrid square do fans traditionally celebrate the club's triumphs?",
+   "a": [
+    "Plaza Mayor",
+    "Plaza de Cibeles",
+    "Puerta del Sol",
+    "Plaza de España"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e35",
+   "q": "Which legendary Hungarian striker played for Real alongside Di Stéfano?",
+   "a": [
+    "Sándor Kocsis",
+    "Ferenc Puskás",
+    "László Kubala",
+    "Zoltán Czibor"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e36",
+   "q": "Who was Real Madrid's captain in the 2024/25 season?",
+   "a": [
+    "Luka Modrić",
+    "Dani Carvajal",
+    "Thibaut Courtois",
+    "Federico Valverde"
+   ],
+   "correct": 0,
+   "note": "verb tense"
+  },
+  {
+   "id": "e37",
+   "q": "What colour was Real's away kit in the 2017 Champions League final in Cardiff?",
+   "a": [
+    "Black",
+    "Purple",
+    "Blue",
+    "Pink"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e38",
+   "q": "In which year was Real Madrid founded?",
+   "a": [
+    "1899",
+    "1902",
+    "1905",
+    "1920"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e39",
+   "q": "Which player nicknamed \"Dentuço\" (Bucktooth) played for Real?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Ronaldo (Brazil)",
+    "Ronaldinho",
+    "Romário"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e40",
+   "q": "How many Ballon d'Or awards did Cristiano Ronaldo win as a Real Madrid player?",
+   "a": [
+    "3",
+    "4",
+    "5",
+    "2"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e41",
+   "q": "Which Italian World Cup-winning defender played for Real in the late 2000s?",
+   "a": [
+    "Alessandro Nesta",
+    "Fabio Cannavaro",
+    "Paolo Maldini",
+    "Giorgio Chiellini"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e42",
+   "q": "Who was Real Madrid's coach when they won La Décima?",
+   "a": [
+    "José Mourinho",
+    "Carlo Ancelotti",
+    "Rafael Benítez",
+    "Vicente del Bosque"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e43",
+   "q": "What is midfielder Federico Valverde's nickname?",
+   "a": [
+    "El Pajarito (Little Bird)",
+    "The Lion",
+    "The Engine",
+    "The Rocket"
+   ],
+   "correct": 0,
+   "note": "previously \"The Falcon\"; Valverde's nickname is El Pajarito",
+   "media": {
+    "type": "player",
+    "id": 743533
+   }
+  },
+  {
+   "id": "e44",
+   "q": "Which Real Madrid player scored for Spain in the 2010 World Cup final?",
+   "a": [
+    "Sergio Ramos",
+    "Xabi Alonso",
+    "Iker Casillas",
+    "None of them"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "e45",
+   "q": "Which company was the main shirt sponsor on Real's kit in 2024?",
+   "a": [
+    "Bwin",
+    "Fly Emirates",
+    "Rakuten",
+    "Pirelli"
+   ],
+   "correct": 1,
+   "note": "verb tense"
+  },
+  {
+   "id": "e46",
+   "q": "Which German midfielder ended his career at Real in 2024?",
+   "a": [
+    "Mesut Özil",
+    "Sami Khedira",
+    "Toni Kroos",
+    "İlkay Gündoğan"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e47",
+   "q": "Against which team did Real play the first official match in its history?",
+   "a": [
+    "Barcelona",
+    "Atlético",
+    "Sevilla",
+    "Athletic Bilbao"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e48",
+   "q": "Which number did Kylian Mbappé take after joining Real in summer 2024?",
+   "a": [
+    "7",
+    "10",
+    "9",
+    "11"
+   ],
+   "correct": 2,
+   "note": "since 2025 Mbappé has worn number 10 — the question is pinned to 2024",
+   "media": {
+    "type": "player",
+    "id": 701154
+   }
+  },
+  {
+   "id": "e49",
+   "q": "What is Real Madrid's training ground called?",
+   "a": [
+    "Camp Desports",
+    "Valdebebas",
+    "La Finca",
+    "Ciudad Deportiva"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e50",
+   "q": "Who was the longest-serving president in the club's history?",
+   "a": [
+    "Florentino Pérez",
+    "Santiago Bernabéu",
+    "Ramón Mendoza",
+    "Lorenzo Sanz"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e51",
+   "q": "Which Real player scored the fastest goal in El Clásico history?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Karim Benzema",
+    "Raúl",
+    "Vinícius Júnior"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "team",
+    "id": 8634
+   }
+  },
+  {
+   "id": "e52",
+   "q": "Which Real goalkeeper won the Golden Glove at the 2018 World Cup?",
+   "a": [
+    "Iker Casillas",
+    "Thibaut Courtois",
+    "Keylor Navas",
+    "Diego López"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e53",
+   "q": "How many substitutions are allowed in modern football?",
+   "a": [
+    "3",
+    "4",
+    "5",
+    "2"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e54",
+   "q": "Which player goes by the nickname \"Vini\"?",
+   "a": [
+    "Vicente",
+    "Vinícius Júnior",
+    "Víctor Ruiz",
+    "Vitor Roque"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e55",
+   "q": "What award did Real Madrid receive from FIFA in 2000?",
+   "a": [
+    "The World Cup",
+    "FIFA Club of the Century",
+    "The Fair Play award",
+    "The FIFA Gold Cup"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e56",
+   "q": "Which league does Real Madrid play in?",
+   "a": [
+    "Serie A",
+    "Premier League",
+    "LaLiga",
+    "Bundesliga"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e57",
+   "q": "Which player was known as the \"Iron Man\" of the defence in the 1980s and 90s?",
+   "a": [
+    "Fernando Hierro",
+    "Míchel Salgado",
+    "Pepe",
+    "Marcelo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e58",
+   "q": "What was the nickname of the group of five academy graduates in the 1980s?",
+   "a": [
+    "La Quinta del Buitre",
+    "The Five Magicians",
+    "The Madrid Guard",
+    "The Royal Five"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e59",
+   "q": "Who is Real Madrid's kit supplier?",
+   "a": [
+    "Nike",
+    "Adidas",
+    "Puma",
+    "Reebok"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e60",
+   "q": "In which city was the 2014 Champions League final, where Real won La Décima, played?",
+   "a": [
+    "Milan",
+    "Lisbon",
+    "Madrid",
+    "Paris"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e61",
+   "q": "Which number is considered \"magic\" for playmakers and was worn by Modrić after James?",
+   "a": [
+    "8",
+    "9",
+    "10",
+    "5"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e62",
+   "q": "Which Belgian player became the club's most expensive signing in 2019 but failed to live up to expectations?",
+   "a": [
+    "Kevin De Bruyne",
+    "Eden Hazard",
+    "Romelu Lukaku",
+    "Jan Vertonghen"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e63",
+   "q": "Which striker nicknamed \"El Moro\" was a club legend in the 1990s?",
+   "a": [
+    "Fernando Morientes",
+    "Raúl",
+    "Ronaldo",
+    "Davor Šuker"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e64",
+   "q": "Which Real Madrid president died in a plane crash?",
+   "a": [
+    "Santiago Bernabéu",
+    "Ramón Calderón",
+    "None of them",
+    "Lorenzo Sanz"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e65",
+   "q": "What position did Zinedine Zidane play?",
+   "a": [
+    "Striker",
+    "Midfielder",
+    "Defender",
+    "Goalkeeper"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e66",
+   "q": "Who scored Real's first goal in the 2024 Champions League final?",
+   "a": [
+    "Vinícius Júnior",
+    "Dani Carvajal",
+    "Rodrygo",
+    "Jude Bellingham"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e67",
+   "q": "Which country is Jude Bellingham from?",
+   "a": [
+    "Germany",
+    "England",
+    "Scotland",
+    "Ireland"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "player",
+    "id": 1077894
+   }
+  },
+  {
+   "id": "e68",
+   "q": "How many minutes does a standard football match last?",
+   "a": [
+    "80",
+    "90",
+    "100",
+    "45"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e69",
+   "q": "Which Real player won the Ballon d'Or after the 2002 World Cup?",
+   "a": [
+    "Zidane",
+    "Ronaldo",
+    "Figo",
+    "Roberto Carlos"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e70",
+   "q": "What do fans call the Santiago Bernabéu?",
+   "a": [
+    "Hell",
+    "The White Castle",
+    "The Colosseum",
+    "The Temple of Football"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "e71",
+   "q": "Which of these players joined Real from Tottenham?",
+   "a": [
+    "Luka Modrić",
+    "Cristiano Ronaldo",
+    "Karim Benzema",
+    "Mesut Özil"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e72",
+   "q": "Which number did Zinedine Zidane wear at Real Madrid?",
+   "a": [
+    "10",
+    "21",
+    "5",
+    "7"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e73",
+   "q": "Which team is Real's most frequent Champions League opponent historically?",
+   "a": [
+    "Liverpool",
+    "Bayern Munich",
+    "AC Milan",
+    "Juventus"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e74",
+   "q": "Who led Real to three Champions League titles in a row in 2016–2018?",
+   "a": [
+    "José Mourinho",
+    "Carlo Ancelotti",
+    "Zinedine Zidane",
+    "Vicente del Bosque"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "e75",
+   "q": "Which Real player was famous for always kissing his ring when celebrating a goal?",
+   "a": [
+    "Ronaldo",
+    "Raúl",
+    "Guti",
+    "Beckham"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e76",
+   "q": "Who kept goal for Real in the three consecutive winning Champions League finals (2016–2018)?",
+   "a": [
+    "Iker Casillas",
+    "Keylor Navas",
+    "Thibaut Courtois",
+    "Diego López"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e77",
+   "q": "Which Welsh player scored the decisive goal in the 2014 Copa del Rey final after a run down the touchline?",
+   "a": [
+    "Aaron Ramsey",
+    "Gareth Bale",
+    "Ryan Giggs",
+    "Joe Allen"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e78",
+   "q": "What is Real Madrid's reserve team called?",
+   "a": [
+    "Real Madrid B",
+    "Real Madrid Castilla",
+    "Madrid City",
+    "Junior Real"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e79",
+   "q": "What colour is the band on Real's modern crest?",
+   "a": [
+    "Red",
+    "Blue",
+    "Green",
+    "Yellow"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e80",
+   "q": "Which club legend served as honorary president until his death in 2014?",
+   "a": [
+    "Raúl",
+    "Alfredo Di Stéfano",
+    "Santiago Bernabéu",
+    "Ferenc Puskás"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e81",
+   "q": "Roughly how many goals per game did Cristiano Ronaldo average at Real?",
+   "a": [
+    "About 0.5",
+    "About 1.0",
+    "About 1.5",
+    "About 0.3"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e82",
+   "q": "Which Real player was dubbed the \"Golden Boy\" of Spanish football in the 1990s?",
+   "a": [
+    "Xavi",
+    "Raúl",
+    "Iniesta",
+    "Guti"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e83",
+   "q": "Which Arab country often hosts the Supercopa de España?",
+   "a": [
+    "Qatar",
+    "Saudi Arabia",
+    "UAE",
+    "Kuwait"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 139
+   }
+  },
+  {
+   "id": "e84",
+   "q": "Which club did Jude Bellingham join Real from in 2023?",
+   "a": [
+    "Borussia Dortmund",
+    "Birmingham City",
+    "Liverpool",
+    "Manchester City"
+   ],
+   "correct": 0,
+   "note": "previously a trick question with the answer \"None (he moved TO Real)\"",
+   "media": {
+    "type": "player",
+    "id": 1077894
+   }
+  },
+  {
+   "id": "e85",
+   "q": "What is the official cry used by Real fans?",
+   "a": [
+    "Visca el Madrid",
+    "Hala Madrid",
+    "Forza Madrid",
+    "Aupa Madrid"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e86",
+   "q": "Which Brazilian left-back succeeded Roberto Carlos and won 5 Champions Leagues?",
+   "a": [
+    "Dani Alves",
+    "Marcelo",
+    "Filipe Luís",
+    "Alex Sandro"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e87",
+   "q": "Which player was known for his tough style and frequent red cards?",
+   "a": [
+    "Sergio Ramos",
+    "Toni Kroos",
+    "Karim Benzema",
+    "Luka Modrić"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e88",
+   "q": "Which number does Vinícius Júnior wear?",
+   "a": [
+    "20",
+    "7",
+    "11",
+    "10"
+   ],
+   "correct": 1,
+   "note": "number 7 is still correct in 2026/27 (/api/team)",
+   "media": {
+    "type": "player",
+    "id": 846033
+   }
+  },
+  {
+   "id": "e89",
+   "q": "Who scored the \"goal of the century\" with a backheel against Atlético?",
+   "a": [
+    "Ronaldo",
+    "Cristiano Ronaldo",
+    "Raúl",
+    "Benzema"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e90",
+   "q": "How many teams compete in the Spanish league?",
+   "a": [
+    "18",
+    "20",
+    "22",
+    "10"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 87
+   }
+  },
+  {
+   "id": "e91",
+   "q": "Which animal is associated with Madrid (there is a statue of it on a city square)?",
+   "a": [
+    "A lion",
+    "A bear",
+    "A wolf",
+    "A bull"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e92",
+   "q": "Which French left-back joined Real from Lyon in 2019?",
+   "a": [
+    "Raphaël Varane",
+    "Ferland Mendy",
+    "Lucas Hernández",
+    "Jules Koundé"
+   ],
+   "correct": 1,
+   "note": "previously \"is a key defender\" — subjective and could go out of date"
+  },
+  {
+   "id": "e93",
+   "q": "What was the nickname of the legendary player José María Gutiérrez?",
+   "a": [
+    "Guti",
+    "Chema",
+    "José",
+    "The Magician"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "e94",
+   "q": "Which Real midfielder was nicknamed \"The Professor\" for his passing accuracy?",
+   "a": [
+    "Luka Modrić",
+    "Toni Kroos",
+    "Casemiro",
+    "Isco"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e95",
+   "q": "Which team beat Real in the 1981 European Cup final?",
+   "a": [
+    "Juventus",
+    "Liverpool",
+    "AC Milan",
+    "Bayern"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e96",
+   "q": "Which player scored a hat-trick against Barcelona in the 2024 Supercopa?",
+   "a": [
+    "Rodrygo",
+    "Vinícius Júnior",
+    "Bellingham",
+    "Valverde"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 139
+   }
+  },
+  {
+   "id": "e97",
+   "q": "Did Santiago Bernabéu play for Real Madrid?",
+   "a": [
+    "Yes, he played for the club and later became president",
+    "No, he was only president",
+    "He was only a coach",
+    "He was a referee"
+   ],
+   "correct": 0,
+   "note": "fixed an unclear correct answer"
+  },
+  {
+   "id": "e98",
+   "q": "In which year did Real win La Décima (their 10th European Cup)?",
+   "a": [
+    "2010",
+    "2014",
+    "2002",
+    "2016"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "e99",
+   "q": "Who is Real's eternal rival for the title of Spain's most decorated club?",
+   "a": [
+    "Atlético Madrid",
+    "Barcelona",
+    "Athletic Bilbao",
+    "Valencia"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "e100",
+   "q": "Which number does Kylian Mbappé wear in the 2026/27 season?",
+   "a": [
+    "10",
+    "9",
+    "7",
+    "11"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "player",
+    "id": 701154
+   },
+   "note": "new, from /api/team (October 2026)"
+  },
+  {
+   "id": "e101",
+   "q": "Which country is Federico Valverde from?",
+   "a": [
+    "Uruguay",
+    "Argentina",
+    "Chile",
+    "Paraguay"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "player",
+    "id": 743533
+   },
+   "note": "new"
+  }
+ ],
+ "medium": [
+  {
+   "id": "m0",
+   "q": "Who scored Real's first goal in the 2014 Champions League final against Atlético?",
+   "a": [
+    "Gareth Bale",
+    "Sergio Ramos",
+    "Cristiano Ronaldo",
+    "Marcelo"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m1",
+   "q": "Which coach was in charge of Real when they won the Champions League in 1998?",
+   "a": [
+    "Jupp Heynckes",
+    "Guus Hiddink",
+    "Fabio Capello",
+    "Vicente del Bosque"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m2",
+   "q": "Which player was nicknamed the \"Angel of Madrid\"?",
+   "a": [
+    "Santillana",
+    "Ángel Di María",
+    "Emilio Butragueño",
+    "Raúl González"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m3",
+   "q": "In which year did Real Madrid celebrate its centenary?",
+   "a": [
+    "2005",
+    "1999",
+    "2000",
+    "2002"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m4",
+   "q": "Who provided the assist for Zidane in the 2002 Champions League final?",
+   "a": [
+    "Luís Figo",
+    "Santiago Solari",
+    "Steve McManaman",
+    "Roberto Carlos"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m5",
+   "q": "Which player scored 5 goals in a single match against Granada in 2015?",
+   "a": [
+    "James Rodríguez",
+    "Cristiano Ronaldo",
+    "Gareth Bale",
+    "Karim Benzema"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m6",
+   "q": "How many times did Real win the Intercontinental Cup (the old format)?",
+   "a": [
+    "3",
+    "5",
+    "2",
+    "1"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m7",
+   "q": "Which player nicknamed \"El Moro\" was Raúl's ideal strike partner?",
+   "a": [
+    "Fernando Morientes",
+    "Ronaldo",
+    "Predrag Mijatović",
+    "Davor Šuker"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m8",
+   "q": "Who was the team captain immediately before Sergio Ramos?",
+   "a": [
+    "Marcelo",
+    "Guti",
+    "Míchel Salgado",
+    "Iker Casillas"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m9",
+   "q": "Which club did Real face in their first European Cup final in 1956?",
+   "a": [
+    "Eintracht Frankfurt",
+    "Stade de Reims",
+    "AC Milan",
+    "Fiorentina"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m10",
+   "q": "What is the full name of the Portuguese defender known as Pepe, who spent 10 years at the club?",
+   "a": [
+    "Képler Laveran Lima Ferreira",
+    "Ricardo Carvalho",
+    "José Fonte",
+    "Fábio Coentrão"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m11",
+   "q": "Which coach won LaLiga in his only season at the club (2006/07)?",
+   "a": [
+    "Juande Ramos",
+    "Manuel Pellegrini",
+    "Fabio Capello",
+    "Bernd Schuster"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m12",
+   "q": "For what fee did Cristiano Ronaldo join Real in 2009?",
+   "a": [
+    "€100m",
+    "€120m",
+    "€80m",
+    "€94m"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m13",
+   "q": "Which stadium was Real's home before the Santiago Bernabéu was built?",
+   "a": [
+    "Metropolitano",
+    "Chamartín",
+    "Vallecas",
+    "O'Donnell"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m14",
+   "q": "Who scored the only goal of the 1998 Champions League final?",
+   "a": [
+    "Raúl",
+    "Fernando Hierro",
+    "Clarence Seedorf",
+    "Predrag Mijatović"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m15",
+   "q": "Which player wore number 23 in honour of Michael Jordan?",
+   "a": [
+    "David Beckham",
+    "James Rodríguez",
+    "Isco",
+    "Mesut Özil"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m16",
+   "q": "How many Champions League goals did Cristiano Ronaldo score for Real?",
+   "a": [
+    "105",
+    "94",
+    "120",
+    "100"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m17",
+   "q": "Who was Real's coach during the famous 11–1 thrashing of Barcelona in 1943?",
+   "a": [
+    "Leo Beenhakker",
+    "Miguel Muñoz",
+    "Juan Armet",
+    "Enrique Fernández"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m18",
+   "q": "Which goalkeeper played in the 2000 Champions League final against Valencia?",
+   "a": [
+    "Santiago Cañizares",
+    "Iker Casillas",
+    "César Sánchez",
+    "Bodo Illgner"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m19",
+   "q": "What position did Fernando Hierro play at the start of his career?",
+   "a": [
+    "Midfielder",
+    "Goalkeeper",
+    "Centre-back",
+    "Striker"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m20",
+   "q": "Which Galáctico-era player joined the club from Liverpool in 2004?",
+   "a": [
+    "Steve McManaman",
+    "Michael Owen",
+    "Xabi Alonso",
+    "Álvaro Arbeloa"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m21",
+   "q": "What nickname was given to Míchel, Martín Vázquez, Sanchís, Pardeza and Butragueño?",
+   "a": [
+    "The Madrid Five",
+    "The White Wolves",
+    "The Magnificent Five",
+    "La Quinta del Buitre (the Vulture's Five)"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m22",
+   "q": "Who scored the winning goal in the 2022 Champions League final against Liverpool?",
+   "a": [
+    "Fede Valverde",
+    "Rodrygo",
+    "Karim Benzema",
+    "Vinícius Júnior"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m23",
+   "q": "How many times did Zinedine Zidane win the Champions League as a Real player?",
+   "a": [
+    "2",
+    "3",
+    "1",
+    "0"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m24",
+   "q": "Which Dutch midfielder joined Real from Ajax in 2007?",
+   "a": [
+    "Rafael van der Vaart",
+    "Wesley Sneijder",
+    "Royston Drenthe",
+    "Arjen Robben"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m25",
+   "q": "Who was the club president when Alfredo Di Stéfano was signed?",
+   "a": [
+    "Ramón Mendoza",
+    "Florentino Pérez",
+    "Lorenzo Sanz",
+    "Santiago Bernabéu"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m26",
+   "q": "Which player scored the \"phantom goal\" in the 1966 European Cup final?",
+   "a": [
+    "Gento",
+    "Amancio",
+    "Pirri",
+    "Serena"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m27",
+   "q": "How many European Cups did Paco Gento win?",
+   "a": [
+    "4",
+    "6",
+    "7",
+    "5"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m28",
+   "q": "Which coach was sacked right after winning LaLiga in 2003?",
+   "a": [
+    "Vicente del Bosque",
+    "Carlos Queiroz",
+    "Vanderlei Luxemburgo",
+    "José Antonio Camacho"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m29",
+   "q": "Which Real player won the Ballon d'Or in 2000?",
+   "a": [
+    "Zinedine Zidane",
+    "Raúl",
+    "Luís Figo",
+    "Roberto Carlos"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m30",
+   "q": "Which English team did Real face in the 1971 Cup Winners' Cup final?",
+   "a": [
+    "Arsenal",
+    "Tottenham",
+    "Liverpool",
+    "Chelsea"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m31",
+   "q": "Who scored the decisive penalty in the shoot-out against Atlético in the 2016 Champions League final?",
+   "a": [
+    "Luka Modrić",
+    "Cristiano Ronaldo",
+    "Sergio Ramos",
+    "Gareth Bale"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m32",
+   "q": "Which player joined Real from Málaga and became an important part of Ancelotti's team?",
+   "a": [
+    "Dani Carvajal",
+    "Isco",
+    "Asier Illarramendi",
+    "Nacho"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m33",
+   "q": "In which year did Real first win the FIFA Club World Cup (in its new format)?",
+   "a": [
+    "2016",
+    "2010",
+    "2014",
+    "2012"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m34",
+   "q": "Who was Real's coach when the team lost 5–0 to Barcelona in 2010?",
+   "a": [
+    "José Mourinho",
+    "Manuel Pellegrini",
+    "Rafael Benítez",
+    "Carlo Ancelotti"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "team",
+    "id": 8634
+   }
+  },
+  {
+   "id": "m35",
+   "q": "Right-back Míchel Salgado's nickname is short for which first name?",
+   "a": [
+    "Miguel",
+    "Antonio",
+    "José",
+    "Manuel"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m36",
+   "q": "What is Cristiano Ronaldo's record number of LaLiga goals in a single season?",
+   "a": [
+    "45",
+    "48",
+    "50",
+    "40"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 87
+   }
+  },
+  {
+   "id": "m37",
+   "q": "Which player was known as \"The Wall\" in the 1980s?",
+   "a": [
+    "Manuel Sanchís",
+    "Ricardo Gallego",
+    "José Antonio Camacho",
+    "Chendo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m38",
+   "q": "Which Italian striker nicknamed \"FantAntonio\" had a short spell at Real?",
+   "a": [
+    "Alessandro Del Piero",
+    "Antonio Cassano",
+    "Christian Vieri",
+    "Alberto Gilardino"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m39",
+   "q": "Against which team did Real pull off a famous comeback from a 5–1 deficit in the 1985/86 UEFA Cup?",
+   "a": [
+    "Inter",
+    "Borussia Mönchengladbach",
+    "Anderlecht",
+    "1. FC Köln"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m40",
+   "q": "Who scored twice against Juventus in the 2017 Champions League final?",
+   "a": [
+    "Marco Asensio",
+    "Cristiano Ronaldo",
+    "Mario Mandžukić",
+    "Casemiro"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m41",
+   "q": "Which number did Raúl take when he first broke into the first team?",
+   "a": [
+    "10",
+    "11",
+    "28",
+    "7"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m42",
+   "q": "Which goalkeeper was first choice in the Spanish league in the 2013/14 season?",
+   "a": [
+    "Iker Casillas",
+    "Diego López",
+    "Keylor Navas",
+    "Kiko Casilla"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m43",
+   "q": "How many Champions League trophies did Casemiro win with Real?",
+   "a": [
+    "5",
+    "4",
+    "2",
+    "3"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m44",
+   "q": "Which Real legend coached Castilla before taking over the first team in 2016?",
+   "a": [
+    "Raúl",
+    "Zinedine Zidane",
+    "Santiago Solari",
+    "Guti"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m45",
+   "q": "Which player from Togo played for Real on loan in 2011?",
+   "a": [
+    "Didier Drogba",
+    "Kolo Touré",
+    "Samuel Eto'o",
+    "Emmanuel Adebayor"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m46",
+   "q": "Which defender joined Real from Porto in 2007 for €30m?",
+   "a": [
+    "Pepe",
+    "Ricardo Carvalho",
+    "Fábio Coentrão",
+    "Danilo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m47",
+   "q": "Which trophy did Real win in 2011 by beating Barcelona in the final with a Ronaldo header?",
+   "a": [
+    "Champions League",
+    "LaLiga",
+    "Supercopa de España",
+    "Copa del Rey"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m48",
+   "q": "Who scored against Manchester United at Old Trafford in 2013 and refused to celebrate?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Luka Modrić",
+    "Gonzalo Higuaín",
+    "Mesut Özil"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "team",
+    "id": 10260
+   }
+  },
+  {
+   "id": "m49",
+   "q": "Which Real president resigned in 2006, admitting the Galácticos project had failed?",
+   "a": [
+    "Lorenzo Sanz",
+    "Ramón Calderón",
+    "Vicente Boluda",
+    "Florentino Pérez"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m50",
+   "q": "Who was Real's top scorer in the 2021/22 Champions League?",
+   "a": [
+    "Rodrygo",
+    "Vinícius",
+    "Luka Modrić",
+    "Karim Benzema"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m51",
+   "q": "Which club did Real let Samuel Eto'o go to before he became a star for their rivals?",
+   "a": [
+    "Barcelona",
+    "Mallorca",
+    "Leganés",
+    "Espanyol"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m52",
+   "q": "Which player was known as \"La Saeta Rubia\" (the Blond Arrow)?",
+   "a": [
+    "Günter Netzer",
+    "Raymond Kopa",
+    "Ferenc Puskás",
+    "Alfredo Di Stéfano"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m53",
+   "q": "Which player scored the winning goal in the 1998 Intercontinental Cup final?",
+   "a": [
+    "Raúl",
+    "Sávio",
+    "Clarence Seedorf",
+    "Roberto Carlos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m54",
+   "q": "For how many years in a row did Real fail to get past the Champions League round of 16 (the \"curse\" period)?",
+   "a": [
+    "6 years",
+    "5 years",
+    "4 years",
+    "8 years"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m55",
+   "q": "Which coach broke the \"round of 16 curse\"?",
+   "a": [
+    "Manuel Pellegrini",
+    "Fabio Capello",
+    "José Mourinho",
+    "Bernd Schuster"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m56",
+   "q": "Which Croatian striker played for Real in the late 1990s and was top scorer at the 1998 World Cup?",
+   "a": [
+    "Robert Prosinečki",
+    "Igor Štimac",
+    "Alen Bokšić",
+    "Davor Šuker"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m57",
+   "q": "Who did Real face in the all-Spanish Champions League final of 2000?",
+   "a": [
+    "Atlético",
+    "Barcelona",
+    "Valencia",
+    "Deportivo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m58",
+   "q": "What was Iker Casillas's nickname?",
+   "a": [
+    "The Wall",
+    "The Cat",
+    "The Saint (San Iker)",
+    "The Octopus"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m59",
+   "q": "How many times has Real won the UEFA Cup?",
+   "a": [
+    "2",
+    "3",
+    "1",
+    "0"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m60",
+   "q": "Who delivered the brilliant backheel pass (\"Tacón de Dios\") to Benzema in 2010?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Raúl",
+    "Kaká",
+    "Guti"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m61",
+   "q": "Which Argentine midfielder nicknamed \"El Príncipe\" played for the club in the 1990s?",
+   "a": [
+    "Esteban Cambiasso",
+    "Fernando Redondo",
+    "Santiago Solari",
+    "Fernando Gago"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m62",
+   "q": "What milestone did Real reach in the 2011/12 season under Mourinho?",
+   "a": [
+    "The Golden Cup",
+    "100 points in LaLiga",
+    "The treble",
+    "An unbeaten Champions League win"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 87
+   }
+  },
+  {
+   "id": "m63",
+   "q": "Who was Florentino Pérez's first Galáctico?",
+   "a": [
+    "David Beckham",
+    "Zinedine Zidane",
+    "Ronaldo",
+    "Luís Figo"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m64",
+   "q": "Which player scored a bicycle kick against Juventus in 2018?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Gareth Bale",
+    "Marcelo",
+    "Sergio Ramos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m65",
+   "q": "What is the club's official magazine called?",
+   "a": [
+    "Real Madrid Magazine",
+    "Corazón Blanco",
+    "Madridista",
+    "Hala Madrid"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m66",
+   "q": "Which player joined Real from Monaco after the 2014 World Cup?",
+   "a": [
+    "Kylian Mbappé",
+    "Radamel Falcao",
+    "Toni Kroos",
+    "James Rodríguez"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m67",
+   "q": "Which Real defender got injured in both the 2016 and 2018 Champions League finals?",
+   "a": [
+    "Dani Carvajal",
+    "Sergio Ramos",
+    "Marcelo",
+    "Raphaël Varane"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m68",
+   "q": "What is midfielder Luka Modrić's nickname?",
+   "a": [
+    "Maestro",
+    "Lukita",
+    "Lukas",
+    "Pony"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m69",
+   "q": "How many goals did Raúl score for Real Madrid?",
+   "a": [
+    "300",
+    "250",
+    "323",
+    "450"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m70",
+   "q": "Which player was known as \"El Gallego\" (the Galician)?",
+   "a": [
+    "Francisco Buyo",
+    "Lucas Vázquez",
+    "Míchel Salgado",
+    "Amancio"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m71",
+   "q": "Who coached Real in the 2002 Champions League final?",
+   "a": [
+    "Jupp Heynckes",
+    "Vicente del Bosque",
+    "John Toshack",
+    "Carlos Queiroz"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m72",
+   "q": "Which Real player became a world champion in 2014?",
+   "a": [
+    "Sami Khedira",
+    "Ángel Di María",
+    "Marcelo",
+    "Toni Kroos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m73",
+   "q": "How many times was Raúl LaLiga's top scorer (the Pichichi Trophy)?",
+   "a": [
+    "2",
+    "0",
+    "3",
+    "1"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m74",
+   "q": "Which player moved from Real to Arsenal in 2013?",
+   "a": [
+    "Gonzalo Higuaín",
+    "Mesut Özil",
+    "Álvaro Morata",
+    "Ángel Di María"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m75",
+   "q": "What was the score of Real Madrid vs Eintracht Frankfurt (the 1960 European Cup final)?",
+   "a": [
+    "7–3",
+    "5–3",
+    "4–0",
+    "2–1"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m76",
+   "q": "Which Real player scored 3 goals in the 1960 European Cup final?",
+   "a": [
+    "Ferenc Puskás",
+    "Alfredo Di Stéfano",
+    "Francisco Gento",
+    "Raymond Kopa"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m77",
+   "q": "Which country hosted the 2000 Champions League final?",
+   "a": [
+    "Germany",
+    "England",
+    "Spain",
+    "France"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m78",
+   "q": "Who was Real's goalkeeper before Thibaut Courtois arrived in 2018?",
+   "a": [
+    "Diego López",
+    "Kiko Casilla",
+    "Iker Casillas",
+    "Keylor Navas"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m79",
+   "q": "Which Real player was nicknamed \"El Buitre\" (the Vulture)?",
+   "a": [
+    "Santillana",
+    "Hugo Sánchez",
+    "Emilio Butragueño",
+    "Raúl"
+   ],
+   "correct": 2,
+   "note": "previously \"the Boa\" — a mistranslation"
+  },
+  {
+   "id": "m80",
+   "q": "How many LaLiga titles in a row did Real win in the 1980s (a record)?",
+   "a": [
+    "3",
+    "6",
+    "5",
+    "4"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "league",
+    "id": 87
+   }
+  },
+  {
+   "id": "m81",
+   "q": "Which player scored for Real in the 2000 Champions League final?",
+   "a": [
+    "Fernando Hierro",
+    "Roberto Carlos",
+    "Luís Figo",
+    "Steve McManaman"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m82",
+   "q": "Which English player scored in the 4–2 Clásico in 2005?",
+   "a": [
+    "Michael Owen",
+    "Jonathan Woodgate",
+    "Steve McManaman",
+    "David Beckham"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m83",
+   "q": "Who coached Real in the 2018/19 season after replacing Lopetegui?",
+   "a": [
+    "Santiago Solari",
+    "Rafael Benítez",
+    "Carlo Ancelotti",
+    "Zinedine Zidane"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m84",
+   "q": "Which Real defender scored an own goal and was sent off on his debut?",
+   "a": [
+    "Jonathan Woodgate",
+    "Pepe",
+    "Walter Samuel",
+    "Fabio Cannavaro"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m85",
+   "q": "How many LaLiga hat-tricks did Cristiano Ronaldo score for Real?",
+   "a": [
+    "30",
+    "40",
+    "34",
+    "25"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m86",
+   "q": "Which stadium, Real's own home, hosted the 2010 Champions League final?",
+   "a": [
+    "Mestalla",
+    "San Siro",
+    "Camp Nou",
+    "Santiago Bernabéu"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m87",
+   "q": "Which Real player won the Ballon d'Or in 2018?",
+   "a": [
+    "Raphaël Varane",
+    "Luka Modrić",
+    "Antoine Griezmann",
+    "Cristiano Ronaldo"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m88",
+   "q": "What was striker Iván Zamorano's nickname?",
+   "a": [
+    "The Matador",
+    "Iván the Terrible",
+    "The Helicopter",
+    "Thunder"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "m89",
+   "q": "Who scored the winning goal in the 1966 European Cup final?",
+   "a": [
+    "Serena",
+    "Gento",
+    "Grosso",
+    "Amancio"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m90",
+   "q": "Which club did Fernando Redondo play for before joining Real?",
+   "a": [
+    "Tenerife",
+    "Argentinos Juniors",
+    "AC Milan",
+    "Atlético"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m91",
+   "q": "Which French midfielder moved from Real to Chelsea in 2003?",
+   "a": [
+    "Lassana Diarra",
+    "Christian Karembeu",
+    "Nicolas Anelka",
+    "Claude Makélélé"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m92",
+   "q": "How many goals did Karim Benzema score in the 2018 Champions League final?",
+   "a": [
+    "2",
+    "0",
+    "1",
+    "3"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "m93",
+   "q": "Which player joined Real from Lyon in 2009?",
+   "a": [
+    "Mahamadou Diarra",
+    "Mariano Díaz",
+    "Karim Benzema",
+    "Ferland Mendy"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m94",
+   "q": "Where did Real finish in LaLiga in 2003/04 (Queiroz's failed season)?",
+   "a": [
+    "4th",
+    "5th",
+    "3rd",
+    "2nd"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "m95",
+   "q": "Who was Real's top assist provider in the era of Özil and Di María?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Karim Benzema",
+    "Mesut Özil",
+    "Xabi Alonso"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m96",
+   "q": "In which year was the Valdebebas training complex opened?",
+   "a": [
+    "2000",
+    "2010",
+    "2002",
+    "2005"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m97",
+   "q": "Which player wore number 14 after Guti and before Casemiro?",
+   "a": [
+    "Luka Modrić",
+    "Esteban Granero",
+    "Chicharito",
+    "Xabi Alonso"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "m98",
+   "q": "Which Brazilian won the 1998 and 2000 Champions Leagues with Real?",
+   "a": [
+    "Flávio Conceição",
+    "Robinho",
+    "Roberto Carlos",
+    "Ronaldo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "m99",
+   "q": "What was the late-1960s group of Real players, named after a Beatles song, called?",
+   "a": [
+    "The Royal Four",
+    "The Madrid Beatles",
+    "Ye-yé",
+    "Abbey Road"
+   ],
+   "correct": 2
+  }
+ ],
+ "hard": [
+  {
+   "id": "h0",
+   "q": "In what year was the Di Stéfano building at the Valdebebas training ground officially opened?",
+   "a": [
+    "2005",
+    "2004",
+    "2006",
+    "2007"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h1",
+   "q": "Which executive served as sporting director during Florentino Pérez's first spell as president?",
+   "a": [
+    "Jorge Valdano",
+    "Zinedine Zidane",
+    "Predrag Mijatović",
+    "Miguel Pardeza"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h2",
+   "q": "How many official goals did Fernando Hierro score for Real Madrid?",
+   "a": [
+    "85",
+    "150",
+    "102",
+    "127"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h3",
+   "q": "Which goalkeeper set the club record for minutes without conceding (952 minutes) in the 2013/14 season?",
+   "a": [
+    "Diego López",
+    "Iker Casillas",
+    "Thibaut Courtois",
+    "Keylor Navas"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h4",
+   "q": "Who was the first player Real Madrid paid more than £50 million for?",
+   "a": [
+    "Zinedine Zidane",
+    "Luís Figo",
+    "Ronaldo",
+    "David Beckham"
+   ],
+   "correct": 0,
+   "stale": true,
+   "note": "the fact is wrong: the first player over £50m was Kaká (2009), not Zidane"
+  },
+  {
+   "id": "h5",
+   "q": "Against which club did Real Madrid suffer their heaviest defeat in European competition (0-5)?",
+   "a": [
+    "AC Milan",
+    "Bayern Munich",
+    "Liverpool",
+    "Hamburg"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h6",
+   "q": "Which Real Madrid player was nicknamed \"The Tank\" (El Tanque) in the 1940s?",
+   "a": [
+    "Pahiño",
+    "Sabino Barinaga",
+    "Pruden",
+    "Roque Olsen"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h7",
+   "q": "Which player spent exactly 10 seasons at Real Madrid before leaving for Betis in 1966?",
+   "a": [
+    "José Santamaría",
+    "Ferenc Puskás",
+    "Raymond Kopa",
+    "Paco Gento"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h8",
+   "q": "What LaLiga goals record did Real Madrid set under Mourinho in the 2011/12 season?",
+   "a": [
+    "115",
+    "110",
+    "121",
+    "107"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "league",
+    "id": 87
+   }
+  },
+  {
+   "id": "h9",
+   "q": "Who scored Real Madrid's first goal in the revamped Champions League (in 1995)?",
+   "a": [
+    "Raúl",
+    "Iván Zamorano",
+    "Michael Laudrup",
+    "Fernando Redondo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h10",
+   "q": "For how much did Real Madrid sell Ángel Di María to Manchester United?",
+   "a": [
+    "€75m",
+    "€85m",
+    "€60m",
+    "€70m"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h11",
+   "q": "What shirt number did legendary defender Manuel Sanchís wear in his final season?",
+   "a": [
+    "12",
+    "5",
+    "6",
+    "4"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h12",
+   "q": "Which academy graduate returned from Espanyol and became an important rotation player under Zidane?",
+   "a": [
+    "Lucas Vázquez",
+    "José Callejón",
+    "Esteban Granero",
+    "Marco Asensio"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h13",
+   "q": "In what year did Real Madrid win the UEFA Super Cup for the first time?",
+   "a": [
+    "2000",
+    "1998",
+    "2002",
+    "2014"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h14",
+   "q": "Who provided the assist for Mijatović's goal in the 1998 Champions League final?",
+   "a": [
+    "Christian Karembeu",
+    "Roberto Carlos",
+    "Redondo",
+    "Raúl"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h15",
+   "q": "Which Real Madrid player of the 1950s was nicknamed \"The Little Giant\"?",
+   "a": [
+    "Joseíto",
+    "Marsal",
+    "Raymond Kopa",
+    "Francisco Gento"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h16",
+   "q": "Which president initiated the construction of the old training ground in 1963?",
+   "a": [
+    "Santiago Bernabéu",
+    "Ramón Mendoza",
+    "Florentino Pérez",
+    "Luis de Carlos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h17",
+   "q": "In how many consecutive matches did Real Madrid score at least once (the record run under Zidane)?",
+   "a": [
+    "73",
+    "50",
+    "40",
+    "65"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h18",
+   "q": "Which Real Madrid player scored 4 goals in one Champions League match against Malmö in 2015?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Karim Benzema",
+    "Álvaro Morata",
+    "Gareth Bale"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h19",
+   "q": "Which 1999 signing from Arsenal cost Real Madrid a record €35 million?",
+   "a": [
+    "Nicolas Anelka",
+    "Thierry Henry",
+    "Patrick Vieira",
+    "Marc Overmars"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h20",
+   "q": "Where does Raúl rank on the list of players with the most appearances for Real Madrid?",
+   "a": [
+    "5th",
+    "1st",
+    "3rd",
+    "2nd"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h21",
+   "q": "Who joined Real Madrid from Inter in 1996 at Capello's request?",
+   "a": [
+    "Roberto Carlos",
+    "Iván Zamorano",
+    "Darius Jurgutis",
+    "Clarence Seedorf"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h22",
+   "q": "Which Real Madrid player was named the best player of the 1958 World Cup?",
+   "a": [
+    "Raymond Kopa",
+    "Santamaría",
+    "Gento",
+    "Di Stéfano"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h23",
+   "q": "Who coached Real Madrid when they won the 1985 UEFA Cup?",
+   "a": [
+    "Leo Beenhakker",
+    "Amancio Amaro",
+    "Luis Molowny",
+    "Alfredo Di Stéfano"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h24",
+   "q": "What was defender Gregorio Benito's nickname?",
+   "a": [
+    "The Wall",
+    "The Beast",
+    "The Axe",
+    "The Pirate"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h25",
+   "q": "How many times did Karim Benzema finish as LaLiga's top scorer?",
+   "a": [
+    "3",
+    "1",
+    "2",
+    "0"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h26",
+   "q": "Which Castilla player made his debut under Mourinho in a match against Ajax?",
+   "a": [
+    "Álvaro Morata",
+    "Jesé Rodríguez",
+    "Nacho Fernández",
+    "Denis Cheryshev"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h27",
+   "q": "Which Real Madrid coach said: \"I didn't ask to be bought a Ferrari if I have no roads\"?",
+   "a": [
+    "Bernd Schuster",
+    "José Mourinho",
+    "Fabio Capello",
+    "John Toshack"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h28",
+   "q": "Who scored the winning goal in the 2016 UEFA Super Cup against Sevilla in the 119th minute?",
+   "a": [
+    "Marco Asensio",
+    "Sergio Ramos",
+    "Lucas Vázquez",
+    "Dani Carvajal"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h29",
+   "q": "Which Real Madrid player scored 8 goals in the 1957/58 European Cup?",
+   "a": [
+    "Puskás",
+    "Kopa",
+    "Di Stéfano",
+    "Rial"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h30",
+   "q": "Which goalkeeper was Iker Casillas's backup in the 2002/03 season?",
+   "a": [
+    "Diego López",
+    "Carlos Sánchez",
+    "César Sánchez",
+    "Pedro Contreras"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h31",
+   "q": "What is the full name of club legend Guti?",
+   "a": [
+    "José María Gutiérrez Hernández",
+    "Juan María Gutiérrez Hernández",
+    "José Antonio Gutiérrez",
+    "José María Gutiérrez Sánchez"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h32",
+   "q": "Which Real Madrid player of the 1980s was called \"The Student\" because of his education?",
+   "a": [
+    "Emilio Butragueño",
+    "Míchel",
+    "Sanchís",
+    "Jorge Valdano"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h33",
+   "q": "How many goals did Cristiano Ronaldo score against Barcelona in his entire Real Madrid career?",
+   "a": [
+    "21",
+    "15",
+    "18",
+    "12"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "team",
+    "id": 8634
+   }
+  },
+  {
+   "id": "h34",
+   "q": "In what year did Real Madrid sign their first Japanese player (Takefusa Kubo)?",
+   "a": [
+    "2015",
+    "2019",
+    "2021",
+    "2017"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h35",
+   "q": "Which Real Madrid defender of the 1970s played in a European Cup final with a broken collarbone?",
+   "a": [
+    "Benito",
+    "Zoco",
+    "Camacho",
+    "Pirri"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h36",
+   "q": "Which Real Madrid player scored the fastest Champions League goal in the club's history?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Raúl",
+    "Roberto Carlos",
+    "Iván Zamorano"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h37",
+   "q": "Who was Real Madrid's captain when the team won their 6th European Cup in 1966?",
+   "a": [
+    "Amancio",
+    "Francisco Gento",
+    "Ignacio Zoco",
+    "Pirri"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h38",
+   "q": "Which club did Zinedine Zidane play for before joining Juventus?",
+   "a": [
+    "Bordeaux",
+    "PSG",
+    "Marseille",
+    "Cannes"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h39",
+   "q": "Which Real Madrid figure was known by the nickname \"El Sabio\" (The Wise Man)?",
+   "a": [
+    "Vicente del Bosque",
+    "Pepe Samitier",
+    "Luis Molowny",
+    "Miguel Muñoz"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h40",
+   "q": "Who scored all three Real Madrid goals in the lost 1962 European Cup final against Benfica (3-5)?",
+   "a": [
+    "Puskás",
+    "Di Stéfano",
+    "Del Sol",
+    "Gento"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h41",
+   "q": "Which Italian defender joined Real Madrid in 2006 and took the number 5 after Zidane?",
+   "a": [
+    "Christian Panucci",
+    "Fabio Cannavaro",
+    "Marco Materazzi",
+    "Alessandro Nesta"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h42",
+   "q": "Which academy player scored on his Clásico debut in 1994?",
+   "a": [
+    "Guti",
+    "Víctor Sánchez",
+    "Álvaro Benito",
+    "Raúl"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h43",
+   "q": "How many goals did Hugo Sánchez score in the 1989/90 season, all of them one-touch finishes?",
+   "a": [
+    "34",
+    "36",
+    "40",
+    "38"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h44",
+   "q": "Which Real Madrid coach had the shortest spell in charge in 2004?",
+   "a": [
+    "José Antonio Camacho",
+    "Mariano García Remón",
+    "Vanderlei Luxemburgo",
+    "Juan Ramón López Caro"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h45",
+   "q": "Which Real Madrid player won the Ballon d'Or as a defender in 2006?",
+   "a": [
+    "Fernando Hierro",
+    "Sergio Ramos",
+    "Fabio Cannavaro",
+    "Roberto Carlos"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h46",
+   "q": "Against which German club did Real Madrid complete a \"remontada\" in 2016, winning 4-0 after losing 0-2?",
+   "a": [
+    "Borussia Dortmund",
+    "Schalke",
+    "Bayern Munich",
+    "Wolfsburg"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h47",
+   "q": "Which Real Madrid player scored 5 goals in European Cup finals over his career (in total)?",
+   "a": [
+    "Di Stéfano",
+    "Puskás",
+    "Gento",
+    "Ronaldo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h48",
+   "q": "Which Argentine defender nicknamed \"The Wall\" played for Real Madrid in 2004-2005?",
+   "a": [
+    "Walter Samuel",
+    "Fabricio Coloccini",
+    "Gabriel Heinze",
+    "Oscar Ruggeri"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h49",
+   "q": "Which Real Madrid player won the 1964 European Championship with Spain?",
+   "a": [
+    "Amancio Amaro",
+    "Pirri",
+    "Gento",
+    "Sanchís"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h50",
+   "q": "What was striker Carlos Santillana's nickname?",
+   "a": [
+    "The Matador",
+    "The Bull",
+    "The Jumper",
+    "Santillana (the name of his hometown)"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h51",
+   "q": "How many goals did Gareth Bale score in Champions League finals for Real Madrid?",
+   "a": [
+    "3",
+    "2",
+    "4",
+    "1"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h52",
+   "q": "Who was Real Madrid's president from 1985 to 1995?",
+   "a": [
+    "Luis de Carlos",
+    "Florentino Pérez",
+    "Lorenzo Sanz",
+    "Ramón Mendoza"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h53",
+   "q": "Which Real Madrid midfielder tore his cruciate ligament on his 21st birthday in 2014?",
+   "a": [
+    "Jesé Rodríguez",
+    "Marco Asensio",
+    "Dani Carvajal",
+    "Sergio Canales"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h54",
+   "q": "What shirt number did David Beckham wear in his final season at Real Madrid?",
+   "a": [
+    "7",
+    "11",
+    "10",
+    "23"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h55",
+   "q": "Which Real Madrid player scored in extra time in the 2011 Copa del Rey final?",
+   "a": [
+    "Mesut Özil",
+    "Cristiano Ronaldo",
+    "Ángel Di María",
+    "Emmanuel Adebayor"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h56",
+   "q": "What was the score in the 2002 Champions League final?",
+   "a": [
+    "2-0",
+    "2-1",
+    "3-1",
+    "1-0"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h57",
+   "q": "Which club legend was known as \"The Man with Three Lungs\"?",
+   "a": [
+    "Chendo",
+    "José Antonio Camacho",
+    "Míchel Salgado",
+    "Pirri"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h58",
+   "q": "Which Real Madrid coach led the team to the Spanish league title in 1997?",
+   "a": [
+    "Jupp Heynckes",
+    "Jorge Valdano",
+    "Guus Hiddink",
+    "Fabio Capello"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h59",
+   "q": "How many goals did Raúl score against Atlético Madrid?",
+   "a": [
+    "15",
+    "9",
+    "18",
+    "11"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "team",
+    "id": 9906
+   }
+  },
+  {
+   "id": "h60",
+   "q": "Which Real Madrid player was sold to Milan in 2009 to make room for new stars?",
+   "a": [
+    "Arjen Robben",
+    "Rafael van der Vaart",
+    "Wesley Sneijder",
+    "Klaas-Jan Huntelaar"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h61",
+   "q": "Which Real Madrid player scored the club's 1000th goal in European competition?",
+   "a": [
+    "Karim Benzema",
+    "Gareth Bale",
+    "Cristiano Ronaldo",
+    "Raúl"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h62",
+   "q": "What was midfielder Claude Makélélé's nickname?",
+   "a": [
+    "The Bodyguard",
+    "The Lightning Rod",
+    "The Shadow",
+    "The Battery"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h63",
+   "q": "Who was the team captain in the 1999/2000 season?",
+   "a": [
+    "Fernando Hierro",
+    "Raúl",
+    "Manuel Sanchís",
+    "Fernando Redondo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h64",
+   "q": "Which Real Madrid player scored the decisive goal in the 1957 European Cup final?",
+   "a": [
+    "Alfredo Di Stéfano",
+    "Kopa",
+    "Rial",
+    "Francisco Gento"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h65",
+   "q": "How many matches did Zinedine Zidane play for Real Madrid in all competitions?",
+   "a": [
+    "300",
+    "227",
+    "190",
+    "150"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h66",
+   "q": "Which player joined Real Madrid from Sevilla in the same period as Sergio Ramos?",
+   "a": [
+    "Diego López",
+    "José Antonio Reyes",
+    "Dani Alves",
+    "Júlio Baptista"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h67",
+   "q": "Which Real Madrid player was nicknamed \"the Maradona of Granada\"?",
+   "a": [
+    "Rafael Gordillo",
+    "Míchel",
+    "Chendo",
+    "Juanito"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h68",
+   "q": "To which club did Real Madrid loan Samuel Eto'o in 1997?",
+   "a": [
+    "Leganés",
+    "Mallorca",
+    "Numancia",
+    "Espanyol"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h69",
+   "q": "Which Real Madrid defender scored 12 goals in the 2019/20 season?",
+   "a": [
+    "Ferland Mendy",
+    "Raphaël Varane",
+    "Dani Carvajal",
+    "Sergio Ramos"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h70",
+   "q": "How many consecutive wins did Real Madrid record under Carlo Ancelotti in 2014?",
+   "a": [
+    "22",
+    "20",
+    "15",
+    "18"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h71",
+   "q": "Which Real Madrid player scored in the 2000 Champions League final after rounding the Valencia goalkeeper?",
+   "a": [
+    "Sávio",
+    "Fernando Morientes",
+    "Steve McManaman",
+    "Raúl"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h72",
+   "q": "Who provided the assist for Ramos's goal in the 2014 Champions League final?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Marcelo",
+    "Ángel Di María",
+    "Luka Modrić"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "h73",
+   "q": "What is the nickname of academy graduate Nacho Fernández?",
+   "a": [
+    "Mr. Club",
+    "Nachito",
+    "The Iron Man",
+    "Mr. Versatile"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h74",
+   "q": "Which Real Madrid striker of the 90s has a stadium in Getafe named after him?",
+   "a": [
+    "Raúl",
+    "Alfonso Pérez",
+    "Butragueño",
+    "Morientes"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "h75",
+   "q": "Who coached Real Madrid in the 2005/06 season after Luxemburgo was sacked?",
+   "a": [
+    "Fabio Capello",
+    "Mariano García Remón",
+    "Juan Ramón López Caro",
+    "Vicente del Bosque"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h76",
+   "q": "What shirt number did Mesut Özil wear in his first season at Real Madrid?",
+   "a": [
+    "19",
+    "10",
+    "23",
+    "11"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h77",
+   "q": "Which player was known as \"Pachín\"?",
+   "a": [
+    "Enrique Pérez Díaz",
+    "Marcos Alonso",
+    "José María Zárraga",
+    "Félix Ruiz"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h78",
+   "q": "How many times did Real Madrid win LaLiga in the 1970s?",
+   "a": [
+    "6",
+    "7",
+    "4",
+    "5"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h79",
+   "q": "Which Real Madrid player scored in the 1998 Champions League final (the only goal of the match)?",
+   "a": [
+    "Raúl",
+    "Davor Šuker",
+    "Fernando Hierro",
+    "Predrag Mijatović"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h80",
+   "q": "Which Real Madrid player was sent off against Barcelona in the 2011 Champions League semi-final?",
+   "a": [
+    "Pepe",
+    "Sergio Ramos",
+    "Álvaro Arbeloa",
+    "Marcelo"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "team",
+    "id": 8634
+   }
+  },
+  {
+   "id": "h81",
+   "q": "Which Real Madrid player was nicknamed \"El Siete\" (The Seven)?",
+   "a": [
+    "Raúl",
+    "Butragueño",
+    "Juanito",
+    "Cristiano Ronaldo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h82",
+   "q": "Which Real Madrid player scored the winning goal in the 1960 Intercontinental Cup final?",
+   "a": [
+    "Puskás",
+    "Di Stéfano",
+    "Herrera",
+    "Gento"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h83",
+   "q": "Which Atlético player got injured in the 2014 Champions League final and was substituted in the first half?",
+   "a": [
+    "Fábio Coentrão",
+    "Sami Khedira",
+    "Ángel Di María",
+    "Diego Costa (for Atlético)"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "h84",
+   "q": "How many goals did Karim Benzema score for Real Madrid in all competitions?",
+   "a": [
+    "400",
+    "311",
+    "354",
+    "323"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h85",
+   "q": "Which Real Madrid coach was known for his \"magic rectangle\" system?",
+   "a": [
+    "Vanderlei Luxemburgo",
+    "Manuel Pellegrini",
+    "Carlos Queiroz",
+    "Juande Ramos"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "h86",
+   "q": "What was the score in the 2016 Champions League final after normal time?",
+   "a": [
+    "0-0",
+    "1-1",
+    "2-2",
+    "1-0"
+   ],
+   "correct": 1,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "h87",
+   "q": "Who scored Real Madrid's second goal in the 2017 Champions League final?",
+   "a": [
+    "Luka Modrić",
+    "Marco Asensio",
+    "Casemiro",
+    "Cristiano Ronaldo"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "league",
+    "id": 42
+   }
+  },
+  {
+   "id": "h88",
+   "q": "Which Real Madrid player was nicknamed \"The Redhead\" (El Colorado)?",
+   "a": [
+    "Uli Stielike",
+    "Rafael Gordillo",
+    "Paul Breitner",
+    "Günter Netzer"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "h89",
+   "q": "Who was Real Madrid's sporting director when Cristiano Ronaldo was signed?",
+   "a": [
+    "Predrag Mijatović",
+    "Zinedine Zidane",
+    "Jorge Valdano",
+    "Miguel Pardeza"
+   ],
+   "correct": 0
+  }
+ ],
+ "expert": [
+  {
+   "id": "x0",
+   "q": "What was Real Madrid's first budget in 1902 (in pesetas)?",
+   "a": [
+    "3,075",
+    "5,000",
+    "1,500",
+    "10,000"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x1",
+   "q": "Which architect designed the Chamartín stadium, opened in 1924?",
+   "a": [
+    "Luis Alemany Soler",
+    "Rafael Laos",
+    "Manuel Muñoz Monasterio",
+    "José María Castell"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x2",
+   "q": "Which Real Madrid player of the 1940s scored the first goal at the new Bernabéu stadium?",
+   "a": [
+    "Sabino Barinaga",
+    "Alsúa",
+    "Pruden",
+    "Luis Molowny"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x3",
+   "q": "How many spectators attended the 1960 match against Eintracht in Glasgow, a record for European Cup finals?",
+   "a": [
+    "115,000",
+    "135,000",
+    "127,621",
+    "100,000"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x4",
+   "q": "Which club president resigned in the 1940s after incidents in a match against Barcelona?",
+   "a": [
+    "Adolfo Meléndez",
+    "Rafael Sánchez-Guerra",
+    "Antonio Santos Peralba",
+    "Juan Padrós"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x5",
+   "q": "Who was the first player to score for Real Madrid in LaLiga, in 1929?",
+   "a": [
+    "Gaspar Rubio",
+    "Monchardín",
+    "Luis Regueiro",
+    "Jaime Lazcano"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x6",
+   "q": "What unique award, presented only once, did Alfredo Di Stéfano receive in 1989?",
+   "a": [
+    "Golden Foot",
+    "Player of the Century",
+    "Super Ballon d'Or",
+    "Diamond Ball"
+   ],
+   "correct": 2,
+   "note": "the answer used to be in the question text"
+  },
+  {
+   "id": "x7",
+   "q": "How many socios were eligible to vote in the 2000 presidential election won by Pérez?",
+   "a": [
+    "93,067",
+    "About 70,000",
+    "55,000",
+    "110,000"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x8",
+   "q": "Which Real Madrid player of the 1950s was nicknamed \"El Marqués\" (The Marquis)?",
+   "a": [
+    "Rafael Lesmes",
+    "Marquitos",
+    "Enrique Mateos",
+    "José María Zárraga"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x9",
+   "q": "Which player made just 1 appearance for Real Madrid in 2011/12, coming on in the Copa del Rey against Ponferradina?",
+   "a": [
+    "Cheryshev",
+    "Jesé",
+    "Pacheco",
+    "Joselu"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x10",
+   "q": "In what year did a crown first appear on Real Madrid's crest?",
+   "a": [
+    "1931",
+    "1941",
+    "1902",
+    "1920"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x11",
+   "q": "Who coached Real Madrid in 1994 when the club were sensationally knocked out of the UEFA Cup by Odense?",
+   "a": [
+    "Benito Floro",
+    "John Toshack",
+    "Vicente del Bosque",
+    "Jorge Valdano"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x12",
+   "q": "Which Real Madrid player scored 4 goals against Barcelona in a single match in 1943 (Cup)?",
+   "a": [
+    "Chus Alonso",
+    "Pruden",
+    "Sabino Barinaga",
+    "Alsúa"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x13",
+   "q": "What was the exact height of the Bernabéu stadium before its latest renovation in the 2020s?",
+   "a": [
+    "45 metres",
+    "38 metres",
+    "52 metres",
+    "40 metres"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x14",
+   "q": "What was the name of the English coach who managed Real Madrid from 1923 to 1926?",
+   "a": [
+    "Robert Firth",
+    "Arthur Johnson",
+    "Juan Armet",
+    "Juan Carcelén"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x15",
+   "q": "For how many pesetas did Míchel Salgado join Real Madrid from Celta?",
+   "a": [
+    "2 billion",
+    "1 billion",
+    "3 billion",
+    "500 million"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x16",
+   "q": "Which Real Madrid player of the 1950s was a dentist by profession?",
+   "a": [
+    "Chus Alonso",
+    "Muñoz",
+    "Pirri",
+    "Marcos Alonso"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x17",
+   "q": "In what year did Real Madrid first use numbers on players' shirts?",
+   "a": [
+    "1950",
+    "1947",
+    "1955",
+    "1930"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x18",
+   "q": "Which Real Madrid player scored as early as the 2nd minute of the 1959 European Cup final?",
+   "a": [
+    "Rial",
+    "Kopa",
+    "Di Stéfano",
+    "Enrique Mateos"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x19",
+   "q": "How many official matches did English defender Jonathan Woodgate play for Real Madrid?",
+   "a": [
+    "14",
+    "20",
+    "9",
+    "5"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x20",
+   "q": "Who was Real Madrid's second-highest scorer in all competitions in the \"La Décima\" season (2013/14)?",
+   "a": [
+    "Ángel Di María",
+    "Cristiano Ronaldo",
+    "Karim Benzema",
+    "Gareth Bale"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x21",
+   "q": "Which Real Madrid player of the 1930s, nicknamed \"El Divino\", was considered the best goalkeeper in the world?",
+   "a": [
+    "Quincoces",
+    "Ricardo Zamora",
+    "Hilario",
+    "Ciriaco"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x22",
+   "q": "Who scored the winning goal in the 1936 Spanish Cup final (the last before the Civil War)?",
+   "a": [
+    "Hilario",
+    "Sañudo",
+    "Zamora",
+    "Lecue"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x23",
+   "q": "Which Real Madrid player was the first ever to score with a rabona in an official match?",
+   "a": [
+    "Robinho",
+    "Cristiano Ronaldo",
+    "Ángel Di María",
+    "Marcelo"
+   ],
+   "correct": 2,
+   "stale": true,
+   "note": "the fact is wrong: rabona goals were scored long before Di María"
+  },
+  {
+   "id": "x24",
+   "q": "How many times did Real Madrid win the Small Club World Cup in Venezuela?",
+   "a": [
+    "3",
+    "0",
+    "2",
+    "1"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x25",
+   "q": "What was the score in Real Madrid's first match against Soviet club Torpedo in 1992?",
+   "a": [
+    "1-0",
+    "0-0",
+    "5-2",
+    "2-3"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x26",
+   "q": "What was the name of the Brazilian defender signed together with Ronaldo in 2002 who never made the grade?",
+   "a": [
+    "Cicinho",
+    "Flávio Conceição",
+    "Vítor",
+    "Cláudio"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x27",
+   "q": "What role did Fernando Hierro hold on Carlo Ancelotti's staff in the 2014/15 season?",
+   "a": [
+    "Assistant manager",
+    "Analyst",
+    "Sporting director",
+    "Defensive coach"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x28",
+   "q": "How many goals did Ferenc Puskás score in his debut LaLiga season?",
+   "a": [
+    "21",
+    "20",
+    "18",
+    "24"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x29",
+   "q": "Which Real Madrid player missed first in the penalty shootout against Bayern in 2012?",
+   "a": [
+    "Xabi Alonso",
+    "Sergio Ramos",
+    "Kaká",
+    "Cristiano Ronaldo"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "team",
+    "id": 9823
+   }
+  },
+  {
+   "id": "x30",
+   "q": "Which Real Madrid player of the 1920s was known as \"Monchardín\"?",
+   "a": [
+    "René Petit",
+    "Alberto Machimbarrena",
+    "Santiago Bernabéu",
+    "José María Muñeca"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x31",
+   "q": "Which Real Madrid coach was sacked after a 0-4 Cup defeat to Alcorcón?",
+   "a": [
+    "Juande Ramos",
+    "Bernd Schuster",
+    "Manuel Pellegrini",
+    "Fabio Capello"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x32",
+   "q": "What was the nickname of 1980s striker Juan Gómez?",
+   "a": [
+    "Lightning",
+    "Pichichi",
+    "Juanito",
+    "The Bull"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x33",
+   "q": "Raúl scored after a solo run in the 2000 Champions League final. Who gave him the pass beforehand?",
+   "a": [
+    "Sávio",
+    "Redondo",
+    "Nobody (Raúl won the ball himself)",
+    "Steve McManaman"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x34",
+   "q": "How much did Real Madrid pay Porto for Danilo in 2015?",
+   "a": [
+    "€25m",
+    "€40m",
+    "€31.5m",
+    "€35m"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x35",
+   "q": "Which Real Madrid player scored the club's 100th Champions League goal (in the modern format)?",
+   "a": [
+    "Sávio",
+    "Hierro",
+    "Morientes",
+    "Raúl"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x36",
+   "q": "Which Real Madrid player won the Golden Ball at the 2006 World Cup (playing for France)?",
+   "a": [
+    "Fabio Cannavaro",
+    "Ronaldo",
+    "Robinho",
+    "Zinedine Zidane"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x37",
+   "q": "In what year did Real Madrid play their first match under floodlights?",
+   "a": [
+    "1947",
+    "1930",
+    "1923",
+    "1955"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x38",
+   "q": "Which of these players joined Real Madrid from Everton?",
+   "a": [
+    "Thomas Gravesen",
+    "Royston Drenthe",
+    "Ruud van Nistelrooy",
+    "Javier Saviola"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x39",
+   "q": "What is the full name of the legendary Pirri?",
+   "a": [
+    "José Martínez Sánchez",
+    "José María Martínez",
+    "Juan Manuel Sánchez",
+    "José Pirri Martínez"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x40",
+   "q": "How many Champions League goals did Mesut Özil score for Real Madrid?",
+   "a": [
+    "2",
+    "10",
+    "4",
+    "8"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x41",
+   "q": "Who was Real Madrid's captain during the trophyless 2005/06 season?",
+   "a": [
+    "Roberto Carlos",
+    "Guti",
+    "Iván Helguera",
+    "Raúl"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x42",
+   "q": "What was the nickname of 1940s player Edmundo Suárez?",
+   "a": [
+    "Pahiño",
+    "Mundo",
+    "Pruden",
+    "Corona"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x43",
+   "q": "Which Real Madrid goalkeeper has played the most Copa del Rey matches in the club's history?",
+   "a": [
+    "Zamora",
+    "Buyo",
+    "Casillas",
+    "Miguel Ángel"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x44",
+   "q": "Which Real Madrid transfer collapsed in 2015 because of a \"broken fax machine\"?",
+   "a": [
+    "David de Gea",
+    "Paul Pogba",
+    "Thibaut Courtois",
+    "Keylor Navas"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x45",
+   "q": "Which Real Madrid player scored 5 goals in a single European Cup match against Feyenoord in 1965?",
+   "a": [
+    "Di Stéfano",
+    "Gento",
+    "Amancio",
+    "Ferenc Puskás"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x46",
+   "q": "How many matches did Javier Saviola play for Real Madrid?",
+   "a": [
+    "31",
+    "15",
+    "42",
+    "20"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x47",
+   "q": "On what day of the week was the club founded on 6 March 1902?",
+   "a": [
+    "Thursday",
+    "Sunday",
+    "Monday",
+    "Saturday"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x48",
+   "q": "How much was Xabi Alonso's transfer from Liverpool in 2009?",
+   "a": [
+    "€30m",
+    "€35.4m",
+    "€25m",
+    "€40m"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x49",
+   "q": "Which Real Madrid player scored 2 goals in the 1980 Spanish Cup final?",
+   "a": [
+    "Santillana",
+    "Juanito",
+    "Camacho",
+    "Del Bosque"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x50",
+   "q": "What was the Bernabéu's capacity in 1954 after its expansion?",
+   "a": [
+    "125,000",
+    "150,000",
+    "80,000",
+    "100,000"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x51",
+   "q": "Which Real Madrid player scored with a \"scorpion kick\"?",
+   "a": [
+    "Guti",
+    "Robinho",
+    "Rafael van der Vaart",
+    "Ronaldo"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x52",
+   "q": "What was the nickname of 1920s player René Petit?",
+   "a": [
+    "The Engineer",
+    "The Wall",
+    "The Maestro",
+    "The Artist"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x53",
+   "q": "How many trophies did Vicente del Bosque win as a Real Madrid player?",
+   "a": [
+    "7",
+    "5",
+    "12",
+    "9"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x54",
+   "q": "From which club did Ricardo Carvalho join Real Madrid in 2010?",
+   "a": [
+    "Chelsea",
+    "Porto",
+    "Benfica",
+    "Liverpool"
+   ],
+   "correct": 0,
+   "note": "rephrased from a yes/no question"
+  },
+  {
+   "id": "x55",
+   "q": "What was the score of the 1964 European Cup final that Real Madrid lost to Inter?",
+   "a": [
+    "2-4",
+    "1-2",
+    "1-3",
+    "0-2"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x56",
+   "q": "Which Real Madrid player scored 3 goals in the 1962 European Cup final, yet the team still lost?",
+   "a": [
+    "Puskás",
+    "Del Sol",
+    "Gento",
+    "Di Stéfano"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x57",
+   "q": "Where did Real Madrid rank in Forbes' list of the most valuable clubs in 2024?",
+   "a": [
+    "3rd",
+    "2nd",
+    "5th",
+    "1st"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x58",
+   "q": "Which Real Madrid player was known as \"Zoco\"?",
+   "a": [
+    "José María Zárraga",
+    "Pachín",
+    "Ignacio Zoco",
+    "Félix Ruiz"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x59",
+   "q": "What shirt number did Cristiano Ronaldo wear in his first official match for Real Madrid?",
+   "a": [
+    "7",
+    "17",
+    "9",
+    "8"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x60",
+   "q": "How many goals did defender Fernando Hierro score in the 1991/92 season?",
+   "a": [
+    "15",
+    "10",
+    "26",
+    "21"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x61",
+   "q": "Who was Real Madrid's coach when the club won the 1960 Intercontinental Cup?",
+   "a": [
+    "Luis Carniglia",
+    "Fleitas Solich",
+    "Miguel Muñoz",
+    "José Villalonga"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x62",
+   "q": "What was the nickname of 1990s striker Alfonso Pérez?",
+   "a": [
+    "The Arrow",
+    "El Botas Blancas (White Boots)",
+    "The Magician",
+    "El Coronel"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x63",
+   "q": "Which Real Madrid player spent the most minutes on the pitch in the 2016/17 season?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Toni Kroos",
+    "Sergio Ramos",
+    "Keylor Navas"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x64",
+   "q": "How many Clásico wins did Real Madrid have as of 1 January 2024?",
+   "a": [
+    "98",
+    "110",
+    "104",
+    "100"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x65",
+   "q": "Which Real Madrid player scored in the 1993 Copa del Rey final against Zaragoza?",
+   "a": [
+    "Mikel Lasa",
+    "Míchel",
+    "Hierro",
+    "Butragueño"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x66",
+   "q": "Which Real Madrid player wore the number 16 in the 2009/10 season?",
+   "a": [
+    "Sergio Canales",
+    "Xabi Alonso",
+    "Javier Casquero",
+    "Fernando Gago"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x67",
+   "q": "What was the nickname of defender Manuel Sanchís Sr.?",
+   "a": [
+    "The Brute",
+    "The Wall",
+    "Manolo",
+    "The Captain"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x68",
+   "q": "Which Real Madrid player scored the club's 400th goal in the European Cup?",
+   "a": [
+    "Raúl",
+    "Figo",
+    "Zidane",
+    "Ronaldo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x69",
+   "q": "How much did Real Madrid pay to buy Casemiro back from Porto?",
+   "a": [
+    "€7.5m",
+    "€6m",
+    "€10m",
+    "€5m"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x70",
+   "q": "Which Real Madrid player scored 3 goals against Manchester United at Old Trafford in 2003?",
+   "a": [
+    "Raúl",
+    "Zidane",
+    "Figo",
+    "Ronaldo"
+   ],
+   "correct": 3,
+   "media": {
+    "type": "team",
+    "id": 10260
+   }
+  },
+  {
+   "id": "x71",
+   "q": "Who was Real Madrid's president during the Spanish Civil War?",
+   "a": [
+    "Rafael Sánchez-Guerra",
+    "Santiago Bernabéu",
+    "Pedro Parages",
+    "Juan Padrós"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x72",
+   "q": "What was the score of the Real Madrid vs Sevilla match (the biggest win in LaLiga history)?",
+   "a": [
+    "11-2",
+    "9-1",
+    "10-1",
+    "8-0"
+   ],
+   "correct": 0,
+   "stale": true,
+   "note": "the fact is wrong: Real Madrid's biggest LaLiga win is 11-1 over Elche (1960)"
+  },
+  {
+   "id": "x73",
+   "q": "Which Juventus player was shown a red card in the 2017 Champions League final?",
+   "a": [
+    "Casemiro",
+    "Juan Cuadrado (for Juventus)",
+    "Sergio Ramos",
+    "Nobody"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x74",
+   "q": "What is the full name of the legendary Juanito?",
+   "a": [
+    "Juan Antonio Gómez",
+    "Juan Gómez González",
+    "Juan Gómez Pérez",
+    "Juan Manuel Gómez"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x75",
+   "q": "Which Real Madrid player scored in the 1905 Spanish Cup final (the club's first trophy)?",
+   "a": [
+    "Bernabéu",
+    "Juan Padrós",
+    "Manuel Prast",
+    "Carlos Padrós"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x76",
+   "q": "What shirt number did Karim Benzema wear in his debut season at Real Madrid?",
+   "a": [
+    "19",
+    "9",
+    "11",
+    "10"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x77",
+   "q": "Which Real Madrid player scored the club's 500th LaLiga goal?",
+   "a": [
+    "Arsuaga",
+    "Di Stéfano",
+    "Pahiño",
+    "Molowny"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x78",
+   "q": "What was the score in the 1958 European Cup final?",
+   "a": [
+    "1-0",
+    "3-2 (after extra time, against Milan)",
+    "4-3",
+    "2-0"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x79",
+   "q": "Which Real Madrid player scored a \"hand of God\" goal against Atlético in 1997?",
+   "a": [
+    "Raúl",
+    "Seedorf",
+    "Mijatović",
+    "Šuker"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x80",
+   "q": "How much did Real Madrid receive from the sale of the old Ciudad Deportiva training ground in 2001?",
+   "a": [
+    "€600m",
+    "€300m",
+    "€480m",
+    "€250m"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x81",
+   "q": "Who was the first foreign coach in Real Madrid's history?",
+   "a": [
+    "Robert Firth",
+    "Arthur Johnson",
+    "Miljan Miljanić",
+    "Lippo Hertzka"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x82",
+   "q": "Which Real Madrid player scored 4 goals in a match against Elche in 2014?",
+   "a": [
+    "Cristiano Ronaldo",
+    "Gareth Bale",
+    "Chicharito",
+    "James Rodríguez"
+   ],
+   "correct": 0,
+   "media": {
+    "type": "team",
+    "id": 10268
+   }
+  },
+  {
+   "id": "x83",
+   "q": "Which Real Madrid player wore the number 21 in the 2016/17 season?",
+   "a": [
+    "Marco Asensio",
+    "Dani Carvajal",
+    "Martin Ødegaard",
+    "Álvaro Morata"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x84",
+   "q": "Which Real Madrid player scored in the 2002 UEFA Super Cup final?",
+   "a": [
+    "Roberto Carlos",
+    "Zidane",
+    "Raúl",
+    "Figo"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x85",
+   "q": "What was goalkeeper Miguel Ángel's nickname?",
+   "a": [
+    "The Wall",
+    "The Cat (El Gato)",
+    "The Octopus",
+    "The Tiger"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x86",
+   "q": "How many LaLiga goals did David Beckham score for Real Madrid?",
+   "a": [
+    "15",
+    "13",
+    "20",
+    "7"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x87",
+   "q": "Which Real Madrid player scored the club's first goal of the 21st century?",
+   "a": [
+    "Figo",
+    "Guti",
+    "Morientes",
+    "Raúl"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x88",
+   "q": "What was the score in the 1981 European Cup final?",
+   "a": [
+    "0-2",
+    "0-1",
+    "1-1",
+    "1-2"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x89",
+   "q": "Which Real Madrid player scored a hat-trick in the 2016 Club World Cup final against Kashima?",
+   "a": [
+    "Gareth Bale",
+    "Karim Benzema",
+    "Cristiano Ronaldo",
+    "Luka Modrić"
+   ],
+   "correct": 2
+  },
+  {
+   "id": "x90",
+   "q": "What was the nickname of 1950s player Rafael Lesmes?",
+   "a": [
+    "The Engine",
+    "El Capitán",
+    "The Rocket",
+    "Lesmes II"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x91",
+   "q": "Which Real Madrid player scored against Juventus in the 1962 quarter-final replay?",
+   "a": [
+    "Puskás",
+    "Felo",
+    "Di Stéfano",
+    "Del Sol"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x92",
+   "q": "How much did Real Madrid pay for Luka Modrić in 2012?",
+   "a": [
+    "€40m",
+    "£30m",
+    "€50m",
+    "€25m"
+   ],
+   "correct": 1
+  },
+  {
+   "id": "x93",
+   "q": "Which Real Madrid player received the Bravo Award in 1986?",
+   "a": [
+    "Emilio Butragueño",
+    "Míchel",
+    "Sanchís",
+    "Raúl"
+   ],
+   "correct": 0
+  },
+  {
+   "id": "x94",
+   "q": "How many matches did Zinedine Zidane take charge of as Real Madrid coach (both spells combined)?",
+   "a": [
+    "200",
+    "300",
+    "250",
+    "263"
+   ],
+   "correct": 3
+  },
+  {
+   "id": "x95",
+   "q": "Who scored Real Madrid's last goal at the Vicente Calderón stadium?",
+   "a": [
+    "Benzema",
+    "Cristiano Ronaldo",
+    "Isco",
+    "Ramos"
+   ],
+   "correct": 2,
+   "media": {
+    "type": "team",
+    "id": 9906
+   }
+  },
+  {
+   "id": "x96",
+   "q": "Which Real Madrid figure proposed the white kit in 1902 in honour of London's Corinthian?",
+   "a": [
+    "The Padrós brothers",
+    "Palacios",
+    "Arthur Johnson",
+    "Bernabéu"
+   ],
+   "correct": 0
+  }
+ ]
+}

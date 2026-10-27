@@ -8,7 +8,9 @@
     сбрасываем — вернётся человек, при входе аватар скачается заново;
   * снимки карточек чужих игроков (не из состава Реала) старше FOREIGN_PLAYER_TTL_DAYS и старые
     `player_fail:*`. Свои игроки обновляются раз в 6 ч и сюда не попадают;
-  * посещения по дням (visit_days) старше VISIT_DAYS_TTL_DAYS — app/visits.py.
+  * посещения по дням (visit_days) старше VISIT_DAYS_TTL_DAYS — app/visits.py;
+  * машинные переводы (таблица translations) старше TRANSLATION_TTL_DAYS — app/translate.py. Новости
+    живут в ленте неделю, так что удаляются переводы давно ушедших; нужный ещё раз — сборщик переведёт заново.
 """
 import json
 import logging
@@ -16,7 +18,7 @@ import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, config
+from . import avatars, config, translate
 
 log = logging.getLogger("cleanup")
 
@@ -119,7 +121,7 @@ def visit_days(pconn: sqlite3.Connection, now: datetime | None = None) -> dict:
 
 def run(conn: sqlite3.Connection, pconn: sqlite3.Connection | None, now: float | None = None) -> dict:
     now = now or time.time()
-    res = {**articles(conn, now), **foreign_players(conn, now)}
+    res = {**articles(conn, now), **foreign_players(conn, now), **translate.cleanup(conn, now)}
     if pconn is not None:
         when = datetime.fromtimestamp(now, timezone.utc)
         res.update(stale_avatars(pconn, when))
