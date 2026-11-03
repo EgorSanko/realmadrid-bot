@@ -41,6 +41,8 @@ REC_KEEP = int(os.environ.get("REC_KEEP", "600"))        # сколько эфи
 CLIP_BEFORE = int(os.environ.get("CLIP_BEFORE", "180"))  # до обнаружения: FotMob узнаёт о голе через ~2 мин (21.10 гол 43:08 → 45:30)
 CLIP_AFTER = int(os.environ.get("CLIP_AFTER", "60"))     # после, с (итого 4 мин — владелец сам обрезает)
 CLIP_KEEP_DAYS = int(os.environ.get("CLIP_KEEP_DAYS", "14"))
+# источник (skibid.im) с ноября режет ffmpeg по его подписи Lavf: 403 всем, кроме браузеров (Расинг 01.11 — ни секунды записи)
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 GOALS_EVERY = 5                                          # как часто смотреть снимки матчей, с
 
 
@@ -82,7 +84,7 @@ class Recorder:
             self.proc = subprocess.Popen(
                 ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin",
                  "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5",
-                 "-rw_timeout", "15000000", "-i", url,
+                 "-rw_timeout", "15000000", "-user_agent", USER_AGENT, "-i", url,
                  "-map", "0:v:0", "-map", "0:a:0?", "-c", "copy",   # со звуком: для Telegram; TikTok-копию программа клипов делает без звука
                  "-f", "segment", "-segment_time", str(SEGMENT), "-reset_timestamps", "1",
                  "-segment_start_number", str(int(_now())), str(REC / "%d.ts")])
@@ -109,6 +111,15 @@ def _segments() -> list[tuple[float, Path]]:
             except OSError:
                 pass
     return [(t, p) for _, t, p in sorted(out)]
+
+
+def _write_status(url: str | None, now: float) -> None:
+    """Для «Мадридиста · Клипы»: эфир включён, а новых кусков нет — запись не идёт, надо сказать сразу, а не на голе."""
+    segs = _segments()
+    st = {"live": bool(url), "age": round(now - segs[-1][0]) if segs else None, "at": round(now)}
+    tmp = DATA / ".recorder_status.tmp"
+    tmp.write_text(json.dumps(st), encoding="utf-8")
+    os.replace(tmp, DATA / "recorder_status.json")
 
 
 def _prune(now: float) -> None:
@@ -239,6 +250,8 @@ def _goal_meta(m: dict, e: dict) -> dict:
     score = e.get("score") or [home.get("score"), away.get("score")]
     pl = e.get("player") or {}
     player = pl.get("name") or ""
+    if player.strip("<>").upper() == "TBD":   # автор ещё неизвестен; настоящее имя подтянет _refresh при нарезке
+        player = ""
     return {
         "match_id": m.get("id"), "home": home.get("name"), "away": away.get("name"),
         # ключ карточки в «Мадридиста · Клипы» (goalpick.goal_identity); клипы ищут карточку и по счёту —
@@ -313,7 +326,9 @@ def run() -> None:
     try:
         while True:
             now = _now()
-            rec.tick(_stream_url())
+            url = _stream_url()
+            rec.tick(url)
+            _write_status(url, now)
             if now >= next_goals:
                 next_goals = now + GOALS_EVERY
                 for g in goals.poll():

@@ -1,3 +1,4 @@
+import os
 import json
 import sqlite3
 
@@ -78,3 +79,24 @@ def test_lag_minutes(tmp_path, monkeypatch):
     m = {"id": 1, "status": {"minute": 55}, "home": {"name": "R", "score": 2}, "away": {"name": "L", "score": 0}}
     assert recorder._goal_meta(m, _goal(52, "Guler", score=[2, 0]))["lag_min"] == 3
     assert recorder._goal_meta({**m, "status": {}}, _goal(52, "Guler", score=[2, 0]))["lag_min"] == 0
+
+
+def test_tbd_is_no_scorer():
+    m = {"id": 1, "status": {"minute": 22}, "home": {"name": "R", "score": 0}, "away": {"name": "L", "score": 2}}
+    g = recorder._goal_meta(m, _goal(22, "<TBD>", side="away", score=[0, 2]))
+    assert g["player"] == "" and g["label"] == "22'"
+
+
+def test_status_shows_recording_stalled(tmp_path, monkeypatch):
+    monkeypatch.setattr(recorder, "DATA", tmp_path)
+    monkeypatch.setattr(recorder, "REC", tmp_path / "rec")
+    recorder._write_status("https://x/y.m3u8", 1000.0)
+    st = json.loads((tmp_path / "recorder_status.json").read_text(encoding="utf-8"))
+    assert st == {"live": True, "age": None, "at": 1000}
+    (tmp_path / "rec").mkdir()
+    seg = tmp_path / "rec" / "5.ts"
+    seg.write_bytes(b"x")
+    os.utime(seg, (900.0, 900.0))
+    recorder._write_status(None, 1000.0)
+    st = json.loads((tmp_path / "recorder_status.json").read_text(encoding="utf-8"))
+    assert st == {"live": False, "age": 100, "at": 1000}
