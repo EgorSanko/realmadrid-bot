@@ -115,9 +115,11 @@ export default function MatchScreen() {
     (g) => {
       const ev = match ? goals(match).filter((x) => x.side === g.side)[g.n - 1]?.ev : undefined;
       const pid = Number(ev?.player?.id);
+      const name = shortName(ev?.player?.name);
       return {
         minute: ev ? minuteText(ev.minute, ev.added) : head?.minute,
-        scorer: ev?.player?.name ? { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name: shortName(ev.player.name) } : null,
+        // автор ещё неизвестен — не передаём: плашка дождётся его сама (GoalBurst)
+        scorer: name ? { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name } : undefined,
       };
     },
   );

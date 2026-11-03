@@ -1,7 +1,8 @@
 // Праздник гола: что считается новым голом, а что уже показано. Запуск: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SEEN_KEY, createGoalWatcher, observeScore, scoreKeys, storedSeen } from '../src/lib/goalWatch.ts';
+import { SCORER_MAX_MS, SCORER_STEP_MS, SEEN_KEY, createGoalWatcher, observeScore, scoreKeys, storedSeen, waitScorer, type ScorerProbe } from '../src/lib/goalWatch.ts';
+import { shortName } from '../src/screens/match/view.ts';
 
 function memStorage() {
   const m = new Map<string, string>();
@@ -98,4 +99,50 @@ test('пачка пропущенных голов — по ходу матча,
   assert.deepEqual(orderBatch(all, tl).map((g) => `${g.side}${g.n}`), ['home1', 'home2', 'away2']);
   // ленты нет — порядок прихода, последние три
   assert.deepEqual(orderBatch(all, null).map((g) => `${g.side}${g.n}`), ['away2', 'home1', 'away1']);
+});
+
+function scripted(answers: ScorerProbe[]) {
+  let clock = 0;
+  let calls = 0;
+  return {
+    probe: async () => answers[Math.min(calls++, answers.length - 1)],
+    opts: { sleep: async (ms: number) => void (clock += ms), now: () => clock },
+    calls: () => calls,
+    clock: () => clock,
+  };
+}
+
+test('плашка ждёт автора: сначала счёт без имени, потом имя и минута', async () => {
+  const s = scripted([{ state: 'wait' }, { state: 'wait' }, { state: 'known', scorer: { id: 7, name: 'Mbappé' }, minute: "67'" }]);
+  assert.deepEqual(await waitScorer(s.probe, s.opts), { scorer: { id: 7, name: 'Mbappé' }, minute: "67'" });
+  assert.equal(s.calls(), 3);
+});
+
+test('автор уже известен — без ожидания', async () => {
+  const s = scripted([{ state: 'known', scorer: { name: 'Vini' } }]);
+  await waitScorer(s.probe, s.opts);
+  assert.equal(s.clock(), 0);
+});
+
+test('автора так и нет — через 2 минуты плашка без имени; матч окончен — сразу', async () => {
+  const s = scripted([{ state: 'wait' }]);
+  assert.deepEqual(await waitScorer(s.probe, s.opts), { scorer: null });
+  assert.equal(s.clock(), SCORER_MAX_MS);
+  assert.equal(s.calls(), SCORER_MAX_MS / SCORER_STEP_MS + 1);
+  const f = scripted([{ state: 'final' }]);
+  assert.deepEqual(await waitScorer(f.probe, f.opts), { scorer: null });
+  assert.equal(f.clock(), 0);
+});
+
+test('гол отменили, пока ждали автора, — плашки нет; один устаревший ответ гол не отменяет', async () => {
+  const s = scripted([{ state: 'wait' }, { state: 'gone' }, { state: 'gone' }]);
+  assert.equal(await waitScorer(s.probe, s.opts), null);
+  const once = scripted([{ state: 'gone' }, { state: 'wait' }, { state: 'known', scorer: { name: 'Vini' } }]);
+  assert.deepEqual(await waitScorer(once.probe, once.opts), { scorer: { name: 'Vini' }, minute: undefined });
+});
+
+test('<TBD> вместо имени — автор неизвестен', () => {
+  assert.equal(shortName('<TBD>'), '');
+  assert.equal(shortName('TBD'), '');
+  assert.equal(shortName('Kylian Mbappé'), 'Mbappé');
 });

@@ -15,6 +15,8 @@
  * Модуль без рантайм-импортов — его напрямую гоняет `node --test`.
  */
 
+import type { GoalScorer } from './celebrate';
+
 export type GoalSide = 'home' | 'away';
 
 export interface ScoreSnapshot {
@@ -131,4 +133,38 @@ export function orderBatch<T extends { side: GoalSide; n: number }>(batch: T[], 
     .sort((a, b) => a.p - b.p || a.i - b.i)
     .map((x) => x.g)
     .slice(-max);
+}
+
+/** Ответ матча про автора гола: известен / ждём / гола больше нет (отменили) / матч окончен, автора не будет. */
+export type ScorerProbe =
+  | { state: 'known'; scorer: GoalScorer; minute?: string }
+  | { state: 'wait' | 'gone' | 'final' };
+
+export const SCORER_STEP_MS = 5_000;
+export const SCORER_MAX_MS = 120_000;
+
+/**
+ * Счёт приходит раньше автора, и плашка без имени только опережает трансляцию: спрашиваем матч, пока автор
+ * не появится. За 2 минуты не появился (источник его не даёт) — плашка без имени: трансляция гол уже показала.
+ * null — гол отменили: счёт дважды подряд меньше номера гола (один ответ может быть устаревшим).
+ */
+export async function waitScorer(
+  probe: () => Promise<ScorerProbe>,
+  { stopped = () => false, sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms)), now = () => Date.now() }: {
+    stopped?: () => boolean;
+    sleep?: (ms: number) => Promise<void>;
+    now?: () => number;
+  } = {},
+): Promise<{ scorer: GoalScorer | null; minute?: string } | null> {
+  const start = now();
+  let gone = false;
+  for (;;) {
+    const p = await probe();
+    if (p.state === 'known') return { scorer: p.scorer, minute: p.minute };
+    if (p.state === 'gone' && gone) return null;
+    gone = p.state === 'gone';
+    if (p.state === 'final' || now() - start >= SCORER_MAX_MS || stopped()) return { scorer: null };
+    await sleep(SCORER_STEP_MS);
+    if (stopped()) return { scorer: null };
+  }
 }

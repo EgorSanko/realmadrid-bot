@@ -15,7 +15,7 @@ export interface GoalCelebration {
   n: number;
   /** «67′», если известна */
   minute?: string;
-  /** автор, если уже известен; нет — слой сам спросит /api/match/{id} */
+  /** автор, если уже известен; нет — плашка дождётся его из /api/match/{id} и только потом вылетит */
   scorer?: GoalScorer | null;
   /** пропустили: гол соперника — плашка сдержанная, без конфетти */
   against?: boolean;

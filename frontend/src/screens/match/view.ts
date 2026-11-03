@@ -54,7 +54,7 @@ const PARTICLE = new Set(['de', 'da', 'do', 'dos', 'das', 'del', 'della', 'di', 
 /** Фамилия латиницей, как в API: «Marten de Roon» → «de Roon», «Vinícius Júnior» → «Vinícius». */
 export function shortName(full: string | null | undefined): string {
   const name = (full ?? '').trim();
-  if (!name) return '';
+  if (!name || name.replace(/[<>]/g, '').toUpperCase() === 'TBD') return ''; // <TBD> — источник ещё не знает автора
   let w = name.split(/\s+/);
   while (w.length > 1 && SUFFIX.has(w[w.length - 1].toLowerCase())) w = w.slice(0, -1);
   if (w.length === 1) return w[0];

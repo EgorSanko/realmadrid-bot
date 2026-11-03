@@ -3,6 +3,7 @@ import { hapticFeedback } from '@tma.js/sdk-react';
 import { fetchMatch } from '../api/match';
 import type { GoalCelebration, GoalScorer } from '../lib/celebrate';
 import { burst } from '../lib/confetti';
+import { waitScorer, type ScorerProbe } from '../lib/goalWatch';
 import { t } from '../lib/i18n';
 import { REAL_ID, goals, minuteText, shortName } from '../screens/match/view';
 import { PlayerPhoto, TeamCrest, imageUrl } from '../ui';
@@ -13,6 +14,7 @@ import './goalBurst.css';
  * буквы «ГОЛ!» впечатываются по очереди, по плашке проходит блик, из неё бьёт золотое конфетти,
  * счёт на экране «подпрыгивает». Всё ≈1,5 с, плашка держится ~3,2 с и уезжает вверх (тап — сразу).
  * Плашка не мешает: нажимается только она сама, остальной экран живёт как обычно.
+ * Вылетает, когда автор уже известен: без него она только опережает трансляцию (lib/goalWatch.ts — waitScorer).
  *
  * Пропустили (goal.against): та же плашка, но сдержанная — холодный стальной тон, «Пропустили», автор и
  * эмблема соперника, табло коротко «оседает», лёгкая вибрация-предупреждение; без конфетти, блика и зарева.
@@ -21,29 +23,38 @@ import './goalBurst.css';
 const HOLD_MS = 3200;
 const HOLD_AGAINST_MS = 2600;
 const EXIT_MS = 320;
-const DETAILS_TIMEOUT = 1500;
+const DETAILS_TIMEOUT = 4000;
 const PHOTO_TIMEOUT = 250;
 
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** Автор гола, если экран его не передал: спрашиваем матч (одна лёгкая выборка, не дольше 1,5 с). */
-async function lookupScorer(g: GoalCelebration): Promise<{ scorer: GoalScorer | null; minute?: string }> {
+/** Один запрос матча: известен ли уже автор этого гола. */
+async function probeScorer(g: GoalCelebration, signal: AbortSignal): Promise<ScorerProbe> {
   const ctrl = new AbortController();
-  const t = window.setTimeout(() => ctrl.abort(), DETAILS_TIMEOUT);
+  const stop = () => ctrl.abort();
+  signal.addEventListener('abort', stop);
+  const timer = window.setTimeout(stop, DETAILS_TIMEOUT);
   try {
     const r = await fetchMatch(g.matchId, ctrl.signal);
-    if (r.kind !== 'ok') return { scorer: null };
+    if (r.kind !== 'ok') return { state: 'wait' };
     const ev = goals(r.match).filter((x) => x.side === g.side)[g.n - 1]?.ev;
-    if (!ev?.player?.name) return { scorer: null };
-    const pid = Number(ev.player.id);
-    return {
-      scorer: { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name: shortName(ev.player.name) },
-      minute: minuteText(ev.minute, ev.added) || undefined,
-    };
+    const name = shortName(ev?.player?.name);
+    if (ev && name) {
+      const pid = Number(ev.player?.id);
+      return {
+        state: 'known',
+        scorer: { id: Number.isFinite(pid) && pid > 0 ? pid : undefined, name },
+        minute: minuteText(ev.minute, ev.added) || undefined,
+      };
+    }
+    const score = r.match[g.side].score;
+    if (score != null && score < g.n) return { state: 'gone' };
+    return { state: r.match.status.finished ? 'final' : 'wait' };
   } catch {
-    return { scorer: null };
+    return { state: 'wait' };
   } finally {
-    window.clearTimeout(t);
+    window.clearTimeout(timer);
+    signal.removeEventListener('abort', stop);
   }
 }
 
@@ -67,11 +78,17 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
 
-  // 1. подробности и фото — до начала, чтобы плашка вылетела сразу целой
+  // 1. автор и фото — до начала, чтобы плашка вылетела сразу целой; гол отменили, пока ждали, — плашки нет
   useEffect(() => {
     let alive = true;
+    const ctrl = new AbortController();
     void (async () => {
-      const d = goal.scorer !== undefined ? { scorer: goal.scorer, minute: goal.minute } : await lookupScorer(goal);
+      const d =
+        goal.scorer !== undefined
+          ? { scorer: goal.scorer, minute: goal.minute }
+          : await waitScorer(() => probeScorer(goal, ctrl.signal), { stopped: () => ctrl.signal.aborted });
+      if (!alive) return;
+      if (!d) return doneRef.current();
       const crestId = goal.against ? goal.rival?.id : REAL_ID;
       const photo = d.scorer?.id != null ? imageUrl.player(d.scorer.id) : crestId != null ? imageUrl.team(crestId) : null;
       if (photo) await preload(photo);
@@ -79,6 +96,7 @@ export default function GoalBurst({ goal, onDone }: { goal: GoalCelebration; onD
     })();
     return () => {
       alive = false;
+      ctrl.abort();
     };
   }, [goal]);
 
