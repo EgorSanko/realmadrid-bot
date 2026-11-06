@@ -4,27 +4,35 @@ import { CountUp } from './countUp';
 import { Chip } from './base';
 import { cx } from './format';
 
+/** Наша картинка (/img/…) пришла заглушкой — один повтор мимо кэша браузера: заглушка от сбоя могла в нём
+ *  застрять, а сервер уже отдаёт настоящую. Метка меняется раз в 10 минут — повторы тоже кэшируются. */
+export function retryUrl(src: string, now = Date.now()): string | null {
+  if (!src.startsWith('/img/')) return null;
+  return `${src}${src.includes('?') ? '&' : '?'}r=${Math.floor(now / 600_000)}`;
+}
+
 /** Превью новости/видео: пока грузится — тёмная плашка; не загрузилось — плашка остаётся без картинки. */
 function Thumb({ src, className, onFail }: { src: string; className: string; onFail?: () => void }) {
+  const [retry, setRetry] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   if (failed) return null;
+  const fail = () => {
+    const next = retry ? null : retryUrl(src);
+    if (next) return setRetry(next);
+    setFailed(true);
+    onFail?.();
+  };
   return (
     <img
       className={className}
-      src={src}
+      src={retry ?? src}
       alt=""
       loading="lazy"
       decoding="async"
       draggable={false}
-      onError={() => {
-        setFailed(true);
-        onFail?.();
-      }}
+      onError={fail}
       onLoad={(e) => {
-        if (e.currentTarget.naturalWidth <= 1) {
-          setFailed(true);
-          onFail?.();
-        }
+        if (e.currentTarget.naturalWidth <= 1) fail();
       }}
     />
   );
