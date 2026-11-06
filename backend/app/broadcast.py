@@ -54,13 +54,23 @@ def _now() -> str:
 
 # ---------- получатели ----------
 
-def record_chat(conn, user: dict, source: str = "bot") -> None:
-    """Человек написал боту — он получатель. Вернулся после блокировки — снова получатель."""
+def record_chat(conn, user: dict, source: str = "bot", lang: Optional[str] = None) -> None:
+    """Человек написал боту — он получатель. Вернулся после блокировки — снова получатель.
+    lang — язык его Telegram ('ru' | 'en'), если Telegram его сообщил; иначе прежний."""
     conn.execute(
-        "INSERT INTO bot_chats(chat_id, first_name, username, source, added_at, seen_at) VALUES (?,?,?,?,?,?) "
+        "INSERT INTO bot_chats(chat_id, first_name, username, source, added_at, seen_at, lang) VALUES (?,?,?,?,?,?,?) "
         "ON CONFLICT(chat_id) DO UPDATE SET first_name=excluded.first_name, username=excluded.username, "
-        "seen_at=excluded.seen_at, blocked_at=NULL",
-        (int(user["id"]), user.get("first_name") or "", user.get("username"), source, _now(), _now()))
+        "seen_at=excluded.seen_at, blocked_at=NULL, lang=COALESCE(excluded.lang, bot_chats.lang)",
+        (int(user["id"]), user.get("first_name") or "", user.get("username"), source, _now(), _now(), lang))
+
+
+def set_lang(conn, chat_id: int, lang: str) -> None:
+    """Язык, выбранный в приложении (вход в мини-апп/на сайт), — для напоминаний о матчах."""
+    conn.execute("UPDATE bot_chats SET lang=? WHERE chat_id=?", (lang, int(chat_id)))
+
+
+def set_remind(conn, chat_id: int, on: bool) -> None:
+    conn.execute("UPDATE bot_chats SET remind=? WHERE chat_id=?", (1 if on else 0, int(chat_id)))
 
 
 def set_notify(conn, chat_id: int, on: bool) -> None:

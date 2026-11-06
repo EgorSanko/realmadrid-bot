@@ -220,6 +220,24 @@ MIGRATIONS: list[str] = [
     );
     CREATE INDEX bot_messages_chat ON bot_messages(chat_id, created_at);
     """,
+    # v9 — напоминание «матч через 10 минут» в личку бота (app/reminders.py).
+    # lang — язык человека: из Telegram (пишет боту) или выбранный в приложении (вход); NULL — русский.
+    # remind=0 — отписался от напоминаний (/noremind). match_reminders — какой матч уже напомнили (один раз).
+    """
+    ALTER TABLE bot_chats ADD COLUMN lang TEXT;
+    ALTER TABLE bot_chats ADD COLUMN remind INTEGER NOT NULL DEFAULT 1;
+    CREATE TABLE match_reminders (
+        match_id    INTEGER PRIMARY KEY,
+        kickoff     TEXT NOT NULL,
+        title       TEXT NOT NULL,
+        created_at  TEXT NOT NULL,
+        finished_at TEXT,
+        total       INTEGER NOT NULL DEFAULT 0,
+        sent        INTEGER NOT NULL DEFAULT 0,
+        blocked     INTEGER NOT NULL DEFAULT 0,
+        failed      INTEGER NOT NULL DEFAULT 0
+    );
+    """,
 ]
 
 SCHEMA_VERSION = len(MIGRATIONS)

@@ -34,7 +34,7 @@ import time
 from collections import deque
 from datetime import datetime, timedelta, timezone
 
-from . import avatars, bot, broadcast, cleanup, config, crests, store, translate
+from . import avatars, bot, broadcast, cleanup, config, crests, reminders, store, translate
 from .predictions import db as predictions_db
 from .predictions.service import PredictionService, utcnow
 from .predictions.snapshot_provider import SnapshotProvider
@@ -1337,6 +1337,8 @@ class Collector:
             self._bot_task = asyncio.create_task(self.bot.run(stop))
             # рассылка голов по кнопке владельца — тот же бот и туннель (app/broadcast.py)
             self._broadcast_task = asyncio.create_task(broadcast.run(self.bot, stop))
+            # «матч через 10 минут» — тот же бот (app/reminders.py)
+            self._remind_task = asyncio.create_task(reminders.run(self.bot, self._fixtures, stop))
         while not stop.is_set():
             now = time.time()
             try:

@@ -9,6 +9,7 @@
     «Вход на сайт выполнен ✅ …» или «Код не найден или устарел …»;
   * `/start` без кода → короткое приветствие с кнопкой мини-аппа (web_app);
   * `/stop` / `/goals` — не присылать / снова присылать ролики голов;
+  * `/noremind` / `/remind` — не присылать / снова присылать напоминание «матч через 10 минут» (app/reminders.py);
   * любое другое личное сообщение (текст, фото, голосовое, стикер…) — сохраняет в bot_messages и
     пересылает владельцу (ADMIN_IDS) с именем отправителя; человеку — что это за бот, кнопка приложения и
     контакт поддержки (SUPPORT_CONTACT), не чаще раза в час;
@@ -68,6 +69,8 @@ MEDIA_KINDS = ("photo", "video", "voice", "video_note", "audio", "document", "an
                "location", "contact", "poll")
 MSG_STOP = "Больше не присылаю ролики голов. Вернуть: /goals"
 MSG_GOALS = "Буду присылать ролики голов «Реала». Отключить: /stop"
+MSG_NOREMIND = "Больше не напоминаю о матчах. Вернуть: /remind"
+MSG_REMIND = "Напомню о каждом матче «Реала» за 10 минут до начала. Отключить: /noremind"
 # английские версии — тем, у кого Telegram не на русском и не на близком к нему языке
 EN = {
     MSG_OK: "Signed in to the website ✅ You can go back to your browser.",
@@ -81,9 +84,11 @@ EN = {
                 f"For questions and support, message {SUPPORT_CONTACT}"),
     MSG_STOP: "I won't send goal clips anymore. Turn them back on: /goals",
     MSG_GOALS: "I'll send Real Madrid goal clips. Turn off: /stop",
+    MSG_NOREMIND: "I won't remind you about matches anymore. Turn back on: /remind",
+    MSG_REMIND: "I'll remind you about every Real Madrid match 10 minutes before kick-off. Turn off: /noremind",
 }
 RU_LANGS = {"ru", "uk", "be", "kk", "ky", "uz", "tg", "hy", "az", "ka", "tk", "ro"}
-CMD_RE = re.compile(r"^/(stop|goals)(?:@[A-Za-z0-9_]+)?\s*$", re.I)
+CMD_RE = re.compile(r"^/(stop|goals|noremind|remind)(?:@[A-Za-z0-9_]+)?\s*$", re.I)
 
 START_RE = re.compile(r"^/start(?:@[A-Za-z0-9_]+)?(?:\s+(\S+))?\s*$")
 TOKEN_SCRUB = re.compile(r"bot\d+:[A-Za-z0-9_-]+")
@@ -355,7 +360,7 @@ class TelegramBot(Source):
         stale = isinstance(date, int) and datetime.fromtimestamp(date, timezone.utc) < now - STALE_MESSAGE
         uid = sender["id"]
         lang = lang_of(sender)
-        broadcast.record_chat(conn, sender)
+        broadcast.record_chat(conn, sender, lang=lang if sender.get("language_code") else None)
         if not isinstance(text, str):   # фото, голосовое, стикер… — во входящие
             return self._to_inbox(conn, msg, sender, stale), None
         text = text.strip()
@@ -366,7 +371,11 @@ class TelegramBot(Source):
             return self._to_inbox(conn, msg, sender, stale), None
         cm = CMD_RE.match(text)
         if cm:
-            on = cm.group(1).lower() == "goals"
+            cmd = cm.group(1).lower()
+            if cmd in ("remind", "noremind"):
+                broadcast.set_remind(conn, uid, cmd == "remind")
+                return self._message(uid, tr(MSG_REMIND if cmd == "remind" else MSG_NOREMIND, lang)), None
+            on = cmd == "goals"
             broadcast.set_notify(conn, uid, on)
             return self._message(uid, tr(MSG_GOALS if on else MSG_STOP, lang)), None
         token = code = None

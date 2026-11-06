@@ -29,7 +29,7 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi.responses import JSONResponse
 
-from . import i18n, login_codes
+from . import broadcast, i18n, login_codes
 from .auth import (SESSION_COOKIE, SESSION_TTL, InitDataError, _session_key, admin_ids, issue_session,
                    validate_init_data, validate_widget)
 from .identity import Principal, _cross_site, authenticate, has_credentials
@@ -78,6 +78,15 @@ def _me_body(svc: PredictionService, uid: int) -> dict[str, Any]:
     return {"user": svc.user_view(uid), "is_admin": uid in admin_ids()}
 
 
+def _remember_lang(svc: PredictionService, uid: int, lang: str) -> None:
+    """Язык приложения (?lang=en у запросов английской версии) — для напоминаний бота о матчах."""
+    try:
+        with svc.conn() as c:
+            broadcast.set_lang(c, uid, lang)
+    except Exception:
+        log.exception("bot_chats.lang: %s", uid)
+
+
 def _seen(svc: PredictionService, uid: int) -> None:
     """Отметка «был» (раз в сутки) — по ней удаляются аватары тех, кого давно нет. Не повод не пустить."""
     try:
@@ -114,6 +123,7 @@ async def login(request: Request, svc: PredictionService = Depends(get_service))
         return _err(status, "unauthorized" if status == 401 else "not_configured", e.message)
     uid = svc.upsert_user(user)
     _seen(svc, uid)
+    _remember_lang(svc, uid, i18n.request_lang(request))
     photo = user.get("photo_url") if isinstance(user, dict) else getattr(user, "photo_url", None)
     try:
         svc.want_avatar(uid, photo)
