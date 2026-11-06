@@ -191,6 +191,8 @@ server {
     # превью YouTube: /img/yt/{videoId}.jpg → i.ytimg.com (id ровно 11 символов [A-Za-z0-9_-])
     location ~ "^/img/yt/(?<rmv2yt>[A-Za-z0-9_-]{11})\.jpg$" {
         set $rmv2_up https://i.ytimg.com/vi/$rmv2yt/hqdefault.jpg;
+        # с этого сервера IPv4-адреса Google не отвечают (TLS висит до таймаута), IPv6 — работает
+        resolver 127.0.0.53 valid=300s ipv4=off;
         error_page 400 403 404 410 500 502 503 504 = @rmv2_blank;
         proxy_pass $rmv2_up;
         proxy_http_version 1.1;
@@ -439,7 +441,7 @@ server {
     location @rmv2_blank {
         root {{IMGROOT}};
         try_files /blank.png =404;
-        add_header Cache-Control "public, max-age=86400" always;
+        add_header Cache-Control "public, max-age=600" always;   # заглушка — временная: не держим её у зрителя сутки
         add_header X-Cache-Status $upstream_cache_status always;
         add_header X-Img-Fallback "blank" always;
         add_header X-Content-Type-Options nosniff always;
